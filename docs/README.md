@@ -13,7 +13,7 @@
 | [wiki/README.md](wiki/README.md) | bilingual hub | Wiki index (en-US + pt-BR) |
 | [diagrams/architecture/README.md](diagrams/architecture/README.md) | en-US + pt-BR | **Attack-surface architecture** (MikrotikAPI-BF style) |
 | [img/architecture/](img/architecture/) | en-US labels on PNG | Exported architecture PNGs |
-| Intel catalog | JSON (bilingual summaries) | [wifi6_80211ax_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi6_80211ax_threat_vectors.json) — Wi-Fi 6 / WPA3 threat vectors for lab alignment |
+| Intel catalogs | JSON (bilingual summaries) | [wifi6_80211ax_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi6_80211ax_threat_vectors.json) (802.11ax) · [wifi7_80211be_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi7_80211be_threat_vectors.json) (802.11be / MLO) — WPA3-aligned threat vectors for lab |
 
 ## Attack-surface architecture (PNGs)
 
