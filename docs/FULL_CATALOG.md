@@ -1,6 +1,6 @@
 # wirelessxpl-Forge — Full Module Catalog
 
-> Generated: 2026-04-05T05:46:53.913356+00:00
+> Generated: 2026-04-05T06:47:05.903131+00:00
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 ## Summary
@@ -10,10 +10,10 @@
 | Exploits | 0 | 0 |
 | Credential Modules | 0 | 0 |
 | Scanners | 0 | 0 |
-| Generic Modules | 19 | 5 |
+| Generic Modules | 33 | 6 |
 | Encoders | 13 | 3 |
 | Payloads | 32 | 9 |
-| **Total Modules** | **64** | — |
+| **Total Modules** | **78** | — |
 | Distinct CVEs | 3 | — |
 
 ## Program footprint
@@ -23,28 +23,28 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | Metric | Value |
 |---|---|
 | Repository root | `D:/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge` |
-| Total file bytes | 117.90 MiB |
-| Files (repo walk) | 2636 |
-| Files under ``wirelessxpl/`` | 1955 |
+| Total file bytes | 118.16 MiB |
+| Files (repo walk) | 2650 |
+| Files under ``wirelessxpl/`` | 1971 |
 
 ### Largest top-level paths (repository)
 
 | Path | Size | Share of total |
 |---|---:|---:|
-| `wirelessxpl` | 113.11 MiB | 95.9% |
-| `docs` | 4.10 MiB | 3.5% |
+| `wirelessxpl` | 113.17 MiB | 95.8% |
+| `docs` | 4.31 MiB | 3.6% |
 | `tests` | 319.00 KiB | 0.3% |
-| `tools` | 293.14 KiB | 0.2% |
+| `tools` | 276.52 KiB | 0.2% |
 | `routerxpl.egg-info` | 58.36 KiB | 0.0% |
-| `(repo root files)` | 39.48 KiB | 0.0% |
+| `(repo root files)` | 41.12 KiB | 0.0% |
 
 ### ``wirelessxpl/`` breakdown (first-level folders)
 
 | Area | Size | Share of total |
 |---|---:|---:|
-| `resources` | 112.73 MiB | 95.6% |
+| `resources` | 112.73 MiB | 95.4% |
 | `core` | 218.75 KiB | 0.2% |
-| `modules` | 132.77 KiB | 0.1% |
+| `modules` | 191.21 KiB | 0.2% |
 | `(wirelessxpl root files)` | 26.18 KiB | 0.0% |
 | `libs` | 13.68 KiB | 0.0% |
 
@@ -52,8 +52,8 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 | Subfolder | Size | Share of total |
 |---|---:|---:|
-| `mibs` | 83.21 MiB | 70.6% |
-| `catalogs` | 24.92 MiB | 21.1% |
+| `mibs` | 83.21 MiB | 70.4% |
+| `catalogs` | 24.93 MiB | 21.1% |
 | `vendors` | 4.52 MiB | 3.8% |
 | `wordlists` | 44.91 KiB | 0.0% |
 | `arsenal` | 30.34 KiB | 0.0% |
@@ -65,9 +65,9 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | Tree | Files |
 |---|---:|
 | `wirelessxpl/core` | 44 |
-| `wirelessxpl/modules` | 84 |
+| `wirelessxpl/modules` | 99 |
 | `wirelessxpl/libs` | 5 |
-| `tools` | 40 |
+| `tools` | 38 |
 | `wxf.py` | 1 |
 
 ---
@@ -78,7 +78,7 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 ## Scanners (0)
 
-## Generic Modules (19)
+## Generic Modules (33)
 
 ### bluetooth (3)
 
@@ -177,9 +177,79 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
    - Offline extraction of EAPOL 4-way handshakes from PCAP/PCAPNG captures. Exports usable handshakes to individual PCAP files ready for cracking with aircrack-ng or hashcat.
    - Devices: Any 802.11 WPA/WPA2 wireless capture
 
+### wifi_lab (14)
+
+19. **Captive portal (modern lab UI)**
+   - Path: `generic/wifi_lab/captive_portal_modern_lab.py`
+   - Bindable HTTP portal logging form posts — intended with dnsmasq address=/#/ on a dedicated evil-twin NIC. No TLS (use reverse proxy if needed).
+   - Devices: Isolated lab subnet
+
+20. **Evil twin lab runbook**
+   - Path: `generic/wifi_lab/evil_twin_workflow.py`
+   - Prints ordered steps and example hostapd/dnsmasq snippets; optional call into aireplay-ng barrage helper binary.
+   - Devices: Authorised isolated RF bench
+
+21. **Evil twin — 6× hostapd templates**
+   - Path: `generic/wifi_lab/evil_twin_hostapd_templates.py`
+   - Generates configuration stubs including WPA3 transition (mixed) for studying downgrade paths alongside open/WPA2/SAE/OWE sketches.
+   - Devices: Authorised RF bench + compatible NIC
+
+22. **Evilginx prerequisite pointer**
+   - Path: `generic/wifi_lab/evilginx_prereq_pointer.py`
+   - Locates ``evilginx`` on PATH and references the upstream project; use only in isolated phishing/MFA labs with written consent.
+   - Devices: Lab attacker host
+
+23. **GPS wardriving NMEA → NDJSON**
+   - Path: `generic/wifi_lab/gps_wardriving_ndjson.py`
+   - Extracts coarse position rows for correlating with Wi-Fi/BLE logs.
+   - Devices: NMEA log file
+
+24. **Hashcat GPU/CPU orchestrator (WPA modes)**
+   - Path: `generic/wifi_lab/hashcat_gpu_orchestrator.py`
+   - Builds a hashcat argv for mode 22000/2500-class WPA material; prints devices (-I) and runs or dry-runs attack.
+   - Devices: Cracking workstation
+
+25. **PCAP RF anomaly scorer (+ optional ML)**
+   - Path: `generic/wifi_lab/pcap_rf_anomaly_ml.py`
+   - 802.11 management/data counters per file; optional IsolationForest when multiple PCAPs in a directory.
+   - Devices: Offline PCAP/PCAPNG
+
+26. **PCAP WPA handshake & PMKID validator**
+   - Path: `generic/wifi_lab/pcap_wpa_handshake_validate.py`
+   - Reports 4-way EAPOL progress per STA/BSSID, PMKID availability, and optional hc22000 export probe via hcxpcapngtool.
+   - Devices: 802.11 WPA2 PCAP/PCAPNG
+
+27. **Wireless research ecosystem (submodule) status**
+   - Path: `generic/wifi_lab/research_ecosystem_status.py`
+   - Maps GitHub WPA3/Wi-Fi research submodules to on-disk paths under the SafeLabs-style superproject layout.
+   - Devices: Workstation with superproject checkout
+
+28. **_disclaimer**
+   - Path: `generic/wifi_lab/_disclaimer.py`
+
+29. **aireplay-ng deauth / disassoc barrage**
+   - Path: `generic/wifi_lab/aireplay_deauth_barrage.py`
+   - Runs repeated aireplay-ng -0 bursts; optional dual-target alternation (BSSID + STA) and parallel streams for stubborn clients. Requires monitor-mode interface + injection-capable driver.
+   - Devices: Linux lab interface (monitor mode)
+
+30. **hostapd rogue AP bridge**
+   - Path: `generic/wifi_lab/rogue_ap_hostapd_bridge.py`
+   - Writes hostapd.conf for AP mode (nl80211) and execs hostapd. Requires ap-mode capable NIC + correct driver.
+   - Devices: Linux AP-capable WLAN
+
+31. **mdk3 legacy bridge**
+   - Path: `generic/wifi_lab/mdk3_bridge.py`
+   - Invokes mdk3 <iface> <mode> [options]. Modes include b, a, p, d, m, x, w, f.
+   - Devices: Linux monitor interface (legacy stacks)
+
+32. **mdk4 attack bridge**
+   - Path: `generic/wifi_lab/mdk4_bridge.py`
+   - Runs mdk4 <iface> <mode> [options]. Common modes: d (deauth/disassoc), b (beacon flood), a (auth DoS), p (probing), g (WPA downgrade), m (Michael shutdown). See mdk4 --help <mode>.
+   - Devices: Linux monitor interface + injection
+
 ### wordlist (1)
 
-19. **Interactive Wordlist Generator**
+33. **Interactive Wordlist Generator**
    - Path: `generic/wordlist/wordlist_generator.py`
    - Generates custom password and username wordlists based on target profile (corporate or personal). Applies mutation rules (leet speak, case variations, number suffixes, date fragments, word combination
    - Devices: Any target — wordlist generation is target-independent
