@@ -1,6 +1,6 @@
 # wirelessxpl-Forge — Full Module Catalog
 
-> Generated: 2026-04-05T06:47:05.903131+00:00
+> Generated: 2026-04-05T11:44:42.179022+00:00
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 ## Summary
@@ -23,15 +23,15 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | Metric | Value |
 |---|---|
 | Repository root | `D:/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge` |
-| Total file bytes | 118.16 MiB |
-| Files (repo walk) | 2650 |
-| Files under ``wirelessxpl/`` | 1971 |
+| Total file bytes | 118.19 MiB |
+| Files (repo walk) | 2653 |
+| Files under ``wirelessxpl/`` | 1974 |
 
 ### Largest top-level paths (repository)
 
 | Path | Size | Share of total |
 |---|---:|---:|
-| `wirelessxpl` | 113.17 MiB | 95.8% |
+| `wirelessxpl` | 113.20 MiB | 95.8% |
 | `docs` | 4.31 MiB | 3.6% |
 | `tests` | 319.00 KiB | 0.3% |
 | `tools` | 276.52 KiB | 0.2% |
@@ -42,7 +42,7 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 | Area | Size | Share of total |
 |---|---:|---:|
-| `resources` | 112.73 MiB | 95.4% |
+| `resources` | 112.76 MiB | 95.4% |
 | `core` | 218.75 KiB | 0.2% |
 | `modules` | 191.21 KiB | 0.2% |
 | `(wirelessxpl root files)` | 26.18 KiB | 0.0% |
@@ -53,7 +53,7 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | Subfolder | Size | Share of total |
 |---|---:|---:|
 | `mibs` | 83.21 MiB | 70.4% |
-| `catalogs` | 24.93 MiB | 21.1% |
+| `catalogs` | 24.95 MiB | 21.1% |
 | `vendors` | 4.52 MiB | 3.8% |
 | `wordlists` | 44.91 KiB | 0.0% |
 | `arsenal` | 30.34 KiB | 0.0% |
