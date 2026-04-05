@@ -1,4 +1,4 @@
-# Política de segurança — RouterXPL-Forge
+# Política de segurança — WirelessXPL-Forge
 
 **Idioma:** **Português (pt-BR).** **English (en-US, padrão):** [SECURITY.md](SECURITY.md)
 
@@ -6,13 +6,13 @@
 
 ## Versões e escopo suportados
 
-- **Em escopo:** falhas no **próprio RouterXPL-Forge** (código Python, dependências declaradas, scripts em `tools/`) que afetem quem **executa** o framework (RCE no operador, execução insegura de entradas, etc.).
+- **Em escopo:** falhas no **próprio WirelessXPL-Forge** (código Python, dependências declaradas, scripts em `tools/`) que afetem quem **executa** o framework (RCE no operador, execução insegura de entradas, etc.).
 - **Fora de escopo:** “0-day” em equipamentos de terceiros descobertos *usando* o framework; use canais do fabricante ou programas de *bug bounty* deles.
-- **Escopo funcional do repositório:** roteadores, switches, TAPs, firewalls e NGFW. Módulos focados em câmera/impressora/DVR como alvo principal não são prioridade deste fork.
+- **Escopo funcional do repositório:** laboratório **802.11 / WPA / WPA3 / EAPOL**, **Bluetooth LE**, **PCAP** e pontes para ferramentas de sistema — *não* árvore de *exploits* de roteadores SOHO.
 
 ## Como reportar vulnerabilidades
 
-1. Abra um **reporte privado de vulnerabilidade** no GitHub: **Security → Report a vulnerability** no repositório `mrhenrike/RouterXPL-Forge`.
+1. Abra um **reporte privado de vulnerabilidade** no GitHub: **Security → Report a vulnerability** no repositório `mrhenrike/WirelessXPL-Forge`.
 2. Não abra issue pública com *exploit* completo antes da triagem.
 3. Inclua:
    - commit ou tag afetada
