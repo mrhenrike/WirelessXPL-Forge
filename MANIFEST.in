@@ -1,0 +1,7 @@
+recursive-include wirelessxpl/resources/ssh_keys *.json *.key
+recursive-include wirelessxpl/resources/vendors *.dat *.csv
+recursive-include wirelessxpl/resources/wordlists *.txt
+recursive-include wirelessxpl/resources/mibs *.*
+recursive-include wirelessxpl/resources/catalogs *.json
+recursive-include wirelessxpl/resources/arsenal *.*
+recursive-include wirelessxpl/resources/ml *.json
