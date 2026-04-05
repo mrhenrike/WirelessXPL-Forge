@@ -13,6 +13,7 @@
 | [wiki/README.md](wiki/README.md) | Hub bilíngue | Índice da wiki (en-US + pt-BR) |
 | [diagrams/architecture/](diagrams/architecture/) | en-US + pt-BR | Diagramas de arquitetura / superfície de ataque |
 | [img/architecture/](img/architecture/) | rótulos en-US nos PNG | Imagens exportadas |
+| Catálogo de intel | JSON (resumos pt/en) | [wifi6_80211ax_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi6_80211ax_threat_vectors.json) — vetores Wi-Fi 6 / WPA3 para alinhamento defensivo em laboratório |
 
 ## Arquitetura / superfície de ataque (PNGs)
 

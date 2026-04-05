@@ -34,6 +34,7 @@
     "soho_catalog_js_index.json",
     "third_party_router_exploit_repos.json",
     "third_party_upstream_open_work.json",
+    "wifi6_80211ax_threat_vectors.json",
     "workspace_reuse_inventory.json"
   ],
   "wordlists": [
