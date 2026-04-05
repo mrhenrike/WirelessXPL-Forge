@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="wirelessxpl",
-    version="3.5.2",
+    version="1.0.0b0",
     description="WirelessXPL-Forge: 802.11 / WPA / WPA3 / BLE lab shell and PCAP tooling",
     long_description=long_description,
     author="Threat9",
