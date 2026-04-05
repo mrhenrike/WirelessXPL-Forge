@@ -22,6 +22,8 @@ Shell and modules for **authorised** lab work on **802.11 (WPA2 / WPA3 / TKIP / 
 | **hcxtools** | `hcxpcapngtool` / `hcxdumptool` — PMKID / hash lines for hashcat |
 | **hashcat** | WPA modes 22000/22001 — offline cracking |
 | **tshark** (optional) | BLE / 802.11 dissection when Scapy layers are thin |
+| **mdk4** / **mdk3** (optional) | Advanced frame storms / deauth modes (`wifi_lab` bridges) |
+| **hostapd** + **dnsmasq** (optional) | Rogue / evil-twin + DHCP/DNS for captive flows |
 | **Bruce ESP32** (optional) | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — handheld wardriving; export PCAP to `generic/pcap/*` |
 
 Run `use generic/external/wireless_tool_prereq_audit` after install to verify PATH.
@@ -37,6 +39,7 @@ Run `use generic/external/wireless_tool_prereq_audit` after install to verify PA
 | **generic/wordlist** | Parameterised wordlist generator |
 | **generic/cve** | Embedded hints (KRACK, FragAttacks, Dragonblood, …) |
 | **generic/external** | hcxtools bridge, Bruce lab notes, prerequisite audit |
+| **generic/wifi_lab** | Rogue AP (`hostapd`), evil-twin runbook + **6× hostapd templates**, **modern captive portal**, deauth barrage, **mdk4/mdk3**, handshake validator, **hashcat GPU orchestrator**, **PCAP anomaly + optional sklearn**, **GPS NMEA→NDJSON**, **research submodule index**, Evilginx prereq pointer |
 | **payloads / encoders** | Inherited minimal set |
 
 **Out of scope:** router exploit trees, IP cameras/DVRs as primary target.
@@ -108,6 +111,14 @@ python wxf.py -m generic/pcap/pcap_ap_station_mapper -s "pcap_file /tmp/lab.cap"
 - [docs/FULL_CATALOG.md](docs/FULL_CATALOG.md), [docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md) — regenerate with `tools/generate_full_catalog.py` / `generate_coverage_matrix.py` when modules change.
 
 ---
+
+## Release notes — 3.5.2
+
+- **wifi_lab:** `research_ecosystem_status` + `resources/catalogs/wireless_research_submodules.json` for superproject trees under `submodules/IoT/wireless-research/` (set `WXF_SUPERPROJECT_ROOT`). **hashcat_gpu_orchestrator** (`-I`, auto `-d`, `-w`, dry-run). **pcap_rf_anomaly_ml** (heuristic score + optional **IsolationForest** via extra `ml-lite`). **gps_wardriving_ndjson** (GGA → NDJSON). **evil_twin_hostapd_templates** (six configs: open, WPA2, SAE, transition, OWE stub, enterprise stub). **evilginx_prereq_pointer**. Extended **wireless_tool_prereq_audit** (wifite, bully, reaver, pixiewps, john, airgeddon, tcpdump, bluetoothctl, gpspipe).
+
+## Release notes — 3.5.1
+
+- **wifi_lab:** rogue AP (`hostapd`), evil-twin dnsmasq snippets, **captive portal** UI (inline modern CSS), aggressive **aireplay-ng** multi-stream deauth, **mdk4/mdk3** bridges, **PCAP handshake validator** (+ hcxtools probe). PMF/802.11w limitations documented for Apple/iOS targets.
 
 ## Release notes — 3.5.0
 

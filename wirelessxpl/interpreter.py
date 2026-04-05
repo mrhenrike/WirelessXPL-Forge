@@ -293,7 +293,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
  PCAP analysis + tool bridges (see README prerequisites)
 
  Codename   : I Knew You Were Trouble
- Version    : 3.5.0
+ Version    : 3.5.2
  Maintained : André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
  Lineage    : RouterXPL-Forge → wireless split; upstream threat9/routersploit
 

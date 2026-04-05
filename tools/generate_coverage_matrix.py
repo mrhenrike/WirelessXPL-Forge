@@ -228,8 +228,8 @@ def _platform_section() -> str:
     """Return current platform compatibility status text."""
     return (
         "## Product Scope\n\n"
-        "- In scope: routers, switches, taps, fw and ngfw (residential, ISP, enterprise/corporate, industrial; IT/OT/AT/IoT/IIoT).\n"
-        "- Out of scope: camera/printer/dvr modules (disabled in this product line).\n\n"
+        "- In scope: **802.11 / WPA / WPA3 / EAPOL**, **Bluetooth LE**, **PCAP** analysis, wordlists, CVE hints, and **wifi_lab** bridges (authorised lab only).\n"
+        "- Out of scope: RouterXPL-Forge SOHO exploit tree as primary focus; camera/printer/DVR-primary modules.\n\n"
         "## Platform Compatibility Status\n\n"
         "| Platform | Status |\n"
         "|---|---|\n"
@@ -868,7 +868,7 @@ def _build_summary(records: List[ModuleRecord], matrix: Dict[Tuple[str, str], Co
 def _build_markdown(records: List[ModuleRecord], matrix: Dict[Tuple[str, str], CoverageEntry]) -> str:
     """Render matrix document in Markdown format."""
     lines: List[str] = [
-        "# wirelessxpl-Forge Coverage Matrix",
+        "# WirelessXPL-Forge Coverage Matrix",
         "",
         _platform_section(),
         "",
@@ -927,8 +927,8 @@ def _build_markdown(records: List[ModuleRecord], matrix: Dict[Tuple[str, str], C
 def _build_plain_text(records: List[ModuleRecord], matrix: Dict[Tuple[str, str], CoverageEntry]) -> str:
     """Render matrix document in plain text format."""
     lines: List[str] = [
-        "wirelessxpl-Forge Coverage Matrix",
-        "=" * 33,
+        "WirelessXPL-Forge Coverage Matrix",
+        "=" * 35,
         "",
         "Platform Compatibility Status",
         "-" * 29,
