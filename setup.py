@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="wirelessxpl",
-    version="3.5.0",
+    version="3.5.2",
     description="WirelessXPL-Forge: 802.11 / WPA / WPA3 / BLE lab shell and PCAP tooling",
     long_description=long_description,
     author="Threat9",
@@ -36,6 +36,10 @@ setup(
         # Optional: heavyweight; enables CUDA logits in AutoPwn ml_use_gpu when PyTorch sees CUDA.
         "ml-gpu": [
             "torch>=2.0.0",
+        ],
+        "ml-lite": [
+            "numpy>=1.24",
+            "scikit-learn>=1.3",
         ],
     },
     classifiers=[
