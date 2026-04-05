@@ -18,7 +18,7 @@
 
 ## Global Capability Summary
 
-- Module tree (wirelessxpl/modules): 1b60d13d96e589cddb04884981c935df2fc24a28
+- Module tree (wirelessxpl/modules): 598f9a3e108c78d1ec02ff16c93e0a980e6f4476
 - Total modules indexed: 78
 - Distinct vendor/product entries: 78
 - Distinct CVEs mapped in modules: 3
@@ -1021,7 +1021,7 @@
 
 | Domain | Count |
 |---|---:|
-| catalogs | 17 |
+| catalogs | 20 |
 | wordlists | 10 |
 | ssh_keys | 8 |
 | vendors datasets | 2 |
