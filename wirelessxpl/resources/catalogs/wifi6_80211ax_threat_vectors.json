@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "id": "wifi6-80211ax-threat-vectors",
+    "title": "Wi-Fi 6 (IEEE 802.11ax) — threat vectors / vetores de ameaça",
+    "version": "1.0.0",
+    "language_notes": "Summaries in pt-BR; identifiers and references en-US where standard.",
+    "curator": "André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek",
+    "purpose": "Defensive alignment and lab scoping: map expert-discussed vectors against 802.11ax deployments that advertise WPA3.",
+    "usage_policy": "Reference only for authorized testing, education, and hardening. No operational abuse."
+  },
+  "standards_context": {
+    "ieee_amendment": "802.11ax",
+    "marketing_name": "Wi-Fi 6",
+    "security_note": "802.11ax primarily defines PHY/MAC features. Link-layer security is WPA2/WPA3 (deployment-dependent). Wi-Fi CERTIFIED 6 program generally drives WPA3 adoption on new gear; transitional / mixed modes and misconfiguration preserve legacy attack paths."
+  },
+  "vectors": [
+    {
+      "id": "wpa3-sae-dragonblood",
+      "names": {
+        "pt-BR": "Fraquezas WPA3 / SAE (família Dragonblood)",
+        "en-US": "WPA3 / SAE design and implementation issues (Dragonblood family)"
+      },
+      "summary_pt": "O WPA3-Personal usa SAE para reduzir riscos de dicionário offline frente ao WPA2-PSK. Pesquisadores (Vanhoef et al.) demonstraram vetores de downgrade, divisão de custo offline em subgrupos e ataques de canal lateral contra implementações ou parâmetros fracos — mitigados em grande parte por patches, mas relevantes para inventário de firmware antigo.",
+      "summary_en": "WPA3-Personal uses SAE to improve on WPA2-PSK offline dictionary risk. Published research (Dragonblood) showed downgrade, subgroup trade-offs, and side-channel issues against weak implementations; largely patched but relevant for stale firmware.",
+      "mitigations": [
+        "Atualizar firmware e controladores em clientes e AP.",
+        "Evitar WPA3 transitional-only rollouts sem revisão; preferir perfis que permitam desativar legado onde possível.",
+        "Senhas PSK fortes mesmo com WPA3 (defesa em profundidade)."
+      ],
+      "references": [
+        "https://wpa3.mathyvanhoef.com/",
+        "https://papers.mathyvanhoef.com/esorics2019.pdf"
+      ]
+    },
+    {
+      "id": "rogue-ap",
+      "names": {
+        "pt-BR": "Pontos de acesso não autorizados (Rogue AP)",
+        "en-US": "Rogue / unauthorized access points"
+      },
+      "summary_pt": "AP ou software AP com SSID igual ou semelhante ao corporativo/doméstico, atrai associações e contorna políticas de NAC/802.1X quando utilizadores ou dispositivos não validam corretamente o alojamento de confiança.",
+      "summary_en": "Unauthorized APs mimic legitimate SSIDs, bypassing policy when clients do not validate trust anchors.",
+      "mitigations": [
+        "WIPS / monitorização RF, inventário de BSSID autorizados.",
+        "802.1X com verificação adequada de certificado; EVIL TWIN mitigation via policy and training.",
+        "Segmentação guest/IoT."
+      ],
+      "references": []
+    },
+    {
+      "id": "deauthentication",
+      "names": {
+        "pt-BR": "Ataques de desautenticação (frames de gestão)",
+        "en-US": "Deauthentication / disassociation abuse"
+      },
+      "summary_pt": "Quadros de gestão podem ser spoofed para forçar desassociação, interromper serviço ou preparar captura de handshake/reassociação. 802.11w (PMF) reduz impacto em stacks que o aplicam de forma consistente.",
+      "summary_en": "Forged management frames force disconnects or aid handshake capture; 802.11w PMF mitigates when consistently enabled.",
+      "mitigations": [
+        "Ativar PMF (requerido/compatível) em AP e suportar nos clientes críticos.",
+        "Monitorizar padrões anómalos de desassociação."
+      ],
+      "references": []
+    },
+    {
+      "id": "dos-rf-channel",
+      "names": {
+        "pt-BR": "Negação de serviço (DoS) no ar ou no AP",
+        "en-US": "Denial of service (airtime / RF / AP overload)"
+      },
+      "summary_pt": "Inundação de autenticação, consumo de tempo de antena, ou jamming em 2,4/5/6 GHz degradam disponibilidade; Wi-Fi 6 melhora eficiência mas não imuniza a abuso de protocolo ou interferência intencional.",
+      "summary_en": "Auth floods, airtime abuse, or intentional interference reduce availability. Wi-Fi 6 efficiency does not remove these classes of abuse.",
+      "mitigations": [
+        "Rate limiting, booster configs de AP, canais redundantes.",
+        "Planeamento físico e deteção de interferência."
+      ],
+      "references": []
+    },
+    {
+      "id": "iot-weak-edge",
+      "names": {
+        "pt-BR": "IoT com firmware/senhas fracos na mesma WLAN",
+        "en-US": "IoT devices as weak entry points on Wi-Fi"
+      },
+      "summary_pt": "Clientes IoT com credenciais default, TLS fraco ou HTTP expõem pivot para VLAN interna mesmo quando o SSID usa WPA3.",
+      "summary_en": "IoT with default creds or cleartext mgmt allows lateral movement despite WPA3 on the SSID.",
+      "mitigations": [
+        "SSID/VLAN dedicados, firewall L3/L7, atualizações automáticas.",
+        "Desativar serviços desnecessários nas estacões IoT."
+      ],
+      "references": []
+    },
+    {
+      "id": "evil-twin",
+      "names": {
+        "pt-BR": "Evil Twin (AP gemelo)",
+        "en-US": "Evil twin access point"
+      },
+      "summary_pt": "Réplica de SSID (e por vezes canal/BSSID próximo) para capturar associações; combina com portais cativos ou PSK reutilizada em clientes que não distinguem alvo.",
+      "summary_en": "Cloned SSID to attract associations; often paired with captive portal or credential harvesting.",
+      "mitigations": [
+        "Educação de utilizadores; VPN para tráfego sensível (não substitui validação de portal).",
+        "Políticas EAP/certificado onde aplicável."
+      ],
+      "references": []
+    },
+    {
+      "id": "firmware-rce",
+      "names": {
+        "pt-BR": "Vulnerabilidades de firmware no AP/controlador",
+        "en-US": "AP / WLC firmware vulnerabilities"
+      },
+      "summary_pt": "RCE ou credenciais hardcoded no SO do AP permitem comprometer a rede sem quebrar WPA3 no ar.",
+      "summary_en": "RCE or hardcoded creds in AP software compromise the edge without breaking over-the-air crypto.",
+      "mitigations": [
+        "Patch cadence, desativar administração WAN exposta, 2FA em cloud controllers quando disponível."
+      ],
+      "references": []
+    },
+    {
+      "id": "mitm-on-lan-or-open",
+      "names": {
+        "pt-BR": "Man-in-the-Middle (posição entre cliente e infraestrutura)",
+        "en-US": "Man-in-the-middle positioning"
+      },
+      "summary_pt": "Após associação a AP malicioso ou segmentação fraca, ARP/DHCP/ND spoofing e proxies transparentes permitem inspeção ou alteração de tráfego.",
+      "summary_en": "Post-association L2/L3 spoofing or rogue DHCP enables traffic manipulation on mis-segmented LANs.",
+      "mitigations": [
+        "DAI / DHCP snooping em wired segments; TLS everywhere; segmentação estrita."
+      ],
+      "references": []
+    },
+    {
+      "id": "fragattacks",
+      "names": {
+        "pt-BR": "FragAttacks (agregação/fragmentação 802.11)",
+        "en-US": "FragAttacks (802.11 fragmentation/aggregation)"
+      },
+      "summary_pt": "Família de issues de design/implementação em agregação e fragmentação que, em combinação com bugs em clientes ou AP, pode permitir injeção ou exfiltração em cenários específicos — abrangendo stacks Wi-Fi 6 onde o código herdou comportamentos vulneráveis.",
+      "summary_en": "Design/implementation flaws around aggregation and fragmentation; patched via vendor updates across Wi-Fi generations including ax.",
+      "mitigations": [
+        "Aplicar patches FragAttacks do fabricante em AP e SOs clientes.",
+        "Isolar clientes legacy não corrigíveis."
+      ],
+      "references": [
+        "https://www.fragattacks.com/"
+      ]
+    },
+    {
+      "id": "misconfiguration-pmf-psk",
+      "names": {
+        "pt-BR": "Configuração incorreta (PSK fraca, PMF off, WPA2-only)",
+        "en-US": "Misconfiguration (weak PSK, PMF disabled, legacy-only modes)"
+      },
+      "summary_pt": "Mesmo em hardware Wi-Fi 6, desligar PMF, manter WPA2-only fraco ou WPS ativo recria superfícies conhecidas.",
+      "summary_en": "Wi-Fi 6 hardware with weak WPA2-only, WPS, or PMF disabled reopens well-known surfaces.",
+      "mitigations": [
+        "Baseline de hardening: WPA3 onde suportado, PMF, PSK longo ou EAP corporativo, WPS off."
+      ],
+      "references": []
+    }
+  ],
+  "baseline_practices_pt": [
+    "Firmware atualizado em AP e clientes críticos.",
+    "Senhas PSK longas e únicas ou 802.1X empresarial.",
+    "Monitorização contínua e inventário de estações."
+  ],
+  "baseline_practices_en": [
+    "Keep AP and critical client firmware patched.",
+    "Long unique PSKs or enterprise 802.1X.",
+    "Continuous monitoring and station inventory."
+  ]
+}
