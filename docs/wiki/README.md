@@ -40,12 +40,16 @@
 
 | Topic | Links |
 |-------|--------|
-| License | [LICENSE](../../LICENSE) |
+| License | [LICENSE](../../LICENSE) (BSD; upstream Threat9 notice retained) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](../../CODE_OF_CONDUCT.md) · [CODE_OF_CONDUCT.pt-BR.md](../../CODE_OF_CONDUCT.pt-BR.md) |
 | Security | [SECURITY.md](../../SECURITY.md) · [SECURITY.pt-BR.md](../../SECURITY.pt-BR.md) |
 | Contributing | [CONTRIBUTING.md](../../CONTRIBUTING.md) · [CONTRIBUTING.pt-BR.md](../../CONTRIBUTING.pt-BR.md) |
 | Contributors | [CONTRIBUTORS.md](../../CONTRIBUTORS.md) · [CONTRIBUTORS.pt-BR.md](../../CONTRIBUTORS.pt-BR.md) |
 | GitHub Actions | [compat-matrix.yml](../../.github/workflows/compat-matrix.yml) |
+
+## Wireless intel catalogs / Catálogos de intel 802.11
+
+Structured WPA3 / Wi‑Fi 6–7 threat vectors (JSON, lab alignment): see the **Intel catalogs** row in [docs/README.md](../README.md) · [docs/README.pt-BR.md](../README.pt-BR.md).
 
 ## Repository root / Raiz do repositório
 
