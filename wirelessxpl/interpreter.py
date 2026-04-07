@@ -33,7 +33,6 @@ from wirelessxpl.core.exploit.printer import (
     printer_queue
 )
 from wirelessxpl.core.exploit.exploit import GLOBAL_OPTS
-from wirelessxpl.core.exploit.payloads import BasePayload
 
 try:
     import readline
@@ -267,8 +266,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
         self.raw_prompt_template = None
         self.module_prompt_template = None
         self.prompt_hostname = "wxf"
-        self.show_sub_commands = ("info", "options", "advanced", "devices", "all", "encoders", "creds", "exploits", "scanners", "wordlists")
-        self.search_sub_commands = ("type", "device", "language", "payload", "vendor")
+        self.show_sub_commands = ("info", "options", "advanced", "devices", "all", "creds", "exploits", "scanners", "wordlists")
+        self.search_sub_commands = ("type", "device", "vendor")
 
         self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search "])
         self.module_commands = ["run", "back", "set ", "setg ", "check"]
@@ -297,11 +296,9 @@ class WirelessXPLInterpreter(BaseInterpreter):
  Maintained : André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
  Lineage    : RouterXPL-Forge → wireless split; upstream threat9/routersploit
 
- Generic: {generic_count} Payloads: {payloads_count} Encoders: {encoders_count}  (no router exploits tree)
+ Modules: {generic_count}  (wireless-only scope)
 """.format(
-           generic_count=self.modules_count.get("generic", 0),
-           payloads_count=self.modules_count.get("payloads", 0),
-           encoders_count=self.modules_count.get("encoders", 0))
+           generic_count=self.modules_count.get("generic", 0))
 
     def __parse_prompt(self):
         raw_prompt_default_template = "\001\033[4m\002{host}\001\033[0m\002 > "
@@ -603,17 +600,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
         print_table(headers, *wordlists, max_column_length=100)
 
-    @module_required
-    def _show_encoders(self, *args, **kwargs):
-        if issubclass(self.current_module.__class__, BasePayload):
-            encoders = self.current_module.get_encoders()
-            if encoders:
-                headers = ("Encoder", "Name", "Description")
-                print_table(headers, *encoders, max_column_length=100)
-                return
-
-        print_error("No encoders available")
-
     def __show_modules(self, root=''):
         for module in [module for module in self.modules if module.startswith(root)]:
             print_info(module.replace('.', os.sep))
@@ -674,8 +660,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
         mod_vendor = ''
         existing_modules = [name for _, name, _ in pkgutil.iter_modules([MODULES_DIR])]
         devices = [name for _, name, _ in pkgutil.iter_modules([os.path.join(MODULES_DIR, 'exploits')])]
-        languages = [name for _, name, _ in pkgutil.iter_modules([os.path.join(MODULES_DIR, 'encoders')])]
-        payloads = [name for _, name, _ in pkgutil.iter_modules([os.path.join(MODULES_DIR, 'payloads')])]
 
         try:
             keyword = args[0].strip("'\"").lower()
@@ -683,8 +667,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
             keyword = ''
 
         if not (len(keyword) or len(kwargs.keys())):
-            print_error("Please specify at least search keyword. e.g. 'search cisco'")
-            print_error("You can specify options. e.g. 'search type=exploits device=routers vendor=linksys WRT100 rce'")
+            print_error("Please specify at least search keyword. e.g. 'search wifi'")
+            print_error("You can specify options. e.g. 'search type=generic device=wifi vendor=generic wpa3'")
             return
 
         for (key, value) in kwargs.items():
@@ -692,19 +676,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 if value not in existing_modules:
                     print_error("Unknown module type.")
                     return
-                # print_info(' - Type  :\t{}'.format(value))
                 mod_type = "{}.".format(value)
-            elif key in ['device', 'language', 'payload']:
-                if key == 'device' and (value not in devices):
-                    print_error("Unknown exploit type.")
+            elif key == 'device':
+                if value not in devices:
+                    print_error("Unknown device type.")
                     return
-                elif key == 'language' and (value not in languages):
-                    print_error("Unknown encoder language.")
-                    return
-                elif key == 'payload' and (value not in payloads):
-                    print_error("Unknown payload type.")
-                    return
-                # print_info(' - {}:\t{}'.format(key.capitalize(), value))
                 mod_detail = ".{}.".format(value)
             elif key == 'vendor':
                 # print_info(' - Vendor:\t{}'.format(value))
