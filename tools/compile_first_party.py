@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Byte-compile first-party RouterXPL Python only.
+"""Byte-compile first-party WirelessXPL Python only.
 
-Vendored trees under ``routerxpl/resources/`` (PoC mirrors, MIBs, etc.) are **not**
+Vendored trees under ``wirelessxpl/resources/`` (PoC mirrors, MIBs, etc.) are **not**
 compiled: many upstream exploits target Python 2 or are intentionally broken.
 
-Use this in CI or pre-commit instead of ``python -m compileall routerxpl``.
+Use this in CI or pre-commit instead of ``python -m compileall WirelessXPL``.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ def main() -> int:
     """Compile core, modules, libs, package entrypoints, and ``tools/*.py``."""
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     repo = Path(__file__).resolve().parents[1]
-    rx = repo / "routerxpl"
+    rx = repo / "wirelessxpl"
 
     dirs = [
         rx / "core",

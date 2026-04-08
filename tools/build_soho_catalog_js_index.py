@@ -12,14 +12,14 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from routerxpl.core.soho_exploit_catalog import index_catalog_script_functions, resolve_soho_catalog_root
+from wirelessxpl.core.soho_exploit_catalog import index_catalog_script_functions, resolve_soho_catalog_root
 
 
 def main() -> int:
     repo = _REPO_ROOT
     root = resolve_soho_catalog_root()
     scripts = root / "includes" / "scripts.js"
-    out_path = repo / "routerxpl" / "resources" / "catalogs" / "soho_catalog_js_index.json"
+    out_path = repo / "wirelessxpl" / "resources" / "catalogs" / "soho_catalog_js_index.json"
 
     entries = index_catalog_script_functions(scripts)
 

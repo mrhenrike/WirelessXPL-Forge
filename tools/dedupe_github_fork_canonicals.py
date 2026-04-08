@@ -26,7 +26,7 @@ from typing import Any
 LOGGER = logging.getLogger(__name__)
 
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CATALOG = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
+DEFAULT_CATALOG = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
 
 
 def _gh_repo(owner: str, repo: str) -> dict[str, Any] | None:

@@ -66,7 +66,7 @@ def main() -> int:
         "--out",
         type=Path,
         default=None,
-        help="Output file (default: RouterXPL-Forge/.log/sawyer_cve_pocs.ndjson unless --stdout)",
+        help="Output file (default: WirelessXPL-Forge/.log/sawyer_cve_pocs.ndjson unless --stdout)",
     )
     parser.add_argument("--stdout", action="store_true", help="Print to stdout instead of --out.")
     parser.add_argument("--timeout", type=float, default=60.0)
