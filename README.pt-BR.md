@@ -33,25 +33,27 @@ O **WirelessXPL-Forge (WXF)** é um shell interativo e framework de módulos par
 
 ---
 
-## Pré-requisitos do sistema (não inclusos)
+## Pré-requisitos do sistema (fora do wheel PyPI)
+
+O `pip install wirelessxpl` traz **apenas** o pacote Python e dependências declaradas. A tabela abaixo são **ferramentas no host** (apt, brew, instaladores) — **não** vão dentro do `.whl`. Os **módulos bridge** continuam **integrados** ao WXF (`use` → `run`); são **orquestração via subprocess**, não “ferramenta solta”. Não incorporamos projetos inteiros (ex.: wifiphisher GPL) neste repositório — ver **[docs/INTEGRATION_MODEL.md](docs/INTEGRATION_MODEL.md)**.
 
 | Ferramenta | Função |
 |------------|--------|
-| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — usado por módulos PCAP e wifi_lab |
-| **hcxtools / hcxdumptool** | Captura PMKID e conversão de hash para hashcat |
+| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — PCAP / wifi_lab |
+| **hcxtools / hcxdumptool** | PMKID e conversão de hash para hashcat |
 | **hashcat** | Cracking offline WPA2/WPA3 (modos 22000/22001) |
-| **tshark** *(opcional)* | Dissecção BLE / 802.11 quando camadas Scapy são insuficientes |
-| **mdk4 / mdk3** *(opcional)* | Tempestades de deauth, beacon floods, mesh flooding |
-| **hostapd + dnsmasq** *(opcional)* | Rogue AP / evil-twin + DHCP/DNS para portais cativos |
-| **wifiphisher** *(opcional)* | Campanhas de phishing via módulo bridge |
-| **eaphammer** *(opcional)* | Captura de credenciais EAP/PEAP |
-| **airgeddon** *(opcional)* | Menu de múltiplos ataques (bridge disponível) |
-| **btlejack** *(opcional)* | BLE sniff/jam/hijack |
-| **opendrop / owl** *(opcional)* | Workflows de laboratório AWDL/AirDrop |
-| **Bruce ESP32 firmware** *(opcional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — wardriving portátil; exporte PCAP para `generic/pcap/*` |
-| **pyserial** *(opcional)* | Bridge serial para firmware Bruce (`pip install wirelessxpl[serial]`) |
+| **tshark** *(opcional)* | Dissecção BLE / 802.11 |
+| **mdk4 / mdk3** *(opcional)* | Deauth, beacon floods, mesh flooding |
+| **hostapd + dnsmasq** *(opcional)* | Rogue AP / evil-twin + DHCP/DNS |
+| **wifiphisher** *(opcional)* | Phishing via **bridge** |
+| **eaphammer** *(opcional)* | EAP/PEAP via **bridge** |
+| **airgeddon** *(opcional)* | Ataques via **bridge** |
+| **btlejack** *(opcional)* | BLE via **bridge** |
+| **opendrop / owl** *(opcional)* | AWDL/AirDrop via **bridge** |
+| **Firmware Bruce ESP32** *(opcional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — imagem de dispositivo |
+| **pyserial** *(opcional)* | Serial Bruce (`pip install wirelessxpl[serial]`) |
 
-Execute `use generic/external/wireless_tool_prereq_audit` após a instalação para verificar seu PATH.
+Execute `use generic/external/wireless_tool_prereq_audit` após instalar para validar o PATH.
 
 ---
 
