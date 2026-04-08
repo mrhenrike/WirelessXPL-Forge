@@ -18,22 +18,21 @@
 
 ## Program footprint
 
-Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches such as ``__pycache__`` and ``.git``.
+Approximate on-disk size (file bytes only; binary prefixes). When using git metadata, ``docs/`` is excluded (wiki + generated catalogs). Walk skips caches such as ``__pycache__`` and ``.git``.
 
 | Metric | Value |
 |---|---|
 | Repository root | `WirelessXPL-Forge` |
-| Total file bytes | 35.85 MiB |
-| Files (repo walk) | 494 |
+| Total file bytes | 31.59 MiB |
+| Files (repo walk) | 335 |
 | Files under ``wirelessxpl/`` | 272 |
 
 ### Largest top-level paths (repository)
 
 | Path | Size | Share of total |
 |---|---:|---:|
-| `wirelessxpl` | 31.28 MiB | 87.2% |
-| `docs` | 4.27 MiB | 11.9% |
-| `tools` | 257.26 KiB | 0.7% |
+| `wirelessxpl` | 31.28 MiB | 99.0% |
+| `tools` | 257.97 KiB | 0.8% |
 | `(repo root files)` | 47.54 KiB | 0.1% |
 | `.github` | 9.62 KiB | 0.0% |
 | `.travis` | 721 B | 0.0% |
@@ -42,9 +41,9 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 | Area | Size | Share of total |
 |---|---:|---:|
-| `resources` | 30.33 MiB | 84.6% |
-| `modules` | 669.85 KiB | 1.8% |
-| `core` | 263.05 KiB | 0.7% |
+| `resources` | 30.33 MiB | 96.0% |
+| `modules` | 669.85 KiB | 2.1% |
+| `core` | 263.05 KiB | 0.8% |
 | `(wirelessxpl root files)` | 28.32 KiB | 0.1% |
 | `libs` | 13.29 KiB | 0.0% |
 
@@ -52,8 +51,8 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 | Subfolder | Size | Share of total |
 |---|---:|---:|
-| `catalogs` | 25.67 MiB | 71.6% |
-| `vendors` | 4.44 MiB | 12.4% |
+| `catalogs` | 25.67 MiB | 81.3% |
+| `vendors` | 4.44 MiB | 14.1% |
 | `phishing_pages` | 144.60 KiB | 0.4% |
 | `wordlists` | 41.16 KiB | 0.1% |
 | `arsenal` | 29.34 KiB | 0.1% |
