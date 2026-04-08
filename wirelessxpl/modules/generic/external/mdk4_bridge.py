@@ -3,6 +3,14 @@
 """Bridge subprocess para mdk4 (GPL-3.0): flood de beacons, DoS de autenticação, brute de
 probe/SSID, deauth, shutdown Michael (TKIP), flood EAPOL start/logoff, confusão WIDS e fuzzer
 802.11. Requer ``mdk4`` no PATH ou clone local; interface em modo monitor.
+
+Improvements from upstream aircrack-ng/mdk4 issues:
+  - IDS invisibility mode with sequence matching (issue #124)
+  - PMF-aware deauth notes (issue #123)
+  - Deauth speed tuning documentation (issue #105)
+  - Mesh network mode guidance (issue #116)
+
+Version: 1.1.0
 """
 from __future__ import annotations
 
@@ -50,6 +58,7 @@ class Exploit(Exploit):
     speed = OptString("", "Pacotes/segundo (-s)")
     whitelist_file = OptString("", "Arquivo whitelist (-w), típico no modo d")
     blacklist_file = OptString("", "Arquivo blacklist (-b), típico no modo d")
+    ids_stealth = OptBool(False, "IDS invisibility: match sequence numbers with -x (mode d)")
     dry_run = OptBool(False, "Somente exibir o comando")
 
     def _find_mdk4(self) -> Optional[str]:
@@ -120,6 +129,8 @@ class Exploit(Exploit):
                 if not os.path.isfile(bf):
                     raise ValueError("blacklist_file inexistente: {}".format(bf))
                 cmd.extend(["-b", bf])
+            if self.ids_stealth:
+                cmd.append("-x")
         else:
             wf = str(self.whitelist_file).strip()
             bf = str(self.blacklist_file).strip()

