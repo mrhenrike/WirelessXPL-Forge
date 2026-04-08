@@ -107,7 +107,6 @@ _ASCII_TO_HID: Dict[str, Tuple] = {}
 
 def _init_ascii_map() -> None:
     """Build ASCII character to HID keycode mapping."""
-    global _ASCII_TO_HID
     lowercase = "abcdefghijklmnopqrstuvwxyz"
     for i, ch in enumerate(lowercase):
         _ASCII_TO_HID[ch] = (Key(0x04 + i),)
