@@ -8,7 +8,7 @@ Install deps and run from repo root, or `pip install -e .`.
 
 ## `stdin is not a TTY`
 
-Use non-interactive mode: `python rxf.py -m ... -s "..."`.
+Use non-interactive mode: `wxf -m ... -s "..."` (or `python wxf.py` / `python -m wirelessxpl`).
 
 ## Paramiko / SSL issues
 

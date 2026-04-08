@@ -11,7 +11,11 @@
 
 ## Architecture diagrams / Diagramas de arquitetura
 
-**en-US** labels on PNGs. **Fontes:** [diagrams/architecture/README.md](../diagrams/architecture/README.md).
+**en-US** labels on PNGs. **Sources / Fontes:** [diagrams/architecture/README.md](../diagrams/architecture/README.md). **PyPI:** `pip install wirelessxpl`.
+
+| WirelessXPL — full attack surface |
+|:---:|
+| ![WXF full map](../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
 | SOHO router | L2–L3 switch |
 |:---:|:---:|
@@ -21,9 +25,9 @@
 |:---:|:---:|
 | ![NGFW UTM](../img/architecture/rxf_arch_ngfw_utm.png) | ![ISP CPE](../img/architecture/rxf_arch_isp_cpe.png) |
 
-| Mixed edge |
-|:---:|
-| ![Mixed edge](../img/architecture/rxf_arch_edge_mixed.png) |
+| Mixed edge | Network TAP |
+|:---:|:---:|
+| ![Mixed edge](../img/architecture/rxf_arch_edge_mixed.png) | ![Network TAP](../img/architecture/rxf_arch_network_tap.png) |
 
 ## Shared asset / Recurso partilhado
 

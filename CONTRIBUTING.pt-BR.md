@@ -37,7 +37,7 @@ Obrigado por considerar contribuir. A documentação é **bilíngue**: **en-US**
 ## Relatório de bugs
 
 - Caminho do módulo
-- Comandos exatos (interativo ou `rxf.py -m ...`)
+- Comandos exatos (interativo ou `wxf -m ...`)
 - SO, Python, *venv*
 - Esperado vs observado
 - Log **sanitizado**
