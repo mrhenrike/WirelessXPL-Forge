@@ -14,6 +14,7 @@ import ast
 import logging
 import os
 import re
+import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -103,6 +104,99 @@ def _disk_snapshot(repo_root: Path) -> Dict[str, Any]:
             if len(rel_rx.parts) >= 2 and rel_rx.parts[0] == "resources":
                 child = rel_rx.parts[1]
                 totals_res_child[child] += sz
+
+    return {
+        "grand_total_bytes": grand_total,
+        "repo_files_count": files_repo,
+        "wirelessxpl_files_count": files_rx,
+        "repo_by_top": dict(totals_repo),
+        "wirelessxpl_by_top": dict(totals_rx),
+        "resources_children": dict(totals_res_child),
+    }
+
+
+def _disk_snapshot_git(repo_root: Path) -> Dict[str, Any] | None:
+    """Aggregate sizes from ``git ls-tree`` at HEAD (stable across OS/checkouts).
+
+    Uses blob sizes recorded in git, so line-ending differences in the working
+    tree do not change CI vs developer regeneration output.
+    """
+
+    try:
+        proc = subprocess.run(
+            ["git", "ls-tree", "-r", "-l", "-z", "HEAD"],
+            cwd=str(repo_root.resolve()),
+            capture_output=True,
+            timeout=120,
+            check=False,
+        )
+    except OSError:
+        return None
+    if proc.returncode != 0 or not (proc.stdout or b"").strip():
+        return None
+
+    totals_repo: MutableMapping[str, int] = defaultdict(int)
+    totals_rx: MutableMapping[str, int] = defaultdict(int)
+    totals_res_child: MutableMapping[str, int] = defaultdict(int)
+    grand_total = 0
+    files_repo = 0
+    files_rx = 0
+
+    pos = 0
+    blob = proc.stdout or b""
+    while pos < len(blob):
+        try:
+            nul = blob.index(b"\0", pos)
+        except ValueError:
+            record = blob[pos:]
+            pos = len(blob)
+        else:
+            record = blob[pos:nul]
+            pos = nul + 1
+        if not record:
+            continue
+        tab = record.rfind(b"\t")
+        if tab < 0:
+            continue
+        path_bytes = record[tab + 1 :]
+        meta = record[:tab].split()
+        if len(meta) < 4:
+            continue
+        if meta[1] in (b"commit", b"tree"):
+            continue
+        try:
+            size = int(meta[3])
+        except ValueError:
+            continue
+
+        relpath = path_bytes.decode("utf-8", errors="replace")
+        if relpath.split("/")[0] in _SKIP_WALK_DIRS:
+            continue
+
+        grand_total += size
+        files_repo += 1
+
+        if "/" not in relpath:
+            totals_repo["(repo root files)"] += size
+        else:
+            totals_repo[relpath.split("/", 1)[0]] += size
+
+        if relpath.startswith("wirelessxpl/"):
+            rest = relpath[len("wirelessxpl/") :]
+        elif relpath == "wirelessxpl":
+            continue
+        else:
+            continue
+
+        files_rx += 1
+        if "/" not in rest:
+            totals_rx["(wirelessxpl root files)"] += size
+        else:
+            top = rest.split("/", 1)[0]
+            totals_rx[top] += size
+            parts = rest.split("/")
+            if len(parts) >= 2 and parts[0] == "resources":
+                totals_res_child[parts[1]] += size
 
     return {
         "grand_total_bytes": grand_total,
@@ -285,7 +379,7 @@ def _build_md(
         "",
         "| Metric | Value |",
         "|---|---|",
-        "| Repository root | `{}` |".format(repo_root.resolve().as_posix()),
+        "| Repository root | `{}` |".format(repo_label(repo_root)),
         "| Total file bytes | {} |".format(_human_bytes(gt)),
         "| Files (repo walk) | {} |".format(disk.get("repo_files_count", 0)),
         "| Files under ``wirelessxpl/`` | {} |".format(disk.get("wirelessxpl_files_count", 0)),
@@ -568,7 +662,7 @@ def main() -> int:
 
     records = _collect_modules(modules_root)
     LOGGER.info("Computing disk metrics and first-party counts...")
-    disk = _disk_snapshot(repo_root)
+    disk = _disk_snapshot_git(repo_root) or _disk_snapshot(repo_root)
     py_counts = _first_party_py_counts(repo_root)
     cat_stats = _module_category_stats(records)
 
