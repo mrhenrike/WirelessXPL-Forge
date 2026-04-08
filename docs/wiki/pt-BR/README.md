@@ -6,9 +6,13 @@
 
 Documentação de uso do framework. Pode ser lida no GitHub ou copiada para o repositório **GitHub Wiki** (clone Git separado).
 
-## Diagramas de arquitetura (por classe de dispositivo)
+## Diagramas de arquitetura (mapa WXF + classes de dispositivo)
 
-Galeria PNG (estilo MikrotikAPI-BF). Fontes Mermaid: [../../diagrams/architecture/README.md](../../diagrams/architecture/README.md).
+Galeria PNG (estilo MikrotikAPI-BF). Fontes Mermaid: [../../diagrams/architecture/README.md](../../diagrams/architecture/README.md). **Instalação:** `pip install wirelessxpl`.
+
+| WirelessXPL — mapa completo |
+|:---:|
+| ![WXF](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
 | Router SOHO | Switch gerido |
 |:---:|:---:|
@@ -18,9 +22,9 @@ Galeria PNG (estilo MikrotikAPI-BF). Fontes Mermaid: [../../diagrams/architectur
 |:---:|:---:|
 | ![NGFW](../../img/architecture/rxf_arch_ngfw_utm.png) | ![CPE](../../img/architecture/rxf_arch_isp_cpe.png) |
 
-| Edge misto |
-|:---:|
-| ![Edge misto](../../img/architecture/rxf_arch_edge_mixed.png) |
+| Edge misto | TAP |
+|:---:|:---:|
+| ![Edge misto](../../img/architecture/rxf_arch_edge_mixed.png) | ![TAP](../../img/architecture/rxf_arch_network_tap.png) |
 
 ## Índice
 
@@ -29,7 +33,7 @@ Galeria PNG (estilo MikrotikAPI-BF). Fontes Mermaid: [../../diagrams/architectur
 | [01-introducao-e-instalacao.md](01-introducao-e-instalacao.md) | Objetivos, escopo legal, Python, `pip`, `env_doctor`, logs, figura de arquitetura |
 | [02-shell-interativo-comandos.md](02-shell-interativo-comandos.md) | `use`, `set`, `setg`, `show`, `run`, `check`, `back`, `exit`, `help` |
 | [03-busca-e-listagem.md](03-busca-e-listagem.md) | `search`, filtros, `show all/scanners/...` |
-| [04-modo-nao-interativo.md](04-modo-nao-interativo.md) | `rxf.py -m` / `-s`, automação |
+| [04-modo-nao-interativo.md](04-modo-nao-interativo.md) | `wxf.py -m` / `-s`, automação |
 | [05-modulos-creds.md](05-modulos-creds.md) | Credenciais e brute force |
 | [06-modulos-exploits.md](06-modulos-exploits.md) | Exploits, `check()`, opções comuns |
 | [07-scanners-e-autopwn.md](07-scanners-e-autopwn.md) | `router_scan`, `autopwn`, FortiGate SSL-VPN |

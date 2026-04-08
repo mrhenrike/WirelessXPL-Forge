@@ -5,7 +5,8 @@
 ## Syntax
 
 ```bash
-python rxf.py -m <module/path> [-s "option value"] ...
+wxf -m <module/path> [-s "option value"] ...
+# or: python wxf.py …   or: python -m wirelessxpl …
 ```
 
 - `-m` / `--module`: module path (internal normalization accepts slashes).
@@ -14,7 +15,7 @@ python rxf.py -m <module/path> [-s "option value"] ...
 ## Example
 
 ```bash
-python rxf.py -m creds/generic/ssh_default -s "target 192.168.0.50" -s "port 22" -s "threads 4"
+wxf -m creds/generic/ssh_default -s "target 192.168.0.50" -s "port 22" -s "threads 4"
 ```
 
 Flow: `use` → each `set` → one `run`/`exploit`.
@@ -22,7 +23,7 @@ Flow: `use` → each `set` → one `run`/`exploit`.
 ## Help
 
 ```bash
-python rxf.py -h
+wxf -h
 ```
 
 ## Pipelines

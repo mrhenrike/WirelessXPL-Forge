@@ -11,15 +11,15 @@
 ```bash
 cd WirelessXPL-Forge
 python -m pip install -e .
-# ou
-python rxf.py    # entrypoint espera estar na raiz do clone com deps instaladas
+# ou instale do PyPI:
+pip install wirelessxpl
 ```
 
 ## `stdin is not a TTY`
 
 **Causa:** redirecionamento de *stdin* ou execução em CI sem terminal.
 
-**Correção:** use modo não interativo: `python rxf.py -m ... -s "..."`.
+**Correção:** use modo não interativo: `wxf -m ... -s "..."` (ou `python wxf.py` / `python -m wirelessxpl`).
 
 ## Falhas `paramiko` / `cryptography` / versão OpenSSL
 

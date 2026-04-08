@@ -7,7 +7,8 @@ Quando `stdin` não é um TTY, o interpretador interativo **não** inicia. Para 
 ## Sintaxe
 
 ```bash
-python rxf.py -m <caminho/modulo> [-s "opção valor"] [-s "opção2 valor2"] ...
+wxf -m <caminho/modulo> [-s "opção valor"] [-s "opção2 valor2"] ...
+# ou: python wxf.py …   ou: python -m wirelessxpl …
 ```
 
 - `-m` / `--module`: caminho com **pontos** ou **barras** coerentes com o pacote (o código *pythoniza* o path).
@@ -16,7 +17,7 @@ python rxf.py -m <caminho/modulo> [-s "opção valor"] [-s "opção2 valor2"] ..
 ## Exemplo
 
 ```bash
-python rxf.py -m creds/generic/ssh_default -s "target 192.168.0.50" -s "port 22" -s "threads 4"
+wxf -m creds/generic/ssh_default -s "target 192.168.0.50" -s "port 22" -s "threads 4"
 ```
 
 Fluxo interno: `use` → cada `set` → `exploit`/`run` uma vez.
@@ -24,7 +25,7 @@ Fluxo interno: `use` → cada `set` → `exploit`/`run` uma vez.
 ## Ajuda
 
 ```bash
-python rxf.py -h
+wxf -h
 ```
 
 ## Integração em *pipelines*

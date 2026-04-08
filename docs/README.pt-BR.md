@@ -17,7 +17,11 @@
 
 ## Arquitetura / superfície de ataque (PNGs)
 
-Estilo hub-and-spoke (como no MikrotikAPI-BF). **Mermaid:** [diagrams/architecture/](diagrams/architecture/).
+Estilo hub-and-spoke (como no MikrotikAPI-BF). **Mermaid:** [diagrams/architecture/](diagrams/architecture/). **Instalação:** `pip install wirelessxpl` (ver [README.md](../README.md) na raiz).
+
+| WirelessXPL — mapa completo |
+|:---:|
+| ![WXF](img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
 | Router SOHO | Switch |
 |:---:|:---:|
@@ -27,9 +31,9 @@ Estilo hub-and-spoke (como no MikrotikAPI-BF). **Mermaid:** [diagrams/architectu
 |:---:|:---:|
 | ![NGFW](img/architecture/rxf_arch_ngfw_utm.png) | ![CPE](img/architecture/rxf_arch_isp_cpe.png) |
 
-| Edge misto |
-|:---:|
-| ![Edge misto](img/architecture/rxf_arch_edge_mixed.png) |
+| Edge misto | TAP |
+|:---:|:---:|
+| ![Edge misto](img/architecture/rxf_arch_edge_mixed.png) | ![TAP](img/architecture/rxf_arch_network_tap.png) |
 
 ## Wiki
 
