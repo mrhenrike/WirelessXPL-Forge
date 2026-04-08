@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applying settings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f2f2f2; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .card { background: #fff; border-radius: 4px; padding: 36px 28px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border-top: 4px solid #e60000; }
+        .spinner { width: 44px; height: 44px; border: 3px solid #eee; border-top-color: #e60000; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 18px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        h1 { font-size: 16px; color: #e60000; margin-bottom: 8px; }
+        p { font-size: 13px; color: #666; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="spinner"></div>
+        <h1>Applying settings…</h1>
+        <p>Updating Wi-Fi configuration. Do not switch off your router.</p>
+    </div>
+</body>
+</html>

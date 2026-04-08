@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: linear-gradient(160deg, #0a1628 0%, #132a4a 50%, #0d2138 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; }
+        .card { background: #fff; border-radius: 10px; padding: 40px 28px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,0.35); color: #1a1a1a; }
+        .check { width: 64px; height: 64px; margin: 0 auto 20px; background: #e8f4ff; border: 3px solid #6eb5ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #0a1628; line-height: 1; }
+        h1 { font-size: 20px; font-weight: 700; color: #0a1628; margin-bottom: 10px; }
+        p { font-size: 14px; color: #555; line-height: 1.55; }
+        .tag { display: inline-block; margin-top: 18px; padding: 6px 14px; background: #6eb5ff; color: #0a1628; font-size: 12px; font-weight: 700; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="check">✓</div>
+        <h1>You’re connected</h1>
+        <p>Your device is now authorized on this network. You can close this window and continue browsing.</p>
+        <span class="tag">Session active</span>
+    </div>
+</body>
+</html>

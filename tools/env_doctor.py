@@ -46,6 +46,14 @@ OPTIONAL_BINARIES: Tuple[Tuple[str, str], ...] = (
     ("hciconfig", "BLE adapter configuration (BlueZ)"),
     ("evilginx", "Real-time MFA phishing proxy"),
     ("msfconsole", "Metasploit framework integration"),
+    ("responder", "LLMNR/NBT-NS/mDNS poisoning (credential capture)"),
+    ("cowpatty", "WPA handshake verification (alternative)"),
+    ("pyrit", "WPA handshake verification + GPU cracking"),
+    ("wifipumpkin3", "Rogue AP framework (Apache-2.0 subprocess)"),
+    ("fluxion", "Captive portal + handshake snooper (GPL-3.0 subprocess)"),
+    ("mitmdump", "mitmproxy transparent proxy (traffic interception)"),
+    ("tshark", "Wireshark CLI (packet analysis / credential extraction)"),
+    ("tcpdump", "Network packet capture"),
 )
 
 

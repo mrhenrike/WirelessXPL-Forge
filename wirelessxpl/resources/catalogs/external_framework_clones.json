@@ -26,6 +26,38 @@
       "license": "MIT (upstream)",
       "rxf_module": "generic/external/mikrotikapi_bf_bridge.py",
       "notes": "Author's project; bridge delegates to CLI or script path."
+    },
+    {
+      "id": "wifiphisher-wifiphisher",
+      "clone_url": "https://github.com/wifiphisher/wifiphisher.git",
+      "homepage": "https://wifiphisher.org",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/wifiphisher_bridge.py",
+      "notes": "Evil twin + captive portal phishing. GPL subprocess only — never import directly."
+    },
+    {
+      "id": "fluxionnetwork-fluxion",
+      "clone_url": "https://github.com/FluxionNetwork/fluxion.git",
+      "homepage": "https://fluxionnetwork.github.io/fluxion/",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/fluxion_bridge.py",
+      "notes": "54+ vendor-branded portals, handshake snooper + verification, auto-mode, headless tmux. Shell script — subprocess bridge."
+    },
+    {
+      "id": "thehackingsage-fluxion",
+      "clone_url": "https://github.com/thehackingsage/fluxion.git",
+      "homepage": "https://thehackingsage.github.io/Fluxion/",
+      "license": "MIT",
+      "rxf_module": null,
+      "notes": "Fork with additional brand templates (21 sites). MIT-licensed — templates can be studied freely."
+    },
+    {
+      "id": "p0cl4bs-wifipumpkin3",
+      "clone_url": "https://github.com/P0cL4bs/wifipumpkin3.git",
+      "homepage": "https://wifipumpkin3.com",
+      "license": "Apache-2.0",
+      "rxf_module": "generic/external/wifipumpkin3_bridge.py",
+      "notes": "Rogue AP framework: captiveflask, Phishkin3 (MFA), EvilQR3, KARMA, Responder, Sniffkin3, PumpkinProxy, REST API."
     }
   ]
 }

