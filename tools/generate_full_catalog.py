@@ -116,16 +116,17 @@ def _disk_snapshot(repo_root: Path) -> Dict[str, Any]:
 
 
 def _disk_snapshot_git(repo_root: Path) -> Dict[str, Any] | None:
-    """Aggregate sizes from ``git ls-tree`` for the current index (``write-tree``).
+    """Aggregate sizes from ``git ls-tree`` at ``HEAD^{tree}``.
 
-    Uses blob sizes from the object database. The index tree matches ``HEAD`` on
-    clean checkouts (CI) and matches the next commit after ``git add`` locally,
-    so regeneration is stable relative to committed artifacts.
+    Uses blob sizes from the object database. ``HEAD^{tree}`` is identical on
+    every clone for a given commit (unlike ``git write-tree``, which follows the
+    index and can differ with CRLF / partial staging), so CI and developers get
+    the same footprint for the same revision.
     """
 
     try:
         wt = subprocess.run(
-            ["git", "write-tree"],
+            ["git", "rev-parse", "HEAD^{tree}"],
             cwd=str(repo_root.resolve()),
             capture_output=True,
             text=True,
