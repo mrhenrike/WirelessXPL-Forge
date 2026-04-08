@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Wi-Fi — Welcome</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', serif; background: #1a1a2e;
+               min-height: 100vh; display: flex; align-items: center;
+               justify-content: center; }
+        .portal { background: #fff; border-radius: 4px; width: 460px;
+                  overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        .banner { background: linear-gradient(135deg, #2c3e50, #3498db);
+                  padding: 30px; color: #fff; text-align: center; }
+        .banner h1 { font-size: 24px; font-weight: 400; letter-spacing: 2px; }
+        .banner p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+        .content { padding: 30px; }
+        .welcome { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px;
+                   text-align: center; }
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 12px; color: #333;
+                       text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .field input, .field select { width: 100%; padding: 12px; border: 1px solid #ddd;
+                                       border-radius: 4px; font-size: 14px; font-family: inherit; }
+        .terms-check { display: flex; align-items: flex-start; gap: 8px;
+                       margin: 20px 0; font-size: 12px; color: #666; }
+        .terms-check input { margin-top: 2px; }
+        .btn { width: 100%; padding: 14px; background: #2c3e50; color: #fff;
+               border: none; border-radius: 4px; font-size: 15px;
+               font-family: inherit; cursor: pointer; letter-spacing: 1px; }
+        .btn:hover { background: #34495e; }
+        .footer { padding: 16px; background: #f8f9fa; text-align: center;
+                  font-size: 10px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="portal">
+        <div class="banner">
+            <h1>GUEST WI-FI</h1>
+            <p>Complimentary Internet Access</p>
+        </div>
+        <div class="content">
+            <p class="welcome">Welcome! Please register to enjoy complimentary high-speed internet during your stay.</p>
+            <form method="POST" action="/login">
+                <div class="field">
+                    <label>Full Name</label>
+                    <input type="text" name="wfphshr-fullname" placeholder="John Smith" required>
+                </div>
+                <div class="field">
+                    <label>Email Address</label>
+                    <input type="email" name="wfphshr-email" placeholder="john@example.com" required>
+                </div>
+                <div class="field">
+                    <label>Room Number</label>
+                    <input type="text" name="wfphshr-room" placeholder="101">
+                </div>
+                <div class="field">
+                    <label>Duration</label>
+                    <select name="wfphshr-duration">
+                        <option>1 Hour</option>
+                        <option selected>24 Hours</option>
+                        <option>Full Stay</option>
+                    </select>
+                </div>
+                <div class="terms-check">
+                    <input type="checkbox" required>
+                    <span>I agree to the Acceptable Use Policy and consent to monitoring of network traffic for security purposes.</span>
+                </div>
+                <button type="submit" class="btn">CONNECT</button>
+            </form>
+        </div>
+        <div class="footer">Powered by Guest Network Services &mdash; All sessions are monitored</div>
+    </div>
+</body>
+</html>
