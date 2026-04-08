@@ -1,30 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPN — Authenticating...</title>
+    <title>{{success_page_title}}</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #e8ecf1;
-               display: flex; align-items: center; justify-content: center;
-               min-height: 100vh; }
-        .card { background: #fff; border-radius: 8px; padding: 40px;
-                text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-                width: 380px; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #ddd;
-                   border-top: 3px solid #1a237e; border-radius: 50%;
-                   animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0c1018;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: #141b26;
+            border-radius: 10px;
+            padding: 40px 28px;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid #1e2a3d;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #2a3a52;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 18px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        h1 { color: #1a237e; font-size: 18px; }
-        p { color: #666; font-size: 13px; margin-top: 6px; }
+        h1 { color: #e8eef7; font-size: 1.05rem; font-weight: 600; }
+        p { color: #94a3b8; font-size: 0.82rem; margin-top: 8px; line-height: 1.45; }
+        .hint { font-size: 0.68rem; color: #64748b; margin-top: 14px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="spinner"></div>
-        <h1>Verifying Credentials...</h1>
-        <p>Waiting for MFA confirmation.</p>
-        <p style="font-size:11px;color:#999;margin-top:12px;">Please approve the push notification on your device.</p>
+        <div class="spinner" aria-hidden="true"></div>
+        <h1>{{success_heading}}</h1>
+        <p>{{success_body}}</p>
+        <p class="hint">{{success_push_note}}</p>
     </div>
 </body>
 </html>

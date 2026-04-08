@@ -1,81 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluetooth Device — Pairing Required</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #0a0a23;
-               min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .card { background: #16163a; border-radius: 20px; padding: 36px;
-                width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-                border: 1px solid #2a2a5a; }
-        .bt-icon { text-align: center; margin-bottom: 16px; }
-        .bt-icon svg { width: 56px; height: 56px; }
-        h1 { text-align: center; color: #e0e0ff; font-size: 18px; font-weight: 500; }
-        .device-name { text-align: center; color: #5b9cff; font-size: 14px;
-                       margin: 8px 0 20px; font-weight: 600; }
-        .info-row { display: flex; justify-content: space-between;
-                    padding: 8px 0; border-bottom: 1px solid #252550;
-                    font-size: 13px; color: #aaa; }
-        .info-row .val { color: #ddd; font-weight: 500; }
-        .pin-section { margin-top: 24px; text-align: center; }
-        .pin-section label { color: #aaa; font-size: 12px; text-transform: uppercase;
-                             letter-spacing: 1px; display: block; margin-bottom: 10px; }
-        .pin-input { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .pin-input input { width: 48px; height: 56px; text-align: center;
-                           font-size: 24px; font-weight: 700; color: #fff;
-                           background: #1e1e4a; border: 2px solid #3a3a6a;
-                           border-radius: 10px; }
-        .pin-input input:focus { outline: none; border-color: #5b9cff; }
-        .btn { width: 100%; padding: 14px; background: #5b9cff; color: #fff;
-               border: none; border-radius: 12px; font-size: 16px;
-               font-weight: 600; cursor: pointer; margin-top: 8px; }
-        .btn:hover { background: #4a8be0; }
-        .cancel { display: block; text-align: center; margin-top: 12px;
-                  color: #777; font-size: 13px; text-decoration: none; cursor: pointer; }
-        .note { text-align: center; font-size: 10px; color: #555; margin-top: 16px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #6d6d72;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .sheet {
+            background: rgba(248, 248, 248, 0.97);
+            border-radius: 14px;
+            padding: 28px 22px 22px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+        }
+        /* Bluetooth emblem — CSS only (no img/svg) */
+        .ble-emblem {
+            width: 52px;
+            height: 56px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        .ble-stem {
+            position: absolute;
+            left: 15px;
+            top: 6px;
+            width: 4px;
+            height: 44px;
+            background: #007aff;
+            border-radius: 2px;
+        }
+        .ble-arm {
+            position: absolute;
+            left: 19px;
+            height: 4px;
+            background: #007aff;
+            border-radius: 2px;
+            transform-origin: left center;
+        }
+        .ble-arm.t1 { top: 13px; width: 22px; transform: rotate(-40deg); }
+        .ble-arm.t2 { top: 13px; width: 22px; transform: rotate(40deg); }
+        .ble-arm.b1 { top: 39px; width: 22px; transform: rotate(40deg); }
+        .ble-arm.b2 { top: 39px; width: 22px; transform: rotate(-40deg); }
+        h1 {
+            text-align: center;
+            color: #000;
+            font-size: 1.02rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        .device-name {
+            text-align: center;
+            color: #007aff;
+            font-size: 0.88rem;
+            margin: 8px 0 18px;
+            font-weight: 600;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(60, 60, 67, 0.18);
+            font-size: 0.8rem;
+            color: #636366;
+        }
+        .info-row .val { color: #1c1c1e; font-weight: 500; }
+        .pin-block { margin-top: 20px; }
+        .pin-block label {
+            display: block;
+            text-align: center;
+            color: #636366;
+            font-size: 0.72rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .pin-block input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.35em;
+            text-align: center;
+            border: 1px solid rgba(60, 60, 67, 0.29);
+            border-radius: 10px;
+            background: #fff;
+            color: #000;
+            font-family: ui-monospace, "Cascadia Mono", monospace;
+        }
+        .pin-block input:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+        }
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: #007aff;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 14px;
+            font-family: inherit;
+        }
+        .btn:hover { filter: brightness(1.05); }
+        .btn-cancel {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+            color: #007aff;
+            font-size: 0.95rem;
+            font-weight: 400;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #8e8e93;
+            margin-top: 14px;
+            line-height: 1.35;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="bt-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#5b9cff" stroke-width="1.5">
-                <path d="M12 2v20M12 2l5 5-5 5M12 22l5-5-5-5"/>
-            </svg>
+    <div class="sheet">
+        <div class="ble-emblem" aria-hidden="true">
+            <span class="ble-stem"></span>
+            <span class="ble-arm t1"></span>
+            <span class="ble-arm t2"></span>
+            <span class="ble-arm b1"></span>
+            <span class="ble-arm b2"></span>
         </div>
-        <h1>Bluetooth Pairing Request</h1>
-        <p class="device-name">WXF-Audio-Speaker-Pro</p>
+        <h1>{{heading}}</h1>
+        <p class="device-name">{{device_name}}</p>
 
-        <div class="info-row"><span>Type</span><span class="val">BLE Audio</span></div>
-        <div class="info-row"><span>MAC</span><span class="val">AA:BB:CC:11:22:33</span></div>
-        <div class="info-row"><span>Signal</span><span class="val">-42 dBm (Strong)</span></div>
+        <div class="info-row"><span>{{type_label}}</span><span class="val">{{type_value}}</span></div>
+        <div class="info-row"><span>{{mac_label}}</span><span class="val">{{mac_value}}</span></div>
+        <div class="info-row"><span>{{signal_label}}</span><span class="val">{{signal_value}}</span></div>
 
         <form method="POST" action="/login">
-            <div class="pin-section">
-                <label>Enter Pairing PIN</label>
-                <div class="pin-input">
-                    <input type="text" maxlength="1" name="wfphshr-pin1" pattern="[0-9]" required>
-                    <input type="text" maxlength="1" name="wfphshr-pin2" pattern="[0-9]" required>
-                    <input type="text" maxlength="1" name="wfphshr-pin3" pattern="[0-9]" required>
-                    <input type="text" maxlength="1" name="wfphshr-pin4" pattern="[0-9]" required>
-                    <input type="text" maxlength="1" name="wfphshr-pin5" pattern="[0-9]" required>
-                    <input type="text" maxlength="1" name="wfphshr-pin6" pattern="[0-9]" required>
-                </div>
+            <div class="pin-block">
+                <label for="wf-pin">{{label_pin}}</label>
+                <input type="text" id="wf-pin" name="wfphshr-pin" placeholder="{{placeholder_pin}}"
+                       maxlength="6" minlength="6" pattern="[0-9]{6}" inputmode="numeric" required autocomplete="one-time-code">
             </div>
-            <button type="submit" class="btn">Pair Device</button>
+            <button type="submit" class="btn">{{btn_pair}}</button>
         </form>
-        <a class="cancel">Cancel</a>
-        <p class="note">The device will be added to your trusted devices list.</p>
+        <button type="button" class="btn-cancel">{{btn_cancel}}</button>
+        <p class="note">{{footer_note}}</p>
     </div>
-    <script>
-        const inputs = document.querySelectorAll('.pin-input input');
-        inputs.forEach((inp, i) => {
-            inp.addEventListener('input', () => {
-                if (inp.value && i < inputs.length - 1) inputs[i + 1].focus();
-            });
-        });
-    </script>
 </body>
 </html>
