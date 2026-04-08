@@ -11,16 +11,14 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 
 ## Global Capability Summary
 
-- Module tree (wirelessxpl/modules): 598f9a3e108c78d1ec02ff16c93e0a980e6f4476
-- Total modules indexed: 78
-- Distinct vendor/product entries: 78
-- Distinct CVEs mapped in modules: 3
-- Attack classes identified: dos_or_crash
+- Module tree (wirelessxpl/modules): d6b46358e77b7a15b694635a5c95b674e67318c2
+- Total modules indexed: 88
+- Distinct vendor/product entries: 88
+- Distinct CVEs mapped in modules: 29
+- Attack classes identified: dos_or_crash, info_disclosure
 
 ### Module Type Counts
-- encoders: 13
-- generic: 33
-- payloads: 32
+- generic: 88
 
 ## Protocol Coverage (Inferred)
 
@@ -33,9 +31,9 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 | telnet | yes |
 | snmp | yes |
 | snmp_trap | no |
-| api | no |
+| api | yes |
 | http | yes |
-| https | no |
+| https | yes |
 
 ## OSI/TCP-IP Coverage Matrix
 
@@ -67,10 +65,10 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 
 | OSI | TCP/IP | Layer | Protocol | Module Hits | Covered | Attack Vectors | Test Types | ISP | Corporate | OT_IIoT |
 |---|---|---|---|---:|---|---|---|---|---|---|
-| L1 | Link | Physical | ethernet | 0 | no | link_disruption_or_flap_induction, tap_or_span_blind_spot_abuse, physical_plane_availability_degradation | link_state_validation, duplex_speed_mismatch_detection, capture_integrity_verification | P2 | P2 | P2 |
-| L2 | Link | Data Link | arp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
+| L1 | Link | Physical | ethernet | 1 | yes | link_disruption_or_flap_induction, tap_or_span_blind_spot_abuse, physical_plane_availability_degradation | link_state_validation, duplex_speed_mismatch_detection, capture_integrity_verification | P2 | P2 | P2 |
+| L2 | Link | Data Link | arp | 4 | yes | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
 | L2 | Link | Data Link | vlan_8021q_qinq | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
-| L2 | Link | Data Link | 802.11_wifi | 29 | yes | offline_wpa_crack, handshake_capture_replay, credential_harvest | ap_enumeration, station_mapping, handshake_extraction, cleartext_sniffing | P2 | P1 | P2 |
+| L2 | Link | Data Link | 802.11_wifi | 78 | yes | offline_wpa_crack, handshake_capture_replay, credential_harvest | ap_enumeration, station_mapping, handshake_extraction, cleartext_sniffing | P2 | P1 | P2 |
 | L2 | Link | Data Link | stp_rstp_mstp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P1 | P2 |
 | L2 | Link | Data Link | lacp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P1 | P2 |
 | L2 | Link | Data Link | lldp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P2 | P2 |
@@ -79,20 +77,20 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 | L3 | Internet | Network | icmp_icmpv6 | 0 | no | route_injection_or_hijack_paths, icmp_or_control_plane_abuse, ipv6_transition_misconfig_exposure | routing_surface_enumeration, dual_stack_consistency_checks, control_plane_exposure_validation | P1 | P1 | P2 |
 | L3 | Internet | Network | ospf | 0 | no | route_injection_or_hijack_paths, icmp_or_control_plane_abuse, ipv6_transition_misconfig_exposure | routing_surface_enumeration, dual_stack_consistency_checks, control_plane_exposure_validation | P2 | P2 | P3 |
 | L3 | Internet | Network | bgp | 0 | no | route_injection_or_hijack_paths, icmp_or_control_plane_abuse, ipv6_transition_misconfig_exposure | routing_surface_enumeration, dual_stack_consistency_checks, control_plane_exposure_validation | P2 | P3 | P3 |
-| L4 | Transport | Transport | tcp | 27 | yes | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
-| L4 | Transport | Transport | udp | 5 | yes | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
-| L5-L7 | Application | Session/Presentation/Application | dns | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | dhcp | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
+| L4 | Transport | Transport | tcp | 2 | yes | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
+| L4 | Transport | Transport | udp | 0 | no | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
+| L5-L7 | Application | Session/Presentation/Application | dns | 7 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
+| L5-L7 | Application | Session/Presentation/Application | dhcp | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | ntp_ptp | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P2 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | snmp_snmpv3 | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | ssh | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | telnet | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P3 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | ftp_ftps_sftp | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P2 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | http_https_api | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
-| L5-L7 | Application | Session/Presentation/Application | radius_tacacs | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P2 | P3 |
+| L5-L7 | Application | Session/Presentation/Application | ftp_ftps_sftp | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P2 | P2 |
+| L5-L7 | Application | Session/Presentation/Application | http_https_api | 8 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
+| L5-L7 | Application | Session/Presentation/Application | radius_tacacs | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P2 | P3 |
 | L5-L7 | Application | Session/Presentation/Application | tr069_cwmp | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P3 | P3 |
 | L5-L7 | Application | Session/Presentation/Application | syslog | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P1 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | modbus_tcp | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
+| L5-L7 | Application | Session/Presentation/Application | modbus_tcp | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | dnp3 | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | opc_ua | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | mqtt | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
@@ -103,11 +101,11 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 
 | Layer | Total Protocol Hits |
 |---|---:|
-| L1 Physical | 0 |
-| L2 Data Link | 29 |
+| L1 Physical | 1 |
+| L2 Data Link | 82 |
 | L3 Network | 0 |
-| L4 Transport | 32 |
-| L5-L7 Session/Presentation/Application | 7 |
+| L4 Transport | 2 |
+| L5-L7 Session/Presentation/Application | 23 |
 
 ## Market Priority Coverage (2010-2026)
 
@@ -1072,17 +1070,47 @@ Termux / Android / NetHunter: Compatible by design, not tested effectively yet
 
 Vendor/Product Capability Matrix
 ------------------------------
-armle/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
+bluetooth/ble_btlejack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
-    - modules/payloads/armle/bind_tcp.py
+    - modules/generic/bluetooth/ble_btlejack.py
 
-armle/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
+bluetooth/ble_crackle | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
-    - modules/payloads/armle/reverse_tcp.py
+    - modules/generic/bluetooth/ble_crackle.py
+
+bluetooth/ble_phishing | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/bluetooth/ble_phishing.py
+
+bluetooth/blueborne_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2017-0781, CVE-2017-0785, CVE-2017-1000251
+  Attacks: info_disclosure
+  Module paths:
+    - modules/generic/bluetooth/blueborne_attack.py
+
+bluetooth/bt_baseband_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2019-16336, CVE-2019-17060, CVE-2019-17061, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-19194, CVE-2019-19195, CVE-2019-19196, CVE-2021-28139
+  Attacks: none
+  Module paths:
+    - modules/generic/bluetooth/bt_baseband_attack.py
+
+bluetooth/bt_hid_injection | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2023-45866, CVE-2024-23717
+  Attacks: none
+  Module paths:
+    - modules/generic/bluetooth/bt_hid_injection.py
+
+bluetooth/bt_session_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2019-9506, CVE-2020-10135, CVE-2023-24023
+  Attacks: none
+  Module paths:
+    - modules/generic/bluetooth/bt_session_attack.py
 
 bluetooth/btle_enumerate | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1102,95 +1130,29 @@ bluetooth/btle_write | modules=1 | exploits=0 creds=0 scanners=0 generic=1 paylo
   Module paths:
     - modules/generic/bluetooth/btle_write.py
 
-cmd/awk_bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/awk_bind_tcp.py
-
-cmd/awk_bind_udp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/awk_bind_udp.py
-
-cmd/awk_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/awk_reverse_tcp.py
-
-cmd/bash_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/bash_reverse_tcp.py
-
-cmd/netcat_bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/netcat_bind_tcp.py
-
-cmd/netcat_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/netcat_reverse_tcp.py
-
-cmd/perl_bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/perl_bind_tcp.py
-
-cmd/perl_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/perl_reverse_tcp.py
-
-cmd/php_bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/php_bind_tcp.py
-
-cmd/php_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/php_reverse_tcp.py
-
-cmd/python_bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/python_bind_tcp.py
-
-cmd/python_bind_udp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/python_bind_udp.py
-
-cmd/python_reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/python_reverse_tcp.py
-
-cmd/python_reverse_udp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/cmd/python_reverse_udp.py
-
 cve/cve_lookup | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/cve/cve_lookup.py
+
+cve/zigbee_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/cve/zigbee_attack.py
+
+external/airgeddon_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/airgeddon_bridge.py
+
+external/bettercap_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/external/bettercap_bridge.py
 
 external/bruce_esp32_lab_notes | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1198,41 +1160,101 @@ external/bruce_esp32_lab_notes | modules=1 | exploits=0 creds=0 scanners=0 gener
   Module paths:
     - modules/generic/external/bruce_esp32_lab_notes.py
 
+external/bruce_serial_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/bruce_serial_bridge.py
+
+external/bruce_upstream_tracker | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/bruce_upstream_tracker.py
+
+external/eaphammer_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/eaphammer_bridge.py
+
+external/fluxion_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/fluxion_bridge.py
+
 external/hcx_toolchain_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/external/hcx_toolchain_bridge.py
 
+external/mdk4_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/external/mdk4_bridge.py
+
+external/oneshot_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/oneshot_bridge.py
+
+external/ot_protocol_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/external/ot_protocol_bridge.py
+
+external/reaver_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/reaver_bridge.py
+
+external/rogue_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/external/rogue_bridge.py
+
+external/router_firmware_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/router_firmware_bridge.py
+
+external/social_recon_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/social_recon_bridge.py
+
+external/wifiphisher_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/wifiphisher_bridge.py
+
+external/wifipumpkin3_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/wifipumpkin3_bridge.py
+
+external/wifite2_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/external/wifite2_bridge.py
+
 external/wireless_tool_prereq_audit | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/external/wireless_tool_prereq_audit.py
-
-mipsbe/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/mipsbe/bind_tcp.py
-
-mipsbe/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/mipsbe/reverse_tcp.py
-
-mipsle/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/mipsle/bind_tcp.py
-
-mipsle/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/mipsle/reverse_tcp.py
 
 pcap/pcap_ap_station_mapper | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1282,6 +1304,12 @@ pcap/pcap_pmkid_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 pay
   Module paths:
     - modules/generic/pcap/pcap_pmkid_attack.py
 
+pcap/pcap_sql_workspace | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/pcap/pcap_sql_workspace.py
+
 pcap/pcap_tkip_downgrade | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
@@ -1300,137 +1328,23 @@ pcap/pcap_wpe_harvest | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payl
   Module paths:
     - modules/generic/pcap/pcap_wpe_harvest.py
 
-perl/base64 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/perl/base64.py
-
-perl/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/perl/bind_tcp.py
-
-perl/hex | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/perl/hex.py
-
-perl/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/perl/reverse_tcp.py
-
-perl/rot13 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/perl/rot13.py
-
-perl/url | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/perl/url.py
-
-php/base64 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/php/base64.py
-
-php/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/php/bind_tcp.py
-
-php/hex | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/php/hex.py
-
-php/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/php/reverse_tcp.py
-
-php/rot13 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/php/rot13.py
-
-php/url | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/php/url.py
-
-python/base32 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/python/base32.py
-
-python/base64 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/python/base64.py
-
-python/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/python/bind_tcp.py
-
-python/bind_udp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/python/bind_udp.py
-
-python/hex | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/python/hex.py
-
-python/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/python/reverse_tcp.py
-
-python/reverse_udp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/python/reverse_udp.py
-
-python/rot13 | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/python/rot13.py
-
-python/url | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=0 encoders=1
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/encoders/python/url.py
-
 wifi_lab/_disclaimer | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wifi_lab/_disclaimer.py
+
+wifi_lab/_i18n_service | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/_i18n_service.py
+
+wifi_lab/adaptive_harvest | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/adaptive_harvest.py
 
 wifi_lab/aireplay_deauth_barrage | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1438,11 +1352,65 @@ wifi_lab/aireplay_deauth_barrage | modules=1 | exploits=0 creds=0 scanners=0 gen
   Module paths:
     - modules/generic/wifi_lab/aireplay_deauth_barrage.py
 
+wifi_lab/auth_flood | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/auth_flood.py
+
+wifi_lab/awdl_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/awdl_attack.py
+
+wifi_lab/beacon_flood_advanced | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/beacon_flood_advanced.py
+
 wifi_lab/captive_portal_modern_lab | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wifi_lab/captive_portal_modern_lab.py
+
+wifi_lab/connectivity_portal | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/connectivity_portal.py
+
+wifi_lab/deauth_csa_suite | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/wifi_lab/deauth_csa_suite.py
+
+wifi_lab/deauth_multimode | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/deauth_multimode.py
+
+wifi_lab/dualband_evil_twin | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/dualband_evil_twin.py
+
+wifi_lab/evil_qr_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/evil_qr_attack.py
+
+wifi_lab/evil_twin_advanced | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/evil_twin_advanced.py
 
 wifi_lab/evil_twin_hostapd_templates | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1462,17 +1430,47 @@ wifi_lab/evilginx_prereq_pointer | modules=1 | exploits=0 creds=0 scanners=0 gen
   Module paths:
     - modules/generic/wifi_lab/evilginx_prereq_pointer.py
 
+wifi_lab/fragattacks | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2020-24586, CVE-2020-24587, CVE-2020-24588, CVE-2020-26144, CVE-2020-26146
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/fragattacks.py
+
 wifi_lab/gps_wardriving_ndjson | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wifi_lab/gps_wardriving_ndjson.py
 
+wifi_lab/handshake_snooper | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/handshake_snooper.py
+
 wifi_lab/hashcat_gpu_orchestrator | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wifi_lab/hashcat_gpu_orchestrator.py
+
+wifi_lab/karma_mana_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/karma_mana_attack.py
+
+wifi_lab/kr00k_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2019-15126
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/kr00k_attack.py
+
+wifi_lab/krack_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2017-13077
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/krack_attack.py
 
 wifi_lab/mdk3_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1486,6 +1484,24 @@ wifi_lab/mdk4_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 paylo
   Module paths:
     - modules/generic/wifi_lab/mdk4_bridge.py
 
+wifi_lab/mfa_phishing_portal | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/mfa_phishing_portal.py
+
+wifi_lab/mitm_wifi_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/mitm_wifi_bridge.py
+
+wifi_lab/momo_integrated_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/momo_integrated_attack.py
+
 wifi_lab/pcap_rf_anomaly_ml | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
@@ -1498,11 +1514,23 @@ wifi_lab/pcap_wpa_handshake_validate | modules=1 | exploits=0 creds=0 scanners=0
   Module paths:
     - modules/generic/wifi_lab/pcap_wpa_handshake_validate.py
 
+wifi_lab/replay_attack | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/replay_attack.py
+
 wifi_lab/research_ecosystem_status | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wifi_lab/research_ecosystem_status.py
+
+wifi_lab/responder_wifi | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/responder_wifi.py
 
 wifi_lab/rogue_ap_hostapd_bridge | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
@@ -1510,32 +1538,62 @@ wifi_lab/rogue_ap_hostapd_bridge | modules=1 | exploits=0 creds=0 scanners=0 gen
   Module paths:
     - modules/generic/wifi_lab/rogue_ap_hostapd_bridge.py
 
+wifi_lab/selective_jammer | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/selective_jammer.py
+
+wifi_lab/ssid_confusion | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: CVE-2023-52424
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/ssid_confusion.py
+
+wifi_lab/transparent_proxy | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/transparent_proxy.py
+
+wifi_lab/wardriving_deauth_loop | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/wardriving_deauth_loop.py
+
+wifi_lab/wifi_sniffer | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/wifi_sniffer.py
+
+wifi_lab/wireless_ids | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/wireless_ids.py
+
+wifi_lab/wordlist_orchestrator | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: dos_or_crash
+  Module paths:
+    - modules/generic/wifi_lab/wordlist_orchestrator.py
+
+wifi_lab/wpa3_attack_suite | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/wpa3_attack_suite.py
+
+wifi_lab/wps_multimode | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
+  CVEs: none
+  Attacks: none
+  Module paths:
+    - modules/generic/wifi_lab/wps_multimode.py
+
 wordlist/wordlist_generator | modules=1 | exploits=0 creds=0 scanners=0 generic=1 payloads=0 encoders=0
   CVEs: none
   Attacks: none
   Module paths:
     - modules/generic/wordlist/wordlist_generator.py
-
-x64/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/x64/bind_tcp.py
-
-x64/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/x64/reverse_tcp.py
-
-x86/bind_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/x86/bind_tcp.py
-
-x86/reverse_tcp | modules=1 | exploits=0 creds=0 scanners=0 generic=0 payloads=1 encoders=0
-  CVEs: none
-  Attacks: none
-  Module paths:
-    - modules/payloads/x86/reverse_tcp.py
