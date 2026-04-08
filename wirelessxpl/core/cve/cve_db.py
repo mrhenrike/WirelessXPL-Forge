@@ -118,6 +118,7 @@ _EMBEDDED_CVES: List[Dict[str, Any]] = [
     # --- Dragonblood / WPA3 ---
     {"cve_id": "CVE-2019-9494", "vendor": "generic", "product": "wpa3", "affected_versions": "WPA3-SAE implementations", "description": "SAE side-channel timing attack (Dragonblood)", "cvss_score": 5.9, "access_vector": "ADJACENT"},
     {"cve_id": "CVE-2019-9496", "vendor": "generic", "product": "wpa3", "affected_versions": "WPA3-Transition mode", "description": "SAE transition mode downgrade to WPA2", "cvss_score": 7.5, "access_vector": "ADJACENT"},
+    {"cve_id": "CVE-2017-9417", "vendor": "broadcom", "product": "bcm43xx_wifi", "affected_versions": "BCM43xx fullmac Wi-Fi chipsets (firmware line used by Nexus 5/6 and similar)", "description": "Broadpwn: Broadcom Wi-Fi firmware RCE via malformed over-the-air frame processing", "cvss_score": 8.8, "access_vector": "ADJACENT"},
     # --- WPA2 / Wi-Fi protocol (802.11 layer — lab / adjacent) ---
     {"cve_id": "CVE-2017-13077", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "STA/AP stacks using 4-way handshake", "description": "KRACK — key reinstallation in Wi-Fi 4-way handshake (PTK/GTK)", "cvss_score": 7.5, "access_vector": "ADJACENT"},
     {"cve_id": "CVE-2017-13078", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "Same class as KRACK", "description": "KRACK — GTK reinstallation", "cvss_score": 7.5, "access_vector": "ADJACENT"},

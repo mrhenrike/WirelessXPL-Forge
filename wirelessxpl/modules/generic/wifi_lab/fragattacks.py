@@ -32,6 +32,7 @@ from __future__ import annotations
 import logging
 import os
 import struct
+import subprocess
 import threading
 import time
 from typing import Any, Dict, List, Optional, Tuple
@@ -200,6 +201,51 @@ class Exploit(Exploit):
     inject_delay = OptFloat(0.05, "Delay (seconds) between injected frames")
     output_pcap = OptString("fragattacks_capture.pcap", "Output PCAP file")
     dry_run = OptBool(False, "Show configuration without executing")
+
+    def _detect_he_capabilities(self) -> bool:
+        """Best-effort check for 802.11ax (HE) capability on interface PHY.
+
+        Returns:
+            True when HE capabilities are detected, False otherwise.
+        """
+        iface = str(self.interface).strip()
+        if not iface:
+            return False
+
+        try:
+            dev_info = subprocess.run(
+                ["iw", "dev", iface, "info"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if dev_info.returncode != 0:
+                return False
+
+            phy_name = ""
+            for line in dev_info.stdout.splitlines():
+                line = line.strip()
+                if line.startswith("wiphy "):
+                    phy_idx = line.split()[-1]
+                    phy_name = "phy{}".format(phy_idx)
+                    break
+
+            if not phy_name:
+                return False
+
+            phy_info = subprocess.run(
+                ["iw", "phy", phy_name, "info"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if phy_info.returncode != 0:
+                return False
+
+            output = phy_info.stdout
+            return ("HE Iftypes" in output) or ("HE Capabilities" in output)
+        except Exception:
+            return False
 
     def _apply_pre_test_delay(self) -> None:
         """Apply configured pre-test delay if set."""
@@ -376,6 +422,15 @@ class Exploit(Exploit):
         if os.getuid() != 0:
             print_error("Root privileges required.")
             return
+
+        he_capable = self._detect_he_capabilities()
+        if he_capable:
+            print_info("HE (802.11ax) capability detected on interface PHY.")
+        else:
+            print_info(
+                "HE (802.11ax) capability not detected. Using legacy-compatible "
+                "frame crafting fallback for non-HE dongles."
+            )
 
         attacks = {
             "cache_poison": self._cache_poison_attack,

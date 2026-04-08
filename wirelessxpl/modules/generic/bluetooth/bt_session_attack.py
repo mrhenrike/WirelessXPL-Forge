@@ -24,7 +24,7 @@ compatible Broadcom/Cypress hardware (CYW920819, BCM4345C0, etc.).
 
 Requires: pyshark (optional, for PCAP analysis).
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -225,6 +225,10 @@ class Exploit(Exploit):
     en_rand = OptString("", "EN_RAND value (hex, 32 chars)")
     btadd_peer = OptString("", "Peer Bluetooth address (hex, 12 chars no colons)")
     entropy = OptInteger(1, "Key entropy in bytes for KNOB brute force (1-16)")
+    allow_unsafe_knob = OptBool(
+        False,
+        "Allow unsafe KNOB active paths with entropy < 7 (guard for known assertion-prone targets)",
+    )
     target_address = OptMAC("", "Target BT address for device assessment")
     dry_run = OptBool(False, "Show configuration without executing")
 
@@ -295,6 +299,17 @@ class Exploit(Exploit):
         """Brute-force a KNOB-weakened session key."""
         if not HAS_CRYPTO:
             print_error("bt_crypto module required.")
+            return
+
+        if self.entropy < 1 or self.entropy > 16:
+            print_error("entropy must be in range 1..16 bytes.")
+            return
+
+        if self.entropy < 7 and not self.allow_unsafe_knob:
+            print_error(
+                "Unsafe KNOB setting blocked (entropy < 7). "
+                "Set allow_unsafe_knob=true only in controlled lab sessions."
+            )
             return
 
         if not all([self.link_key, self.au_rand, self.en_rand, self.btadd_peer]):

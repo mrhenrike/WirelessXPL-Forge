@@ -1,10 +1,10 @@
-"""Bruce ESP32 multi-tool firmware — lab integration notes (no flashing).
+"""Bruce/ESP32 Marauder firmware — lab integration notes (no flashing).
 
-Bruce (AGPL-3.0) runs on ESP32-class hardware for Wi‑Fi attacks, wardriving-style
-recon, and companion BLE features. This module prints authoritative links and a
-safe workflow; it does **not** bundle or flash firmware.
+Bruce and ESP32 Marauder run on ESP32-class hardware for Wi‑Fi attacks,
+wardriving-style recon, BLE scans and packet tooling. This module prints
+authoritative links and a safe workflow; it does **not** bundle or flash firmware.
 
-Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
 from __future__ import annotations
@@ -13,28 +13,43 @@ from wirelessxpl.core.exploit import *
 
 
 class Exploit(Exploit):
-    """Documentation bridge for Bruce firmware."""
+    """Documentation bridge for Bruce and Marauder firmware."""
 
     __info__ = {
-        "name": "Bruce ESP32 firmware (lab notes)",
-        "description": "Pointers to BruceDevices firmware: wardriving, raw sniffer hooks, "
-                       "deauth/evil-portal patterns on dedicated hardware. Export PCAP to this "
-                       "framework's ``generic/pcap/*`` modules for offline WPA3 / EAPOL analysis.",
-        "authors": ("André Henrique (@mrhenrike)",),
+        "name": "Bruce/ESP32 Marauder firmware (lab notes)",
+        "description": "Pointers to BruceDevices and ESP32 Marauder firmware: wardriving, "
+                       "raw sniffer hooks, deauth/beacon attacks and BLE scans on dedicated "
+                       "hardware. Export PCAP to this framework's ``generic/pcap/*`` modules "
+                       "for offline WPA3 / EAPOL analysis.",
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
         "references": (
             "https://github.com/BruceDevices/firmware",
             "https://github.com/pr3y/Bruce",
             "https://bruce.computer/",
+            "https://github.com/justcallmekoko/ESP32Marauder",
         ),
         "devices": ("ESP32 / Cardputer / M5Stack (user hardware)",),
     }
 
     def run(self) -> None:
         print_status(
-            "Bruce is third-party AGPL firmware — comply with license and local radio laws."
+            "Bruce/Marauder are third-party firmwares — comply with license and local radio laws."
         )
-        print_info("Upstream: https://github.com/BruceDevices/firmware")
-        print_info("Web flasher / docs: https://bruce.computer/")
+        print_info("Bruce upstream: https://github.com/BruceDevices/firmware")
+        print_info("Marauder upstream: https://github.com/justcallmekoko/ESP32Marauder")
+        print_info("Bruce web flasher / docs: https://bruce.computer/")
+        print_info("Bruce serial CLI baseline: help, wifi, webui, arp, sniffer, nav, options")
+        print_info("Upstream tracker module: `use generic/external/bruce_upstream_tracker`")
+        print_info("Bruce PCAP paths commonly used: /BrucePCAP/*.pcap and /BrucePCAP/handshakes/")
+        print_info("Marauder common lab tasks: AP scan, probe sniff, deauth, beacon spam, BLE scan")
+        print_info("Recommended WXF mapping:")
+        print_info("  - Bruce sniffer PCAP -> generic/pcap/pcap_handshake_extractor")
+        print_info("  - Bruce handshake PCAP -> generic/pcap/pcap_eapol_survey")
+        print_info("  - WPA3 frames -> generic/pcap/pcap_dragonblood")
+        print_info("  - Wardriving exports -> generic/wifi_lab/gps_wardriving_ndjson")
+        print_info("Bruce upstream catalogs generated in WXF resources/catalogs:")
+        print_info("  - brucedevices_firmware_issues_prs.json (full list)")
+        print_info("  - brucedevices_firmware_useful_map.json (filtered useful set)")
         print_info("Suggested lab loop: capture on hardware → export PCAP/PCAPNG → "
                    "`use generic/pcap/pcap_handshake_extractor` / `pcap_eapol_survey` / "
                    "`pcap_dragonblood` → hashcat or aircrack-ng on workstation.")

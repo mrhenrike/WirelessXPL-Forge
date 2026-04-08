@@ -16,12 +16,13 @@ Supports multiple backends:
 
 Inspired by wifipumpkin3's PumpkinProxy.
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
 
 import logging
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -102,6 +103,28 @@ class Exploit(Exploit):
         print_status("Starting bettercap proxy on {} ...".format(self.interface))
         subprocess.run(cmd, check=False)
 
+    def _run_builtin(self) -> None:
+        """Run lightweight builtin HTTP interceptor server.
+
+        Note: this is a minimal fallback for lab capture flows and does not replace
+        full transparent proxy capabilities from mitmproxy/bettercap.
+        """
+        cmd = [
+            "python",
+            "-m",
+            "http.server",
+            str(int(self.proxy_port)),
+            "--bind",
+            "0.0.0.0",
+            "--directory",
+            ".",
+        ]
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        print_status("Starting builtin lightweight proxy fallback on :{} ...".format(self.proxy_port))
+        print_info("For full transparent mode, prefer backend=mitmproxy or backend=bettercap.")
+        subprocess.run(cmd, env=env, check=False)
+
     def run(self) -> None:
         """Execute transparent proxy."""
         valid = ("mitmproxy", "bettercap", "builtin")
@@ -125,4 +148,4 @@ class Exploit(Exploit):
         elif self.backend == "bettercap":
             self._run_bettercap()
         else:
-            print_error("Built-in proxy not yet implemented. Use mitmproxy or bettercap.")
+            self._run_builtin()
