@@ -1,6 +1,6 @@
 # wirelessxpl-Forge — Full Module Catalog
 
-> Generated: 2026-04-08T19:46:26-03:00
+> Generated: 2026-04-08T19:57:15-03:00
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 ## Summary
@@ -22,45 +22,44 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 
 | Metric | Value |
 |---|---|
-| Repository root | `D:/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge` |
-| Total file bytes | 73.57 MiB |
-| Files (repo walk) | 744 |
+| Repository root | `WirelessXPL-Forge` |
+| Total file bytes | 35.91 MiB |
+| Files (repo walk) | 496 |
 | Files under ``wirelessxpl/`` | 272 |
 
 ### Largest top-level paths (repository)
 
 | Path | Size | Share of total |
 |---|---:|---:|
-| `wirelessxpl` | 31.87 MiB | 43.3% |
-| `build` | 31.79 MiB | 43.2% |
-| `dist` | 5.20 MiB | 7.1% |
-| `docs` | 4.33 MiB | 5.9% |
-| `tools` | 261.44 KiB | 0.3% |
-| `routerxpl.egg-info` | 58.36 KiB | 0.1% |
-| `(repo root files)` | 48.01 KiB | 0.1% |
-| `wirelessxpl.egg-info` | 26.57 KiB | 0.0% |
+| `wirelessxpl` | 31.28 MiB | 87.1% |
+| `docs` | 4.32 MiB | 12.0% |
+| `tools` | 254.42 KiB | 0.7% |
+| `(repo root files)` | 47.54 KiB | 0.1% |
+| `.github` | 9.62 KiB | 0.0% |
+| `.travis` | 721 B | 0.0% |
 
 ### ``wirelessxpl/`` breakdown (first-level folders)
 
 | Area | Size | Share of total |
 |---|---:|---:|
-| `resources` | 30.90 MiB | 42.0% |
-| `modules` | 686.01 KiB | 0.9% |
-| `core` | 265.98 KiB | 0.4% |
-| `(wirelessxpl root files)` | 28.34 KiB | 0.0% |
-| `libs` | 13.68 KiB | 0.0% |
+| `resources` | 30.33 MiB | 84.5% |
+| `modules` | 669.85 KiB | 1.8% |
+| `core` | 263.05 KiB | 0.7% |
+| `(wirelessxpl root files)` | 28.32 KiB | 0.1% |
+| `libs` | 13.29 KiB | 0.0% |
 
 ### ``wirelessxpl/resources/*`` (largest direct children)
 
 | Subfolder | Size | Share of total |
 |---|---:|---:|
-| `catalogs` | 26.16 MiB | 35.6% |
-| `vendors` | 4.52 MiB | 6.1% |
-| `phishing_pages` | 147.69 KiB | 0.2% |
-| `wordlists` | 44.91 KiB | 0.1% |
-| `arsenal` | 30.34 KiB | 0.0% |
-| `ssh_keys` | 9.89 KiB | 0.0% |
-| `ml` | 1.22 KiB | 0.0% |
+| `catalogs` | 25.67 MiB | 71.5% |
+| `vendors` | 4.44 MiB | 12.4% |
+| `phishing_pages` | 144.60 KiB | 0.4% |
+| `wordlists` | 41.16 KiB | 0.1% |
+| `arsenal` | 29.34 KiB | 0.1% |
+| `ssh_keys` | 9.76 KiB | 0.0% |
+| `ml` | 1.20 KiB | 0.0% |
+| `__init__.py` | 0 B | 0.0% |
 
 ### First-party Python files (``.py`` count, excluding ``__pycache__``)
 
