@@ -1,6 +1,6 @@
 # wirelessxpl-Forge — Full Module Catalog
 
-> Generated: 2026-04-08T22:46:21.798848+00:00
+> Generated: 2026-04-08T19:46:26-03:00
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 ## Summary
@@ -23,8 +23,8 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | Metric | Value |
 |---|---|
 | Repository root | `D:/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge` |
-| Total file bytes | 73.54 MiB |
-| Files (repo walk) | 742 |
+| Total file bytes | 73.57 MiB |
+| Files (repo walk) | 744 |
 | Files under ``wirelessxpl/`` | 272 |
 
 ### Largest top-level paths (repository)
@@ -34,10 +34,10 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | `wirelessxpl` | 31.87 MiB | 43.3% |
 | `build` | 31.79 MiB | 43.2% |
 | `dist` | 5.20 MiB | 7.1% |
-| `docs` | 4.30 MiB | 5.8% |
-| `tools` | 259.83 KiB | 0.3% |
+| `docs` | 4.33 MiB | 5.9% |
+| `tools` | 261.44 KiB | 0.3% |
 | `routerxpl.egg-info` | 58.36 KiB | 0.1% |
-| `(repo root files)` | 47.80 KiB | 0.1% |
+| `(repo root files)` | 48.01 KiB | 0.1% |
 | `wirelessxpl.egg-info` | 26.57 KiB | 0.0% |
 
 ### ``wirelessxpl/`` breakdown (first-level folders)
@@ -69,7 +69,7 @@ Approximate on-disk size (file bytes only; binary prefixes). Walk skips caches s
 | `wirelessxpl/core` | 49 |
 | `wirelessxpl/modules` | 96 |
 | `wirelessxpl/libs` | 5 |
-| `tools` | 34 |
+| `tools` | 35 |
 | `wxf.py` | 1 |
 
 ---
