@@ -27,6 +27,12 @@ from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
 
+try:
+    from wirelessxpl.core.ml.channel_optimizer import ChannelOptimizer
+    _HAS_CHANNEL_ML = True
+except ImportError:
+    _HAS_CHANNEL_ML = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,6 +65,7 @@ class Exploit(Exploit):
     deauth_interval = OptInteger(3, "Seconds between deauth bursts")
     deauth_count = OptInteger(10, "Deauth frames per burst")
     use_mdk4 = OptBool(True, "Use mdk4 for deauth (supports 5GHz better)")
+    ml_channel = OptBool(True, "ML-assisted channel selection and timing optimization")
     dry_run = OptBool(False, "Print config without executing")
 
     def _start_hostapd(self) -> subprocess.Popen:
@@ -139,6 +146,24 @@ class Exploit(Exploit):
             return
 
         require_authorised_lab()
+
+        if self.ml_channel and _HAS_CHANNEL_ML:
+            try:
+                ch_opt = ChannelOptimizer()
+                scan_data = {
+                    "target_channel_24": int(self.target_channel_24) if self.target_channel_24 else 6,
+                    "target_channel_5": int(self.target_channel_5) if self.target_channel_5 else 36,
+                    "ap_count": 1,
+                    "client_count": 0,
+                }
+                plan = ch_opt.optimize(scan_data)
+                print_info("ML Channel Plan:")
+                print_info("  Recommended ch: {} (confidence: {:.0%})".format(
+                    plan.channel, plan.confidence))
+                if plan.timing_windows:
+                    print_info("  Best timing: {}".format(plan.timing_windows[:2]))
+            except Exception as exc:
+                logger.debug("ML channel optimization failed: %s", exc)
 
         if self.dry_run:
             print_info("DRY RUN — Dual-Band Evil Twin")
