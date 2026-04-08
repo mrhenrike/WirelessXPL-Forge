@@ -57,7 +57,7 @@ class Exploit(Exploit):
         "Mode: captiveflask | phishkin3 | evilqr3 | pumpkinproxy | sniffkin3",
     )
     template = OptString("DarkLogin", "Captiveflask template: DarkLogin | Login_v4 | loginPage | FlaskDemo")
-    wireless_mode = OptString("static", "Wireless mode: static | karma | docker")
+    wireless_mode = OptString("static", "Wireless mode: static | karma")
     phishkin3_url = OptString("", "External phishing URL for Phishkin3 mode")
     evilqr3_url = OptString("", "Target URL for QR code phishing (EvilQR3)")
     channel = OptString("6", "Channel for rogue AP")
