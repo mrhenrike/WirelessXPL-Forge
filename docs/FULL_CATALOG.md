@@ -32,7 +32,7 @@ Approximate on-disk size (file bytes only; binary prefixes). When using git meta
 | Path | Size | Share of total |
 |---|---:|---:|
 | `wirelessxpl` | 31.28 MiB | 99.0% |
-| `tools` | 258.54 KiB | 0.8% |
+| `tools` | 258.60 KiB | 0.8% |
 | `(repo root files)` | 47.53 KiB | 0.1% |
 | `.github` | 9.62 KiB | 0.0% |
 | `.travis` | 721 B | 0.0% |
