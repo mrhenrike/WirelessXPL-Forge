@@ -31,7 +31,7 @@ def main() -> int:
     """Validate minimum counts and unresolved IDs by year/segment."""
     _configure_logging()
     repo_root = Path(__file__).resolve().parent.parent
-    catalog_path = repo_root / "routerxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
+    catalog_path = repo_root / "wirelessxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
     payload = json.loads(catalog_path.read_text(encoding="utf-8"))
 
     minimums = payload.get("minimum_targets_per_year", {})

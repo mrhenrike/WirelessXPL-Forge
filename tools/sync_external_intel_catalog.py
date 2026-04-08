@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync phase-6 external intelligence and integrate modular catalogs."""
+"""Sync external intelligence and integrate modular catalogs for WirelessXPL-Forge."""
 
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ def _extract_github_ref(url: str) -> Tuple[str, str]:
 
 def _http_probe(url: str, timeout: float = 8.0) -> Tuple[bool, int]:
     """Probe URL reachability and return (reachable, status_code)."""
-    req = urllib.request.Request(url, headers={"User-Agent": "RouterXPL-Forge-IntelSync/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "WirelessXPL-Forge-IntelSync/1.0"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
             return True, int(getattr(response, "status", 200))
@@ -96,8 +96,8 @@ def _write_csv(path: Path, rows: List[Dict[str, object]], fieldnames: List[str])
 def main() -> int:
     """Execute phase-6 sync and integration outputs."""
     repo_root = Path(__file__).resolve().parents[1]
-    catalogs_root = repo_root / "routerxpl" / "resources" / "catalogs"
-    arsenal_root = repo_root / "routerxpl" / "resources" / "arsenal"
+    catalogs_root = repo_root / "wirelessxpl" / "resources" / "catalogs"
+    arsenal_root = repo_root / "wirelessxpl" / "resources" / "arsenal"
     log_root = repo_root / ".log"
     log_root.mkdir(parents=True, exist_ok=True)
 
@@ -210,7 +210,7 @@ def main() -> int:
     _write_json(arsenal_root / "binaries" / "external_binary_catalog.json", {"total": len(binaries), "items": binaries})
 
     print(
-        "phase6_sync issues={} prs={} forks={} external_sources={} pocs={} firmware={} binaries={}".format(
+        "sync_external_intel issues={} prs={} forks={} external_sources={} pocs={} firmware={} binaries={}".format(
             len(issues),
             len(pulls),
             len(forks),

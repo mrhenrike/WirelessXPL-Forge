@@ -3,7 +3,7 @@
 """Extract Git repository URLs from tg12/PoC_CVEs link dumps (cve_links.txt / .csv).
 
 Parses **CVE-anchored blocks** from ``cve_links.txt`` so each URL can be scored against
-RouterXPL ``cve_extended_catalog.json`` (vendor/product/description) and optionally against
+WirelessXPL ``cve_extended_catalog.json`` (vendor/product/description) and optionally against
 live GitHub metadata (**description**, **topics**, **name**) via ``gh api`` — not only the URL path.
 
 Author: André Henrique (@mrhenrike) | União Geek
@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SUPER = RXFORGE_ROOT.parents[2]
 DEFAULT_TG12 = DEFAULT_SUPER / "submodules" / "IoT" / "third-party-router-poc" / "tg12__PoC_CVEs"
-DEFAULT_CVE_CATALOG = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "cve_extended_catalog.json"
+DEFAULT_CVE_CATALOG = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "cve_extended_catalog.json"
 
 _GH_REPO = re.compile(
     r"https?://github\.com/([\w.-]+)/([\w.,-]+)(?:\.git)?/?(?:[#?].*)?$", re.IGNORECASE
@@ -39,7 +39,7 @@ _GL_REPO = re.compile(
 )
 _CVE_LINE = re.compile(r"CVE-\d{4}-\d+")
 
-# Edge / RouterXPL scope tokens (URL path, README metadata, or CVE catalog blob).
+# Edge / WirelessXPL scope tokens (URL path, README metadata, or CVE catalog blob).
 _EDGE_TERMS: tuple[str, ...] = (
     "router",
     "switch",

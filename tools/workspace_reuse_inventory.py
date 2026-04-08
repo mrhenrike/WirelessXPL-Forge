@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mine workspace assets and classify reuse status for RouterXPL-Forge."""
+"""Mine workspace assets and classify reuse status for WirelessXPL-Forge."""
 
 from __future__ import annotations
 
@@ -154,7 +154,7 @@ def _collect(workspace_root: Path, project_root: Path) -> List[AssetRecord]:
 
 def _write_outputs(records: List[AssetRecord], project_root: Path) -> None:
     """Persist JSON catalog and CSV report."""
-    catalog_path = project_root / "routerxpl" / "resources" / "catalogs" / "workspace_reuse_inventory.json"
+    catalog_path = project_root / "wirelessxpl" / "resources" / "catalogs" / "workspace_reuse_inventory.json"
     csv_path = project_root / ".log" / "workspace_reuse_inventory.csv"
     catalog_path.parent.mkdir(parents=True, exist_ok=True)
     csv_path.parent.mkdir(parents=True, exist_ok=True)

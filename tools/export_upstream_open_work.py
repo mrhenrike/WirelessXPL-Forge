@@ -27,8 +27,8 @@ from typing import Any
 LOGGER = logging.getLogger(__name__)
 
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CATALOG = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
-OUT_PATH = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "third_party_upstream_open_work.json"
+DEFAULT_CATALOG = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
+OUT_PATH = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "third_party_upstream_open_work.json"
 
 
 def _gh_api(path: str) -> Any:
