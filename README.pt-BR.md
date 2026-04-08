@@ -8,7 +8,7 @@
 
 [![Python 3.8–3.13](https://img.shields.io/badge/Python-3.8--3.13-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml)
-[![Release](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/release.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/release.yml)
+[![Release](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml)
 [![PyPI](https://img.shields.io/pypi/v/wirelessxpl.svg)](https://pypi.org/project/wirelessxpl/)
 [![Licença](https://img.shields.io/badge/Licença-BSD%203--Clause-blue.svg)](LICENSE)
 
