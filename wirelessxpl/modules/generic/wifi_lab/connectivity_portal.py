@@ -28,6 +28,12 @@ from wirelessxpl.modules.generic.wifi_lab._i18n_service import (
     SUPPORTED_LOCALES,
 )
 
+try:
+    from wirelessxpl.core.ml.portal_optimizer import PortalOptimizer
+    _HAS_PORTAL_ML = True
+except ImportError:
+    _HAS_PORTAL_ML = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -63,6 +69,7 @@ class Exploit(Exploit):
     credentials_file = OptString(".log/portal_creds.json", "Credentials output file")
     connectivity_detect = OptBool(True, "Handle OS connectivity probes (Apple/Google/Windows/Firefox)")
     ssid = OptString("", "SSID to display in template (injected as {{ssid}} extra var)")
+    ml_optimize = OptBool(True, "ML template/locale optimization (Thompson sampling)")
     dry_run = OptBool(False, "Print config without executing")
 
     AVAILABLE_TEMPLATES = (
@@ -96,6 +103,22 @@ class Exploit(Exploit):
         tpl_dir = self._resolve_template()
         if not tpl_dir or not tpl_dir.is_dir():
             return
+
+        if self.ml_optimize and _HAS_PORTAL_ML:
+            try:
+                optimizer = PortalOptimizer()
+                context = {"ap_vendor": "", "ssid": self.ssid}
+                rec = optimizer.recommend(context)
+                print_info("ML Portal Recommendation:")
+                print_info("  Template: {} (confidence: {:.0%})".format(
+                    rec.template, rec.confidence))
+                print_info("  Reasoning: {}".format(rec.reasoning))
+                if rec.template in self.AVAILABLE_TEMPLATES and self.template == "tplink_generic":
+                    self.template = rec.template
+                    tpl_dir = self._resolve_template()
+                    print_status("Template auto-switched to '{}' by ML".format(self.template))
+            except Exception as exc:
+                logger.debug("ML portal optimization failed: %s", exc)
 
         if self.dry_run:
             print_info("DRY RUN — Connectivity Portal (i18n)")
