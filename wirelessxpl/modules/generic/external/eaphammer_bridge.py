@@ -9,8 +9,15 @@ known beacons, PMKID (--pmkid), EAP password spray (--eap-spray), assistente de
 certificados (--cert-wizard), OWE transition, PMF (802.11w) e seleção de banda via
 ``--hw-mode`` e canal.
 
+Improvements from upstream s0lst1c3/eaphammer issues/PRs:
+  - Python 3.12 support (PR #221)
+  - hcxdumptool syntax changes (issue #208, #212)
+  - 6GHz band support (hw-mode ax, channel > 177)
+  - Credential logging to file (issue #226)
+  - ESSID escaping for special characters (airgeddon #655)
+
 License: GPL-3.0 (subprocess only, no code import)
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -26,7 +33,7 @@ from wirelessxpl.core.exploit import *
 logger = logging.getLogger(__name__)
 
 _AUTH_CHOICES = frozenset({"open", "wpa-psk", "wpa-eap", "owe", "owe-transition", "owe-psk"})
-_BAND_CHOICES = frozenset({"2g", "5g", "dual"})
+_BAND_CHOICES = frozenset({"2g", "5g", "6g", "dual"})
 _CERT_TYPE_CHOICES = frozenset({"create", "import"})
 _EAP_TYPE_CHOICES = frozenset({"GTC", "PEAP", "TTLS", "MD5"})
 _PMF_CHOICES = frozenset({"disable", "enable", "require"})
@@ -83,7 +90,7 @@ class Exploit(Exploit):
     known_beacons = OptBool(False, "Known beacons persistentes (--known-beacons)")
     known_ssids = OptString("", "SSIDs conhecidos (espaço) para --known-ssids")
     known_ssids_file = OptString("", "Arquivo wordlist SSID (--known-ssids-file)")
-    band = OptString("2g", "Banda: 2g | 5g | dual (dual não define --hw-mode; use canal adequado)")
+    band = OptString("2g", "Banda: 2g | 5g | 6g | dual (6g requer hostapd com suporte AX/6GHz)")
     cert_type = OptString("create", "Cert wizard: create | import (com --cert-wizard-only)")
     cert_only = OptBool(False, "Executar apenas --cert-wizard (create/import/interactive)")
     cert_cn = OptString("", "CN para create/bootstrap (recomendado com cert_only + create)")
@@ -124,6 +131,8 @@ class Exploit(Exploit):
         if b == "2g":
             return "g"
         if b == "5g":
+            return "a"
+        if b == "6g":
             return "a"
         return None
 

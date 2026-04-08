@@ -10,12 +10,21 @@ Pure Python reimplementation of KillerBee's analysis capabilities:
   - Association flood frame generation
   - Zigbee network reconnaissance from PCAPs
   - Frame replay preparation (for hardware-based injection)
+  - MMO hash (Matyas-Meyer-Oseas) for install code key derivation
+  - Signed RSSI conversion for CC2531 hardware
 
 Radio operations (sniff, inject, jam) require KillerBee-compatible
 hardware (ApiMote, CC2531, RZ RAVEN). This module orchestrates that
 hardware when available, but all analysis is done natively.
 
-Version: 1.0.0
+Improvements incorporated from upstream riverloopsec/killerbee:
+  - MMO hash + link key derivation from install code (PR #272)
+  - Fix RSSI signed conversion for CC2531 (PR #278, issue #277)
+  - APS CMD payload parsing for NWK key disclosure (PR #260)
+  - Python 3.10+ compatibility (PR #270, issue #258)
+  - pycryptodome migration (issue #273)
+
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -88,6 +97,49 @@ ZIGBEE_OUIS = [
     b"\x00\x0b\x57",  # Silicon Laboratories
     b"\x00\xa0\x50",  # Cypress
 ]
+
+
+def mmo_hash(data: bytes) -> bytes:
+    """Matyas-Meyer-Oseas (MMO) hash for Zigbee key derivation.
+
+    Used to derive link keys from install codes. Processes input
+    in 16-byte blocks using AES-128 in a Davies-Meyer construction.
+    """
+    if not HAS_CRYPTO:
+        raise RuntimeError("pycryptodome required for MMO hash")
+
+    result = b"\x00" * 16
+    padded = data + b"\x80"
+    while len(padded) % 16 != 0:
+        padded += b"\x00"
+
+    for i in range(0, len(padded), 16):
+        block = padded[i:i + 16]
+        cipher = AES.new(result, AES.MODE_ECB)
+        encrypted = cipher.encrypt(block)
+        result = bytes(a ^ b for a, b in zip(encrypted, block))
+
+    return result
+
+
+def derive_link_key_from_install_code(install_code: bytes) -> bytes:
+    """Derive a Zigbee link key from a device's install code.
+
+    The install code (typically 6, 8, 12, or 16 bytes + 2 byte CRC)
+    is hashed with MMO to produce a 128-bit link key.
+    """
+    return mmo_hash(install_code)
+
+
+def convert_rssi_signed(raw_rssi: int) -> int:
+    """Convert raw unsigned RSSI byte to signed dBm value.
+
+    CC2531 reports RSSI as unsigned byte; values >= 128 are negative.
+    Also applies the CC2531 RSSI offset correction (-73 dBm).
+    """
+    if raw_rssi >= 128:
+        raw_rssi -= 256
+    return raw_rssi - 73
 
 
 def crc_ccitt_kermit(data: bytes) -> int:
@@ -229,8 +281,9 @@ class Exploit(Exploit):
 
     attack = OptString(
         "analyze",
-        "Mode: analyze | key_extract | beacon_craft | assoc_flood_gen | scan",
+        "Mode: analyze | key_extract | key_derive | beacon_craft | assoc_flood_gen | scan",
     )
+    install_code = OptString("", "Device install code (hex) for link key derivation")
     pcap_file = OptString("", "PCAP file for offline analysis")
     network_key = OptString("", "Known network key (hex, 32 chars) for decryption")
     target_pan = OptInteger(0, "Target PAN ID for association flood")
@@ -309,6 +362,37 @@ class Exploit(Exploit):
             print_info("No plaintext network key found in PCAP.")
             print_info("Key may be encrypted. Try sniffing during key transport.")
 
+    def _derive_key(self) -> None:
+        """Derive link key from device install code using MMO hash."""
+        if not self.install_code:
+            print_error("install_code is required (hex string, e.g. '83FED340...')")
+            return
+
+        try:
+            code_bytes = bytes.fromhex(self.install_code)
+        except ValueError:
+            print_error("Invalid hex install code.")
+            return
+
+        valid_lengths = {8, 10, 14, 18}
+        if len(code_bytes) not in valid_lengths:
+            print_info("Note: install code length {} is unusual. "
+                       "Expected: {} bytes (including 2-byte CRC).".format(
+                           len(code_bytes), ", ".join(str(v) for v in sorted(valid_lengths))))
+
+        if len(code_bytes) >= 2:
+            crc_data = code_bytes[:-2]
+            expected_crc = crc_ccitt_kermit(crc_data)
+            actual_crc = struct.unpack("<H", code_bytes[-2:])[0]
+            if expected_crc != actual_crc:
+                print_info("CRC mismatch: expected 0x{:04X}, got 0x{:04X}".format(
+                    expected_crc, actual_crc))
+
+        link_key = derive_link_key_from_install_code(code_bytes)
+        print_success("Link key derived from install code:")
+        print_info("  Install code: {}".format(code_bytes.hex()))
+        print_info("  Link key:     {}".format(link_key.hex()))
+
     def _generate_assoc_flood(self) -> None:
         """Generate association flood frames for offline preparation."""
         if not self.target_pan:
@@ -342,6 +426,7 @@ class Exploit(Exploit):
         modes = {
             "analyze": self._analyze_pcap,
             "key_extract": self._extract_key,
+            "key_derive": self._derive_key,
             "assoc_flood_gen": self._generate_assoc_flood,
             "beacon_craft": lambda: print_info("Beacon: {}".format(
                 build_beacon_request().hex())),
