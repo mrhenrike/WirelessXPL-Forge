@@ -18,13 +18,32 @@ def repo_label(repo_root: Path) -> str:
     return repo_root.name or "."
 
 
-def generation_iso_timestamp(repo_root: Path) -> str:
-    """ISO timestamp stable for a given git revision.
+def modules_tree_stamp(repo_root: Path) -> str:
+    """Short git object id for ``wirelessxpl/modules`` at HEAD.
 
-    Uses the latest committer unix time (``%ct``) converted to UTC ISO, so the
-    string is identical on Linux, macOS and Windows for the same commit.
-    Falls back to SOURCE_DATE_EPOCH or wall clock when git is unavailable.
+    Stable across machines for the same commit and avoids self-referential
+    timestamps that change on every new commit that touches the catalog file.
     """
+
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD:wirelessxpl/modules"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        out = (completed.stdout or "").strip()
+        if completed.returncode == 0 and len(out) >= 12:
+            return out[:12]
+    except OSError:
+        pass
+    return "unknown"
+
+
+def generation_iso_timestamp(repo_root: Path) -> str:
+    """ISO timestamp for non-catalog use; prefer :func:`modules_tree_stamp` for docs."""
 
     try:
         completed = subprocess.run(
