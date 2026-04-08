@@ -1,6 +1,6 @@
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 
-name: release
+name: publish-pypi
 
 on:
   push:
@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to publish (e.g. v1.1.0)"
+        description: "Tag to publish (e.g. v1.1.1)"
         required: true
-        default: "v1.1.0"
+        default: "v1.1.1"
 
 permissions:
   contents: write
@@ -67,7 +67,7 @@ jobs:
   #     Configure at https://pypi.org/manage/project/wirelessxpl/settings/publishing/
   #     → Publisher type: GitHub Actions
   #     → Repository:     mrhenrike/WirelessXPL-Forge
-  #     → Workflow file:  release.yml
+  #     → Workflow file:  publish-pypi.yml (must match this filename)
   #     → Environment:    pypi
   #
   publish-pypi:
