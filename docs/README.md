@@ -17,7 +17,11 @@
 
 ## Attack-surface architecture (PNGs)
 
-Same visual language as MikrotikAPI-BF hub-and-spoke diagrams. **Mermaid:** [diagrams/architecture/](diagrams/architecture/). **Gallery:**
+Same visual language as MikrotikAPI-BF hub-and-spoke diagrams. **Mermaid:** [diagrams/architecture/](diagrams/architecture/). **Install** the framework: `pip install wirelessxpl` (see root [README.md](../README.md)). **Gallery:**
+
+| WirelessXPL — full attack surface |
+|:---:|
+| ![WirelessXPL full attack surface](img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
 | SOHO router | Switch |
 |:---:|:---:|
@@ -27,9 +31,9 @@ Same visual language as MikrotikAPI-BF hub-and-spoke diagrams. **Mermaid:** [dia
 |:---:|:---:|
 | ![NGFW](img/architecture/rxf_arch_ngfw_utm.png) | ![ISP CPE](img/architecture/rxf_arch_isp_cpe.png) |
 
-| Mixed edge |
-|:---:|
-| ![Mixed edge](img/architecture/rxf_arch_edge_mixed.png) |
+| Mixed edge | Network TAP |
+|:---:|:---:|
+| ![Mixed edge](img/architecture/rxf_arch_edge_mixed.png) | ![Network TAP](img/architecture/rxf_arch_network_tap.png) |
 
 ## Wiki locales
 
