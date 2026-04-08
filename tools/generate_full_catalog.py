@@ -25,7 +25,7 @@ _TOOLS_DIR = Path(__file__).resolve().parent
 if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
-from docgen_stamp import generation_iso_timestamp, repo_label
+from docgen_stamp import modules_tree_stamp, repo_label
 
 LOGGER = logging.getLogger("full_catalog")
 RE_CVE = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
@@ -171,6 +171,9 @@ def _disk_snapshot_git(repo_root: Path) -> Dict[str, Any] | None:
 
         relpath = path_bytes.decode("utf-8", errors="replace")
         if relpath.split("/")[0] in _SKIP_WALK_DIRS:
+            continue
+        # Omit generated catalog blobs so metrics are stable across catalog commits.
+        if relpath in ("docs/FULL_CATALOG.md", "docs/FULL_CATALOG.txt"):
             continue
 
         grand_total += size
@@ -328,7 +331,7 @@ def _build_md(
     cat_stats: Mapping[str, Mapping[str, int]],
 ) -> str:
     """Build the full catalog in Markdown."""
-    now = generation_iso_timestamp(repo_root)
+    stamp = modules_tree_stamp(repo_root)
 
     # Classify
     exploits = [r for r in records if r["type"] == "exploits"]
@@ -355,7 +358,7 @@ def _build_md(
     lines: List[str] = [
         "# wirelessxpl-Forge — Full Module Catalog",
         "",
-        "> Generated: {}".format(now),
+        "> Modules tree id: `{}` (git object)".format(stamp),
         "> Author: Andre Henrique (@mrhenrike) | Uniao Geek",
         "",
         "## Summary",
@@ -530,11 +533,11 @@ def _build_txt(
     cat_stats: Mapping[str, Mapping[str, int]],
 ) -> str:
     """Build the full catalog in plain text."""
-    now = generation_iso_timestamp(repo_root)
+    stamp = modules_tree_stamp(repo_root)
     lines: List[str] = [
         "wirelessxpl-Forge - Full Module Catalog",
         "=" * 40,
-        "Generated: {}".format(now),
+        "Modules tree id: {} (git object)".format(stamp),
         "Author: Andre Henrique (@mrhenrike) | Uniao Geek",
         "",
     ]
