@@ -66,6 +66,14 @@ OPTIONAL_BINARIES: Tuple[Tuple[str, str], ...] = (
     ("oneshot.py", "WPS Pixie Dust without monitor mode"),
     ("hcxpcapngtool", "PCAP to hashcat conversion (hcxtools)"),
     ("hcxdumptool", "PMKID capture + L2 association attacks"),
+    ("cupp", "Common User Password Profiler (targeted wordlists)"),
+    ("cewl", "Website spider to custom wordlist (Ruby)"),
+    ("cewler", "Website spider to custom wordlist (Python)"),
+    ("crunch", "Mask-based wordlist generator"),
+    ("hostapd-mana", "KARMA/MANA rogue AP (WPA3 downgrade)"),
+    ("isf", "Industrial Exploitation Framework (ICS/SCADA)"),
+    ("aescrypt2", "Huawei router config decryption"),
+    ("hw_passwd", "Huawei password decoder"),
 )
 
 
