@@ -33,23 +33,25 @@
 
 ---
 
-## System Prerequisites (not bundled)
+## System prerequisites (outside the PyPI wheel)
+
+`pip install wirelessxpl` ships **only** the Python package and its declared dependencies. The table below lists **host tools** and **firmware** that are **not** inside the wheel: they are normal OS-level installs (apt, brew, upstream installers). **Bridge modules** in WXF still **integrate** them (`use` → `run`); they are not “disconnected”, they are **orchestrated subprocesses**. For licensing, size, and maintenance, we do **not** vendor upstream projects such as wifiphisher/eaphammer inside this repo — see **[docs/INTEGRATION_MODEL.md](docs/INTEGRATION_MODEL.md)** (native vs bridge vs GPL).
 
 | Tool | Role |
 |------|------|
-| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — used by PCAP and wifi_lab modules |
+| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — PCAP / wifi_lab workflows |
 | **hcxtools / hcxdumptool** | PMKID capture and hash conversion for hashcat |
 | **hashcat** | WPA2/WPA3 offline cracking (modes 22000/22001) |
 | **tshark** *(optional)* | BLE / 802.11 dissection when Scapy layers are thin |
 | **mdk4 / mdk3** *(optional)* | Deauth storms, beacon floods, mesh flooding |
 | **hostapd + dnsmasq** *(optional)* | Rogue AP / evil-twin + DHCP/DNS for captive portal flows |
-| **wifiphisher** *(optional)* | Phishing campaigns via bridge module |
-| **eaphammer** *(optional)* | EAP/PEAP credential capture |
-| **airgeddon** *(optional)* | Multi-attack menu (bridge available) |
-| **btlejack** *(optional)* | BLE sniff/jam/hijack |
-| **opendrop / owl** *(optional)* | AWDL/AirDrop lab workflows |
-| **Bruce ESP32 firmware** *(optional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — handheld wardriving; export PCAP to `generic/pcap/*` |
-| **pyserial** *(optional)* | Serial bridge to Bruce firmware (`pip install wirelessxpl[serial]`) |
+| **wifiphisher** *(optional)* | Phishing via **bridge** (`generic/external/wifiphisher_bridge`) |
+| **eaphammer** *(optional)* | EAP/PEAP capture via **bridge** |
+| **airgeddon** *(optional)* | Menu-driven attacks via **bridge** |
+| **btlejack** *(optional)* | BLE sniff/jam/hijack via **bridge** |
+| **opendrop / owl** *(optional)* | AWDL/AirDrop lab via **bridge** |
+| **Bruce ESP32 firmware** *(optional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — device image; export PCAP to `generic/pcap/*` |
+| **pyserial** *(optional)* | Serial to Bruce (`pip install wirelessxpl[serial]`) |
 
 Run `use generic/external/wireless_tool_prereq_audit` after install to verify your PATH.
 

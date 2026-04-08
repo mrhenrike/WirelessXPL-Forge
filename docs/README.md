@@ -12,6 +12,7 @@
 | [FULL_CATALOG.md](FULL_CATALOG.md) | en-US | Full module catalog snapshot |
 | [wiki/README.md](wiki/README.md) | bilingual hub | Wiki index (en-US + pt-BR) |
 | [diagrams/architecture/README.md](diagrams/architecture/README.md) | en-US + pt-BR | **Attack-surface architecture** (MikrotikAPI-BF style) |
+| [INTEGRATION_MODEL.md](INTEGRATION_MODEL.md) | en-US + pt summary | **Native vs bridges vs host tools** (what pip ships) |
 | [img/architecture/](img/architecture/) | en-US labels on PNG | Exported architecture PNGs |
 | Intel catalogs | JSON (bilingual summaries) | [wifi6_80211ax_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi6_80211ax_threat_vectors.json) (802.11ax) · [wifi7_80211be_threat_vectors.json](../wirelessxpl/resources/catalogs/wifi7_80211be_threat_vectors.json) (802.11be / MLO) — WPA3-aligned threat vectors for lab |
 
