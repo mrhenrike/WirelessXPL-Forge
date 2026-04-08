@@ -21,22 +21,24 @@ def repo_label(repo_root: Path) -> str:
 def generation_iso_timestamp(repo_root: Path) -> str:
     """ISO timestamp stable for a given git revision.
 
-    Uses the latest commit author date so regenerated files match on Linux,
-    macOS and Windows for the same checkout. Falls back to SOURCE_DATE_EPOCH
-    or wall clock when git is unavailable.
+    Uses the latest committer unix time (``%ct``) converted to UTC ISO, so the
+    string is identical on Linux, macOS and Windows for the same commit.
+    Falls back to SOURCE_DATE_EPOCH or wall clock when git is unavailable.
     """
 
     try:
         completed = subprocess.run(
-            ["git", "log", "-1", "--format=%cI"],
+            ["git", "log", "-1", "--format=%ct"],
             cwd=str(repo_root),
             capture_output=True,
             text=True,
             timeout=30,
             check=False,
         )
-        if completed.returncode == 0 and (completed.stdout or "").strip():
-            return (completed.stdout or "").strip()
+        out = (completed.stdout or "").strip()
+        if completed.returncode == 0 and out.isdigit():
+            ts = int(out)
+            return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
     except OSError:
         pass
     epoch = os.environ.get("SOURCE_DATE_EPOCH", "").strip()
