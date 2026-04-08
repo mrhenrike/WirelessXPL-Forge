@@ -49,7 +49,15 @@ jobs:
           name: dist
           path: dist/
 
-  # ── 2. Publish to PyPI (trusted publisher / OIDC) ────────────────────────
+  # ── 2. Publish to PyPI ───────────────────────────────────────────────────
+  #
+  #   Primary path  : Trusted Publisher (OIDC) — no secret needed.
+  #     Configure at https://pypi.org/manage/project/wirelessxpl/settings/publishing/
+  #     Publisher: mrhenrike/WirelessXPL-Forge  workflow: release.yml  env: pypi
+  #
+  #   Fallback path : API token via repository secret PYPI_TOKEN.
+  #     Add at https://github.com/mrhenrike/WirelessXPL-Forge/settings/secrets/actions
+  #
   publish-pypi:
     name: "Publish → PyPI"
     needs: build
@@ -65,9 +73,19 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to PyPI
+      - name: Publish to PyPI (Trusted Publisher / OIDC)
+        if: ${{ vars.PYPI_PUBLISH_MODE != 'token' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          skip-existing: true
+        continue-on-error: true
+        id: oidc_publish
+
+      - name: Publish to PyPI (API token fallback)
+        if: ${{ steps.oidc_publish.outcome == 'failure' || vars.PYPI_PUBLISH_MODE == 'token' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
 
   # ── 3. Create GitHub Release with notes and assets ───────────────────────
