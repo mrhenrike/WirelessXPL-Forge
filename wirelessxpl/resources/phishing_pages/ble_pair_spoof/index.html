@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Device — Pairing Required</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #0a0a23;
+               min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .card { background: #16163a; border-radius: 20px; padding: 36px;
+                width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                border: 1px solid #2a2a5a; }
+        .bt-icon { text-align: center; margin-bottom: 16px; }
+        .bt-icon svg { width: 56px; height: 56px; }
+        h1 { text-align: center; color: #e0e0ff; font-size: 18px; font-weight: 500; }
+        .device-name { text-align: center; color: #5b9cff; font-size: 14px;
+                       margin: 8px 0 20px; font-weight: 600; }
+        .info-row { display: flex; justify-content: space-between;
+                    padding: 8px 0; border-bottom: 1px solid #252550;
+                    font-size: 13px; color: #aaa; }
+        .info-row .val { color: #ddd; font-weight: 500; }
+        .pin-section { margin-top: 24px; text-align: center; }
+        .pin-section label { color: #aaa; font-size: 12px; text-transform: uppercase;
+                             letter-spacing: 1px; display: block; margin-bottom: 10px; }
+        .pin-input { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .pin-input input { width: 48px; height: 56px; text-align: center;
+                           font-size: 24px; font-weight: 700; color: #fff;
+                           background: #1e1e4a; border: 2px solid #3a3a6a;
+                           border-radius: 10px; }
+        .pin-input input:focus { outline: none; border-color: #5b9cff; }
+        .btn { width: 100%; padding: 14px; background: #5b9cff; color: #fff;
+               border: none; border-radius: 12px; font-size: 16px;
+               font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .btn:hover { background: #4a8be0; }
+        .cancel { display: block; text-align: center; margin-top: 12px;
+                  color: #777; font-size: 13px; text-decoration: none; cursor: pointer; }
+        .note { text-align: center; font-size: 10px; color: #555; margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="bt-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#5b9cff" stroke-width="1.5">
+                <path d="M12 2v20M12 2l5 5-5 5M12 22l5-5-5-5"/>
+            </svg>
+        </div>
+        <h1>Bluetooth Pairing Request</h1>
+        <p class="device-name">WXF-Audio-Speaker-Pro</p>
+
+        <div class="info-row"><span>Type</span><span class="val">BLE Audio</span></div>
+        <div class="info-row"><span>MAC</span><span class="val">AA:BB:CC:11:22:33</span></div>
+        <div class="info-row"><span>Signal</span><span class="val">-42 dBm (Strong)</span></div>
+
+        <form method="POST" action="/login">
+            <div class="pin-section">
+                <label>Enter Pairing PIN</label>
+                <div class="pin-input">
+                    <input type="text" maxlength="1" name="wfphshr-pin1" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" name="wfphshr-pin2" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" name="wfphshr-pin3" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" name="wfphshr-pin4" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" name="wfphshr-pin5" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" name="wfphshr-pin6" pattern="[0-9]" required>
+                </div>
+            </div>
+            <button type="submit" class="btn">Pair Device</button>
+        </form>
+        <a class="cancel">Cancel</a>
+        <p class="note">The device will be added to your trusted devices list.</p>
+    </div>
+    <script>
+        const inputs = document.querySelectorAll('.pin-input input');
+        inputs.forEach((inp, i) => {
+            inp.addEventListener('input', () => {
+                if (inp.value && i < inputs.length - 1) inputs[i + 1].focus();
+            });
+        });
+    </script>
+</body>
+</html>

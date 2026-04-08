@@ -1,0 +1,564 @@
+{
+  "_meta": {
+    "catalog": "Comprehensive Wireless Attack Taxonomy — Wi-Fi / BLE / GPS",
+    "author": "André Henrique (@mrhenrike) | União Geek",
+    "version": "1.0.0",
+    "last_updated": "2026-04-07",
+    "sources": [
+      "MITRE ATT&CK Enterprise & ICS",
+      "ExploitDB (exploit-db.com / GitLab)",
+      "IEEE 802.11 / 802.15.1 / 802.15.4 standards",
+      "Mathy Vanhoef research (KRACK, FragAttacks, Dragonblood)",
+      "Armis Security (BlueBorne, BLEEDINGBIT)",
+      "NIST NVD",
+      "WirelessXPL-Forge internal research"
+    ]
+  },
+  "wifi_attacks": {
+    "reconnaissance": [
+      {
+        "id": "WIFI-RECON-001",
+        "name": "Passive Sniffing (Monitor Mode)",
+        "description": "Capture 802.11 frames in monitor mode without transmitting",
+        "tools": ["airodump-ng", "kismet", "wireshark", "hcxdumptool"],
+        "mitre_id": "T0887",
+        "wxf_module": "pcap/pcap_ap_station_mapper.py"
+      },
+      {
+        "id": "WIFI-RECON-002",
+        "name": "Active Probing",
+        "description": "Send probe requests to discover hidden SSIDs and AP details",
+        "tools": ["aireplay-ng", "mdk4"],
+        "mitre_id": "T1016.002",
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-RECON-003",
+        "name": "Wardriving / GPS Mapping",
+        "description": "Correlate Wi-Fi AP locations with GPS coordinates",
+        "tools": ["kismet", "wigle", "giskismet"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/gps_wardriving_ndjson.py"
+      },
+      {
+        "id": "WIFI-RECON-004",
+        "name": "OUI/Vendor Fingerprinting",
+        "description": "Identify device vendor from MAC OUI prefix",
+        "tools": ["macchanger", "oui-lookup"],
+        "mitre_id": null,
+        "wxf_module": "core OUI enriched CSV"
+      },
+      {
+        "id": "WIFI-RECON-005",
+        "name": "WPS PIN Discovery",
+        "description": "Identify APs with WPS enabled and derive default PINs",
+        "tools": ["wash", "reaver", "wpscan"],
+        "mitre_id": null,
+        "wxf_module": null
+      }
+    ],
+    "denial_of_service": [
+      {
+        "id": "WIFI-DOS-001",
+        "name": "Deauthentication Flood",
+        "description": "Send forged deauth frames to disconnect clients from AP",
+        "tools": ["aireplay-ng", "mdk3", "mdk4", "scapy"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/deauth_multimode.py"
+      },
+      {
+        "id": "WIFI-DOS-002",
+        "name": "Disassociation Flood",
+        "description": "Send forged disassociation frames",
+        "tools": ["mdk4", "scapy"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/deauth_multimode.py"
+      },
+      {
+        "id": "WIFI-DOS-003",
+        "name": "Beacon Flood",
+        "description": "Overwhelm spectrum with fake beacon frames",
+        "tools": ["mdk3", "mdk4", "scapy"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/beacon_flood_advanced.py"
+      },
+      {
+        "id": "WIFI-DOS-004",
+        "name": "Authentication Flood",
+        "description": "Exhaust AP resources with mass fake auth requests",
+        "tools": ["mdk4"],
+        "mitre_id": null,
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-DOS-005",
+        "name": "CTS/RTS Flood",
+        "description": "Abuse CTS/RTS mechanism to reserve channel time",
+        "tools": ["scapy"],
+        "mitre_id": null,
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-DOS-006",
+        "name": "SAE Commit Flood (WPA3)",
+        "description": "Exhaust AP CPU with mass SAE commit messages",
+        "tools": ["scapy", "custom"],
+        "mitre_id": null,
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-DOS-007",
+        "name": "Channel Jamming",
+        "description": "Continuous transmission on target channel (hardware-dependent)",
+        "tools": ["HackRF", "SDR"],
+        "mitre_id": null,
+        "wxf_module": null
+      }
+    ],
+    "credential_capture": [
+      {
+        "id": "WIFI-CRED-001",
+        "name": "WPA/WPA2 4-Way Handshake Capture",
+        "description": "Capture EAPOL 4-way handshake for offline cracking",
+        "tools": ["airodump-ng", "hcxdumptool"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_handshake_extractor.py"
+      },
+      {
+        "id": "WIFI-CRED-002",
+        "name": "PMKID Capture (Clientless)",
+        "description": "Capture PMKID from AP without any client interaction",
+        "tools": ["hcxdumptool", "hcxpcapngtool"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_pmkid_attack.py"
+      },
+      {
+        "id": "WIFI-CRED-003",
+        "name": "EAP/WPE Credential Harvest",
+        "description": "Fake RADIUS server to capture enterprise EAP credentials",
+        "tools": ["hostapd-mana", "EAPHammer", "freeradius-wpe"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_wpe_harvest.py"
+      },
+      {
+        "id": "WIFI-CRED-004",
+        "name": "Captive Portal Phishing",
+        "description": "Fake captive portal to collect PSK or login credentials",
+        "tools": ["wifiphisher", "fluxion", "wifipumpkin3"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/evil_twin_advanced.py"
+      },
+      {
+        "id": "WIFI-CRED-005",
+        "name": "WPS PIN Brute Force",
+        "description": "Brute-force 8-digit WPS PIN (10^4 + 10^3 attempts)",
+        "tools": ["reaver", "bully"],
+        "mitre_id": null,
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-CRED-006",
+        "name": "Pixie Dust (WPS Offline PIN Recovery)",
+        "description": "Recover WPS PIN from weak M3 nonces in single exchange",
+        "tools": ["pixiewps", "reaver -K"],
+        "mitre_id": null,
+        "wxf_module": null
+      },
+      {
+        "id": "WIFI-CRED-007",
+        "name": "WEP Cracking (FMS/PTW/ChopChop)",
+        "description": "Statistical recovery of WEP key from captured IVs",
+        "tools": ["aircrack-ng", "wesside-ng"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_wep_crack.py"
+      },
+      {
+        "id": "WIFI-CRED-008",
+        "name": "TKIP Michael Downgrade",
+        "description": "Exploit TKIP MIC weakness for partial key recovery",
+        "tools": ["tkiptun-ng"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_tkip_downgrade.py"
+      },
+      {
+        "id": "WIFI-CRED-009",
+        "name": "WPA3 Transition Mode Downgrade",
+        "description": "Force WPA3 clients to fall back to WPA2 for handshake capture",
+        "tools": ["custom", "scapy"],
+        "mitre_id": null,
+        "wxf_module": "pcap/pcap_dragonblood.py"
+      },
+      {
+        "id": "WIFI-CRED-010",
+        "name": "Default Password Derivation",
+        "description": "Derive default WPA password from SSID/BSSID/serial patterns",
+        "tools": ["routerpwn", "custom scripts"],
+        "mitre_id": null,
+        "wxf_module": null
+      }
+    ],
+    "man_in_the_middle": [
+      {
+        "id": "WIFI-MITM-001",
+        "name": "Evil Twin (Rogue AP)",
+        "description": "Clone target AP SSID to intercept all client traffic",
+        "tools": ["hostapd", "wifiphisher", "fluxion"],
+        "mitre_id": "T1557.004",
+        "wxf_module": "wifi_lab/evil_twin_advanced.py"
+      },
+      {
+        "id": "WIFI-MITM-002",
+        "name": "KARMA Attack",
+        "description": "Respond to all probe requests as the requested SSID",
+        "tools": ["hostapd-mana", "WiFi Pineapple"],
+        "mitre_id": "T1557.004",
+        "wxf_module": "wifi_lab/karma_mana_attack.py"
+      },
+      {
+        "id": "WIFI-MITM-003",
+        "name": "MANA Attack",
+        "description": "Enhanced KARMA with MAC/SSID hash tables and loud mode",
+        "tools": ["hostapd-mana"],
+        "mitre_id": "T1557.004",
+        "wxf_module": "wifi_lab/karma_mana_attack.py"
+      },
+      {
+        "id": "WIFI-MITM-004",
+        "name": "Known Beacons / Lure10",
+        "description": "Broadcast beacons for common networks to trigger auto-connect",
+        "tools": ["EAPHammer", "wifiphisher"],
+        "mitre_id": null,
+        "wxf_module": "external/wifiphisher_bridge.py"
+      },
+      {
+        "id": "WIFI-MITM-005",
+        "name": "SSL Stripping",
+        "description": "Downgrade HTTPS to HTTP for credential interception",
+        "tools": ["bettercap", "sslstrip2"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/mitm_wifi_bridge.py"
+      },
+      {
+        "id": "WIFI-MITM-006",
+        "name": "DNS Spoofing",
+        "description": "Redirect DNS queries to attacker-controlled IP",
+        "tools": ["bettercap", "dnschef", "dnsmasq"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/mitm_wifi_bridge.py"
+      },
+      {
+        "id": "WIFI-MITM-007",
+        "name": "ARP Spoofing (on WiFi network)",
+        "description": "Poison ARP cache to intercept traffic on WiFi LAN",
+        "tools": ["bettercap", "ettercap", "arpspoof"],
+        "mitre_id": "T1557.002",
+        "wxf_module": "wifi_lab/mitm_wifi_bridge.py"
+      },
+      {
+        "id": "WIFI-MITM-008",
+        "name": "Rogue AP Enterprise (WPE)",
+        "description": "Fake enterprise AP with RADIUS to capture EAP creds",
+        "tools": ["hostapd-mana", "EAPHammer"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/karma_mana_attack.py"
+      },
+      {
+        "id": "WIFI-MITM-009",
+        "name": "MFA Phishing via Evil Twin",
+        "description": "Real-time proxy capturing MFA tokens during phishing",
+        "tools": ["evilginx2", "modlishka"],
+        "mitre_id": null,
+        "wxf_module": "wifi_lab/evilginx_prereq_pointer.py"
+      }
+    ],
+    "protocol_exploits": [
+      {
+        "id": "WIFI-PROTO-001",
+        "name": "KRACK (Key Reinstallation Attacks)",
+        "description": "Reinstall encryption keys by replaying 4-way handshake message 3",
+        "cve": ["CVE-2017-13077", "CVE-2017-13078", "CVE-2017-13079", "CVE-2017-13080", "CVE-2017-13081", "CVE-2017-13082", "CVE-2017-13084", "CVE-2017-13086", "CVE-2017-13087", "CVE-2017-13088"],
+        "technology": "WPA2",
+        "poc": "https://github.com/vanhoefm/krackattacks-scripts"
+      },
+      {
+        "id": "WIFI-PROTO-002",
+        "name": "Dragonblood (WPA3/SAE Vulnerabilities)",
+        "description": "Side-channel and downgrade attacks against SAE/WPA3",
+        "cve": ["CVE-2019-9494", "CVE-2019-9495", "CVE-2019-9496", "CVE-2019-9497", "CVE-2019-9498", "CVE-2019-9499"],
+        "technology": "WPA3",
+        "poc": "https://github.com/nicboul/dragonblood"
+      },
+      {
+        "id": "WIFI-PROTO-003",
+        "name": "FragAttacks (Fragmentation & Aggregation)",
+        "description": "12 design and implementation flaws in 802.11 frame processing",
+        "cve": ["CVE-2020-24586", "CVE-2020-24587", "CVE-2020-24588", "CVE-2020-26139", "CVE-2020-26140", "CVE-2020-26141", "CVE-2020-26142", "CVE-2020-26143", "CVE-2020-26144", "CVE-2020-26145", "CVE-2020-26146", "CVE-2020-26147"],
+        "technology": "802.11 (all generations)",
+        "poc": "https://github.com/vanhoefm/fragattacks"
+      },
+      {
+        "id": "WIFI-PROTO-004",
+        "name": "Hole196 (GTK Vulnerability)",
+        "description": "Exploit shared GTK to inject broadcast frames as any client",
+        "cve": null,
+        "technology": "WPA2",
+        "poc": null
+      },
+      {
+        "id": "WIFI-PROTO-005",
+        "name": "AWDL (Apple Wireless Direct Link) Exploits",
+        "description": "Heap overflow in AWDL for wormable RCE on Apple devices",
+        "cve": ["CVE-2020-9906", "CVE-2020-3843"],
+        "technology": "AWDL/AirDrop",
+        "poc": "https://github.com/nicoleahmed/AppleJuice"
+      },
+      {
+        "id": "WIFI-PROTO-006",
+        "name": "802.11r Fast Transition (FT) Exploits",
+        "description": "Key reinstallation during fast BSS transition",
+        "cve": ["CVE-2017-13082"],
+        "technology": "802.11r",
+        "poc": "https://github.com/vanhoefm/krackattacks-scripts"
+      }
+    ],
+    "physical_layer": [
+      {
+        "id": "WIFI-PHY-001",
+        "name": "RF Jamming",
+        "description": "Transmit continuous noise on target frequency to deny access",
+        "tools": ["HackRF", "SDR"],
+        "technology": "2.4 GHz / 5 GHz / 6 GHz"
+      },
+      {
+        "id": "WIFI-PHY-002",
+        "name": "Rogue AP MAC Spoofing",
+        "description": "Clone legitimate AP MAC address for seamless impersonation",
+        "tools": ["macchanger", "hostapd"],
+        "technology": "802.11"
+      }
+    ]
+  },
+  "bluetooth_attacks": {
+    "reconnaissance": [
+      {
+        "id": "BLE-RECON-001",
+        "name": "BLE Advertisement Scanning",
+        "description": "Passive scan for BLE advertisements and service UUIDs",
+        "tools": ["hcitool", "bluetoothctl", "bluepy"],
+        "wxf_module": "bluetooth/btle_scan.py"
+      },
+      {
+        "id": "BLE-RECON-002",
+        "name": "GATT Service Enumeration",
+        "description": "Enumerate GATT services and characteristics of BLE device",
+        "tools": ["gatttool", "bluepy"],
+        "wxf_module": "bluetooth/btle_enumerate.py"
+      },
+      {
+        "id": "BLE-RECON-003",
+        "name": "BR/EDR Service Discovery (SDP)",
+        "description": "Query classic Bluetooth services via SDP",
+        "tools": ["sdptool", "bluesnarfer"],
+        "wxf_module": null
+      }
+    ],
+    "denial_of_service": [
+      {
+        "id": "BLE-DOS-001",
+        "name": "BLE Advertisement Spam",
+        "description": "Flood BLE advertisements (Apple AirDrop/AirTag/Samsung spoof)",
+        "tools": ["hcitool", "custom scripts"],
+        "wxf_module": "bluetooth/ble_phishing.py"
+      },
+      {
+        "id": "BLE-DOS-002",
+        "name": "Bluetooth Connection Flooding",
+        "description": "Exhaust target device connection slots",
+        "tools": ["l2ping", "btlejack"],
+        "wxf_module": null
+      }
+    ],
+    "exploitation": [
+      {
+        "id": "BLE-EXPLOIT-001",
+        "name": "BlueBorne",
+        "description": "Remote code execution via Bluetooth (Android, Linux, Windows, iOS)",
+        "cve": ["CVE-2017-0781", "CVE-2017-0782", "CVE-2017-0785", "CVE-2017-1000251"],
+        "technology": "Bluetooth BR/EDR + BLE"
+      },
+      {
+        "id": "BLE-EXPLOIT-002",
+        "name": "KNOB Attack",
+        "description": "Reduce encryption key entropy to 1 byte during BR/EDR negotiation",
+        "cve": ["CVE-2019-9506"],
+        "technology": "Bluetooth BR/EDR"
+      },
+      {
+        "id": "BLE-EXPLOIT-003",
+        "name": "BIAS Attack",
+        "description": "Impersonate previously paired Bluetooth device",
+        "cve": ["CVE-2020-10135"],
+        "technology": "Bluetooth BR/EDR"
+      },
+      {
+        "id": "BLE-EXPLOIT-004",
+        "name": "BLUFFS",
+        "description": "Break forward/future secrecy in Bluetooth session establishment",
+        "cve": ["CVE-2023-24023"],
+        "technology": "Bluetooth BR/EDR + BLE"
+      },
+      {
+        "id": "BLE-EXPLOIT-005",
+        "name": "BLE Passkey Entry Method Confusion",
+        "description": "Bypass passkey authentication during BLE pairing",
+        "cve": ["CVE-2022-25836"],
+        "technology": "BLE 4.2/5.x"
+      },
+      {
+        "id": "BLE-EXPLOIT-006",
+        "name": "BLEEDINGBIT",
+        "description": "RCE in TI BLE SoC (CC2640/CC2650) used in enterprise APs",
+        "cve": ["CVE-2018-16986", "CVE-2018-7080"],
+        "technology": "BLE (TI chipset)"
+      },
+      {
+        "id": "BLE-EXPLOIT-007",
+        "name": "SweynTooth",
+        "description": "Multiple BLE stack vulnerabilities in SoC implementations",
+        "cve": ["CVE-2019-16336", "CVE-2019-17060", "CVE-2019-17061", "CVE-2019-17517", "CVE-2019-17518", "CVE-2019-17519", "CVE-2019-17520", "CVE-2019-19192", "CVE-2019-19193", "CVE-2019-19194", "CVE-2019-19195", "CVE-2019-19196"],
+        "technology": "BLE (multiple SoC vendors)"
+      },
+      {
+        "id": "BLE-EXPLOIT-008",
+        "name": "BLE Traffic Replay",
+        "description": "Replay captured BLE GATT write commands",
+        "cve": ["CVE-2023-46916"],
+        "technology": "BLE",
+        "wxf_module": "bluetooth/ble_phishing.py"
+      }
+    ],
+    "social_engineering": [
+      {
+        "id": "BLE-SE-001",
+        "name": "BLE Name Spoofing",
+        "description": "Advertise as trusted device name to lure pairing",
+        "tools": ["hcitool", "custom"],
+        "wxf_module": "bluetooth/ble_phishing.py"
+      },
+      {
+        "id": "BLE-SE-002",
+        "name": "iBeacon/Eddystone Hijack",
+        "description": "Clone beacon UUIDs to redirect location-based services",
+        "tools": ["hcitool", "custom"],
+        "wxf_module": "bluetooth/ble_phishing.py"
+      },
+      {
+        "id": "BLE-SE-003",
+        "name": "BLE MITM (BTLEJuice/GATTacker)",
+        "description": "Man-in-the-middle during BLE communication",
+        "tools": ["btlejuice", "gattacker"],
+        "wxf_module": "bluetooth/ble_phishing.py"
+      }
+    ]
+  },
+  "gps_attacks": [
+    {
+      "id": "GPS-001",
+      "name": "GPS Spoofing",
+      "description": "Transmit fake GPS signals to alter target's perceived location",
+      "tools": ["HackRF", "gps-sdr-sim"],
+      "technology": "L1 C/A GPS"
+    },
+    {
+      "id": "GPS-002",
+      "name": "GPS Jamming",
+      "description": "Deny GPS reception by overpowering legitimate signals",
+      "tools": ["SDR transmitter"],
+      "technology": "GPS L1/L2/L5"
+    },
+    {
+      "id": "GPS-003",
+      "name": "GPS Tracker Exploitation",
+      "description": "Exploit web vulnerabilities in GPS tracking platforms",
+      "edb_ids": [43431, 44720],
+      "technology": "GPS tracking software"
+    },
+    {
+      "id": "GPS-004",
+      "name": "NMEA Injection",
+      "description": "Inject forged NMEA sentences into GPS data streams",
+      "tools": ["custom"],
+      "technology": "NMEA 0183"
+    }
+  ],
+  "mitre_attack_mapping": [
+    {
+      "technique_id": "T1669",
+      "name": "Wi-Fi Networks",
+      "tactic": "Initial Access",
+      "framework": "Enterprise"
+    },
+    {
+      "technique_id": "T1557.004",
+      "name": "Adversary-in-the-Middle: Evil Twin",
+      "tactic": "Credential Access / Collection",
+      "framework": "Enterprise"
+    },
+    {
+      "technique_id": "T1016.002",
+      "name": "System Network Configuration Discovery: Wi-Fi Discovery",
+      "tactic": "Discovery",
+      "framework": "Enterprise"
+    },
+    {
+      "technique_id": "T0860",
+      "name": "Wireless Compromise",
+      "tactic": "Initial Access",
+      "framework": "ICS"
+    },
+    {
+      "technique_id": "T0887",
+      "name": "Wireless Sniffing",
+      "tactic": "Discovery / Collection",
+      "framework": "ICS"
+    }
+  ],
+  "wifiphisher_integration": {
+    "status": "bridge_subprocess",
+    "license": "GPL-3.0",
+    "integration_method": "subprocess invocation (no code merge)",
+    "submodule_path": "submodules/IoT/wifiphisher",
+    "wxf_bridge": "modules/generic/external/wifiphisher_bridge.py",
+    "capabilities_from_issues_prs": {
+      "open_prs_of_interest": [
+        "#1562 - Manual attack initiation button for MITM",
+        "#1560 - Packet sniffer module",
+        "#1553 - Increase deauth channels to ch.233 (6GHz)",
+        "#1552 - --noextensionsinterface flag",
+        "#1504 - Fix WiFi Connect macOS CSS",
+        "#1503 - Fix WiFi Connect OS detection",
+        "#1467 - Windows Lock Screen phishing scenario",
+        "#1256 - Network Manager Enterprise phishing",
+        "#1187 - OAuth social media login"
+      ],
+      "key_issues": [
+        "#1673 - Modernize installation / dependency management",
+        "#1665 - Redirect to evilginx page",
+        "#1662 - Custom HTML login not working"
+      ],
+      "attacks_supported": [
+        "deauthentication",
+        "known_beacons (auto-connect trigger)",
+        "lure10 (Windows Wi-Fi Sense)",
+        "wps_pbc (WPS Push-Button Connect)",
+        "evil_twin (rogue AP + captive portal)"
+      ],
+      "phishing_scenarios": [
+        "firmware-upgrade (WPA PSK capture)",
+        "oauth-login (Facebook/social OAuth popup)",
+        "plugin_update (payload delivery)",
+        "wifi_connect (Network Manager imitation)"
+      ]
+    }
+  }
+}

