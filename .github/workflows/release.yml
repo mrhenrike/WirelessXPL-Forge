@@ -51,12 +51,17 @@ jobs:
 
   # ── 2. Publish to PyPI ───────────────────────────────────────────────────
   #
-  #   Primary path  : Trusted Publisher (OIDC) — no secret needed.
-  #     Configure at https://pypi.org/manage/project/wirelessxpl/settings/publishing/
-  #     Publisher: mrhenrike/WirelessXPL-Forge  workflow: release.yml  env: pypi
+  #   Path A — Trusted Publisher (OIDC): no secret needed.
+  #     Configure once at:
+  #     https://pypi.org/manage/project/wirelessxpl/settings/publishing/
+  #     → Repository: mrhenrike/WirelessXPL-Forge
+  #     → Workflow:   release.yml
+  #     → Environment: pypi
   #
-  #   Fallback path : API token via repository secret PYPI_TOKEN.
-  #     Add at https://github.com/mrhenrike/WirelessXPL-Forge/settings/secrets/actions
+  #   Path B — API token fallback (PYPI_TOKEN secret):
+  #     Add secret at:
+  #     https://github.com/mrhenrike/WirelessXPL-Forge/settings/secrets/actions
+  #     → Name: PYPI_TOKEN  Value: pypi-AgA…
   #
   publish-pypi:
     name: "Publish → PyPI"
@@ -74,19 +79,20 @@ jobs:
           path: dist/
 
       - name: Publish to PyPI (Trusted Publisher / OIDC)
-        if: ${{ vars.PYPI_PUBLISH_MODE != 'token' }}
+        if: ${{ secrets.PYPI_TOKEN == '' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           skip-existing: true
-        continue-on-error: true
-        id: oidc_publish
+          attestations: false
 
-      - name: Publish to PyPI (API token fallback)
-        if: ${{ steps.oidc_publish.outcome == 'failure' || vars.PYPI_PUBLISH_MODE == 'token' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_TOKEN }}
-          skip-existing: true
+      - name: Publish to PyPI (API token via twine)
+        if: ${{ secrets.PYPI_TOKEN != '' }}
+        run: |
+          pip install --quiet twine
+          twine upload dist/* --non-interactive --skip-existing
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
   # ── 3. Create GitHub Release with notes and assets ───────────────────────
   github-release:
