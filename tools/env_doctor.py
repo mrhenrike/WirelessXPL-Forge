@@ -54,6 +54,18 @@ OPTIONAL_BINARIES: Tuple[Tuple[str, str], ...] = (
     ("mitmdump", "mitmproxy transparent proxy (traffic interception)"),
     ("tshark", "Wireshark CLI (packet analysis / credential extraction)"),
     ("tcpdump", "Network packet capture"),
+    ("eaphammer", "WPA-Enterprise evil twin + EAP credential harvesting"),
+    ("wifite", "Automated WiFi audit (wifite2)"),
+    ("reaver", "WPS PIN brute force + Pixie Dust"),
+    ("wash", "WPS AP discovery scanner (reaver suite)"),
+    ("pixiewps", "WPS offline Pixie Dust PIN recovery"),
+    ("bettercap", "WiFi/BLE/MITM Swiss Army knife"),
+    ("mdk4", "802.11 DoS framework (beacon flood, deauth, fuzzer)"),
+    ("btlejack", "BLE sniffing, jamming, hijacking (Micro:Bit)"),
+    ("crackle", "BLE encryption cracking (Just Works / PIN pairing)"),
+    ("oneshot.py", "WPS Pixie Dust without monitor mode"),
+    ("hcxpcapngtool", "PCAP to hashcat conversion (hcxtools)"),
+    ("hcxdumptool", "PMKID capture + L2 association attacks"),
 )
 
 
