@@ -14,10 +14,17 @@ import ast
 import logging
 import os
 import re
+import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, MutableMapping, Set, Tuple
+
+_TOOLS_DIR = Path(__file__).resolve().parent
+if str(_TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(_TOOLS_DIR))
+
+from docgen_stamp import generation_iso_timestamp, repo_label
 
 LOGGER = logging.getLogger("full_catalog")
 RE_CVE = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
@@ -227,7 +234,7 @@ def _build_md(
     cat_stats: Mapping[str, Mapping[str, int]],
 ) -> str:
     """Build the full catalog in Markdown."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = generation_iso_timestamp(repo_root)
 
     # Classify
     exploits = [r for r in records if r["type"] == "exploits"]
@@ -429,7 +436,7 @@ def _build_txt(
     cat_stats: Mapping[str, Mapping[str, int]],
 ) -> str:
     """Build the full catalog in plain text."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = generation_iso_timestamp(repo_root)
     lines: List[str] = [
         "wirelessxpl-Forge - Full Module Catalog",
         "=" * 40,
@@ -469,7 +476,7 @@ def _build_txt(
         "",
         "PROGRAM FOOTPRINT",
         "-" * 20,
-        "Repository root: {}".format(repo_root.resolve()),
+        "Repository root: {}".format(repo_label(repo_root)),
         "Total file bytes: {}".format(_human_bytes(gt)),
         "Files (repo walk, excl. skipped dirs): {}".format(disk.get("repo_files_count", 0)),
         "Files under wirelessxpl/: {}".format(disk.get("wirelessxpl_files_count", 0)),

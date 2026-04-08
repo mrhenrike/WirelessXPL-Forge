@@ -400,7 +400,7 @@ def _osi_tcpip_coverage_section(records: List[ModuleRecord], repo_root: Path) ->
             "|---|---:|",
         ]
     )
-    for layer_name, total in layer_hit_totals.items():
+    for layer_name, total in sorted(layer_hit_totals.items()):
         lines.append("| {} | {} |".format(layer_name, total))
 
     return "\n".join(lines)
