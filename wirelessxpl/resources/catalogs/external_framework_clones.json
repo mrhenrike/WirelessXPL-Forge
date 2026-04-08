@@ -330,6 +330,86 @@
       "license": "GPL-3.0",
       "rxf_module": null,
       "notes": "OPSEC toolkit (Tor, DNSCrypt, MAC spoof). Not WiFi pentest — out of scope for WXF core."
+    },
+    {
+      "id": "armissecurity-blueborne",
+      "clone_url": "https://github.com/ArmisSecurity/blueborne.git",
+      "homepage": "https://www.armis.com/blueborne/",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/blueborne_bridge.py",
+      "notes": "BlueBorne CVE-2017-0781/0785 Android BT RCE + Info Leak PoCs. Python2 pwntools+bluetooth."
+    },
+    {
+      "id": "francozappa-bluffs",
+      "clone_url": "https://github.com/francozappa/bluffs.git",
+      "homepage": "https://francozappa.github.io/about-bluffs/",
+      "license": "MIT",
+      "rxf_module": "generic/external/bluffs_bridge.py",
+      "notes": "BLUFFS CVE-2023-24023 — BT BR/EDR/BLE Forward & Future Secrecy Attacks."
+    },
+    {
+      "id": "hexway-r00kie-kr00kie",
+      "clone_url": "https://github.com/hexway/r00kie-kr00kie.git",
+      "homepage": "https://github.com/hexway/r00kie-kr00kie",
+      "license": "MIT",
+      "rxf_module": "generic/external/kr00k_bridge.py",
+      "notes": "KR00K CVE-2019-15126 — Decrypt WPA2 CCMP frames from Broadcom/Cypress chips after disassoc."
+    },
+    {
+      "id": "vanhoefm-ssid-confusion-hostap",
+      "clone_url": "https://github.com/vanhoefm/ssid-confusion-hostap.git",
+      "homepage": "https://github.com/vanhoefm/ssid-confusion-hostap",
+      "license": "BSD-3-Clause",
+      "rxf_module": "generic/external/ssid_confusion_bridge.py",
+      "notes": "SSID Confusion CVE-2023-52424 — Trick WPA2/WPA3 clients to connect to wrong network."
+    },
+    {
+      "id": "marcnewlin-hi-my-name-is-keyboard",
+      "clone_url": "https://github.com/marcnewlin/hi_my_name_is_keyboard.git",
+      "homepage": "https://github.com/marcnewlin/hi_my_name_is_keyboard",
+      "license": "MIT",
+      "rxf_module": "generic/external/bt_hid_injection_bridge.py",
+      "notes": "BT HID Keystroke Injection CVE-2023-45866 — Unauthenticated keystroke injection via Bluetooth."
+    },
+    {
+      "id": "garbelini-braktooth",
+      "clone_url": "https://github.com/Matheus-Garbelini/braktooth_esp32_bluetooth_classic_attacks.git",
+      "homepage": "https://github.com/Matheus-Garbelini/braktooth_esp32_bluetooth_classic_attacks",
+      "license": "MIT",
+      "rxf_module": "generic/external/braktooth_bridge.py",
+      "notes": "BrakTooth — BT Classic LMP/Baseband 0-day attacks via ESP32 (16+ CVEs, 13+ vendors)."
+    },
+    {
+      "id": "mailinneberg-broadpwn",
+      "clone_url": "https://github.com/mailinneberg/Broadpwn.git",
+      "homepage": "https://github.com/mailinneberg/Broadpwn",
+      "license": "NOASSERTION",
+      "rxf_module": null,
+      "notes": "BroadPwn CVE-2017-9417 — Broadcom BCM43xx WiFi SoC remote exploit (reference/study only)."
+    },
+    {
+      "id": "francozappa-knob",
+      "clone_url": "https://github.com/francozappa/knob.git",
+      "homepage": "https://knobattack.com/",
+      "license": "MIT",
+      "rxf_module": "generic/external/knob_attack_bridge.py",
+      "notes": "KNOB Attack CVE-2019-9506 — BT BR/EDR Key Negotiation entropy reduction."
+    },
+    {
+      "id": "francozappa-bias",
+      "clone_url": "https://github.com/francozappa/bias.git",
+      "homepage": "https://francozappa.github.io/about-bias/",
+      "license": "MIT",
+      "rxf_module": "generic/external/bias_attack_bridge.py",
+      "notes": "BIAS CVE-2020-10135 — Bluetooth Impersonation Attacks on Secure Connections."
+    },
+    {
+      "id": "riverloopsec-killerbee",
+      "clone_url": "https://github.com/riverloopsec/killerbee.git",
+      "homepage": "https://github.com/riverloopsec/killerbee",
+      "license": "BSD-2-Clause",
+      "rxf_module": "generic/external/killerbee_bridge.py",
+      "notes": "KillerBee — Zigbee/IEEE 802.15.4 security research framework (sniffing, injection, replay)."
     }
   ]
 }
