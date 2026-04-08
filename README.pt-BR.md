@@ -2,7 +2,7 @@
 
 > **Framework modular de pesquisa em segurança wireless** para 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID e workflows de laboratório ESP32 — projetado para testes de invasão autorizados, pesquisa e educação.
 
-**Versão:** 1.1.0 | **Licença:** BSD-3-Clause | **Python:** 3.8 – 3.13
+**Versão:** 1.1.1 | **Licença:** BSD-3-Clause | **Python:** 3.8 – 3.13
 
 **Idioma:** **English (en-US):** [README.md](README.md) · **Português (pt-BR)** — padrão desta página
 

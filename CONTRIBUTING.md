@@ -43,7 +43,7 @@ Out-of-scope proposals may be declined or redirected to a specialized fork.
 Include:
 
 - Module path (e.g. `exploits/routers/dlink/dir_815_850l_rce`)
-- Exact command sequence (interactive or `rxf.py -m ... -s ...`)
+- Exact command sequence (interactive or `wxf -m ... -s ...`)
 - OS, Python version, venv vs global
 - Expected vs actual behavior
 - Traceback or `wirelessxpl.log` excerpt **without** real third-party IPs/tokens

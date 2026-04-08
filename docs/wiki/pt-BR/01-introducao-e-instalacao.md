@@ -4,14 +4,13 @@
 
 ## Para que serve o WirelessXPL-Forge
 
-É um **framework modular** em Python para apoiar testes de intrusão **autorizados** contra equipamentos de rede embutidos (roteadores, switches, TAPs, firewalls, NGFW). Os módulos implementam, por exemplo:
+É um **framework modular** em Python para pesquisa e testes **autorizados** em **segurança wireless**: **802.11**, **Bluetooth / BLE**, **Zigbee**, **RFID**, **pipelines PCAP**, fluxos **serial / ESP32 (Bruce)** e **bridges** para ferramentas ofensivas comuns.
 
-- tentativas de login com listas de credenciais;
-- exploração de vulnerabilidades públicas documentadas;
-- varreduras que sugerem módulos aplicáveis;
-- utilitários (PCAP, consulta a CVE embutidas, wordlists, SNMP, etc.).
+**Mapa completo da superfície de ataque (estilo MikrotikAPI-BF — galeria por classe de dispositivo no [README da wiki](../README.md)):**
 
-**Visão de arquitetura (exemplo router SOHO — galeria completa no [README da wiki](../README.md)):**
+![WirelessXPL — mapa completo](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png)
+
+**Exemplo adicional (classe SOHO, vocabulário compartilhado com RouterXPL-Forge em laboratório):**
 
 ![Router SOHO — superfície de ataque e cobertura da ferramenta](../../img/architecture/rxf_arch_router_soho.png)
 
@@ -22,11 +21,23 @@
 ## Requisitos
 
 - **Python 3.8 a 3.13**
-- Dependências em `requirements.txt` (instale com `pip install -r requirements.txt`)
+- Dependências principais com **`pip install wirelessxpl`** (veja abaixo) ou `pip install -r requirements.txt` a partir do clone
 - Em **Python 3.13+**, o pacote `telnetlib3` substitui o `telnetlib` removido da biblioteca padrão
-- Módulos **PCAP** dependem de **Scapy**; instalação do Scapy no Windows pode exigir Npcap/WinPcap para captura ao vivo — para análise **offline** de arquivos `.pcap` costuma bastar o interpretador Python
+- Módulos **PCAP** dependem de **Scapy**; no Windows, captura ao vivo pode exigir Npcap — análise **offline** de `.pcap` costuma bastar o Python
 
-## Instalação
+## Instalação via PyPI (recomendado)
+
+```bash
+python3 -m pip install -U pip
+pip install wirelessxpl
+# extras opcionais:
+pip install "wirelessxpl[serial]"    # pyserial / Bruce ESP32
+pip install "wirelessxpl[ml-lite]"   # ML leve
+```
+
+Após instalar, os entry points **`wxf`** e **`python -m wirelessxpl`** ficam no seu `PATH` (ver [projeto no PyPI](https://pypi.org/project/wirelessxpl/)).
+
+## Instalação a partir do código fonte
 
 ```bash
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
@@ -35,6 +46,7 @@ python3 -m venv .venv
 source .venv/bin/activate   # Linux/macOS
 # .venv\Scripts\activate    # Windows
 python3 -m pip install -r requirements.txt
+pip install -e .   # opcional — modo editável
 ```
 
 ## Diagnóstico
@@ -43,23 +55,27 @@ python3 -m pip install -r requirements.txt
 python tools/env_doctor.py
 ```
 
-Verifica importação de depend núcleo (`requests`, `paramiko`, `pysnmp`, `Crypto`, `setuptools`). **Scapy** não aparece no *doctor* atual; se módulos `generic/pcap/*` falharem ao importar, instale/resolva o Scapy manualmente.
+Verifica importação de dependências núcleo. **Scapy** pode não aparecer no *doctor*; se `generic/pcap/*` falhar, instale o Scapy manualmente.
 
 ## Iniciar o programa
 
 ```bash
-python rxf.py
+wxf
+# ou
+python wxf.py
+# ou
+python -m wirelessxpl
 ```
 
 O shell interativo exige **TTY** (`stdin` interativo). Para automação use o modo `-m`/`-s` (ver [04-modo-nao-interativo.md](04-modo-nao-interativo.md)).
 
 ## Arquivo de log
 
-O arquivo **`wirelessxpl.log`** (na pasta de trabalho de onde você invocou `rxf.py`) recebe mensagens de logging do bootstrap. Gire ou apague o arquivo em ambientes de laboratório para não acumular dados sensíveis.
+O arquivo **`wirelessxpl.log`** (na pasta de trabalho de onde você invocou o comando) recebe mensagens de logging do bootstrap. Gire ou apague o arquivo em ambientes de laboratório para não acumular dados sensíveis.
 
 ## Histórico de comandos
 
-O interpretador usa `~/.rxf_history` (ou equivalente no perfil do usuário) para histórico do *readline*, quando disponível.
+O interpretador usa tipicamente **`~/.wxf_history`** para histórico readline.
 
 ---
 

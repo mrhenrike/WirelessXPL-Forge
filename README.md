@@ -2,7 +2,7 @@
 
 > **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
 
-**Version:** 1.1.0 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13
+**Version:** 1.1.1 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 

@@ -1,0 +1,58 @@
+%% WirelessXPL-Forge — Full attack surface map (MikrotikAPI-BF style, en-US)
+%% Legend: green = mandatory core; orange = access vectors; yellow = optional; blue = targets
+flowchart TB
+  classDef mandatory fill:#27ae60,stroke:#145a32,color:#fff
+  classDef vector fill:#e67e22,stroke:#a04000,color:#fff
+  classDef optional fill:#f1c40f,stroke:#9a7d0a,color:#111
+  classDef target fill:#2980b9,stroke:#1b4f72,color:#fff
+  classDef note fill:#ecf0f1,stroke:#7f8c8d,color:#111
+
+  CORE(("WXF Core<br/>CLI · module engine · Scapy · CVE DB"))
+  subgraph VEC["Access vectors — lab / authorised testing"]
+    W11["802.11 / Wi‑Fi<br/>✓ WPA2/WPA3 · WPE · deauth · PMKID"]
+    BLE["Bluetooth LE / BR<br/>✓ pairing · SweynTooth · Braktooth"]
+    ZB["Zigbee / 802.15.4<br/>✓ KillerBee · replay"]
+    RFID["RFID / NFC<br/>◐ lab modules"]
+    PCAP["PCAP ingest<br/>✓ EAPOL · offline crack pipelines"]
+    SER["Serial / Bruce ESP32<br/>✓ Marauder bridge"]
+    BRG["External bridges<br/>✓ aircrack · hcxdump · mdk4 · wifiphisher"]
+  end
+
+  subgraph OPT["Optional stacks"]
+    ML["ML-lite / signals<br/>◐ optional extra"]
+    TERM["Termux / Android<br/>◐ best-effort"]
+  end
+
+  subgraph TGT["Exploit / analysis targets"]
+    T1["EAPOL / handshake<br/>✓ partial toolchains"]
+    T2["PMKID / hashcat<br/>✓"]
+    T3["Captive / evil twin<br/>✓ bridges"]
+    T4["BLE pairing / keys<br/>✓"]
+    T5["Zigbee keys / firmware<br/>◐"]
+  end
+
+  FOOT["Coverage: Wi‑Fi/BLE/Zigbee/PCAP/bridges ✓ | RFID partial | Targets: see modules · ~29 CVE refs in catalog · wirelessxpl"]
+
+  CORE --- W11
+  CORE --- BLE
+  CORE --- ZB
+  CORE --- RFID
+  CORE --- PCAP
+  CORE --- SER
+  CORE --- BRG
+  CORE -.-> ML
+  CORE -.-> TERM
+  W11 --> T1
+  W11 --> T2
+  PCAP --> T1
+  PCAP --> T2
+  BRG --> T3
+  BLE --> T4
+  ZB --> T5
+  CORE --> FOOT
+
+  class CORE mandatory
+  class W11,BLE,ZB,RFID,PCAP,SER,BRG vector
+  class ML,TERM optional
+  class T1,T2,T3,T4,T5 target
+  class FOOT note
