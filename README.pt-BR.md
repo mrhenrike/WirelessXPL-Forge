@@ -1,176 +1,208 @@
 # WirelessXPL-Forge
 
-**Idioma:** **Português (pt-BR)**. **English (en-US, padrão do repositório):** [README.md](README.md)
+> **Framework modular de pesquisa em segurança wireless** para 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID e workflows de laboratório ESP32 — projetado para testes de invasão autorizados, pesquisa e educação.
 
-Framework open source para testes de segurança em **dispositivos embutidos**, com foco em **roteadores, switches camada 2–3, TAPs e edge SOHO/CPE**. **Firewall / NGFW / UTM / WAF / perímetro em nuvem** ficam no projeto irmão [**FirewallXPL-Forge**](https://github.com/mrhenrike/FirewallXPL-Forge) (fork privado de laboratório).
+**Versão:** 1.1.0 | **Licença:** BSD-3-Clause | **Python:** 3.8 – 3.13
 
-**Mantenedor:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| [União Geek](https://github.com/Uniao-Geek)  
-**Linhagem upstream:** [threat9/routersploit](https://github.com/threat9/routersploit)
+**Idioma:** **English (en-US):** [README.md](README.md) · **Português (pt-BR)** — padrão desta página
 
 [![Python 3.8–3.13](https://img.shields.io/badge/Python-3.8--3.13-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions)
+[![CI](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml)
+[![Release](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/release.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/release.yml)
+[![PyPI](https://img.shields.io/pypi/v/wirelessxpl.svg)](https://pypi.org/project/wirelessxpl/)
+[![Licença](https://img.shields.io/badge/Licença-BSD%203--Clause-blue.svg)](LICENSE)
 
 ---
 
-## O que o projeto faz
+## Sobre o Projeto
 
-O WirelessXPL-Forge organiza **módulos** que apoiam avaliações autorizadas (pentest, laboratório, red team controlado):
+O **WirelessXPL-Forge (WXF)** é um shell interativo e framework de módulos para pesquisa em segurança wireless. Ele oferece:
 
-| Tipo | Função |
-|------|--------|
-| **exploits** | Abuso de vulnerabilidades conhecidas (com `check()` quando implementado) |
-| **creds** | Teste de credenciais padrão e força bruta em serviços de rede |
-| **scanners** | Identificação de superfície vulnerável; **autopwn** orquestra módulos com perfis de tempo estilo Nmap |
-| **generic** | Utilitários transversais: SNMP, SSDP, PCAP/Wi‑Fi offline, **CVE lookup**, gerador de wordlists, Bluetooth LE |
-| **payloads** | Geração de cargas por arquitetura (ARM/MIPS/x86, shells reversas/bind) |
-| **encoders** | Codificação de payloads (Python, PHP, Perl) |
+- Uma **CLI estilo Metasploit** (`use`, `set`, `run`, `search device=wifi`) para workflows de ataque e análise wireless
+- Módulos Python nativos para **FragAttacks**, **KRACK**, **WPA3/Dragonblood**, **ataques BLE pairing**, **Braktooth**, **BlueBorne**, **AWDL**, **Zigbee/KillerBee**, e muito mais
+- **Módulos bridge** para ferramentas externas: `aircrack-ng`, `hcxdumptool`, `mdk4`, `wifiphisher`, `eaphammer`, `airgeddon`, `bettercap`, `btlejack`, `opendrop`
+- **Orquestração serial** para **firmware Bruce** (ESP32 Marauder) com perfis de fluxo semiautônomos
+- **Catálogos upstream** rastreando a incorporação de issues/PRs da comunidade em 15+ repositórios de pesquisa de segurança
+- **Pipelines de análise PCAP**: EAPOL 4-way, PMKID, TKIP, Dragonblood, WPE, BLE, workspace SQL para PCAPs
 
-**Fora de escopo neste repositório:** módulos voltados a câmeras IP, impressoras e DVRs como alvo principal.
+**Projetos irmãos:** [RouterXPL-Forge](https://github.com/mrhenrike/RouterXPL-Forge) (roteadores/switches) · [FirewallXPL-Forge](https://github.com/mrhenrike/FirewallXPL-Forge) (NGFW/UTM, privado)
 
-### Arquitetura e superfície de ataque (por categoria)
+**Linhagem:** [threat9/routersploit](https://github.com/threat9/routersploit) → RouterXPL-Forge → fork wireless
 
-Diagramas estilo hub-and-spoke (mesma linha do [MikrotikAPI-BF](https://github.com/mrhenrike/MikrotikAPI-BF), `img/mikrotik_*`): núcleo do equipamento, **vetores de entrada** remotos e correspondência com cobertura **WirelessXPL-Forge**. Fontes Mermaid: [docs/diagrams/architecture/](docs/diagrams/architecture/).
-
-| Router SOHO | Switch L2–L3 gerido |
-|:---:|:---:|
-| ![Router SOHO — superfície e cobertura RXF](docs/img/architecture/rxf_arch_router_soho.png) | ![Switch — superfície e cobertura RXF](docs/img/architecture/rxf_arch_switch_l2l3.png) |
-
-| NGFW / UTM | CPE ISP / gateway residencial |
-|:---:|:---:|
-| ![NGFW UTM — superfície e cobertura RXF](docs/img/architecture/rxf_arch_ngfw_utm.png) | ![CPE ISP — superfície e cobertura RXF](docs/img/architecture/rxf_arch_isp_cpe.png) |
-
-| Edge misto (router + UTM-lite) |
-|:---:|
-| ![Edge misto — superfície e cobertura RXF](docs/img/architecture/rxf_arch_edge_mixed.png) |
+**Mantenedor:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://github.com/Uniao-Geek)
 
 ---
 
-## Documentação wiki
+## Pré-requisitos do sistema (não inclusos)
 
-- **Português (pt-BR):** [docs/wiki/pt-BR/README.md](docs/wiki/pt-BR/README.md)  
-- **English (en-US):** [docs/wiki/en-US/README.md](docs/wiki/en-US/README.md)  
-- **Hub:** [docs/wiki/README.md](docs/wiki/README.md)
+| Ferramenta | Função |
+|------------|--------|
+| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — usado por módulos PCAP e wifi_lab |
+| **hcxtools / hcxdumptool** | Captura PMKID e conversão de hash para hashcat |
+| **hashcat** | Cracking offline WPA2/WPA3 (modos 22000/22001) |
+| **tshark** *(opcional)* | Dissecção BLE / 802.11 quando camadas Scapy são insuficientes |
+| **mdk4 / mdk3** *(opcional)* | Tempestades de deauth, beacon floods, mesh flooding |
+| **hostapd + dnsmasq** *(opcional)* | Rogue AP / evil-twin + DHCP/DNS para portais cativos |
+| **wifiphisher** *(opcional)* | Campanhas de phishing via módulo bridge |
+| **eaphammer** *(opcional)* | Captura de credenciais EAP/PEAP |
+| **airgeddon** *(opcional)* | Menu de múltiplos ataques (bridge disponível) |
+| **btlejack** *(opcional)* | BLE sniff/jam/hijack |
+| **opendrop / owl** *(opcional)* | Workflows de laboratório AWDL/AirDrop |
+| **Bruce ESP32 firmware** *(opcional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — wardriving portátil; exporte PCAP para `generic/pcap/*` |
+| **pyserial** *(opcional)* | Bridge serial para firmware Bruce (`pip install wirelessxpl[serial]`) |
+
+Execute `use generic/external/wireless_tool_prereq_audit` após a instalação para verificar seu PATH.
 
 ---
 
-## Instalação rápida
+## Instalação Rápida
 
-### Dependências (`requirements.txt`)
+### Via PyPI
 
-- `requests`, `paramiko`, `pysnmp`, `pycryptodome`, `scapy`, `setuptools`
-- `telnetlib3` em Python ≥ 3.13
+```bash
+pip install wirelessxpl
+# com suporte serial para Bruce/ESP32:
+pip install "wirelessxpl[serial]"
+# com classificação ML de sinal:
+pip install "wirelessxpl[ml-lite]"
+```
 
-### Clonar e executar
+### Via código fonte
 
 ```bash
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
 cd WirelessXPL-Forge
-python3 -m venv .venv
-# Linux/macOS:
-source .venv/bin/activate
-# Windows:
-# .venv\Scripts\activate
-python3 -m pip install -r requirements.txt
-python3 rxf.py
+pip install -r requirements.txt
+python wxf.py
+# ou
+python -m wirelessxpl
+# ou (após pip install -e .)
+wxf
 ```
 
-### Diagnóstico do ambiente
+### WSL2 / Kali (recomendado para ferramentas de captura)
 
 ```bash
-python tools/env_doctor.py
+sudo apt install aircrack-ng hcxtools hcxdumptool mdk4 hostapd dnsmasq tshark
+pip install wirelessxpl
 ```
 
 ---
 
-## Uso resumido
+## Uso Rápido
 
-### Shell interativo
-
-Após `python rxf.py`:
-
-```text
-help
-use creds/generic/ssh_default
-set target 192.168.0.1
-show options
-show info
-check
-run
-back
-search type=exploits vendor=linksys wrt
-exec uname -a
-exit
+```
+$ python wxf.py
+wxf > help
+wxf > show modules
+wxf > search device=wifi
+wxf > search device=bluetooth
+wxf > use generic/wifi_lab/handshake_snooper
+wxf (HandshakeSnooper) > show options
+wxf (HandshakeSnooper) > set interface wlan0mon
+wxf (HandshakeSnooper) > set target_bssid AA:BB:CC:DD:EE:FF
+wxf (HandshakeSnooper) > run
 ```
 
-### Modo não interativo
+### Modo não-interativo (scripts)
 
 ```bash
-python rxf.py -m creds/generic/ssh_default -s "target 192.168.0.1" -s "port 22"
+python wxf.py -m generic/wifi_lab/handshake_snooper \
+  interface=wlan0mon target_bssid=AA:BB:CC:DD:EE:FF
 ```
 
-### Logs
+---
 
-O bootstrap regista em **`wirelessxpl.log`**.
+## Referência de Módulos
+
+### Wi-Fi / 802.11 (generic/wifi_lab)
+
+| Módulo | Descrição |
+|--------|-----------|
+| `fragattacks` | FragAttacks (CVE-2020-26140+) — injeção de frames + detecção 802.11ax |
+| `handshake_snooper` | Pipeline PMKID-first + captura de handshake por deauth |
+| `wpa3_attack_suite` | Dragonblood SAE flood, CSA+harvest, Double SSID, downgrade |
+| `auth_flood` | Auth/EAPOL flood, amok mode, mesh flood (backend mdk4) |
+| `evil_twin_workflow` | Evil-twin completo com verificação pós-captura (aircrack-ng) |
+| `captive_portal_modern_lab` | Portal cativo moderno com coletor de credenciais HTML/JS |
+| `mitm_wifi_bridge` | ARP/DNS spoofing + Ghost combo (bettercap) |
+| `adaptive_harvest` | Harvesting adaptativo de canais/PMKID guiado por score |
+| `wardriving_deauth_loop` | Ciclos automatizados de scan/deauth/captura (wardriving) |
+| `wireless_ids` | IDS leve: baseline de BSSID + detecção de rogue AP |
+| `awdl_attack` | AWDL/AirDrop (opendrop + owl) — discover, send, DoS |
+| `momo_integrated_attack` | Orquestração KARMA + PMKID-first + downgrade |
+
+### Bluetooth / BLE (generic/bluetooth)
+
+| Módulo | Descrição |
+|--------|-----------|
+| `bt_hid_injection` | Injeção de teclado HID Bluetooth (fallback Broadcom) |
+| `bt_baseband_attack` | BrakTooth / SweynTooth via serial ESP32 |
+| `bt_session_attack` | Ataques de sessão KNOB, BIAS, BLUFFS |
+| `blueborne_attack` | BlueBorne L2CAP overflow (perfis de offset de kernel) |
+| `ble_btlejack` | BTLEJack BLE sniff/jam/hijack |
+
+### Bridge ESP32 / Bruce (generic/external)
+
+| Módulo | Descrição |
+|--------|-----------|
+| `bruce_serial_bridge` | Engine de fluxo serial para firmware Bruce ESP32 (15+ perfis) |
+| `bruce_upstream_tracker` | Visualizador de catálogo de issues/PRs do firmware Bruce |
+| `airgeddon_bridge` | Bridge multi-modo para Airgeddon |
+| `wifiphisher_bridge` | Bridge Wifiphisher com sniffer embutido |
+| `eaphammer_bridge` | Bridge EAPHammer (PEAP Win11 + coerção HTTP) |
 
 ---
 
-## Governança (bilíngue)
+## Integração Bruce / ESP32 Marauder
 
-| Português (pt-BR) | English (default) |
-|-------------------|-------------------|
-| [CONTRIBUTING.pt-BR.md](CONTRIBUTING.pt-BR.md) | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| [CODE_OF_CONDUCT.pt-BR.md](CODE_OF_CONDUCT.pt-BR.md) | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
-| [SECURITY.pt-BR.md](SECURITY.pt-BR.md) | [SECURITY.md](SECURITY.md) |
-| [CONTRIBUTORS.pt-BR.md](CONTRIBUTORS.pt-BR.md) | [CONTRIBUTORS.md](CONTRIBUTORS.md) |
+O WXF inclui um engine completo de fluxo serial para o [BruceDevices/firmware](https://github.com/BruceDevices/firmware):
 
----
-
-## Outros recursos
-
-| Caminho | Conteúdo |
-|---------|----------|
-| [docs/README.md](docs/README.md) · [docs/README.pt-BR.md](docs/README.pt-BR.md) | Hub da pasta `docs/` |
-| [docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md) | Matriz de cobertura |
-| [docs/FULL_CATALOG.md](docs/FULL_CATALOG.md) | Catálogo ampliado |
-
----
-
-## Notas de versão — 3.4.9
-
-- **Divisão de repositório:** Módulos de **perímetro** (Fortinet, WatchGuard, *appliances* Cisco de segurança empresarial, edge estilo pfSense/IPFire, scanner **FortiGate SSL VPN**, etc.) foram movidos para [**FirewallXPL-Forge**](https://github.com/mrhenrike/FirewallXPL-Forge). O WirelessXPL-Forge mantém roteadores SOHO, switches, TAPs e um escopo de borda mais leve; catálogos e documentação foram regenerados.
-- **Ferramentas:** `tools/bootstrap_firewallxpl_forge.py` (clone + *slim* + renomear para `firewallxpl`) e `tools/trim_wirelessxpl_edge_scope.py` (aparar esta árvore após o *split*).
-
-## Notas de versão — 3.4.8
-
-- **Catálogo CVE:** `cve_extended_catalog.json` passa a fundir a matriz estática, *hints* de `external_tool_intel_sources.json`, CVEs citados em `wirelessxpl/modules`, o conjunto em `_EMBEDDED_CVES`, `related_cves_hint` do Discord e **URLs de repositórios PoC** normalizados a partir do tg12 `cve_links.txt` vendored (só IDs em âmbito edge/WirelessXPL).
-- **Documentação:** `FULL_CATALOG` inclui **pegada em disco**, pastas mais pesadas e contagens de `.py` de primeira parte (`tools/generate_full_catalog.py`).
-- **Exploit-DB offline:** `generic/external/exploitdb_embedded_lookup` pesquisa o `files_exploits.csv` do espelho local (sem CLI `searchsploit`); o antigo módulo ponte SearchSploit foi removido.
-- **Arsenal:** espelhos PoC de terceiros em `wirelessxpl/resources/arsenal/pocs/incorporated_third_party/` (Exploit-DB GPLv2 e repos curados); índices JSON em `wirelessxpl/resources/catalogs/`. Catálogo SOHO estático + `scanners/misc/soho_exploit_catalog_server` para visualização HTTP em laboratório.
-
----
-
-## Testes sugeridos (contribuidores)
-
-```bash
-python tools/compat_smoke.py
-python tools/validate_market_priority_minimums.py
-python tools/generate_coverage_matrix.py
 ```
+wxf > use generic/external/bruce_serial_bridge
+wxf (BruceSerialBridge) > set serial_port /dev/ttyACM0
+wxf (BruceSerialBridge) > set flow_profile capture_handshake_flow
+wxf (BruceSerialBridge) > run
+
+# Perfis de fluxo disponíveis:
+#   baseline_status_flow            capture_handshake_flow
+#   wifi_menu_navigation_flow       deauth_clone_verify_flow
+#   sniffer_capture_flow            evil_portal_karma_flow
+#   wifi_attack_lab_flow            raw_sniffer_probe_flow
+#   wifi_bruteforce_recon_flow      navigation_recovery_flow
+#   captive_portal_endpoint_config_flow
+#   repeater_wisp_setup_flow        external_adapter_probe_flow
+#   webui_password_flow             target_attack_stability_flow
+#   ble_recon_spam_flow             ble_badble_recovery_flow
+#   rf_spectrum_scan_flow           rf_jammer_stability_flow
+```
+
+---
+
+## Documentação e Wiki
+
+- **[docs/wiki/en-US/](docs/wiki/en-US/)** — Inglês (padrão)
+- **[docs/wiki/pt-BR/](docs/wiki/pt-BR/)** — Português
+- **[docs/FULL_CATALOG.md](docs/FULL_CATALOG.md)** — catálogo completo de módulos
+- **[docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md)** — matriz de cobertura de dispositivos
+
+---
+
+## Contribuindo
+
+Veja [CONTRIBUTING.pt-BR.md](CONTRIBUTING.pt-BR.md) e [CONTRIBUTORS.pt-BR.md](CONTRIBUTORS.pt-BR.md).  
+Leia nosso [Código de Conduta](CODE_OF_CONDUCT.pt-BR.md) e a [Política de Segurança](SECURITY.pt-BR.md).
 
 ---
 
 ## Licença
 
-BSD — ver [LICENSE](LICENSE).
+BSD 3-Clause License — veja [LICENSE](LICENSE) para detalhes.
+
+**O WirelessXPL-Forge é destinado exclusivamente para pesquisa de segurança e educação autorizadas.**  
+O uso contra sistemas que você não possui ou não tem permissão escrita explícita para testar é ilegal.
 
 ---
 
-## Agradecimentos
-
-- [Riposte](https://github.com/fwkz/riposte)
-- [threat9/routersploit](https://github.com/threat9/routersploit)
-- [CONTRIBUTORS.md](CONTRIBUTORS.md)
-
----
-
-> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+**Autor:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://github.com/Uniao-Geek)  
+**Linhagem:** [threat9/routersploit](https://github.com/threat9/routersploit) → RouterXPL-Forge → WirelessXPL-Forge

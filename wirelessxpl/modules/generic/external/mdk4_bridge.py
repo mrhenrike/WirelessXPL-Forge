@@ -10,7 +10,7 @@ Improvements from upstream aircrack-ng/mdk4 issues:
   - Deauth speed tuning documentation (issue #105)
   - Mesh network mode guidance (issue #116)
 
-Version: 1.1.0
+Version: 1.2.0
 """
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ class Exploit(Exploit):
     interface = OptString("", "Interface Wi-Fi (modo monitor)")
     mode = OptString(
         "b",
-        "Modo: b|a|p|d|m|e|w|f|s|x (ver manual mdk4)",
+        "Modo: b|a|p|d|m|e|w|f|s|x|mesh (mesh = alias para s)",
     )
     target_bssid = OptMAC("", "BSSID alvo (ex.: deauth: -B; auth DoS: -a)")
     target_client = OptMAC("", "MAC estação alvo (ex.: deauth: -S)")
@@ -92,6 +92,8 @@ class Exploit(Exploit):
             raise ValueError("Defina interface (modo monitor).")
 
         mode = str(self.mode).strip().lower()
+        if mode == "mesh":
+            mode = "s"
         if len(mode) != 1 or mode not in _VALID_MODES:
             raise ValueError(
                 "mode deve ser um de: {}.".format(", ".join(sorted(_VALID_MODES))),

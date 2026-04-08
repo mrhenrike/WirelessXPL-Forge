@@ -278,6 +278,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
         self.modules_count = Counter()
         self.modules_count.update([module.split('.')[0] for module in self.modules])
         self.main_modules_dirs = [module for module in os.listdir(MODULES_DIR) if not module.startswith("__")]
+        self._module_device_index = {}
+        self._search_devices_cache = set()
 
         self.__parse_prompt()
 
@@ -393,6 +395,69 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 sep = ""
             matches.add("".join((text, head, sep)))
         return list(map(humanize_path, matches))  # humanize output, replace dots to forward slashes
+
+    @staticmethod
+    def _normalize_device_name(value):
+        if not isinstance(value, str):
+            return ""
+        return value.strip().lower().replace("-", "").replace("_", "").replace(" ", "")
+
+    @staticmethod
+    def _expand_device_aliases(device_name):
+        aliases = {device_name}
+        alias_map = {
+            "wifi": {"wlan", "wireless", "80211", "wpa", "wpa2", "wpa3"},
+            "bluetooth": {"bt", "ble", "bluetoothclassic"},
+            "ble": {"bluetooth", "bt"},
+            "zigbee": {"ieee802154", "802154"},
+            "awdl": {"airdrop", "applewirelessdirectlink"},
+            "rfid": {"nfc"},
+        }
+        aliases.update(alias_map.get(device_name, set()))
+        return aliases
+
+    def _build_module_device_index(self):
+        if self._module_device_index:
+            return
+
+        for module in self.modules:
+            module_devices = set()
+
+            # Path-based hints provide a robust fallback even when module metadata is missing.
+            path_tokens = module.split(".")
+            if "wifi_lab" in path_tokens or "external" in path_tokens:
+                module_devices.add("wifi")
+            if "bluetooth" in path_tokens:
+                module_devices.update({"bluetooth", "ble"})
+            if "zigbee" in path_tokens:
+                module_devices.add("zigbee")
+            if "rfid" in path_tokens:
+                module_devices.add("rfid")
+            if "awdl" in path_tokens:
+                module_devices.add("awdl")
+
+            try:
+                exploit_cls = import_exploit("wirelessxpl.modules.{}".format(module))
+                info = getattr(exploit_cls, "_{}__info__".format(exploit_cls.__name__), {})
+                for raw_device in info.get("devices", []):
+                    if isinstance(raw_device, dict):
+                        device_name = raw_device.get("name", "")
+                    else:
+                        device_name = raw_device
+                    normalized = self._normalize_device_name(device_name)
+                    if normalized:
+                        module_devices.update(self._expand_device_aliases(normalized))
+            except WirelessXPLException:
+                # Keep fallback path-based classification when a module fails metadata import.
+                pass
+            except Exception:
+                # Guard against third-party import side effects during index build.
+                pass
+
+            self._module_device_index[module] = module_devices
+
+        for devs in self._module_device_index.values():
+            self._search_devices_cache.update(devs)
 
     def suggested_commands(self):
         """ Entry point for intelligent tab completion.
@@ -573,7 +638,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         print_info()
 
     @module_required
-    def _show_devices(self, *args, **kwargs):  # TODO: cover with tests
+    def _show_devices(self, *args, **kwargs):
         try:
             devices = self.current_module._Exploit__info__['devices']
 
@@ -656,10 +721,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
     def command_search(self, *args, **kwargs):
         mod_type = ''
-        mod_detail = ''
+        mod_device = ''
         mod_vendor = ''
         existing_modules = [name for _, name, _ in pkgutil.iter_modules([MODULES_DIR])]
-        devices = [name for _, name, _ in pkgutil.iter_modules([os.path.join(MODULES_DIR, 'exploits')])]
+        self._build_module_device_index()
+        devices = sorted(self._search_devices_cache)
 
         try:
             keyword = args[0].strip("'\"").lower()
@@ -678,10 +744,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
                     return
                 mod_type = "{}.".format(value)
             elif key == 'device':
-                if value not in devices:
+                normalized_device = self._normalize_device_name(value)
+                if normalized_device not in devices:
                     print_error("Unknown device type.")
                     return
-                mod_detail = ".{}.".format(value)
+                mod_device = normalized_device
             elif key == 'vendor':
                 # print_info(' - Vendor:\t{}'.format(value))
                 mod_vendor = ".{}.".format(value)
@@ -689,8 +756,10 @@ class WirelessXPLInterpreter(BaseInterpreter):
         for module in self.modules:
             if mod_type not in str(module):
                 continue
-            if mod_detail not in str(module):
-                continue
+            if mod_device:
+                module_devices = self._module_device_index.get(module, set())
+                if mod_device not in module_devices:
+                    continue
             if mod_vendor not in str(module):
                 continue
             if not all(word in str(module) for word in keyword.split()):
