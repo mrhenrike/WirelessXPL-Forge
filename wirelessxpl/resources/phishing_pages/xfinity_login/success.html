@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connected</title>
+    <title>{{title_success}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: linear-gradient(160deg, #0a1628 0%, #132a4a 50%, #0d2138 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; }
@@ -17,9 +17,9 @@
 <body>
     <div class="card">
         <div class="check">✓</div>
-        <h1>You’re connected</h1>
-        <p>Your device is now authorized on this network. You can close this window and continue browsing.</p>
-        <span class="tag">Session active</span>
+        <h1>{{success_heading}}</h1>
+        <p>{{success_message}}</p>
+        <span class="tag">{{success_tag}}</span>
     </div>
 </body>
 </html>
