@@ -23,8 +23,9 @@ Improvements incorporated from upstream riverloopsec/killerbee:
   - APS CMD payload parsing for NWK key disclosure (PR #260)
   - Python 3.10+ compatibility (PR #270, issue #258)
   - pycryptodome migration (issue #273)
+  - Updated Sewio sniffer driver reference (PR #285)
 
-Version: 1.1.0
+Version: 1.2.0
 """
 
 from __future__ import annotations
@@ -275,6 +276,7 @@ class Exploit(Exploit):
         "references": (
             "https://github.com/riverloopsec/killerbee",
             "https://github.com/riverloopsec/killerbee/wiki",
+            "https://github.com/riverloopsec/killerbee/blob/develop/killerbee/dev_sewio.py",
         ),
         "devices": ("zigbee", "ieee802154"),
     }

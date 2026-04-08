@@ -1,0 +1,105 @@
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "wirelessxpl"
+version = "1.1.0"
+description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "André Henrique (@mrhenrike) | União Geek", email = "contact@uniao-geek.dev" },
+]
+maintainers = [
+    { name = "André Henrique (@mrhenrike) | União Geek", email = "contact@uniao-geek.dev" },
+]
+keywords = [
+    "wireless", "wifi", "wpa", "wpa3", "bluetooth", "ble", "zigbee", "rfid",
+    "security", "pentest", "exploit", "802.11", "esp32", "marauder", "bruce",
+    "handshake", "pmkid", "deauth", "fragattacks", "krack", "dragonblood",
+    "evilportal", "captiveportal", "wardriving", "aircrack", "hcxdumptool",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.32.4",
+    "pycryptodome",
+    "scapy",
+    "setuptools",
+    "telnetlib3; python_version >= '3.13'",
+    "qrcode[pil]",
+]
+
+[project.optional-dependencies]
+serial = ["pyserial"]
+ml-gpu = ["torch>=2.0.0", "numpy>=1.24", "scikit-learn>=1.3", "joblib"]
+ml-lite = ["numpy>=1.24", "scikit-learn>=1.3", "joblib"]
+gpu-opencl = ["pyopencl", "numpy>=1.24"]
+dev = [
+    "pytest",
+    "pytest-forked",
+    "pytest-xdist",
+    "flake8",
+    "pip-audit",
+    "bandit",
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/mrhenrike/WirelessXPL-Forge"
+Repository = "https://github.com/mrhenrike/WirelessXPL-Forge"
+Documentation = "https://github.com/mrhenrike/WirelessXPL-Forge/wiki"
+"Bug Tracker" = "https://github.com/mrhenrike/WirelessXPL-Forge/issues"
+Changelog = "https://github.com/mrhenrike/WirelessXPL-Forge/releases"
+"Source Code" = "https://github.com/mrhenrike/WirelessXPL-Forge"
+
+[project.scripts]
+wxf = "wirelessxpl.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["wirelessxpl*"]
+
+[tool.setuptools.package-data]
+wirelessxpl = [
+    "resources/**/*.json",
+    "resources/**/*.csv",
+    "resources/**/*.yaml",
+    "modules/**/*.py",
+]
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E501"]
+exclude = [".git", "__pycache__", ".tmp", ".log", "routerxpl.egg-info"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

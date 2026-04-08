@@ -49,7 +49,7 @@ class Exploit(Exploit):
             ("reaver", "WPS attack suite companion"),
             ("pixiewps", "WPS offline seed attack helper"),
             ("john", "John the Ripper — supplemental WPA wordlist attacks"),
-            ("airgeddon", "Airgeddon multi-attack menu (if installed)"),
+            ("airgeddon", "Airgeddon multi-attack menu (if installed; tmux mouse mode supported in modern releases)"),
             ("bluetoothctl", "BlueZ — BLE/Wi-Fi co-resident radio labs"),
             ("gpspipe", "gpsd client — NMEA for wardriving correlation"),
         )

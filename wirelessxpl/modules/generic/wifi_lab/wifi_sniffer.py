@@ -34,6 +34,12 @@ from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_
 
 logger = logging.getLogger(__name__)
 
+try:
+    from scapy.all import sniff, wrpcap
+    HAS_SCAPY = True
+except ImportError:
+    HAS_SCAPY = False
+
 
 class Exploit(Exploit):
     """Wi-Fi traffic sniffer with credential extraction."""
@@ -152,6 +158,22 @@ class Exploit(Exploit):
                     f.write(json.dumps(c) + "\n")
             print_success("Extracted {} credentials → {}".format(len(creds), cred_path))
 
+    def _run_scapy(self) -> None:
+        """Capture traffic with Scapy and save to PCAP."""
+        if not HAS_SCAPY:
+            print_error("Scapy backend selected, but scapy is not installed.")
+            return
+        output = Path(self.capture_file)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        timeout = int(self.duration) if int(self.duration) > 0 else None
+        print_status("Scapy capturing on {} → {}".format(self.interface, output))
+        try:
+            packets = sniff(iface=self.interface, timeout=timeout, store=True)
+            if packets:
+                wrpcap(str(output), packets)
+        except KeyboardInterrupt:
+            print_info("\nScapy capture stopped.")
+
     def run(self) -> None:
         """Execute Wi-Fi sniffer."""
         valid = ("scapy", "tcpdump", "tshark")
@@ -172,8 +194,7 @@ class Exploit(Exploit):
         elif self.backend == "tshark":
             self._run_tshark()
         elif self.backend == "scapy":
-            print_error("Scapy sniffer not yet implemented. Use tcpdump or tshark.")
-            return
+            self._run_scapy()
 
         if self.extract_creds:
             self._extract_from_pcap()

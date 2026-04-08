@@ -13,12 +13,13 @@ wifipumpkin3 is a powerful framework with capabilities beyond basic evil twin:
   - REST API for remote control
   - Deauthentication module (Scapy-based)
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
 
 import logging
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -65,6 +66,16 @@ class Exploit(Exploit):
     rest_api = OptBool(False, "Start REST API for remote control")
     pulp_script = OptString("", "Path to .pulp script for automated setup")
     dry_run = OptBool(False, "Print command without executing")
+
+    @staticmethod
+    def _sanitize_url(value: str) -> str:
+        """Normalize URL to reduce parser crashes in upstream tools."""
+        url = (value or "").strip()
+        if not url:
+            return ""
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", url):
+            url = "https://" + url
+        return url.replace(" ", "%20")
 
     def _find_wp3(self) -> Optional[str]:
         """Locate wifipumpkin3 binary."""
@@ -126,11 +137,15 @@ class Exploit(Exploit):
         elif self.mode == "phishkin3":
             lines.append("set proxy phishkin3")
             if self.phishkin3_url:
-                lines.append("set phishkin3.cloud_url_phishing {}".format(self.phishkin3_url))
+                safe = self._sanitize_url(self.phishkin3_url)
+                if safe:
+                    lines.append("set phishkin3.cloud_url_phishing {}".format(safe))
         elif self.mode == "evilqr3":
             lines.append("set proxy evilqr3")
             if self.evilqr3_url:
-                lines.append("set evilqr3.url {}".format(self.evilqr3_url))
+                safe = self._sanitize_url(self.evilqr3_url)
+                if safe:
+                    lines.append("set evilqr3.url {}".format(safe))
         elif self.mode == "pumpkinproxy":
             lines.append("set proxy pumpkinproxy")
         elif self.mode == "sniffkin3":
@@ -145,6 +160,10 @@ class Exploit(Exploit):
     def run(self) -> None:
         """Execute wifipumpkin3 as subprocess."""
         try:
+            if self.mode in ("phishkin3", "evilqr3"):
+                # Pre-sanitize externally supplied URLs (issue #261 hardening).
+                self.phishkin3_url = self._sanitize_url(self.phishkin3_url)
+                self.evilqr3_url = self._sanitize_url(self.evilqr3_url)
             cmd = self._build_command()
         except FileNotFoundError as err:
             print_error(str(err))

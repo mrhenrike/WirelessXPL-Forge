@@ -88,6 +88,7 @@ class Exploit(Exploit):
         filt = str(self.tag_filter).strip().lower()
         ok = 0
         shown = 0
+        mapped = 0
         for row in rows:
             tags = [str(t).lower() for t in (row.get("tags") or ())]
             if filt and not any(filt in t for t in tags):
@@ -101,6 +102,10 @@ class Exploit(Exploit):
                 print_success("{} → {} [{}]".format(row.get("slug"), p, ", ".join(row.get("tags") or [])))
             else:
                 print_error("{} — missing or empty: {}".format(row.get("slug"), p))
+            wxf_module = str(row.get("wxf_module") or "").strip()
+            if wxf_module:
+                mapped += 1
+                print_info("  wxf_module: {}".format(wxf_module))
             note = row.get("notes")
             if note:
                 print_status("  note: {}".format(note))
@@ -108,3 +113,4 @@ class Exploit(Exploit):
             print_error("No catalog entries matched tag_filter.")
             return
         print_status("Present: {}/{} entries (after tag filter).".format(ok, shown))
+        print_status("WXF mapped modules: {}/{} entries.".format(mapped, shown))
