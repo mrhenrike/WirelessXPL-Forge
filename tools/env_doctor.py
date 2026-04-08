@@ -74,6 +74,13 @@ OPTIONAL_BINARIES: Tuple[Tuple[str, str], ...] = (
     ("isf", "Industrial Exploitation Framework (ICS/SCADA)"),
     ("aescrypt2", "Huawei router config decryption"),
     ("hw_passwd", "Huawei password decoder"),
+    ("zbstumbler", "KillerBee Zigbee scanner (802.15.4)"),
+    ("zbdump", "KillerBee Zigbee packet capture"),
+    ("zbreplay", "KillerBee Zigbee packet replay/injection"),
+    ("zbassocflood", "KillerBee Zigbee association flood DoS"),
+    ("gatttool", "BlueZ BLE GATT interaction tool"),
+    ("bluetoothctl", "BlueZ Bluetooth controller CLI"),
+    ("bt_exploiter", "BrakTooth ESP32 BT Classic attack tool"),
 )
 
 
