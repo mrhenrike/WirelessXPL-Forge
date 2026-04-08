@@ -116,15 +116,29 @@ def _disk_snapshot(repo_root: Path) -> Dict[str, Any]:
 
 
 def _disk_snapshot_git(repo_root: Path) -> Dict[str, Any] | None:
-    """Aggregate sizes from ``git ls-tree`` at HEAD (stable across OS/checkouts).
+    """Aggregate sizes from ``git ls-tree`` for the current index (``write-tree``).
 
-    Uses blob sizes recorded in git, so line-ending differences in the working
-    tree do not change CI vs developer regeneration output.
+    Uses blob sizes from the object database. The index tree matches ``HEAD`` on
+    clean checkouts (CI) and matches the next commit after ``git add`` locally,
+    so regeneration is stable relative to committed artifacts.
     """
 
     try:
+        wt = subprocess.run(
+            ["git", "write-tree"],
+            cwd=str(repo_root.resolve()),
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        if wt.returncode != 0:
+            return None
+        tree = (wt.stdout or "").strip()
+        if not tree:
+            return None
         proc = subprocess.run(
-            ["git", "ls-tree", "-r", "-l", "-z", "HEAD"],
+            ["git", "ls-tree", "-r", "-l", "-z", tree],
             cwd=str(repo_root.resolve()),
             capture_output=True,
             timeout=120,
