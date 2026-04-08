@@ -1,25 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paired Successfully</title>
+    <title>{{success_page_title}}</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #0a0a23;
-               display: flex; align-items: center; justify-content: center;
-               min-height: 100vh; }
-        .card { background: #16163a; border-radius: 20px; padding: 40px;
-                text-align: center; border: 1px solid #2a2a5a; width: 340px; }
-        .icon { font-size: 56px; margin-bottom: 12px; }
-        h1 { color: #e0e0ff; font-size: 20px; }
-        p { color: #aaa; font-size: 14px; margin-top: 8px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #6d6d72;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .sheet {
+            background: rgba(248, 248, 248, 0.97);
+            border-radius: 14px;
+            padding: 40px 28px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            width: 100%;
+            max-width: 340px;
+        }
+        .ok {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: #34c759;
+            color: #fff;
+            font-size: 1.75rem;
+            line-height: 52px;
+            font-weight: 600;
+        }
+        h1 { color: #000; font-size: 1.1rem; font-weight: 600; }
+        p { color: #636366; font-size: 0.88rem; margin-top: 10px; line-height: 1.45; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="icon">&#9989;</div>
-        <h1>Device Paired</h1>
-        <p>WXF-Audio-Speaker-Pro is now connected.</p>
+    <div class="sheet">
+        <div class="ok" aria-hidden="true">&#10003;</div>
+        <h1>{{success_heading}}</h1>
+        <p>{{success_body}}</p>
     </div>
 </body>
 </html>

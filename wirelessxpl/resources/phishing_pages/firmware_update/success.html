@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updating Firmware...</title>
+    <title>{{title_success}}</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5;
+        body { font-family: 'Segoe UI', sans-serif;
+               background: linear-gradient(160deg, #e8ecf1 0%, #d4dce6 100%);
                display: flex; align-items: center; justify-content: center;
-               min-height: 100vh; }
-        .card { background: #fff; border-radius: 8px; padding: 40px;
-                text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                width: 400px; }
-        .spinner { width: 50px; height: 50px; border: 4px solid #ddd;
-                   border-top: 4px solid #e67e22; border-radius: 50%;
+               min-height: 100vh; margin: 0; padding: 16px; }
+        .card { background: #fff; border-radius: 8px; padding: 40px 28px;
+                text-align: center; box-shadow: 0 4px 24px rgba(44, 62, 80, 0.12);
+                width: 100%; max-width: 400px; border: 1px solid #dce3eb; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #e2e8f0;
+                   border-top: 4px solid #3d5a80; border-radius: 50%;
                    animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        h1 { color: #333; font-size: 18px; }
-        p { color: #666; font-size: 13px; margin-top: 8px; }
+        h1 { color: #2c3e50; font-size: 18px; font-weight: 600; }
+        p { color: #5a6c7d; font-size: 13px; margin-top: 8px; line-height: 1.45; }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="spinner"></div>
-        <h1>Applying Firmware Update...</h1>
-        <p>Please do not disconnect or turn off your router.</p>
-        <p>This process may take 2-5 minutes.</p>
+        <h1>{{success_heading}}</h1>
+        <p>{{success_wait}}</p>
+        <p>{{success_duration}}</p>
     </div>
 </body>
 </html>
