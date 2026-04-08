@@ -18,6 +18,9 @@ from typing import Dict, List
 
 LOGGER = logging.getLogger("compat_smoke")
 
+# Imports checked but not required for a passing run (extras / platform-specific).
+_OPTIONAL_IMPORT_KEYS = frozenset({"paramiko", "pysnmp"})
+
 
 @dataclass
 class CheckResult:
@@ -157,7 +160,8 @@ def main() -> int:
     for module_name, is_ok in result.imports.items():
         if not is_ok:
             result.notes.append(f"Missing import: {module_name}")
-            hard_fail = True
+            if module_name not in _OPTIONAL_IMPORT_KEYS:
+                hard_fail = True
 
     # Classify Linux flavor when available.
     if result.platform == "linux" and result.distribution:
