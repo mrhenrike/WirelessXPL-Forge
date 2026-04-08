@@ -58,6 +58,278 @@
       "license": "Apache-2.0",
       "rxf_module": "generic/external/wifipumpkin3_bridge.py",
       "notes": "Rogue AP framework: captiveflask, Phishkin3 (MFA), EvilQR3, KARMA, Responder, Sniffkin3, PumpkinProxy, REST API."
+    },
+    {
+      "id": "s0lst1c3-eaphammer",
+      "clone_url": "https://github.com/s0lst1c3/eaphammer.git",
+      "homepage": "https://github.com/s0lst1c3/eaphammer",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/eaphammer_bridge.py",
+      "notes": "WPA-Enterprise evil twin, EAP credential harvesting, GTC downgrade, captive/hostile portal, KARMA, PMKID, EAP spray."
+    },
+    {
+      "id": "derv82-wifite2",
+      "clone_url": "https://github.com/derv82/wifite2.git",
+      "homepage": "https://github.com/derv82/wifite2",
+      "license": "GPL-2.0",
+      "rxf_module": "generic/external/wifite2_bridge.py",
+      "notes": "Automated WiFi audit: WPA handshake/PMKID, WPS Pixie Dust/brute, WEP attacks, target selection."
+    },
+    {
+      "id": "v1s1t0r1sh3r3-airgeddon",
+      "clone_url": "https://github.com/v1s1t0r1sh3r3/airgeddon.git",
+      "homepage": "https://github.com/v1s1t0r1sh3r3/airgeddon",
+      "license": "GPL-3.0+",
+      "rxf_module": null,
+      "notes": "All-in-one bash wireless audit. Study reference for workflows, PIN DB, i18n, and tool integration checklists."
+    },
+    {
+      "id": "kimocoder-oneshot",
+      "clone_url": "https://github.com/kimocoder/OneShot.git",
+      "homepage": "https://github.com/kimocoder/OneShot",
+      "license": "unlicensed (verify upstream)",
+      "rxf_module": "generic/external/oneshot_bridge.py",
+      "notes": "WPS Pixie Dust without monitor mode (wpa_supplicant managed). WPSpin algorithms (D-Link, ASUS, Realtek). vulnwsc.txt."
+    },
+    {
+      "id": "zerbea-hcxtools",
+      "clone_url": "https://github.com/ZerBea/hcxtools.git",
+      "homepage": "https://github.com/ZerBea/hcxtools",
+      "license": "MIT",
+      "rxf_module": "generic/external/hcx_toolchain_bridge.py",
+      "notes": "PCAP→hashcat conversion (HC22000/PMKID/EAPOL), hcxpcapngtool, hcxhashtool, whoismac OUI lookup."
+    },
+    {
+      "id": "zerbea-hcxdumptool",
+      "clone_url": "https://github.com/ZerBea/hcxdumptool.git",
+      "homepage": "https://github.com/ZerBea/hcxdumptool",
+      "license": "MIT",
+      "rxf_module": "generic/external/hcx_toolchain_bridge.py",
+      "notes": "PMKID capture, L2 association/deassociation attacks, pcapng output. Pairs with hcxtools."
+    },
+    {
+      "id": "lgandx-responder",
+      "clone_url": "https://github.com/lgandx/Responder.git",
+      "homepage": "https://github.com/lgandx/Responder",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/wifi_lab/responder_wifi.py",
+      "notes": "LLMNR/NBT-NS/mDNS poisoning, fake servers (HTTP/SMB/MSSQL/FTP/LDAP/Kerberos). Post-WiFi pivot."
+    },
+    {
+      "id": "bettercap-bettercap",
+      "clone_url": "https://github.com/bettercap/bettercap.git",
+      "homepage": "https://bettercap.org",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/bettercap_bridge.py",
+      "notes": "WiFi recon/deauth/PMKID/handshake, ARP/DNS spoof, BLE recon, MITM proxy, caplets, REST API."
+    },
+    {
+      "id": "t6x-reaver",
+      "clone_url": "https://github.com/t6x/reaver-wps-fork-t6x.git",
+      "homepage": "https://github.com/t6x/reaver-wps-fork-t6x",
+      "license": "GPL-2.0",
+      "rxf_module": "generic/external/reaver_bridge.py",
+      "notes": "WPS PIN brute force (online), Pixie Dust (-K), wash scanner, session resumption, vendor-aware PINs."
+    },
+    {
+      "id": "wiire-a-pixiewps",
+      "clone_url": "https://github.com/wiire-a/pixiewps.git",
+      "homepage": "https://github.com/wiire-a/pixiewps",
+      "license": "GPL-3.0+",
+      "rxf_module": "generic/external/reaver_bridge.py",
+      "notes": "Offline WPS Pixie Dust PIN recovery from weak PRNG (Ralink/Broadcom/Realtek). Used alongside reaver."
+    },
+    {
+      "id": "aircrack-ng-mdk4",
+      "clone_url": "https://github.com/aircrack-ng/mdk4.git",
+      "homepage": "https://github.com/aircrack-ng/mdk4",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/mdk4_bridge.py",
+      "notes": "802.11 DoS: beacon flood, auth DoS, deauth, Michael TKIP, EAPOL flood, WIDS confusion, fuzzer."
+    },
+    {
+      "id": "wifiphisher-roguehostapd",
+      "clone_url": "https://github.com/wifiphisher/roguehostapd.git",
+      "homepage": "https://github.com/wifiphisher/roguehostapd",
+      "license": "BSD-3-Clause",
+      "rxf_module": null,
+      "notes": "Hostapd fork with Python bindings, KARMA mode. BSD license — can be imported. Used by wifiphisher."
+    },
+    {
+      "id": "virtualabs-btlejack",
+      "clone_url": "https://github.com/virtualabs/btlejack.git",
+      "homepage": "https://github.com/virtualabs/btlejack",
+      "license": "MIT",
+      "rxf_module": "generic/external/btlejack_bridge.py",
+      "notes": "BLE connection sniffing, access address discovery, jamming, hijacking. Requires Micro:Bit hardware."
+    },
+    {
+      "id": "mikeryan-crackle",
+      "clone_url": "https://github.com/mikeryan/crackle.git",
+      "homepage": "https://github.com/mikeryan/crackle",
+      "license": "BSD-2-Clause",
+      "rxf_module": "generic/external/crackle_bridge.py",
+      "notes": "BLE encryption cracking (Just Works/PIN pairing), TK/STK/LTK derivation, AES-CCM decryption."
+    },
+    {
+      "id": "evilsocket-pwnagotchi",
+      "clone_url": "https://github.com/evilsocket/pwnagotchi.git",
+      "homepage": "https://pwnagotchi.ai",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "AI WiFi audit (A2C RL + LSTM). Study: reward shaping, adaptive parameter tuning, bettercap integration."
+    },
+    {
+      "id": "justcallmekoko-esp32marauder",
+      "clone_url": "https://github.com/justcallmekoko/ESP32Marauder.git",
+      "homepage": "https://github.com/justcallmekoko/ESP32Marauder",
+      "license": "MIT",
+      "rxf_module": null,
+      "notes": "ESP32 WiFi/BLE attack firmware. Study: deauth, beacon spam, probe, BLE spam modes via serial."
+    },
+    {
+      "id": "vanhoefm-dragonblood",
+      "clone_url": "https://github.com/vanhoefm/dragonblood.git",
+      "homepage": "https://wpa3.mathyvanhoef.com",
+      "license": "research (static site only)",
+      "rxf_module": null,
+      "notes": "WPA3 SAE/Dragonfly vulnerability research. Reference documentation only — no PoC scripts in this clone."
+    },
+    {
+      "id": "vanhoefm-fragattacks",
+      "clone_url": "https://github.com/vanhoefm/fragattacks.git",
+      "homepage": "https://www.fragattacks.com",
+      "license": "BSD (hostap-derived)",
+      "rxf_module": "generic/external/fragattacks_bridge.py",
+      "notes": "802.11 fragmentation/aggregation vulnerability tests. Modified hostapd/wpa_supplicant + Python test scripts."
+    },
+    {
+      "id": "vanhoefm-krackattacks",
+      "clone_url": "https://github.com/vanhoefm/krackattacks-scripts.git",
+      "homepage": "https://www.krackattacks.com",
+      "license": "BSD (hostap-derived)",
+      "rxf_module": "generic/external/krackattacks_bridge.py",
+      "notes": "KRACK key reinstallation tests (4-way, group key, FT). Modified hostapd + Python test scripts."
+    },
+    {
+      "id": "s0lst1c3-hostapd-eaphammer",
+      "clone_url": "https://github.com/s0lst1c3/hostapd-eaphammer.git",
+      "homepage": "https://github.com/s0lst1c3/hostapd-eaphammer",
+      "license": "BSD (hostap-derived + WPE patches)",
+      "rxf_module": null,
+      "notes": "Modified hostapd-wpe for EAP credential harvesting (PEAP/TTLS/MSCHAPv2). Core of eaphammer."
+    },
+    {
+      "id": "matheus-garbelini-sweyntooth",
+      "clone_url": "https://github.com/Matheus-Garbelini/sweyntooth_bluetooth_low_energy_attacks.git",
+      "homepage": "https://github.com/Matheus-Garbelini/sweyntooth_bluetooth_low_energy_attacks",
+      "license": "unlicensed (verify upstream)",
+      "rxf_module": "generic/external/sweyntooth_bridge.py",
+      "notes": "BLE 0-day PoCs: LLID deadlock, link layer overflow, zero LTK, invalid channel map, ESP32 HCI desync, KNOB."
+    },
+    {
+      "id": "seemoo-lab-opendrop",
+      "clone_url": "https://github.com/seemoo-lab/opendrop.git",
+      "homepage": "https://github.com/seemoo-lab/opendrop",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "Apple AirDrop open implementation. Requires AWDL (OWL on Linux). Study: proximity protocols, TLS exchange."
+    },
+    {
+      "id": "seemoo-lab-owl",
+      "clone_url": "https://github.com/seemoo-lab/owl.git",
+      "homepage": "https://github.com/seemoo-lab/owl",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "Apple AWDL userspace implementation. Creates awdl0 virtual interface. Prerequisite for OpenDrop on Linux."
+    },
+    {
+      "id": "infamoussyn-rogue",
+      "clone_url": "https://github.com/InfamousSYN/rogue.git",
+      "homepage": "https://github.com/InfamousSYN/rogue",
+      "license": "GPL-3.0",
+      "rxf_module": "generic/external/rogue_bridge.py",
+      "notes": "Evil twin orchestrator: hostapd, DHCP, FreeRADIUS, Responder, sslsplit, Modlishka. Config template generator."
+    },
+    {
+      "id": "tylous-sniffair",
+      "clone_url": "https://github.com/Tylous/SniffAir.git",
+      "homepage": "https://github.com/Tylous/SniffAir",
+      "license": "MIT",
+      "rxf_module": null,
+      "notes": "Wireless network audit framework. SQL workspaces, PCAP import, EAP/PSK auto-attack, captive portal, Wigle integration."
+    },
+    {
+      "id": "staz0t-hashcatch",
+      "clone_url": "https://github.com/staz0t/hashcatch.git",
+      "homepage": "https://github.com/staz0t/hashcatch",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "Automated WPA handshake capture via deauth + aircrack-ng. Continuous scan with ignore list."
+    },
+    {
+      "id": "savio-code-ghost-phisher",
+      "clone_url": "https://github.com/savio-code/ghost-phisher.git",
+      "homepage": "https://github.com/savio-code/ghost-phisher",
+      "license": "unlicensed (legacy)",
+      "rxf_module": null,
+      "notes": "Legacy WiFi phishing GUI (PyQt4). Study reference for HTTP/DNS/DHCP server chaining."
+    },
+    {
+      "id": "koutto-pi-pwnbox-rogueap",
+      "clone_url": "https://github.com/koutto/pi-pwnbox-rogueap.git",
+      "homepage": "https://github.com/koutto/pi-pwnbox-rogueap",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "Raspberry Pi rogue AP setup. Study: chipset matrix, interface naming, field deployment patterns."
+    },
+    {
+      "id": "hash3lizer-wifibroot",
+      "clone_url": "https://github.com/hash3liZer/WiFiBroot.git",
+      "homepage": "https://github.com/hash3liZer/WiFiBroot",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "WPA handshake/PMKID capture + MIC crack (Python2/scapy). Study: parsing algorithms."
+    },
+    {
+      "id": "syworks-waidps",
+      "clone_url": "https://github.com/SYWorks/waidps.git",
+      "homepage": "https://github.com/SYWorks/waidps",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "Wireless IDS/harvester (Python2/curses). Study: attack signature patterns, MDK3 detection rules."
+    },
+    {
+      "id": "0x90-wifi-arsenal",
+      "clone_url": "https://github.com/0x90/wifi-arsenal.git",
+      "homepage": "https://github.com/0x90/wifi-arsenal",
+      "license": "mixed (per-subproject)",
+      "rxf_module": null,
+      "notes": "Meta-collection of WiFi tools and papers. Catalog/discovery resource, not a single product."
+    },
+    {
+      "id": "aress31-wirespy",
+      "clone_url": "https://github.com/AresS31/wirespy.git",
+      "homepage": "https://github.com/AresS31/wirespy",
+      "license": "Apache-2.0",
+      "rxf_module": null,
+      "notes": "Simple evil twin / honeypot bash script. Apache-2.0 — can study/extract freely."
+    },
+    {
+      "id": "evilsocket-fang",
+      "clone_url": "https://github.com/EvilSocket/fang.git",
+      "homepage": "https://github.com/EvilSocket/fang",
+      "license": "GPL-2.0",
+      "rxf_module": null,
+      "notes": "Online hash rainbow table lookup (Python2). Not BLE-related despite initial assumption."
+    },
+    {
+      "id": "nullarray-netset",
+      "clone_url": "https://github.com/NullArray/NetSet.git",
+      "homepage": "https://github.com/NullArray/NetSet",
+      "license": "GPL-3.0",
+      "rxf_module": null,
+      "notes": "OPSEC toolkit (Tor, DNSCrypt, MAC spoof). Not WiFi pentest — out of scope for WXF core."
     }
   ]
 }
