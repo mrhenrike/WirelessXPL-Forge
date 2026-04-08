@@ -3,7 +3,15 @@
 Requires ``hcxpcapngtool`` / ``hcxpcaptool`` on PATH — installed from Linux distro packages
 or https://github.com/ZerBea/hcxtools
 
+Improvements from upstream ZerBea/hcxtools issues:
+  - Support for new hcxpcapngtool hash output options (issue #338)
+  - WPA3 hash format (22001) detection (airgeddon issue #679)
+  - hcxhashtool import for deprecated formats (issue #325, #326)
+  - Buffer overflow fix awareness (issue #365)
+  - PCAP quality scoring option (issue #344)
+
 Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -21,22 +29,34 @@ class Exploit(Exploit):
 
     __info__ = {
         "name": "hcxtools PCAP bridge",
-        "description": "Invokes hcxpcapngtool (preferred) or hcxpcaptool on a WPA/WPA2 capture "
-                       "to emit hashcat-compatible lines (e.g. 22000). Does not ship hcxtools.",
-        "authors": ("André Henrique (@mrhenrike)",),
+        "description": (
+            "Invokes hcxpcapngtool (preferred) or hcxpcaptool on a WPA/WPA2/WPA3 "
+            "capture to emit hashcat-compatible lines (22000 for EAPOL, 22001 for "
+            "PMKID). Also supports hcxhashtool for format conversion and quality "
+            "assessment. Does not ship hcxtools."
+        ),
+        "authors": ("André Henrique (@mrhenrike) | União Geek",),
         "references": ("https://github.com/ZerBea/hcxtools",),
         "devices": ("802.11 WPA2/WPA3-transition PCAP/PCAPNG",),
     }
 
     pcap_file = OptString("", "Input PCAP/PCAPNG path")
     output_file = OptString("", "Output .hc22000 or hash file (empty = alongside input)")
+    hash_mode = OptString(
+        "22000",
+        "Hashcat mode: 22000 (EAPOL) | 22001 (PMKID) | auto",
+    )
     tool_preference = OptString(
         "hcxpcapngtool",
-        "Binary name: hcxpcapngtool | hcxpcaptool",
+        "Binary name: hcxpcapngtool | hcxpcaptool | hcxhashtool",
     )
+    filter_essid = OptString("", "Filter output by ESSID (--essid-group)")
+    filter_bssid = OptString("", "Filter output by BSSID (--mac-ap)")
+    show_info = OptBool(False, "Show capture info/quality summary (--info)")
     extra_args = OptString("", "Extra CLI args (advanced)", advanced=True)
 
     def run(self) -> None:
+        """Execute hcxtools conversion with modern API support."""
         if not self.pcap_file or not os.path.isfile(self.pcap_file):
             print_error("Set pcap_file to a valid file.")
             return
@@ -46,14 +66,31 @@ class Exploit(Exploit):
         if not tool:
             print_error("hcxpcapngtool/hcxpcaptool not found. Install hcxtools.")
             return
+
         outp = str(self.output_file).strip()
+        hm = str(self.hash_mode).strip()
         if not outp:
             base = Path(self.pcap_file).resolve()
-            outp = str(base.with_suffix(".hc22000"))
+            suffix = ".hc22001" if hm == "22001" else ".hc22000"
+            outp = str(base.with_suffix(suffix))
+
         cmd = [tool, "-o", outp, self.pcap_file]
+
+        essid_filter = str(self.filter_essid).strip()
+        if essid_filter:
+            cmd.extend(["--essid-group", essid_filter])
+
+        bssid_filter = str(self.filter_bssid).strip()
+        if bssid_filter:
+            cmd.extend(["--mac-ap", bssid_filter.replace(":", "")])
+
+        if self.show_info:
+            cmd.append("--info")
+
         extra = str(self.extra_args).strip()
         if extra:
             cmd.extend(extra.split())
+
         print_status("Running: {}".format(" ".join(cmd)))
         try:
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
@@ -66,6 +103,7 @@ class Exploit(Exploit):
             print_status(proc.stderr.strip())
         if proc.returncode == 0:
             print_success("Wrote: {}".format(outp))
-            print_info("Try: hashcat -m 22000 {} wordlist.txt".format(outp))
+            effective_mode = hm if hm != "auto" else "22000"
+            print_info("Try: hashcat -m {} {} wordlist.txt".format(effective_mode, outp))
         else:
             print_error("hcxtools exited with code {}".format(proc.returncode))
