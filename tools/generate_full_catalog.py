@@ -172,8 +172,9 @@ def _disk_snapshot_git(repo_root: Path) -> Dict[str, Any] | None:
         relpath = path_bytes.decode("utf-8", errors="replace")
         if relpath.split("/")[0] in _SKIP_WALK_DIRS:
             continue
-        # Omit generated catalog blobs so metrics are stable across catalog commits.
-        if relpath in ("docs/FULL_CATALOG.md", "docs/FULL_CATALOG.txt"):
+        # Omit docs/ from git metrics: generated files and wiki live there; including
+        # them makes footprint self-dependent on each catalog commit.
+        if relpath == "docs" or relpath.startswith("docs/"):
             continue
 
         grand_total += size
@@ -378,6 +379,7 @@ def _build_md(
         "## Program footprint",
         "",
         "Approximate on-disk size (file bytes only; binary prefixes). "
+        "When using git metadata, ``docs/`` is excluded (wiki + generated catalogs). "
         "Walk skips caches such as ``__pycache__`` and ``.git``.",
         "",
         "| Metric | Value |",
