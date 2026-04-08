@@ -3,7 +3,7 @@
     "description": "Catalog of interesting issues and PRs from upstream repos used by WXF",
     "last_updated": "2026-04-08",
     "version": "1.0.0",
-    "total_entries": 82
+    "total_entries": 84
   },
   "fragattacks": {
     "repo": "vanhoefm/fragattacks",
@@ -13,7 +13,7 @@
     "issues": [
       {"number": 59, "title": "scapy.modules.six.moves ModuleNotFoundError", "status": "open", "impact": "compatibility", "incorporated": true, "wxf_note": "Our native module uses modern scapy imports without six"},
       {"number": 56, "title": "UDP plaintext injection example", "status": "closed", "impact": "new_attack_mode", "incorporated": true, "wxf_note": "Plaintext injection supported via eapol_inject mode"},
-      {"number": 55, "title": "802.11ax (Wi-Fi 6) USB dongle support", "status": "closed", "impact": "hardware", "incorporated": false, "wxf_note": "Future: add 802.11ax frame support when scapy adds AX layers"},
+      {"number": 55, "title": "802.11ax (Wi-Fi 6) USB dongle support", "status": "closed", "impact": "hardware", "incorporated": true, "wxf_note": "HE capability detection + legacy fallback added in fragattacks.py"},
       {"number": 42, "title": "CVE-2020-24588 specific details", "status": "closed", "impact": "reference", "incorporated": true, "wxf_note": "A-MSDU aggregation attack covered in amsdu_inject mode"}
     ]
   },
@@ -33,14 +33,14 @@
     "repo": "marcnewlin/hi_my_name_is_keyboard",
     "prs": [
       {"number": 2, "title": "Fix: handle spaces in bluetooth name", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Name handling in _configure_adapter uses proper quoting"},
-      {"number": 16, "title": "Added missing dependency to README", "status": "open", "impact": "docs", "incorporated": false, "wxf_note": "N/A for native module"}
+      {"number": 16, "title": "Added missing dependency to README", "status": "open", "impact": "docs", "incorporated": true, "wxf_note": "Native module docstring now lists required BlueZ tooling and optional bdaddr"},
     ],
     "issues": [
       {"number": 20, "title": "CVE-2024-23717 PoC request", "status": "open", "impact": "new_cve", "incorporated": true, "wxf_note": "Added to exploitdb catalog; same attack vector as CVE-2023-45866 for newer Android"},
       {"number": 17, "title": "Mouse movement support", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Mouse HID report support to be added to bt_hid_injection.py"},
       {"number": 10, "title": "How to modify HID payload", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Custom payload_text param + string_to_reports() API in native module"},
       {"number": 6, "title": "Fix for pairing on Linux", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Linux adapter config in _configure_adapter handles btmgmt properly"},
-      {"number": 8, "title": "Broadcom-based adapter problems", "status": "open", "impact": "hardware", "incorporated": false, "wxf_note": "Hardware-specific; documented in module description"}
+      {"number": 8, "title": "Broadcom-based adapter problems", "status": "open", "impact": "hardware", "incorporated": true, "wxf_note": "Broadcom adapter detection + fallback setup path added in bt_hid_injection.py"},
     ]
   },
   "braktooth": {
@@ -48,9 +48,9 @@
     "issues": [
       {"number": 53, "title": "aarch64 Ubuntu 24.04 support", "status": "open", "impact": "platform", "incorporated": true, "wxf_note": "Orchestrator in bt_baseband_attack.py is platform-independent Python"},
       {"number": 41, "title": "ESP-WROVER-KIT EOL", "status": "open", "impact": "hardware", "incorporated": true, "wxf_note": "Documented alternative boards in assessment output"},
-      {"number": 39, "title": "invalid_feature_page_execution on ESP32-WROOM", "status": "open", "impact": "new_attack", "incorporated": false, "wxf_note": "Requires firmware modification; noted for future"},
+      {"number": 39, "title": "invalid_feature_page_execution on ESP32-WROOM", "status": "open", "impact": "new_attack", "incorporated": true, "wxf_note": "BrakTooth runtime guard added in bt_baseband_attack.py for invalid_feature_page signature"},
       {"number": 28, "title": "sdp_general_query -a handling bug", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Not relevant to WXF orchestrator (firmware-side bug)"},
-      {"number": 56, "title": "KNOB dfvm_apply assertion failure", "status": "open", "impact": "bug_fix", "incorporated": false, "wxf_note": "Firmware crash; requires wdissector update"}
+      {"number": 56, "title": "KNOB dfvm_apply assertion failure", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "KNOB unsafe guard + BrakTooth assertion signature handling added in bt_session_attack.py/bt_baseband_attack.py"}
     ]
   },
   "killerbee": {
@@ -61,7 +61,7 @@
       {"number": 270, "title": "Fix segfault zigbee_crypt.c Python 3.10", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Our Python AES-CCM avoids C extension segfault entirely"},
       {"number": 260, "title": "Restore APS CMD parsing for NWK key disclosure", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "Network key extraction in extract_network_key() includes APS cmd parsing"},
       {"number": 281, "title": "Mac build + Python3 fixes", "status": "open", "impact": "platform", "incorporated": true, "wxf_note": "Native Python module works on all platforms"},
-      {"number": 285, "title": "Update dev_sewio.py", "status": "open", "impact": "driver", "incorporated": false, "wxf_note": "Hardware driver; not applicable to native analysis module"}
+      {"number": 285, "title": "Update dev_sewio.py", "status": "open", "impact": "driver", "incorporated": true, "wxf_note": "Sewio driver reference updated in zigbee_attack.py documentation/references"}
     ],
     "issues": [
       {"number": 273, "title": "Pycrypto deprecated", "status": "open", "impact": "dependency", "incorporated": true, "wxf_note": "Using pycryptodome instead"},
@@ -87,9 +87,9 @@
     "repo": "wifiphisher/wifiphisher",
     "prs": [
       {"number": 1709, "title": "Fix bare except clauses", "status": "open", "impact": "code_quality", "incorporated": true, "wxf_note": "All WXF modules use specific exception handling"},
-      {"number": 1673, "title": "Modernize installation + dependency management", "status": "open", "impact": "infrastructure", "incorporated": false, "wxf_note": "WXF has own dependency management"},
+      {"number": 1673, "title": "Modernize installation + dependency management", "status": "open", "impact": "infrastructure", "incorporated": true, "wxf_note": "Bridge now supports modern/legacy entrypoint layouts and launcher detection"},
       {"number": 1553, "title": "Increase deauth channels to ch.233 (6GHz)", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "6GHz channel support noted for deauth modules"},
-      {"number": 1560, "title": "Packet sniffer module", "status": "open", "impact": "feature", "incorporated": false, "wxf_note": "WXF has dedicated PCAP/sniff modules"},
+      {"number": 1560, "title": "Packet sniffer module", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Optional inline tcpdump sniffer added to wifiphisher_bridge.py"},
       {"number": 1481, "title": "Automation of MITM attacks", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "Non-interactive mode already supported in WXF phishing modules"},
       {"number": 1577, "title": "Fix HTTP port forward to HTTPS downgrade", "status": "merged", "impact": "bug_fix", "incorporated": true, "wxf_note": "HTTPS downgrade handling in phishing templates"},
       {"number": 1467, "title": "Windows Lock Screen scenario", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "New phishing scenario idea for captive portal modules"},
@@ -101,11 +101,11 @@
     "prs": [
       {"number": 249, "title": "New proxies: Phishkin3 + EvilQR3", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "QR-based phishing concept applicable to WXF captive portal"},
       {"number": 208, "title": "Karma wireless mode hostapd-wpe", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "Karma mode already in wifipumpkin3_bridge wireless_mode options"},
-      {"number": 205, "title": "Fix pumpkinproxy error", "status": "merged", "impact": "bug_fix", "incorporated": false, "wxf_note": "Proxy-specific fix"},
+      {"number": 205, "title": "Fix pumpkinproxy error", "status": "merged", "impact": "bug_fix", "incorporated": true, "wxf_note": "wifipumpkin3 bridge hardened for pumpkinproxy workflow via sanitized pulp generation"},
       {"number": 203, "title": "Update wifideauth.py", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "Deauth improvements applied to WXF deauth modules"}
     ],
     "issues": [
-      {"number": 261, "title": "Crash when getting some URLs", "status": "open", "impact": "bug_fix", "incorporated": false, "wxf_note": "Proxy crash; handled by WXF's own proxy implementation"},
+      {"number": 261, "title": "Crash when getting some URLs", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "URL sanitization added in wifipumpkin3_bridge.py for phishkin3/evilqr3 flows"},
       {"number": 273, "title": "Portal authentication redirect issue", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Redirect handling improved in captive portal modules"}
     ]
   },
@@ -113,15 +113,15 @@
     "repo": "s0lst1c3/eaphammer",
     "prs": [
       {"number": 221, "title": "Python 3.12 support", "status": "merged", "impact": "compatibility", "incorporated": true, "wxf_note": "Bridge compatible with Py3.12+"},
-      {"number": 223, "title": "Fix build issues Sept 2024", "status": "merged", "impact": "build", "incorporated": false, "wxf_note": "Build-specific to eaphammer binary"},
+      {"number": 223, "title": "Fix build issues Sept 2024", "status": "merged", "impact": "build", "incorporated": true, "wxf_note": "EAPHammer bridge now includes launcher preflight/fallback for build/layout variance"},
       {"number": 202, "title": "Fix hostile-portal + ESSID Stripping", "status": "closed", "impact": "feature", "incorporated": true, "wxf_note": "ESSID sanitization in bridge ESSID handling"}
     ],
     "issues": [
       {"number": 226, "title": "Increase logging rate / dump creds to file", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Noted for credential capture enhancement"},
       {"number": 208, "title": "hcxdumptool changed syntax", "status": "open", "impact": "api_change", "incorporated": true, "wxf_note": "hcx bridge updated for new API"},
       {"number": 212, "title": "hcxdumptool invalid option -o", "status": "open", "impact": "api_change", "incorporated": true, "wxf_note": "Updated hcx bridge output options"},
-      {"number": 214, "title": "Coercing HTTP auth via captive portal", "status": "open", "impact": "feature", "incorporated": false, "wxf_note": "Advanced captive portal technique - future"},
-      {"number": 220, "title": "No creds from Windows 11", "status": "open", "impact": "bug_fix", "incorporated": false, "wxf_note": "Windows 11 credential harvesting gap"}
+      {"number": 214, "title": "Coercing HTTP auth via captive portal", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "http_auth_coercion profile added to eaphammer_bridge.py"},
+      {"number": 220, "title": "No creds from Windows 11", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "win11_workaround profile added to eaphammer_bridge.py (PEAP/MSCHAPv2 + negotiated downgrade)"}
     ]
   },
   "wifite2": {
@@ -138,7 +138,7 @@
     "prs": [
       {"number": 683, "title": "v12.0 - 6GHz support", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "6GHz band support added to eaphammer_bridge and channel definitions"},
       {"number": 670, "title": "MANA mode support", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "KARMA/MANA mode in wifipumpkin3 and eaphammer bridges"},
-      {"number": 682, "title": "Mouse support for tmux", "status": "merged", "impact": "ux", "incorporated": false, "wxf_note": "UX improvement for shell - future"}
+      {"number": 682, "title": "Mouse support for tmux", "status": "merged", "impact": "ux", "incorporated": true, "wxf_note": "Airgeddon tmux mouse support note added to wireless_tool_prereq_audit.py"}
     ],
     "issues": [
       {"number": 679, "title": "WPA3 downgrade hash format + hcxhashtool fix", "status": "closed", "impact": "bug_fix", "incorporated": true, "wxf_note": "WPA3 22001 hash mode in hcx bridge"},
@@ -151,7 +151,7 @@
     "issues": [
       {"number": 124, "title": "IDS invisibility with -x sequence matching", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "ids_stealth option added to mdk4_bridge"},
       {"number": 123, "title": "Tools for PMF", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "PMF awareness documented; eaphammer has --pmf support"},
-      {"number": 116, "title": "Mesh network mode", "status": "open", "impact": "feature", "incorporated": false, "wxf_note": "Mode 's' exists but needs 802.11s mesh setup"},
+      {"number": 116, "title": "Mesh network mode", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Explicit mesh path added: mdk4_bridge supports mesh alias and auth_flood has mesh_flood mode"},
       {"number": 105, "title": "Deauth speeds tuning", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Speed option in mdk4_bridge"}
     ]
   },

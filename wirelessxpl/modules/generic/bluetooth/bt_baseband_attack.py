@@ -34,7 +34,7 @@ This module provides:
   3. Attack orchestration via serial interface to firmware
   4. Result analysis and crash detection
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
@@ -182,6 +182,28 @@ class Exploit(Exploit):
     timeout = OptFloat(30.0, "Attack timeout in seconds")
     dry_run = OptBool(False, "Show configuration without executing")
 
+    @staticmethod
+    def _handle_braktooth_runtime_line(line: str) -> bool:
+        """Handle known BrakTooth runtime failure signatures.
+
+        Returns:
+            True when processing should stop for safety.
+        """
+        upper = line.upper()
+        if "INVALID_FEATURE_PAGE" in upper:
+            print_error(
+                "BrakTooth firmware reported invalid_feature_page; stopping "
+                "to avoid unstable target/firmware state."
+            )
+            return True
+        if "DFVM_APPLY" in upper and "ASSERT" in upper:
+            print_error(
+                "BrakTooth KNOB assertion detected (dfvm_apply). "
+                "Stopping attack and keeping target session intact."
+            )
+            return True
+        return False
+
     def _list_attacks(self) -> None:
         """List all available baseband attacks."""
         print_info("=== BrakTooth Attacks (BT Classic, ESP32) ===")
@@ -255,6 +277,8 @@ class Exploit(Exploit):
                 line = ser.readline().decode(errors="replace").strip()
                 if line:
                     logger.info("ESP32: %s", line)
+                    if self._handle_braktooth_runtime_line(line):
+                        break
                     if "CRASH" in line.upper() or "TIMEOUT" in line.upper():
                         print_success("Attack result: {}".format(line))
                         break
