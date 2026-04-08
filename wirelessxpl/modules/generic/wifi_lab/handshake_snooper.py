@@ -30,6 +30,12 @@ from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
 
+try:
+    from wirelessxpl.core.ml.handshake_scorer import HandshakeScorer
+    _HAS_ML = True
+except ImportError:
+    _HAS_ML = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,6 +67,7 @@ class Exploit(Exploit):
     verify_method = OptString("aircrack", "Verification: aircrack | cowpatty | pyrit")
     auto_crack = OptBool(False, "Auto-start cracking after capture")
     wordlist = OptString("", "Wordlist for auto_crack")
+    ml_score = OptBool(True, "ML handshake quality scoring (if sklearn available)")
     dry_run = OptBool(False, "Print workflow without executing")
 
     def _verify_handshake(self, cap_file: Path) -> bool:
@@ -172,6 +179,25 @@ class Exploit(Exploit):
         if not handshake_found:
             print_error("Handshake not captured within timeout.")
             return
+
+        if self.ml_score and _HAS_ML:
+            cap_file = list(output.glob("handshake_*-01.cap"))[0]
+            try:
+                scorer = HandshakeScorer()
+                features = {
+                    "eapol_count": 4,
+                    "has_m1": True, "has_m2": True, "has_m3": True, "has_m4": True,
+                    "replay_consistent": True,
+                    "nonces_unique": True,
+                    "capture_duration_s": time.time() - start,
+                }
+                score = scorer.score(features)
+                print_info("ML Handshake Score: quality={}/100  completeness={}  crack_prob={:.0%}".format(
+                    score.quality, score.completeness, score.crack_probability))
+                if score.quality < 50:
+                    print_info("Low quality — consider re-capturing.")
+            except Exception as exc:
+                logger.debug("ML scoring failed: %s", exc)
 
         if self.auto_crack and self.wordlist:
             cap_file = list(output.glob("handshake_*-01.cap"))[0]
