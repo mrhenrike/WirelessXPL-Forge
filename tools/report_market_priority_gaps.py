@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Report device_pool coverage vs routerxpl module paths (vendor + keyword heuristics)."""
+"""Report device_pool coverage vs WirelessXPL module paths (vendor + keyword heuristics)."""
 
 from __future__ import annotations
 
@@ -81,8 +81,8 @@ def main() -> int:
     """Write CSV gap report and print summary counts."""
     _configure_logging()
     repo_root = Path(__file__).resolve().parent.parent
-    catalog_path = repo_root / "routerxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
-    modules_root = repo_root / "routerxpl" / "modules"
+    catalog_path = repo_root / "wirelessxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
+    modules_root = repo_root / "wirelessxpl" / "modules"
     payload = json.loads(catalog_path.read_text(encoding="utf-8"))
     pool: List[Dict[str, object]] = payload.get("device_pool", [])
     paths = _load_module_paths(modules_root)

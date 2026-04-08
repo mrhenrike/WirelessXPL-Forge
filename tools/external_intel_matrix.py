@@ -12,7 +12,7 @@ from typing import Dict, List
 
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
-    source_file = repo_root / "routerxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
+    source_file = repo_root / "wirelessxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
     payload = json.loads(source_file.read_text(encoding="utf-8"))
     sources: List[Dict[str, str]] = payload.get("sources", [])
 

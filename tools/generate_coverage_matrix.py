@@ -229,7 +229,7 @@ def _platform_section() -> str:
     return (
         "## Product Scope\n\n"
         "- In scope: **802.11 / WPA / WPA3 / EAPOL**, **Bluetooth LE**, **PCAP** analysis, wordlists, CVE hints, and **wifi_lab** bridges (authorised lab only).\n"
-        "- Out of scope: RouterXPL-Forge SOHO exploit tree as primary focus; camera/printer/DVR-primary modules.\n\n"
+        "- Out of scope: WirelessXPL-Forge SOHO exploit tree as primary focus; camera/printer/DVR-primary modules.\n\n"
         "## Platform Compatibility Status\n\n"
         "| Platform | Status |\n"
         "|---|---|\n"

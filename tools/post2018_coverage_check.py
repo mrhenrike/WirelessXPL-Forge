@@ -94,8 +94,8 @@ def _product_keywords(product: str) -> List[str]:
 def main() -> int:
     """Generate post-2018 device coverage CSV with keyword-level matching."""
     repo_root = Path(__file__).resolve().parents[1]
-    modules_root = repo_root / "routerxpl" / "modules"
-    catalog_path = repo_root / "routerxpl" / "resources" / "catalogs" / "post2018_network_devices.json"
+    modules_root = repo_root / "wirelessxpl" / "modules"
+    catalog_path = repo_root / "wirelessxpl" / "resources" / "catalogs" / "post2018_network_devices.json"
 
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     entries: List[Dict[str, str]] = catalog.get("entries", [])

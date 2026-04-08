@@ -20,7 +20,7 @@ CONFIDENCE = {"ieee": 1.00, "wireshark": 0.90, "nmap": 0.85}
 
 
 def _http_text(url: str, timeout: int = 60) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": "RouterXPL-Forge-OUI/1.0"})
+    request = urllib.request.Request(url, headers={"User-Agent": "WirelessXPL-Forge-OUI/1.0"})
     with urllib.request.urlopen(request, timeout=timeout) as response:
         return response.read().decode("utf-8", errors="ignore")
 
@@ -84,7 +84,7 @@ def _pick_best(source_values: Dict[str, Dict[str, str]], prefix: str) -> Tuple[s
 
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
-    vendors_dir = repo_root / "routerxpl" / "resources" / "vendors"
+    vendors_dir = repo_root / "wirelessxpl" / "resources" / "vendors"
     vendors_dir.mkdir(parents=True, exist_ok=True)
 
     ieee = _parse_ieee(_http_text(IEEE_OUI))
