@@ -20,11 +20,11 @@ setup(
     python_requires='>=3.8',
     install_requires=[
         "requests>=2.32.4",
-        "paramiko",
-        "pysnmp",
         "pycryptodome",
+        "scapy",
         "setuptools",
         "telnetlib3; python_version >= '3.13'",
+        "qrcode[pil]",
     ],
     extras_require={
         "tests": [
@@ -33,13 +33,20 @@ setup(
             "pytest-xdist",
             "flake8",
         ],
-        # Optional: heavyweight; enables CUDA logits in AutoPwn ml_use_gpu when PyTorch sees CUDA.
         "ml-gpu": [
             "torch>=2.0.0",
+            "numpy>=1.24",
+            "scikit-learn>=1.3",
+            "joblib",
         ],
         "ml-lite": [
             "numpy>=1.24",
             "scikit-learn>=1.3",
+            "joblib",
+        ],
+        "gpu-opencl": [
+            "pyopencl",
+            "numpy>=1.24",
         ],
     },
     classifiers=[
