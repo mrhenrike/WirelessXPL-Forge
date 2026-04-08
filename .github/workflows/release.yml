@@ -51,17 +51,24 @@ jobs:
 
   # ── 2. Publish to PyPI ───────────────────────────────────────────────────
   #
-  #   Path A — Trusted Publisher (OIDC): no secret needed.
-  #     Configure once at:
-  #     https://pypi.org/manage/project/wirelessxpl/settings/publishing/
-  #     → Repository: mrhenrike/WirelessXPL-Forge
-  #     → Workflow:   release.yml
-  #     → Environment: pypi
+  #   This job uses API token auth (PYPI_TOKEN secret).
+  #   If the secret is not set, it falls back to Trusted Publisher (OIDC).
   #
-  #   Path B — API token fallback (PYPI_TOKEN secret):
-  #     Add secret at:
-  #     https://github.com/mrhenrike/WirelessXPL-Forge/settings/secrets/actions
-  #     → Name: PYPI_TOKEN  Value: pypi-AgA…
+  #   Setup options (choose one):
+  #
+  #   Option A — API token (simplest):
+  #     1. Generate a PyPI API token at https://pypi.org/manage/account/token/
+  #        scoped to project "wirelessxpl"
+  #     2. Add it as repo secret at:
+  #        https://github.com/mrhenrike/WirelessXPL-Forge/settings/secrets/actions
+  #        Name: PYPI_TOKEN   Value: pypi-AgA…
+  #
+  #   Option B — Trusted Publisher / OIDC (no secret needed):
+  #     Configure at https://pypi.org/manage/project/wirelessxpl/settings/publishing/
+  #     → Publisher type: GitHub Actions
+  #     → Repository:     mrhenrike/WirelessXPL-Forge
+  #     → Workflow file:  release.yml
+  #     → Environment:    pypi
   #
   publish-pypi:
     name: "Publish → PyPI"
@@ -78,21 +85,14 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to PyPI (Trusted Publisher / OIDC)
-        if: ${{ secrets.PYPI_TOKEN == '' }}
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          # When PYPI_TOKEN is set → API token auth.
+          # When PYPI_TOKEN is empty → OIDC trusted publisher (Option B above).
+          password: ${{ secrets.PYPI_TOKEN }}
           skip-existing: true
           attestations: false
-
-      - name: Publish to PyPI (API token via twine)
-        if: ${{ secrets.PYPI_TOKEN != '' }}
-        run: |
-          pip install --quiet twine
-          twine upload dist/* --non-interactive --skip-existing
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
   # ── 3. Create GitHub Release with notes and assets ───────────────────────
   github-release:
