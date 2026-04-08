@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check honeypot provider credential readiness for phase6b live run."""
+"""Check honeypot provider credential readiness for lab live run."""
 
 from __future__ import annotations
 
@@ -78,7 +78,7 @@ def main() -> int:
             )
 
     print(
-        "phase6b_env_readiness providers_total={} ready={} blocked={} json={} csv={}".format(
+        "lab_env_readiness providers_total={} ready={} blocked={} json={} csv={}".format(
             payload["providers_total"],
             payload["providers_ready"],
             payload["providers_blocked"],

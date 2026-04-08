@@ -71,7 +71,7 @@ def _env_ready(required_env: List[str]) -> bool:
 def main() -> int:
     """Generate final honeypot campaign artifacts with live-readiness status."""
     repo_root = Path(__file__).resolve().parents[1]
-    intel_dir = repo_root / "routerxpl" / "resources" / "arsenal" / "intel"
+    intel_dir = repo_root / "wirelessxpl" / "resources" / "arsenal" / "intel"
     log_dir = repo_root / ".log"
     intel_dir.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -97,7 +97,7 @@ def main() -> int:
 
     payload = {
         "checked_at": now,
-        "campaign": "phase6b_final_honeypot_validation",
+        "campaign": "honeypot_validation",
         "modes": {
             "defensive": {
                 "description": "non-intrusive checks only",
@@ -141,7 +141,7 @@ def main() -> int:
 
     ready_count = sum(1 for row in rows if row["live_ready"])
     print(
-        "phase6b_honeypot entries={} live_ready_entries={} json={} csv={}".format(
+        "honeypot_validation entries={} live_ready_entries={} json={} csv={}".format(
             len(rows),
             ready_count,
             json_path.name,

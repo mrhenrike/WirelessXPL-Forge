@@ -4,11 +4,11 @@
 
 Copies each top-level directory to::
 
-    routerxpl/resources/arsenal/pocs/incorporated_third_party/<same_folder_name>/
+    wirelessxpl/resources/arsenal/pocs/incorporated_third_party/<same_folder_name>/
 
 Skips ``.git`` (and a few cache dirs) so the bundle is a plain tree suitable for packaging.
 
-Expected layout: RouterXPL-Forge and ``third-party-router-poc`` are siblings under ``IoT/``.
+Expected layout: WirelessXPL-Forge and ``third-party-router-poc`` are siblings under ``IoT/``.
 
 Use ``--index-only`` to refresh ``incorporated_third_party_index.json`` from the existing
 destination tree (no file copy), e.g. after manual cleanup or gitdir removal.
@@ -32,8 +32,8 @@ LOGGER = logging.getLogger(__name__)
 
 _RXFORGE = Path(__file__).resolve().parents[1]
 _DEFAULT_SRC = _RXFORGE.parents[0] / "third-party-router-poc"
-_DST_ROOT = _RXFORGE / "routerxpl" / "resources" / "arsenal" / "pocs" / "incorporated_third_party"
-_INDEX_OUT = _RXFORGE / "routerxpl" / "resources" / "catalogs" / "incorporated_third_party_index.json"
+_DST_ROOT = _RXFORGE / "wirelessxpl" / "resources" / "arsenal" / "pocs" / "incorporated_third_party"
+_INDEX_OUT = _RXFORGE / "wirelessxpl" / "resources" / "catalogs" / "incorporated_third_party_index.json"
 
 _SKIP_DIR_NAMES: Set[str] = frozenset({".git", "__pycache__", ".pytest_cache", ".mypy_cache", ".tox"})
 
@@ -126,7 +126,7 @@ def main(argv: List[str] | None = None) -> int:
         "--src",
         type=Path,
         default=_DEFAULT_SRC,
-        help="Root containing third-party-router-poc clones (default: sibling of RouterXPL-Forge).",
+        help="Root containing third-party-router-poc clones (default: sibling of WirelessXPL-Forge).",
     )
     parser.add_argument(
         "--dst",

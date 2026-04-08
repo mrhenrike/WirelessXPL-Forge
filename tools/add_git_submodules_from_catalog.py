@@ -8,8 +8,8 @@ Paths: ``submodules/IoT/third-party-router-poc/<owner>__<repo>`` (GitLab uses ow
 
 Run from the *superproject root* (Projetos-SafeLabs), for example::
 
-    python submodules/IoT/RouterXPL-Forge/tools/add_git_submodules_from_catalog.py --dry-run
-    python submodules/IoT/RouterXPL-Forge/tools/add_git_submodules_from_catalog.py
+    python submodules/IoT/WirelessXPL-Forge/tools/add_git_submodules_from_catalog.py --dry-run
+    python submodules/IoT/WirelessXPL-Forge/tools/add_git_submodules_from_catalog.py
 
 Author: André Henrique (@mrhenrike) | União Geek
 
@@ -28,7 +28,7 @@ from pathlib import Path
 LOGGER = logging.getLogger(__name__)
 
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CATALOG = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
+DEFAULT_CATALOG = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "third_party_router_exploit_repos.json"
 
 
 def _slug_from_clone_url(clone_url: str) -> str:

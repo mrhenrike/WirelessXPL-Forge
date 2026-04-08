@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Regenerate routerxpl/resources/catalogs/cve_extended_catalog.json from curated rows.
+"""Regenerate wirelessxpl/resources/catalogs/cve_extended_catalog.json from curated rows.
 
 Merges, in order: (1) static rows from ``build_entries()``; (2) CVE IDs listed under
 ``related_cves_hint`` in ``external_tool_intel_sources.json`` (stubs keyed to source id);
-(3) CVE strings found under ``routerxpl/modules/**/*.py`` that are not already covered
+(3) CVE strings found under ``wirelessxpl/modules/**/*.py`` that are not already covered
 by (1) or by ``_EMBEDDED_CVES`` in ``cve_db.py`` (embedded wins — avoids replacing rich
 rows with stubs).
 
@@ -261,11 +261,11 @@ def _vendor_product_from_module_path(rel_posix: str) -> Tuple[str, str]:
         return "encoder", parts[1] if len(parts) > 1 else "generic"
     if parts[0] == "payloads":
         return "payload", parts[1] if len(parts) > 1 else "generic"
-    return "routerxpl", parts[0]
+    return "wirelessxpl", parts[0]
 
 
 def _entries_from_external_intel(repo_root: Path, seen: Set[str]) -> List[Dict[str, Any]]:
-    path = repo_root / "routerxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
+    path = repo_root / "wirelessxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
     if not path.is_file():
         return []
     try:
@@ -310,7 +310,7 @@ def _entries_from_external_intel(repo_root: Path, seen: Set[str]) -> List[Dict[s
 
 
 def _entries_from_modules(repo_root: Path, seen: Set[str]) -> List[Dict[str, Any]]:
-    mods = repo_root / "routerxpl" / "modules"
+    mods = repo_root / "wirelessxpl" / "modules"
     if not mods.is_dir():
         return []
     out: List[Dict[str, Any]] = []
@@ -329,7 +329,7 @@ def _entries_from_modules(repo_root: Path, seen: Set[str]) -> List[Dict[str, Any
             seen.add(cve)
             vendor, prod = _vendor_product_from_module_path(rel)
             desc = (
-                "CVE citado no módulo RouterXPL ``{}``. "
+                "CVE citado no módulo WirelessXPL ``{}``. "
                 "Confirmar produto/versões no fabricante (NVD).".format(rel)
             )
             out.append(
@@ -417,7 +417,7 @@ def _tg12_cve_to_poc_refs(path: Path) -> Dict[str, List[str]]:
 
 
 def _discord_related_cve_hints(repo_root: Path) -> Set[str]:
-    path = repo_root / "routerxpl" / "resources" / "catalogs" / "discord_requested_devices.json"
+    path = repo_root / "wirelessxpl" / "resources" / "catalogs" / "discord_requested_devices.json"
     if not path.is_file():
         return set()
     try:
@@ -495,7 +495,7 @@ def _merge_tg12_poc_refs_for_scope(
             "multi",
             "edge_research",
             "Ver NVD/PSIRT — linha derivada de tg12/cve_links (âmbito monitorado)",
-            "PoC listado no índice tg12 para CVE em âmbito RouterXPL; validar impacto e licença.",
+            "PoC listado no índice tg12 para CVE em âmbito WirelessXPL; validar impacto e licença.",
             0.0,
             exploit_available=True,
         )
@@ -513,7 +513,7 @@ def _merge_tg12_poc_refs_for_scope(
 def main() -> int:
     root = Path(__file__).resolve().parent.parent
     sys.path.insert(0, str(root))
-    from routerxpl.core.cve.cve_db import _EMBEDDED_CVES
+    from wirelessxpl.core.cve.cve_db import _EMBEDDED_CVES
 
     embedded_ids: Set[str] = {str(x["cve_id"]).upper() for x in _EMBEDDED_CVES}
     embedded_by_id: Dict[str, Dict[str, Any]] = {
@@ -531,7 +531,7 @@ def main() -> int:
 
     tg12_txt = (
         root
-        / "routerxpl"
+        / "wirelessxpl"
         / "resources"
         / "arsenal"
         / "pocs"
@@ -547,19 +547,19 @@ def main() -> int:
 
     payload = {
         "catalog_note": (
-            "Índice estendido offline para RouterXPL-Forge (lookup). "
+            "Índice estendido offline para WirelessXPL-Forge (lookup). "
             "Não substitui NVD/CISA; cruze sempre com firmware e PSIRT do fabricante."
         ),
         "entry_count": len(entries),
         "entries": entries,
         "seed_sources_note": (
             "Linhas iniciais: matrix estática. Acrescimos: related_cves_hint em "
-            "external_tool_intel_sources.json; CVEs em routerxpl/modules exceto IDs já "
+            "external_tool_intel_sources.json; CVEs em wirelessxpl/modules exceto IDs já "
             "presentes aqui ou em cve_db._EMBEDDED_CVES; referências PoC GitHub/GitLab a "
             "partir de tg12__PoC_CVEs/cve_links.txt (filtrado por IDs em âmbito)."
         ),
     }
-    out = root / "routerxpl" / "resources" / "catalogs" / "cve_extended_catalog.json"
+    out = root / "wirelessxpl" / "resources" / "catalogs" / "cve_extended_catalog.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     print(
         "wrote {} entries (+{} intel, +{} modules) tg12: +{} ref appends, +{} from embedded, "

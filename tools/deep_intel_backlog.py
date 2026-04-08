@@ -86,9 +86,9 @@ def _count_keyword_hits(blobs: List[str], keywords: List[str]) -> int:
 def main() -> int:
     """Generate deep-intel backlog artifacts."""
     repo_root = Path(__file__).resolve().parents[1]
-    catalogs = repo_root / "routerxpl" / "resources" / "catalogs"
-    modules_root = repo_root / "routerxpl" / "modules"
-    intel_snapshot_path = repo_root / "routerxpl" / "resources" / "arsenal" / "intel" / "external_intel_live_snapshot.json"
+    catalogs = repo_root / "wirelessxpl" / "resources" / "catalogs"
+    modules_root = repo_root / "wirelessxpl" / "modules"
+    intel_snapshot_path = repo_root / "wirelessxpl" / "resources" / "arsenal" / "intel" / "external_intel_live_snapshot.json"
     log_dir = repo_root / ".log"
     log_dir.mkdir(parents=True, exist_ok=True)
 

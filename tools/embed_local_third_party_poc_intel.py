@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Scan ``third-party-router-poc`` mirrors and embed structured intel into RouterXPL-Forge.
+"""Scan ``third-party-router-poc`` mirrors and embed structured intel into WirelessXPL-Forge.
 
 Walks each sibling submodule under the superproject (excluding full ExploitDB tree walks),
 extracts CVE IDs and matches tokens against ``market_priority_devices_2010_2026.json`` and
 ``discord_requested_devices.json``, then writes:
 
-* ``routerxpl/resources/catalogs/embedded_third_party_poc_intel.json``
+* ``wirelessxpl/resources/catalogs/embedded_third_party_poc_intel.json``
 * Merges entries into ``external_tool_intel_sources.json`` (id ``local-poc-<slug>``)
 
-Run from RouterXPL-Forge checkout with superproject layout:
+Run from WirelessXPL-Forge checkout with superproject layout:
 
     python tools/embed_local_third_party_poc_intel.py
 
@@ -31,12 +31,12 @@ from typing import Any, Iterable
 LOGGER = logging.getLogger(__name__)
 
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
-# tools → RouterXPL-Forge → IoT (sibling ``third-party-router-poc`` lives here)
+# tools → WirelessXPL-Forge → IoT (sibling ``third-party-router-poc`` lives here)
 DEFAULT_POC_ROOT = RXFORGE_ROOT.parents[0] / "third-party-router-poc"
-MARKET_JSON = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
-DISCORD_JSON = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "discord_requested_devices.json"
-OUT_INTEL = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "embedded_third_party_poc_intel.json"
-EXT_SOURCES = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
+MARKET_JSON = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "market_priority_devices_2010_2026.json"
+DISCORD_JSON = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "discord_requested_devices.json"
+OUT_INTEL = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "embedded_third_party_poc_intel.json"
+EXT_SOURCES = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs" / "external_tool_intel_sources.json"
 
 SKIP_EXPLOITDB_BODY = frozenset(
     {
@@ -290,12 +290,12 @@ def _scan_repo_body(body_dir: Path, slug: str) -> dict[str, Any]:
         "rxforge_integration": (
             "exploitdb_embedded_lookup"
             if slug in SKIP_EXPLOITDB_BODY
-            else "local_upstream_mirror_under_routerxpl_intel"
+            else "local_upstream_mirror_under_WirelessXPL_intel"
         ),
         "notes": (
             "ExploitDB espelhado em incorporated_third_party; consulta CSV via exploitdb_embedded_lookup.py (sem searchsploit)."
             if slug in SKIP_EXPLOITDB_BODY
-            else "Triagem manual: licença, escopo autorizado, portar payloads para módulos RouterXPL quando aplicável."
+            else "Triagem manual: licença, escopo autorizado, portar payloads para módulos WirelessXPL quando aplicável."
         ),
     }
 
@@ -318,7 +318,7 @@ def _exploitdb_row(body: Path, slug: str) -> dict[str, Any]:
         "files_exploits_csv": str(csv_path.relative_to(body).as_posix()) if csv_exists else None,
         "rxforge_integration": "exploitdb_embedded_lookup",
         "notes": (
-            "Mirror ExploitDB; metadados em files_exploits.csv. RouterXPL: generic/external/exploitdb_embedded_lookup.py "
+            "Mirror ExploitDB; metadados em files_exploits.csv. WirelessXPL: generic/external/exploitdb_embedded_lookup.py "
             "(cópia em incorporated_third_party; sem searchsploit)."
         ),
     }
@@ -357,7 +357,7 @@ def _merge_external_sources(rows: list[dict[str, Any]]) -> None:
 
 def main() -> int:
     global _device_kw_cache
-    parser = argparse.ArgumentParser(description="Embed third-party-router-poc intel into RouterXPL-Forge.")
+    parser = argparse.ArgumentParser(description="Embed third-party-router-poc intel into WirelessXPL-Forge.")
     parser.add_argument("--poc-root", type=Path, default=DEFAULT_POC_ROOT)
     parser.add_argument("--no-merge-external-sources", action="store_true")
     args = parser.parse_args()

@@ -24,7 +24,7 @@ from typing import Any
 LOGGER = logging.getLogger(__name__)
 
 RXFORGE_ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = RXFORGE_ROOT / "routerxpl" / "resources" / "catalogs"
+OUT_DIR = RXFORGE_ROOT / "wirelessxpl" / "resources" / "catalogs"
 
 SEARCH_QUERIES = (
     "exploit router",
