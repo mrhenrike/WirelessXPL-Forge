@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{html_lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connected — Free Wi-Fi</title>
+    <title>{{title_success}}</title>
     <style>
         body { font-family: -apple-system, sans-serif;
                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-               min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .card { background: #fff; border-radius: 16px; padding: 40px;
+               min-height: 100vh; display: flex; align-items: center; justify-content: center;
+               margin: 0; padding: 16px; }
+        .card { background: #fff; border-radius: 16px; padding: 40px 28px;
                 text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-                width: 360px; }
-        .icon { font-size: 60px; margin-bottom: 12px; }
+                width: 100%; max-width: 360px; }
+        .icon { font-size: 60px; margin-bottom: 12px; line-height: 1; }
         h1 { color: #1a1a2e; font-size: 20px; }
-        p { color: #666; font-size: 14px; margin-top: 8px; }
+        p { color: #666; font-size: 14px; margin-top: 8px; line-height: 1.45; }
+        .fine { font-size: 11px; color: #999; margin-top: 16px; }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="icon">&#127760;</div>
-        <h1>You're Online!</h1>
-        <p>Enjoy your free Wi-Fi connection.</p>
-        <p style="font-size:11px;color:#999;margin-top:16px;">This window will close automatically.</p>
+        <h1>{{success_heading}}</h1>
+        <p>{{success_enjoy}}</p>
+        <p class="fine">{{success_close}}</p>
     </div>
 </body>
 </html>
