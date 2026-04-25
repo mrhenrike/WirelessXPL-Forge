@@ -570,15 +570,23 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute the selected SS7/Diameter/GTP attack mode."""
-        require_authorised_lab()
+        mode = str(self.mode).strip().lower()
+
+        if mode == "info":
+            self._info_mode()
+            return
+        if mode == "cve_database":
+            self._cve_database()
+            return
+
         if not self.i_know_scope:
             print_error(
                 "Set i_know_scope=True to confirm authorized lab and "
                 "operator authorization for signaling access."
             )
             return
+        require_authorised_lab()
 
-        mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:
             print_error(
                 "Invalid mode '{}'. Valid: {}".format(
@@ -588,7 +596,6 @@ class Exploit(Exploit):
             return
 
         dispatch = {
-            "info": self._info_mode,
             "ss7_location": self._ss7_location,
             "ss7_intercept_sms": self._ss7_intercept_sms,
             "ss7_call_redirect": self._ss7_call_redirect,
@@ -599,6 +606,5 @@ class Exploit(Exploit):
             "gtp_tunnel_hijack": self._gtp_tunnel_hijack,
             "gtp_dos": self._gtp_dos,
             "scan_exposure": self._scan_exposure,
-            "cve_database": self._cve_database,
         }
         dispatch[mode]()
