@@ -5,16 +5,22 @@
 
 **Usage guides:** [en-US](en-US/README.md) · [pt-BR](pt-BR/README.md)
 
+- `generic/bluetooth/bias_attack_bridge`
+- `generic/bluetooth/ble_bluffs_native`
 - `generic/bluetooth/ble_btlejack`
 - `generic/bluetooth/ble_crackle`
 - `generic/bluetooth/ble_phishing`
+- `generic/bluetooth/ble_sweyntooth_bridge`
 - `generic/bluetooth/blueborne_attack`
+- `generic/bluetooth/braktooth_bridge`
 - `generic/bluetooth/bt_baseband_attack`
 - `generic/bluetooth/bt_hid_injection`
 - `generic/bluetooth/bt_session_attack`
 - `generic/bluetooth/btle_enumerate`
 - `generic/bluetooth/btle_scan`
 - `generic/bluetooth/btle_write`
+- `generic/bluetooth/killerbee_zigbee_bridge`
+- `generic/bluetooth/knob_attack_bridge`
 - `generic/cve/cve_lookup`
 - `generic/cve/zigbee_attack`
 - `generic/external/airgeddon_bridge`
@@ -22,20 +28,27 @@
 - `generic/external/bruce_esp32_lab_notes`
 - `generic/external/bruce_serial_bridge`
 - `generic/external/bruce_upstream_tracker`
+- `generic/external/bully_bridge`
 - `generic/external/eaphammer_bridge`
 - `generic/external/fluxion_bridge`
+- `generic/external/hashcatch_bridge`
 - `generic/external/hcx_toolchain_bridge`
+- `generic/external/hcxdumptool_live_bridge`
+- `generic/external/hostapd_wpe_bridge`
 - `generic/external/mdk4_bridge`
 - `generic/external/oneshot_bridge`
 - `generic/external/ot_protocol_bridge`
+- `generic/external/pwnagotchi_bridge`
 - `generic/external/reaver_bridge`
 - `generic/external/rogue_bridge`
 - `generic/external/router_firmware_bridge`
+- `generic/external/sniffair_passive_recon`
 - `generic/external/social_recon_bridge`
 - `generic/external/wifiphisher_bridge`
 - `generic/external/wifipumpkin3_bridge`
 - `generic/external/wifite2_bridge`
 - `generic/external/wireless_tool_prereq_audit`
+- `generic/external/wirespy_bridge`
 - `generic/pcap/pcap_ap_station_mapper`
 - `generic/pcap/pcap_ble_advertising_survey`
 - `generic/pcap/pcap_credential_sniffer`
@@ -87,9 +100,11 @@
 - `generic/wifi_lab/ssid_confusion`
 - `generic/wifi_lab/transparent_proxy`
 - `generic/wifi_lab/wardriving_deauth_loop`
+- `generic/wifi_lab/wifi_security_analyzer`
 - `generic/wifi_lab/wifi_sniffer`
 - `generic/wifi_lab/wireless_ids`
 - `generic/wifi_lab/wordlist_orchestrator`
 - `generic/wifi_lab/wpa3_attack_suite`
+- `generic/wifi_lab/wpa3_sae_flood_native`
 - `generic/wifi_lab/wps_multimode`
 - `generic/wordlist/wordlist_generator`

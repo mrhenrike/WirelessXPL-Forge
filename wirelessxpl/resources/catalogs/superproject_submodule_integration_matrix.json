@@ -71,7 +71,7 @@
         "notes": "Brute patterns; different codebase — extract wordlist/protocol ideas only with attribution."
       },
       {
-        "path": "submodules/IoT/PrinterReaper",
+        "path": "submodules/IoT/PrinterXPL-Forge",
         "fit": "out_of_scope",
         "notes": "Printer class explicitly out_of_scope in module_target_scope; keep external."
       }

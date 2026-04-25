@@ -317142,14 +317142,14 @@
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wiki/Auto-Exploit.md",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wiki/Auto-Exploit.md",
       "type": "binary",
       "size_bytes": 6477,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wiki/Exploit-Library.md",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wiki/Exploit-Library.md",
       "type": "binary",
       "size_bytes": 6618,
       "classification": "reject",
@@ -318283,7 +318283,7 @@
       "reason": "not_in_scope_or_low_signal"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/setup.cfg",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/setup.cfg",
       "type": "config",
       "size_bytes": 214,
       "classification": "reject",
@@ -326991,91 +326991,91 @@
       "reason": "not_in_scope_or_low_signal"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/diagrams/mermaid-config.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/diagrams/mermaid-config.json",
       "type": "database",
       "size_bytes": 463,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wiki/Supported-Vendors.md",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wiki/Supported-Vendors.md",
       "type": "database",
       "size_bytes": 6561,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-15631/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-15631/metadata.json",
       "type": "database",
       "size_bytes": 1229,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-17636/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-17636/metadata.json",
       "type": "database",
       "size_bytes": 1017,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-20565/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-20565/metadata.json",
       "type": "database",
       "size_bytes": 1005,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-35151/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-35151/metadata.json",
       "type": "database",
       "size_bytes": 1107,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-45273/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-45273/metadata.json",
       "type": "database",
       "size_bytes": 1434,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-47850/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-47850/metadata.json",
       "type": "database",
       "size_bytes": 1048,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2019-14308/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2019-14308/metadata.json",
       "type": "database",
       "size_bytes": 1289,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2024-51978/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2024-51978/metadata.json",
       "type": "database",
       "size_bytes": 1351,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2025-26508/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2025-26508/metadata.json",
       "type": "database",
       "size_bytes": 1526,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/index.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/index.json",
       "type": "database",
       "size_bytes": 17085,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-ldap-hash-capture/metadata.json",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-ldap-hash-capture/metadata.json",
       "type": "database",
       "size_bytes": 1399,
       "classification": "reject",
@@ -338702,7 +338702,7 @@
       "reason": "not_in_scope_or_low_signal"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wiki/Storage-Firmware.md",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wiki/Storage-Firmware.md",
       "type": "firmware",
       "size_bytes": 4539,
       "classification": "reject",
@@ -338730,21 +338730,21 @@
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/assets/mibs/HOST-RESOURCES-MIB",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/assets/mibs/HOST-RESOURCES-MIB",
       "type": "mib",
       "size_bytes": 52544,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/assets/mibs/Printer-MIB",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/assets/mibs/Printer-MIB",
       "type": "mib",
       "size_bytes": 168239,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/assets/mibs/SNMPv2-MIB",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/assets/mibs/SNMPv2-MIB",
       "type": "mib",
       "size_bytes": 29305,
       "classification": "reject",
@@ -349594,672 +349594,672 @@
       "reason": "not_in_scope_or_low_signal"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/diagrams/scripts/make-diagrams.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/diagrams/scripts/make-diagrams.ps1",
       "type": "script",
       "size_bytes": 817,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/diagrams/scripts/make-diagrams.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/diagrams/scripts/make-diagrams.sh",
       "type": "script",
       "size_bytes": 560,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/01-pypi/build.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/01-pypi/build.ps1",
       "type": "script",
       "size_bytes": 731,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/01-pypi/build.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/01-pypi/build.sh",
       "type": "script",
       "size_bytes": 404,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/02-deb/build.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/02-deb/build.sh",
       "type": "script",
       "size_bytes": 538,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/02-deb/prepare.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/02-deb/prepare.ps1",
       "type": "script",
       "size_bytes": 739,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/02-deb/prepare.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/02-deb/prepare.sh",
       "type": "script",
       "size_bytes": 572,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/03-rpm/build.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/03-rpm/build.sh",
       "type": "script",
       "size_bytes": 987,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/03-rpm/prepare.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/03-rpm/prepare.ps1",
       "type": "script",
       "size_bytes": 574,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/04-pipx/validate.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/04-pipx/validate.ps1",
       "type": "script",
       "size_bytes": 578,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/packages/04-pipx/validate.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/packages/04-pipx/validate.sh",
       "type": "script",
       "size_bytes": 448,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/printer-reaper.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/printerxpl-forge.py",
       "type": "script",
       "size_bytes": 1476,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/run.ps1",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/run.ps1",
       "type": "script",
       "size_bytes": 613,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/run.sh",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/run.sh",
       "type": "script",
       "size_bytes": 446,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/setup.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/setup.py",
       "type": "script",
       "size_bytes": 438,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/core/attack_orchestrator.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/core/attack_orchestrator.py",
       "type": "script",
       "size_bytes": 39880,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/core/capabilities.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/core/capabilities.py",
       "type": "script",
       "size_bytes": 14237,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/core/discovery.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/core/discovery.py",
       "type": "script",
       "size_bytes": 16810,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/core/osdetect.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/core/osdetect.py",
       "type": "script",
       "size_bytes": 2369,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/core/printer.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/core/printer.py",
       "type": "script",
       "size_bytes": 52418,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/main.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/main.py",
       "type": "script",
       "size_bytes": 88291,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/install_printer.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/install_printer.py",
       "type": "script",
       "size_bytes": 11687,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/login_bruteforce.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/login_bruteforce.py",
       "type": "script",
       "size_bytes": 31221,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/pcl.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/pcl.py",
       "type": "script",
       "size_bytes": 15516,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/pjl.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/pjl.py",
       "type": "script",
       "size_bytes": 134995,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/print_job.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/print_job.py",
       "type": "script",
       "size_bytes": 50021,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/modules/ps.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/modules/ps.py",
       "type": "script",
       "size_bytes": 36726,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/payloads/__init__.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/payloads/__init__.py",
       "type": "script",
       "size_bytes": 2838,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/__init__.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/__init__.py",
       "type": "script",
       "size_bytes": 582,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/firmware.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/firmware.py",
       "type": "script",
       "size_bytes": 26665,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/ipp.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/ipp.py",
       "type": "script",
       "size_bytes": 6532,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/ipp_attacks.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/ipp_attacks.py",
       "type": "script",
       "size_bytes": 22587,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/lpd.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/lpd.py",
       "type": "script",
       "size_bytes": 4356,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/network_map.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/network_map.py",
       "type": "script",
       "size_bytes": 34768,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/raw.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/raw.py",
       "type": "script",
       "size_bytes": 5390,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/smb.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/smb.py",
       "type": "script",
       "size_bytes": 12299,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/ssrf_pivot.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/ssrf_pivot.py",
       "type": "script",
       "size_bytes": 15876,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/protocols/storage.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/protocols/storage.py",
       "type": "script",
       "size_bytes": 19812,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/ui/__init__.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/ui/__init__.py",
       "type": "script",
       "size_bytes": 218,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/ui/interactive.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/ui/interactive.py",
       "type": "script",
       "size_bytes": 23945,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/ui/spinner.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/ui/spinner.py",
       "type": "script",
       "size_bytes": 3380,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/ui/tables.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/ui/tables.py",
       "type": "script",
       "size_bytes": 4201,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/banner_grabber.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/banner_grabber.py",
       "type": "script",
       "size_bytes": 25636,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/codebook.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/codebook.py",
       "type": "script",
       "size_bytes": 22673,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/config.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/config.py",
       "type": "script",
       "size_bytes": 18153,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/default_creds.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/default_creds.py",
       "type": "script",
       "size_bytes": 5177,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/discovery_online.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/discovery_online.py",
       "type": "script",
       "size_bytes": 58461,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/exploit_manager.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/exploit_manager.py",
       "type": "script",
       "size_bytes": 29683,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/fuzzer.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/fuzzer.py",
       "type": "script",
       "size_bytes": 8290,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/helper.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/helper.py",
       "type": "script",
       "size_bytes": 28818,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/local_printers.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/local_printers.py",
       "type": "script",
       "size_bytes": 10201,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/ml_engine.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/ml_engine.py",
       "type": "script",
       "size_bytes": 19617,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/operators.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/operators.py",
       "type": "script",
       "size_bytes": 12433,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/ports.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/ports.py",
       "type": "script",
       "size_bytes": 8890,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/vuln_scanner.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/vuln_scanner.py",
       "type": "script",
       "size_bytes": 32220,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/utils/wordlist_loader.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/utils/wordlist_loader.py",
       "type": "script",
       "size_bytes": 14302,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/src/version.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/src/version.py",
       "type": "script",
       "size_bytes": 1009,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/custom/TEMPLATE.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/custom/TEMPLATE.py",
       "type": "script",
       "size_bytes": 3627,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-15631/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-15631/exploit.py",
       "type": "script",
       "size_bytes": 5656,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-17636/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-17636/exploit.py",
       "type": "script",
       "size_bytes": 4109,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-20565/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-20565/exploit.py",
       "type": "script",
       "size_bytes": 2392,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-23147/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-23147/exploit.py",
       "type": "script",
       "size_bytes": 6268,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-35151/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-35151/exploit.py",
       "type": "script",
       "size_bytes": 5953,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-36608/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-36608/exploit.py",
       "type": "script",
       "size_bytes": 5711,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-36913/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-36913/exploit.py",
       "type": "script",
       "size_bytes": 5393,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-37956/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-37956/exploit.py",
       "type": "script",
       "size_bytes": 5423,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-40909/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-40909/exploit.py",
       "type": "script",
       "size_bytes": 5829,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-41920/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-41920/exploit.py",
       "type": "script",
       "size_bytes": 6386,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-43178/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-43178/exploit.py",
       "type": "script",
       "size_bytes": 5777,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-45205/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-45205/exploit.py",
       "type": "script",
       "size_bytes": 5810,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-45273/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-45273/exploit.py",
       "type": "script",
       "size_bytes": 6644,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-47850/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-47850/exploit.py",
       "type": "script",
       "size_bytes": 4378,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-51755/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-51755/exploit.py",
       "type": "script",
       "size_bytes": 7424,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2019-14308/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2019-14308/exploit.py",
       "type": "script",
       "size_bytes": 5560,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2024-51978/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2024-51978/exploit.py",
       "type": "script",
       "size_bytes": 12893,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/edb-cve-2025-26508/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/edb-cve-2025-26508/exploit.py",
       "type": "script",
       "size_bytes": 7125,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-hp-web-jetadmin-rce/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-hp-web-jetadmin-rce/exploit.py",
       "type": "script",
       "size_bytes": 5847,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-ipp-printer-check/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-ipp-printer-check/exploit.py",
       "type": "script",
       "size_bytes": 7888,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-printer-dir-list/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-printer-dir-list/exploit.py",
       "type": "script",
       "size_bytes": 5637,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-printer-env-vars/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-printer-env-vars/exploit.py",
       "type": "script",
       "size_bytes": 5690,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-printer-file-download/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-printer-file-download/exploit.py",
       "type": "script",
       "size_bytes": 6759,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-printer-file-upload/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-printer-file-upload/exploit.py",
       "type": "script",
       "size_bytes": 5859,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-printer-info/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-printer-info/exploit.py",
       "type": "script",
       "size_bytes": 3818,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-ricoh-loginout-dos/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-ricoh-loginout-dos/exploit.py",
       "type": "script",
       "size_bytes": 6808,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/msf/msf-snmp-printer-enum/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/msf/msf-snmp-printer-enum/exploit.py",
       "type": "script",
       "size_bytes": 7919,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-cve-2024-51982/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-cve-2024-51982/exploit.py",
       "type": "script",
       "size_bytes": 7160,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-epson-connect-cloud/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-epson-connect-cloud/exploit.py",
       "type": "script",
       "size_bytes": 6791,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-epson-lpd-unauth/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-epson-lpd-unauth/exploit.py",
       "type": "script",
       "size_bytes": 7147,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-epson-noauth-disclosure/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-epson-noauth-disclosure/exploit.py",
       "type": "script",
       "size_bytes": 7518,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-generic-pjl-nvram/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-generic-pjl-nvram/exploit.py",
       "type": "script",
       "size_bytes": 6241,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-ldap-hash-capture/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-ldap-hash-capture/exploit.py",
       "type": "script",
       "size_bytes": 17302,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-pjl-nvram-damage/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-pjl-nvram-damage/exploit.py",
       "type": "script",
       "size_bytes": 7832,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-ps-dos/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-ps-dos/exploit.py",
       "type": "script",
       "size_bytes": 7845,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-ps-filesystem/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-ps-filesystem/exploit.py",
       "type": "script",
       "size_bytes": 7186,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-ps-job-capture/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-ps-job-capture/exploit.py",
       "type": "script",
       "size_bytes": 7797,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/xpl/research/research-snmp-factory-reset/exploit.py",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/xpl/research/research-snmp-factory-reset/exploit.py",
       "type": "script",
       "size_bytes": 8331,
       "classification": "reject",
@@ -417669,63 +417669,63 @@
       "reason": "not_in_scope_or_low_signal"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/diagrams/credential_flow.drawio",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/diagrams/credential_flow.drawio",
       "type": "wordlist",
       "size_bytes": 6431,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/img/credential_wordlist_flow.png",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/img/credential_wordlist_flow.png",
       "type": "wordlist",
       "size_bytes": 46563,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/requirements.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/requirements.txt",
       "type": "wordlist",
       "size_bytes": 2965,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wiki/Wordlists.md",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wiki/Wordlists.md",
       "type": "wordlist",
       "size_bytes": 6056,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wordlists/README.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wordlists/README.txt",
       "type": "wordlist",
       "size_bytes": 1038,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wordlists/ftp_creds.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wordlists/ftp_creds.txt",
       "type": "wordlist",
       "size_bytes": 612,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wordlists/pjl_passwords.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wordlists/pjl_passwords.txt",
       "type": "wordlist",
       "size_bytes": 302,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wordlists/printer_default_creds.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wordlists/printer_default_creds.txt",
       "type": "wordlist",
       "size_bytes": 10993,
       "classification": "reject",
       "reason": "out_of_scope_camera_printer_dvr"
     },
     {
-      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterReaper/wordlists/snmp_communities.txt",
+      "path": "D:/Projetos-SafeLabs/submodules/IoT/PrinterXPL-Forge/wordlists/snmp_communities.txt",
       "type": "wordlist",
       "size_bytes": 1672,
       "classification": "reject",
