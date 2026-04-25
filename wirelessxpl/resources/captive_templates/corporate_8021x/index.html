@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Network Authentication</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#0c1222;
+display:flex;justify-content:center;align-items:center;min-height:100vh}
+.wrap{display:flex;background:#fff;border-radius:12px;overflow:hidden;
+width:100%;max-width:800px;box-shadow:0 16px 48px rgba(0,0,0,.3)}
+.sidebar{background:linear-gradient(180deg,#1e3a5f 0%,#0d2137 100%);
+padding:40px 32px;width:280px;display:flex;flex-direction:column;
+justify-content:center;color:#fff}
+.sidebar h2{font-size:1.3em;margin-bottom:8px}
+.sidebar p{font-size:.82em;opacity:.8;line-height:1.5}
+.sidebar .icon{font-size:3em;margin-bottom:16px}
+.form-side{padding:40px;flex:1}
+.form-side h1{font-size:1.2em;color:#1e3a5f;margin-bottom:4px}
+.form-side p.sub{font-size:.82em;color:#888;margin-bottom:24px}
+label{display:block;font-size:.8em;color:#555;margin-bottom:4px;font-weight:500}
+input,select{width:100%;padding:10px 12px;border:1px solid #ddd;
+border-radius:6px;font-size:.9em;margin-bottom:14px;outline:none}
+input:focus,select:focus{border-color:#1e3a5f}
+button{width:100%;padding:12px;background:#1e3a5f;color:#fff;border:none;
+border-radius:6px;font-size:.95em;font-weight:600;cursor:pointer}
+button:hover{background:#15304e}
+.help{margin-top:12px;font-size:.75em;color:#999;text-align:center}
+@media(max-width:640px){.sidebar{display:none}.wrap{max-width:400px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="sidebar">
+<div class="icon">&#x1F512;</div>
+<h2>Secure Network</h2>
+<p>802.1X Enterprise authentication is required to access the corporate network. Use your Active Directory credentials.</p>
+</div>
+<div class="form-side">
+<h1>Network Authentication</h1>
+<p class="sub">Enter your corporate credentials</p>
+<form method="POST" action="/login">
+<label for="domain">Domain</label>
+<select id="domain" name="domain">
+<option>CORP</option>
+<option>INTERNAL</option>
+<option>GUEST</option>
+</select>
+<label for="user">Username</label>
+<input type="text" id="user" name="username" placeholder="john.doe" required autocomplete="off">
+<label for="pass">Password</label>
+<input type="password" id="pass" name="password" required>
+<button type="submit">Authenticate</button>
+</form>
+<div class="help">Contact IT Help Desk if you need assistance</div>
+</div>
+</div>
+</body>
+</html>

