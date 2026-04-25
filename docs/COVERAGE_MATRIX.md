@@ -18,14 +18,14 @@
 
 ## Global Capability Summary
 
-- Module tree (wirelessxpl/modules): d6b46358e77b7a15b694635a5c95b674e67318c2
-- Total modules indexed: 103
-- Distinct vendor/product entries: 103
-- Distinct CVEs mapped in modules: 32
+- Module tree (wirelessxpl/modules): 5de26be1a91adfc0abe2c3380ade041d36959eba
+- Total modules indexed: 118
+- Distinct vendor/product entries: 118
+- Distinct CVEs mapped in modules: 40
 - Attack classes identified: auth_bypass, dos_or_crash, info_disclosure
 
 ### Module Type Counts
-- generic: 103
+- generic: 118
 
 ## Protocol Coverage (Inferred)
 
@@ -73,9 +73,9 @@
 | OSI | TCP/IP | Layer | Protocol | Module Hits | Covered | Attack Vectors | Test Types | ISP | Corporate | OT_IIoT |
 |---|---|---|---|---:|---|---|---|---|---|---|
 | L1 | Link | Physical | ethernet | 1 | yes | link_disruption_or_flap_induction, tap_or_span_blind_spot_abuse, physical_plane_availability_degradation | link_state_validation, duplex_speed_mismatch_detection, capture_integrity_verification | P2 | P2 | P2 |
-| L2 | Link | Data Link | arp | 4 | yes | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
+| L2 | Link | Data Link | arp | 5 | yes | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
 | L2 | Link | Data Link | vlan_8021q_qinq | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P1 | P1 | P1 |
-| L2 | Link | Data Link | 802.11_wifi | 86 | yes | offline_wpa_crack, handshake_capture_replay, credential_harvest | ap_enumeration, station_mapping, handshake_extraction, cleartext_sniffing | P2 | P1 | P2 |
+| L2 | Link | Data Link | 802.11_wifi | 97 | yes | offline_wpa_crack, handshake_capture_replay, credential_harvest | ap_enumeration, station_mapping, handshake_extraction, cleartext_sniffing | P2 | P1 | P2 |
 | L2 | Link | Data Link | stp_rstp_mstp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P1 | P2 |
 | L2 | Link | Data Link | lacp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P1 | P2 |
 | L2 | Link | Data Link | lldp | 0 | no | vlan_hopping_and_tagging_abuse, arp_spoofing_or_poisoning, stp_manipulation_or_loop_induction, mac_table_exhaustion_scenarios, wpa_wpa2_offline_handshake_crack, wireless_credential_harvest_from_pcap, rogue_ap_detection_via_pcap | vlan_segmentation_validation, arp_integrity_checks, stp_lacp_hardening_review, l2_discovery_surface_assessment, pcap_ap_station_enumeration, pcap_handshake_completeness_check, pcap_cleartext_credential_extraction | P2 | P2 | P2 |
@@ -86,14 +86,14 @@
 | L3 | Internet | Network | bgp | 0 | no | route_injection_or_hijack_paths, icmp_or_control_plane_abuse, ipv6_transition_misconfig_exposure | routing_surface_enumeration, dual_stack_consistency_checks, control_plane_exposure_validation | P2 | P3 | P3 |
 | L4 | Transport | Transport | tcp | 2 | yes | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
 | L4 | Transport | Transport | udp | 0 | no | service_enumeration_and_port_abuse, session_exhaustion_or_flood_paths, transport_timeout_and_retry_abuse | tcp_udp_surface_mapping, session_stability_validation, timeout_retry_behavior_checks | P1 | P1 | P1 |
-| L5-L7 | Application | Session/Presentation/Application | dns | 7 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
+| L5-L7 | Application | Session/Presentation/Application | dns | 8 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | dhcp | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | ntp_ptp | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P2 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | snmp_snmpv3 | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | ssh | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | telnet | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | ftp_ftps_sftp | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P2 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | http_https_api | 11 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
+| L5-L7 | Application | Session/Presentation/Application | http_https_api | 12 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P1 | P1 | P1 |
 | L5-L7 | Application | Session/Presentation/Application | radius_tacacs | 2 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P2 | P3 |
 | L5-L7 | Application | Session/Presentation/Application | tr069_cwmp | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P3 | P3 |
 | L5-L7 | Application | Session/Presentation/Application | syslog | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P2 | P1 | P2 |
@@ -109,10 +109,10 @@
 | Layer | Total Protocol Hits |
 |---|---:|
 | L1 Physical | 1 |
-| L2 Data Link | 90 |
+| L2 Data Link | 102 |
 | L3 Network | 0 |
 | L4 Transport | 2 |
-| L5-L7 Session/Presentation/Application | 29 |
+| L5-L7 Session/Presentation/Application | 31 |
 
 ## Market Priority Coverage (2010-2026)
 
@@ -1083,11 +1083,13 @@
 | bluetooth | ble_bluffs_native | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2023-24023 | - |
 | bluetooth | ble_btlejack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | bluetooth | ble_crackle | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| bluetooth | ble_extra_attacks | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2020-15802, CVE-2020-9770 | - |
 | bluetooth | ble_phishing | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | bluetooth | ble_sweyntooth_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-16336, CVE-2019-17071, CVE-2019-17516, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-17521, CVE-2019-9506 | dos_or_crash |
 | bluetooth | blueborne_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2017-0781, CVE-2017-0785, CVE-2017-1000251 | info_disclosure |
 | bluetooth | braktooth_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | bluetooth | bt_baseband_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-16336, CVE-2019-17060, CVE-2019-17061, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-19194, CVE-2019-19195, CVE-2019-19196, CVE-2021-28139 | - |
+| bluetooth | bt_classic_suite | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | bluetooth | bt_hid_injection | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2023-45866, CVE-2024-23717 | - |
 | bluetooth | bt_session_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-9506, CVE-2020-10135, CVE-2023-24023 | - |
 | bluetooth | btle_enumerate | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
@@ -1097,6 +1099,7 @@
 | bluetooth | knob_attack_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-9506 | - |
 | cve | cve_lookup | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | cve | zigbee_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| external | aircrack_full_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | airgeddon_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | bettercap_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | external | bruce_esp32_lab_notes | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
@@ -1109,13 +1112,16 @@
 | external | hcx_toolchain_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | hcxdumptool_live_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | hostapd_wpe_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| external | kismet_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | mdk4_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | external | oneshot_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | ot_protocol_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
+| external | proxmark_rfid_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | pwnagotchi_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | reaver_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | rogue_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | external | router_firmware_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| external | sigfox_lorawan_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | external | sniffair_passive_recon | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | social_recon_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | external | wifiphisher_bridge | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
@@ -1139,14 +1145,19 @@
 | wifi_lab | _i18n_service | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | adaptive_harvest | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | aireplay_deauth_barrage | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | ap_less_client_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | auth_flood | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | awdl_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | beacon_flood_advanced | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | captive_portal_engine | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | captive_portal_modern_lab | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | connectivity_portal | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | csa_mc_mitm_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | deauth_csa_suite | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | wifi_lab | deauth_multimode | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | dragonblood_suite | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-13377, CVE-2019-13456, CVE-2019-9494, CVE-2019-9495, CVE-2019-9496, CVE-2019-9497, CVE-2019-9498, CVE-2019-9499 | dos_or_crash |
 | wifi_lab | dualband_evil_twin | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | eap_relay_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | evil_qr_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | evil_twin_advanced | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | evil_twin_hostapd_templates | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
@@ -1166,6 +1177,8 @@
 | wifi_lab | momo_integrated_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | pcap_rf_anomaly_ml | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | pcap_wpa_handshake_validate | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | pmk_precompute | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | pmkid_autopwn | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | replay_attack | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | research_ecosystem_status | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | responder_wifi | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
@@ -1174,12 +1187,14 @@
 | wifi_lab | ssid_confusion | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2023-52424 | - |
 | wifi_lab | transparent_proxy | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wardriving_deauth_loop | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
+| wifi_lab | wep_attack_suite | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wifi_security_analyzer | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wifi_sniffer | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wireless_ids | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wordlist_orchestrator | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | dos_or_crash |
 | wifi_lab | wpa3_attack_suite | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wpa3_sae_flood_native | 1 | 0 | 0 | 0 | 1 | 0 | 0 | CVE-2019-9494 | dos_or_crash |
+| wifi_lab | wpa_online_brute | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wifi_lab | wps_multimode | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 | wordlist | wordlist_generator | 1 | 0 | 0 | 0 | 1 | 0 | 0 | - | - |
 
@@ -1216,6 +1231,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/bluetooth/ble_crackle.py`
+
+### bluetooth / ble_extra_attacks
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: CVE-2020-15802, CVE-2020-9770
+- Attack classes: none
+- Module paths:
+  - `modules/generic/bluetooth/ble_extra_attacks.py`
 
 ### bluetooth / ble_phishing
 
@@ -1256,6 +1279,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/bluetooth/bt_baseband_attack.py`
+
+### bluetooth / bt_classic_suite
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/bluetooth/bt_classic_suite.py`
 
 ### bluetooth / bt_hid_injection
 
@@ -1328,6 +1359,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/cve/zigbee_attack.py`
+
+### external / aircrack_full_bridge
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/external/aircrack_full_bridge.py`
 
 ### external / airgeddon_bridge
 
@@ -1425,6 +1464,14 @@
 - Module paths:
   - `modules/generic/external/hostapd_wpe_bridge.py`
 
+### external / kismet_bridge
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/external/kismet_bridge.py`
+
 ### external / mdk4_bridge
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1448,6 +1495,14 @@
 - Attack classes: dos_or_crash
 - Module paths:
   - `modules/generic/external/ot_protocol_bridge.py`
+
+### external / proxmark_rfid_bridge
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/external/proxmark_rfid_bridge.py`
 
 ### external / pwnagotchi_bridge
 
@@ -1480,6 +1535,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/external/router_firmware_bridge.py`
+
+### external / sigfox_lorawan_bridge
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: dos_or_crash
+- Module paths:
+  - `modules/generic/external/sigfox_lorawan_bridge.py`
 
 ### external / sniffair_passive_recon
 
@@ -1665,6 +1728,14 @@
 - Module paths:
   - `modules/generic/wifi_lab/aireplay_deauth_barrage.py`
 
+### wifi_lab / ap_less_client_attack
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/ap_less_client_attack.py`
+
 ### wifi_lab / auth_flood
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1689,6 +1760,14 @@
 - Module paths:
   - `modules/generic/wifi_lab/beacon_flood_advanced.py`
 
+### wifi_lab / captive_portal_engine
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/captive_portal_engine.py`
+
 ### wifi_lab / captive_portal_modern_lab
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1704,6 +1783,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/wifi_lab/connectivity_portal.py`
+
+### wifi_lab / csa_mc_mitm_attack
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/csa_mc_mitm_attack.py`
 
 ### wifi_lab / deauth_csa_suite
 
@@ -1721,6 +1808,14 @@
 - Module paths:
   - `modules/generic/wifi_lab/deauth_multimode.py`
 
+### wifi_lab / dragonblood_suite
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: CVE-2019-13377, CVE-2019-13456, CVE-2019-9494, CVE-2019-9495, CVE-2019-9496, CVE-2019-9497, CVE-2019-9498, CVE-2019-9499
+- Attack classes: dos_or_crash
+- Module paths:
+  - `modules/generic/wifi_lab/dragonblood_suite.py`
+
 ### wifi_lab / dualband_evil_twin
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1728,6 +1823,14 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/wifi_lab/dualband_evil_twin.py`
+
+### wifi_lab / eap_relay_attack
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/eap_relay_attack.py`
 
 ### wifi_lab / evil_qr_attack
 
@@ -1881,6 +1984,22 @@
 - Module paths:
   - `modules/generic/wifi_lab/pcap_wpa_handshake_validate.py`
 
+### wifi_lab / pmk_precompute
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/pmk_precompute.py`
+
+### wifi_lab / pmkid_autopwn
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/pmkid_autopwn.py`
+
 ### wifi_lab / replay_attack
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1945,6 +2064,14 @@
 - Module paths:
   - `modules/generic/wifi_lab/wardriving_deauth_loop.py`
 
+### wifi_lab / wep_attack_suite
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/wep_attack_suite.py`
+
 ### wifi_lab / wifi_security_analyzer
 
 - Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
@@ -1992,6 +2119,14 @@
 - Attack classes: dos_or_crash
 - Module paths:
   - `modules/generic/wifi_lab/wpa3_sae_flood_native.py`
+
+### wifi_lab / wpa_online_brute
+
+- Totals: modules=1, exploits=0, creds=0, scanners=0, generic=1, payloads=0, encoders=0
+- CVEs: none
+- Attack classes: none
+- Module paths:
+  - `modules/generic/wifi_lab/wpa_online_brute.py`
 
 ### wifi_lab / wps_multimode
 
