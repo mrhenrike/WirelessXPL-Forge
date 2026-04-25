@@ -1,6 +1,6 @@
 # wirelessxpl-Forge — Full Module Catalog
 
-> Modules tree id: `5de26be1a91a` (git object)
+> Modules tree id: `560e829490d8` (git object)
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 ## Summary
@@ -23,15 +23,15 @@ Approximate on-disk size (file bytes only; binary prefixes). When using git meta
 | Metric | Value |
 |---|---|
 | Repository root | `WirelessXPL-Forge` |
-| Total file bytes | 31.70 MiB |
-| Files (repo walk) | 350 |
-| Files under ``wirelessxpl/`` | 287 |
+| Total file bytes | 31.80 MiB |
+| Files (repo walk) | 365 |
+| Files under ``wirelessxpl/`` | 302 |
 
 ### Largest top-level paths (repository)
 
 | Path | Size | Share of total |
 |---|---:|---:|
-| `wirelessxpl` | 31.39 MiB | 99.0% |
+| `wirelessxpl` | 31.49 MiB | 99.0% |
 | `tools` | 258.60 KiB | 0.8% |
 | `(repo root files)` | 48.41 KiB | 0.1% |
 | `.github` | 9.62 KiB | 0.0% |
@@ -41,8 +41,8 @@ Approximate on-disk size (file bytes only; binary prefixes). When using git meta
 
 | Area | Size | Share of total |
 |---|---:|---:|
-| `resources` | 30.33 MiB | 95.7% |
-| `modules` | 777.93 KiB | 2.4% |
+| `resources` | 30.28 MiB | 95.2% |
+| `modules` | 935.48 KiB | 2.9% |
 | `core` | 263.05 KiB | 0.8% |
 | `(wirelessxpl root files)` | 28.32 KiB | 0.1% |
 | `libs` | 13.29 KiB | 0.0% |
@@ -51,7 +51,7 @@ Approximate on-disk size (file bytes only; binary prefixes). When using git meta
 
 | Subfolder | Size | Share of total |
 |---|---:|---:|
-| `catalogs` | 25.67 MiB | 81.0% |
+| `catalogs` | 25.62 MiB | 80.6% |
 | `vendors` | 4.44 MiB | 14.0% |
 | `phishing_pages` | 144.60 KiB | 0.4% |
 | `wordlists` | 41.16 KiB | 0.1% |
