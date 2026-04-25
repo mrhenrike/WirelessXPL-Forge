@@ -5,3 +5,4 @@ recursive-include wirelessxpl/resources/mibs *.*
 recursive-include wirelessxpl/resources/catalogs *.json
 recursive-include wirelessxpl/resources/arsenal *.*
 recursive-include wirelessxpl/resources/ml *.json
+recursive-include wirelessxpl/resources/captive_templates *.html *.css *.js

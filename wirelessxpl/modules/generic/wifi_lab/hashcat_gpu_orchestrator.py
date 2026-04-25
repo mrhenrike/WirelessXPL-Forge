@@ -59,18 +59,33 @@ class Exploit(Exploit):
     }
 
     hash_file = OptString("", "File with hashcat lines (e.g. from hcxpcapngtool)")
-    wordlist = OptString("", "Wordlist path")
-    hash_mode = OptInteger(22000, "Hashcat mode (22000 typical for WPA-PBKDF2 PMKID/EAPOL hc22000)")
+    wordlist = OptString("", "Wordlist path (for dict/rule attacks; mask for brute-force)")
+    hash_mode = OptInteger(
+        22000,
+        "Hashcat mode: 22000=WPA-PBKDF2-PMKID+EAPOL, 22001=WPA-PMK, "
+        "16800=PMKID-only (legacy), 2500=WPA-EAPOL-PBKDF2 (legacy), "
+        "5500=NTLMv1 (WPE EAP), 5600=NTLMv2 (WPE EAP), "
+        "4800=iSCSI-CHAP/MS-CHAPv2",
+    )
+    attack_mode = OptInteger(
+        0,
+        "Attack mode -a: 0=dict, 1=combinator, 3=brute/mask, 6=hybrid-dict+mask, 7=hybrid-mask+dict",
+    )
     workload = OptInteger(3, "Workload profile -w 1..4")
     force_opencl = OptBool(False, "Pass --force (lab only; ignore warnings)")
     device_id = OptString(
         "",
         "hashcat -d: empty = auto-pick first GPU from -I; 'cpu' = skip -d (backend default)",
     )
+    rules_file = OptString("", "Hashcat rules file (-r path, e.g., rules/best64.rule)")
+    mask = OptString("", "Mask for brute-force -a 3 (e.g., ?d?d?d?d?d?d?d?d for 8 digits)")
+    session_name = OptString("", "Hashcat session name (--session)")
+    status_timer = OptInteger(30, "Status timer interval in seconds (--status-timer)")
+    optimized_kernels = OptBool(True, "Use optimized kernels -O (faster, limits password length)")
     dry_run = OptBool(True, "Only print hashcat -I and final argv")
     extra_args = OptString(
         "",
-        "Extra args split by space (e.g. --session wxf1 -r rules/best64.rule)",
+        "Extra args split by space (e.g. --potfile-disable --increment)",
         advanced=True,
     )
 
@@ -102,21 +117,40 @@ class Exploit(Exploit):
             else:
                 print_status("No GPU id heuristically matched; hashcat default backends apply.")
 
+        attack = int(self.attack_mode)
         argv: List[str] = [hc]
         if chosen:
             argv.extend(["-d", chosen])
-        argv.extend(
-            [
-                "-m",
-                str(int(self.hash_mode)),
-                "-a",
-                "0",
-                str(self.hash_file),
-                str(self.wordlist),
-                "-w",
-                str(int(self.workload)),
-            ]
-        )
+        argv.extend(["-m", str(int(self.hash_mode))])
+        argv.extend(["-a", str(attack)])
+        argv.append(str(self.hash_file))
+
+        if attack == 0:
+            if str(self.wordlist).strip():
+                argv.append(str(self.wordlist))
+        elif attack == 3:
+            mask_val = str(self.mask).strip() or str(self.wordlist).strip()
+            if mask_val:
+                argv.append(mask_val)
+        elif attack in (1, 6, 7):
+            if str(self.wordlist).strip():
+                argv.append(str(self.wordlist))
+            mask_val = str(self.mask).strip()
+            if mask_val:
+                argv.append(mask_val)
+
+        argv.extend(["-w", str(int(self.workload))])
+        if bool(self.optimized_kernels):
+            argv.append("-O")
+        rules = str(self.rules_file).strip()
+        if rules:
+            argv.extend(["-r", rules])
+        session = str(self.session_name).strip()
+        if session:
+            argv.extend(["--session", session])
+        timer = int(self.status_timer)
+        if timer > 0:
+            argv.extend(["--status", f"--status-timer={timer}"])
         if bool(self.force_opencl):
             argv.append("--force")
         if str(self.extra_args).strip():
