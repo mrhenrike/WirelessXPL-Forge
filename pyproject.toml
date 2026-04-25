@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wirelessxpl"
-version = "1.5.0"
+version = "1.6.0"
 description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "BSD-3-Clause" }
@@ -20,6 +20,8 @@ keywords = [
     "security", "pentest", "exploit", "802.11", "esp32", "marauder", "bruce",
     "handshake", "pmkid", "deauth", "fragattacks", "krack", "dragonblood",
     "evilportal", "captiveportal", "wardriving", "aircrack", "hcxdumptool",
+    "sim", "esim", "imsi", "ss7", "diameter", "gtp", "gsm", "lte", "5g",
+    "cellular", "srsran", "ueransim", "sigploit", "pysim", "simjacker",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
