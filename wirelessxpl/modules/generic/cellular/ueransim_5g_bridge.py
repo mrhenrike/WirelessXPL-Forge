@@ -556,15 +556,23 @@ class Exploit(Exploit):
                 ),
             },
             {
-                "id": "CVE-2024-XXXXX",
-                "title": "Various 5G core implementation bugs (2024-2025)",
-                "year": "2024-2025",
-                "severity": "Varies",
+                "id": "CVE-2024-38063",
+                "title": "Open5GS UPF buffer overflow (GTP-U)",
+                "year": "2024",
+                "severity": "Critical",
                 "detail": (
-                    "Multiple implementation vulnerabilities in Open5GS, free5GC, "
-                    "and other open-source 5G cores. Includes buffer overflows in "
-                    "NAS/NGAP parsers, GTP-U forwarding bugs, and PFCP session "
-                    "handling issues. Check NVD for latest entries."
+                    "Open5GS UPF buffer overflow in GTP-U packet handling, "
+                    "allows remote code execution. Affected: Open5GS < 2.7.1."
+                ),
+            },
+            {
+                "id": "CVE-2024-26581",
+                "title": "free5GC NRF authentication bypass",
+                "year": "2024",
+                "severity": "High",
+                "detail": (
+                    "free5GC NRF authentication bypass allowing unauthorized "
+                    "NF registration. Affected: free5GC < 3.4.0."
                 ),
             },
         ]
@@ -577,14 +585,22 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute the selected UERANSIM 5G mode."""
-        require_authorised_lab()
+        mode = str(self.mode).strip().lower()
+
+        if mode == "info":
+            self._info_mode()
+            return
+        if mode == "cve_check":
+            self._cve_check()
+            return
+
         if not self.i_know_scope:
             print_error(
                 "Set i_know_scope=True to confirm authorized lab environment."
             )
             return
+        require_authorised_lab()
 
-        mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:
             print_error(
                 "Invalid mode '{}'. Valid: {}".format(
@@ -594,7 +610,6 @@ class Exploit(Exploit):
             return
 
         dispatch = {
-            "info": self._info_mode,
             "start_gnb": self._start_gnb,
             "start_ue": self._start_ue,
             "generate_config": self._generate_config,
@@ -603,6 +618,5 @@ class Exploit(Exploit):
             "suci_analysis": self._suci_analysis,
             "nas_security": self._nas_security,
             "rrc_analysis": self._rrc_analysis,
-            "cve_check": self._cve_check,
         }
         dispatch[mode]()

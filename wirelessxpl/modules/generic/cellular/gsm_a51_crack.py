@@ -413,14 +413,22 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute the selected GSM A5/1 cracking mode."""
-        require_authorised_lab()
+        mode = str(self.mode).strip().lower()
+
+        if mode == "info":
+            self._info_mode()
+            return
+        if mode == "cve_database":
+            self._cve_database()
+            return
+
         if not self.i_know_scope:
             print_error(
                 "Set i_know_scope=True to confirm authorized lab and spectrum license."
             )
             return
+        require_authorised_lab()
 
-        mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:
             print_error(
                 "Invalid mode '{}'. Valid: {}".format(
@@ -430,12 +438,10 @@ class Exploit(Exploit):
             return
 
         dispatch = {
-            "info": self._info_mode,
             "capture_bursts": self._capture_bursts,
             "crack_rainbow": self._crack_rainbow,
             "crack_known_plaintext": self._crack_known_plaintext,
             "decrypt_bursts": self._decrypt_bursts,
             "a52_crack": self._a52_crack,
-            "cve_database": self._cve_database,
         }
         dispatch[mode]()

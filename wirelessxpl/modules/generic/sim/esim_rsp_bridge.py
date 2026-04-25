@@ -19,7 +19,6 @@ import os
 import json
 import socket
 import ssl
-import subprocess
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
