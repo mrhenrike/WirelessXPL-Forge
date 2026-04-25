@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wirelessxpl"
-version = "1.1.1"
+version = "1.2.0"
 description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "BSD-3-Clause" }
