@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Router Administration</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+background:#1a1a2e;display:flex;justify-content:center;align-items:center;
+min-height:100vh;color:#e0e0e0}
+.container{background:#16213e;border-radius:12px;padding:40px;width:100%;
+max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.logo{text-align:center;margin-bottom:24px}
+.logo svg{width:48px;height:48px;fill:#0f3460}
+h1{font-size:1.3em;text-align:center;margin-bottom:8px;color:#e94560}
+p.sub{font-size:.85em;text-align:center;color:#a0a0c0;margin-bottom:24px}
+label{display:block;font-size:.85em;color:#a0a0c0;margin-bottom:4px}
+input[type=text],input[type=password]{width:100%;padding:10px 14px;
+border:1px solid #0f3460;border-radius:6px;background:#1a1a2e;color:#fff;
+font-size:.95em;margin-bottom:16px;outline:none}
+input:focus{border-color:#e94560}
+button{width:100%;padding:12px;border:none;border-radius:6px;
+background:#e94560;color:#fff;font-size:1em;cursor:pointer;
+font-weight:600;transition:background .2s}
+button:hover{background:#c73650}
+.footer{text-align:center;font-size:.7em;color:#555;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="logo">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21
+.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zM17.9 17.39c-.26-.81-1-1.39-1.9-1.39h-1
+v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
+c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+</div>
+<h1>Router Login</h1>
+<p class="sub">Enter your router credentials to continue</p>
+<form method="POST" action="/login">
+<label for="username">Username</label>
+<input type="text" id="username" name="username" placeholder="admin" required autocomplete="off">
+<label for="password">Password</label>
+<input type="password" id="password" name="password" placeholder="Password" required>
+<button type="submit">Sign In</button>
+</form>
+<div class="footer">Firmware v3.2.1 - All rights reserved</div>
+</div>
+</body>
+</html>
