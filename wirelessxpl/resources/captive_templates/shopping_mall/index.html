@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mall Free Wi-Fi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,sans-serif;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 40%,#f093fb 70%,#f5576c 100%);
+display:flex;justify-content:center;align-items:center;min-height:100vh;
+padding:16px}
+.card{background:rgba(255,255,255,.96);border-radius:20px;overflow:hidden;
+width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2);
+backdrop-filter:blur(10px)}
+.header{padding:36px 28px 24px;text-align:center}
+.bag{font-size:3em;margin-bottom:8px;display:block;
+filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
+.header h1{font-size:1.4em;font-weight:700;
+background:linear-gradient(135deg,#764ba2,#f5576c);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text}
+.header p{font-size:.82em;color:#777;margin-top:6px;line-height:1.4}
+.body{padding:0 28px 28px}
+label{display:block;font-size:.78em;color:#666;margin-bottom:5px;
+font-weight:600}
+input[type="text"],input[type="password"]{width:100%;padding:12px 14px;
+border:2px solid #eee;border-radius:10px;font-size:.92em;
+margin-bottom:14px;outline:none;transition:border-color .2s;
+background:#fafafa}
+input:focus{border-color:#764ba2;background:#fff}
+button{width:100%;padding:14px;border:none;border-radius:10px;
+font-size:.95em;font-weight:700;cursor:pointer;color:#fff;
+background:linear-gradient(135deg,#764ba2 0%,#f5576c 100%);
+transition:opacity .2s;box-shadow:0 4px 16px rgba(118,75,162,.35)}
+button:hover{opacity:.9}
+.opt-in{display:flex;align-items:flex-start;gap:8px;margin-bottom:18px;
+padding:0 2px}
+.opt-in input[type="checkbox"]{width:auto;margin:0;margin-top:2px;
+accent-color:#764ba2;flex-shrink:0}
+.opt-in label{margin:0;font-size:.72em;color:#999;font-weight:400;
+line-height:1.4;cursor:pointer}
+.footer{text-align:center;padding:0 28px 24px;font-size:.7em;color:#bbb;
+line-height:1.5}
+@media(max-width:480px){.card{max-width:100%;border-radius:14px}
+.header{padding:28px 20px 18px}.body{padding:0 20px 22px}
+.footer{padding:0 20px 20px}}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<span class="bag">&#x1F6CD;</span>
+<h1 data-i18n="title">Mall Free Wi-Fi</h1>
+<p data-i18n="subtitle">Connect and enjoy free internet while you shop</p>
+</div>
+<div class="body">
+<form method="POST" action="/login" autocomplete="off">
+<label for="email" data-i18n="label_user">Email</label>
+<input type="text" id="email" name="username" data-i18n-ph="ph_user"
+placeholder="you@email.com" required>
+<label for="pwd" data-i18n="label_pass">Password</label>
+<input type="password" id="pwd" name="password" data-i18n-ph="ph_pass"
+placeholder="Create a password" required>
+<div class="opt-in">
+<input type="checkbox" id="promo" name="promo" checked>
+<label for="promo" data-i18n="optin">I would like to receive exclusive offers, promotions, and news from mall partners.</label>
+</div>
+<button type="submit" data-i18n="btn_login">Connect Free</button>
+</form>
+</div>
+<div class="footer">
+<span data-i18n="terms">By connecting, you agree to the Wi-Fi terms of use and privacy policy.</span>
+</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Mall Free Wi-Fi",subtitle:"Connect and enjoy free internet while you shop",
+label_user:"Email",ph_user:"you@email.com",
+label_pass:"Password",ph_pass:"Create a password",
+optin:"I would like to receive exclusive offers, promotions, and news from mall partners.",
+btn_login:"Connect Free",terms:"By connecting, you agree to the Wi-Fi terms of use and privacy policy."},
+pt:{title:"Wi-Fi Gratis do Shopping",subtitle:"Conecte-se e aproveite internet gratis enquanto faz compras",
+label_user:"E-mail",ph_user:"voce@email.com",
+label_pass:"Senha",ph_pass:"Crie uma senha",
+optin:"Desejo receber ofertas exclusivas, promocoes e novidades dos parceiros do shopping.",
+btn_login:"Conectar Gratis",terms:"Ao conectar, voce concorda com os termos de uso e politica de privacidade."},
+es:{title:"Wi-Fi Gratis del Centro Comercial",subtitle:"Conectate y disfruta internet gratis mientras compras",
+label_user:"Correo electronico",ph_user:"tu@email.com",
+label_pass:"Contrasena",ph_pass:"Crea una contrasena",
+optin:"Deseo recibir ofertas exclusivas, promociones y novedades de los socios del centro comercial.",
+btn_login:"Conectar Gratis",terms:"Al conectarte, aceptas los terminos de uso y la politica de privacidad."},
+fr:{title:"Wi-Fi Gratuit du Centre Commercial",subtitle:"Connectez-vous et profitez d'internet gratuit pendant vos achats",
+label_user:"E-mail",ph_user:"vous@email.com",
+label_pass:"Mot de passe",ph_pass:"Creez un mot de passe",
+optin:"Je souhaite recevoir des offres exclusives, promotions et actualites des partenaires du centre.",
+btn_login:"Connexion Gratuite",terms:"En vous connectant, vous acceptez les conditions d'utilisation et la politique de confidentialite."},
+de:{title:"Kostenloses WLAN im Einkaufszentrum",subtitle:"Verbinden Sie sich und geniessen Sie kostenloses Internet beim Einkaufen",
+label_user:"E-Mail",ph_user:"du@email.com",
+label_pass:"Passwort",ph_pass:"Passwort erstellen",
+optin:"Ich moechte exklusive Angebote, Aktionen und Neuigkeiten von den Partnern des Einkaufszentrums erhalten.",
+btn_login:"Kostenlos Verbinden",terms:"Durch die Verbindung stimmen Sie den Nutzungsbedingungen und der Datenschutzrichtlinie zu."},
+it:{title:"Wi-Fi Gratuito del Centro Commerciale",subtitle:"Connettiti e goditi internet gratuito mentre fai acquisti",
+label_user:"Email",ph_user:"tu@email.com",
+label_pass:"Password",ph_pass:"Crea una password",
+optin:"Desidero ricevere offerte esclusive, promozioni e novita dai partner del centro commerciale.",
+btn_login:"Connetti Gratis",terms:"Connettendoti, accetti i termini di utilizzo e l'informativa sulla privacy."},
+ja:{title:"\u30E2\u30FC\u30EB\u7121\u6599Wi-Fi",
+subtitle:"\u63A5\u7D9A\u3057\u3066\u304A\u8CB7\u3044\u7269\u4E2D\u306B\u7121\u6599\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8\u3092\u304A\u697D\u3057\u307F\u304F\u3060\u3055\u3044",
+label_user:"\u30E1\u30FC\u30EB",ph_user:"you@email.com",
+label_pass:"\u30D1\u30B9\u30EF\u30FC\u30C9",ph_pass:"\u30D1\u30B9\u30EF\u30FC\u30C9\u3092\u4F5C\u6210",
+optin:"\u30E2\u30FC\u30EB\u30D1\u30FC\u30C8\u30CA\u30FC\u304B\u3089\u306E\u9650\u5B9A\u30AA\u30D5\u30A1\u30FC\u3001\u30D7\u30ED\u30E2\u30FC\u30B7\u30E7\u30F3\u3001\u30CB\u30E5\u30FC\u30B9\u3092\u53D7\u3051\u53D6\u308A\u305F\u3044\u3002",
+btn_login:"\u7121\u6599\u3067\u63A5\u7D9A",
+terms:"\u63A5\u7D9A\u3059\u308B\u3053\u3068\u3067\u3001Wi-Fi\u5229\u7528\u898F\u7D04\u304A\u3088\u3073\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC\u306B\u540C\u610F\u3057\u305F\u3082\u306E\u3068\u307F\u306A\u3057\u307E\u3059\u3002"},
+zh:{title:"\u5546\u573A\u514D\u8D39Wi-Fi",
+subtitle:"\u8FDE\u63A5\u5E76\u5728\u8D2D\u7269\u65F6\u4EAB\u53D7\u514D\u8D39\u4E92\u8054\u7F51",
+label_user:"\u90AE\u7BB1",ph_user:"you@email.com",
+label_pass:"\u5BC6\u7801",ph_pass:"\u521B\u5EFA\u5BC6\u7801",
+optin:"\u6211\u5E0C\u671B\u6536\u5230\u5546\u573A\u5408\u4F5C\u4F19\u4F34\u7684\u72EC\u5BB6\u4F18\u60E0\u3001\u4FC3\u9500\u548C\u65B0\u95FB\u3002",
+btn_login:"\u514D\u8D39\u8FDE\u63A5",
+terms:"\u8FDE\u63A5\u5373\u8868\u793A\u60A8\u540C\u610FWi-Fi\u4F7F\u7528\u6761\u6B3E\u548C\u9690\u79C1\u653F\u7B56\u3002"},
+ko:{title:"\uBAB0 \uBB34\uB8CC Wi-Fi",
+subtitle:"\uC5F0\uACB0\uD558\uACE0 \uC1FC\uD551\uD558\uBA74\uC11C \uBB34\uB8CC \uC778\uD130\uB137\uC744 \uC990\uAE30\uC138\uC694",
+label_user:"\uC774\uBA54\uC77C",ph_user:"you@email.com",
+label_pass:"\uBE44\uBC00\uBC88\uD638",ph_pass:"\uBE44\uBC00\uBC88\uD638 \uC0DD\uC131",
+optin:"\uBAB0 \uD30C\uD2B8\uB108\uC758 \uB3C5\uC810 \uD61C\uD0DD, \uD504\uB85C\uBAA8\uC158 \uBC0F \uC18C\uC2DD\uC744 \uBC1B\uACE0 \uC2F6\uC2B5\uB2C8\uB2E4.",
+btn_login:"\uBB34\uB8CC \uC5F0\uACB0",
+terms:"\uC5F0\uACB0\uD558\uBA74 Wi-Fi \uC774\uC6A9 \uC57D\uAD00 \uBC0F \uAC1C\uC778\uC815\uBCF4 \uCC98\uB9AC\uBC29\uCE68\uC5D0 \uB3D9\uC758\uD558\uB294 \uAC83\uC785\uB2C8\uB2E4."},
+ru:{title:"\u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439 Wi-Fi \u0432 \u0422\u0426",
+subtitle:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u0435\u0441\u044C \u0438 \u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435\u0441\u044C \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u043C \u0438\u043D\u0442\u0435\u0440\u043D\u0435\u0442\u043E\u043C \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u043F\u043E\u043A\u0443\u043F\u043E\u043A",
+label_user:"\u042D\u043B. \u043F\u043E\u0447\u0442\u0430",ph_user:"you@email.com",
+label_pass:"\u041F\u0430\u0440\u043E\u043B\u044C",ph_pass:"\u0421\u043E\u0437\u0434\u0430\u0439\u0442\u0435 \u043F\u0430\u0440\u043E\u043B\u044C",
+optin:"\u042F \u0445\u043E\u0447\u0443 \u043F\u043E\u043B\u0443\u0447\u0430\u0442\u044C \u044D\u043A\u0441\u043A\u043B\u044E\u0437\u0438\u0432\u043D\u044B\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u044F, \u0430\u043A\u0446\u0438\u0438 \u0438 \u043D\u043E\u0432\u043E\u0441\u0442\u0438 \u043E\u0442 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u043E\u0432 \u0422\u0426.",
+btn_login:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u044C\u0441\u044F \u0431\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u043E",
+terms:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044F\u0441\u044C, \u0432\u044B \u0441\u043E\u0433\u043B\u0430\u0448\u0430\u0435\u0442\u0435\u0441\u044C \u0441 \u0443\u0441\u043B\u043E\u0432\u0438\u044F\u043C\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F \u0438 \u043F\u043E\u043B\u0438\u0442\u0438\u043A\u043E\u0439 \u043A\u043E\u043D\u0444\u0438\u0434\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438."},
+ar:{title:"Wi-Fi \u0645\u062C\u0627\u0646\u064A \u0641\u064A \u0627\u0644\u0645\u0648\u0644",
+subtitle:"\u0627\u062A\u0635\u0644 \u0648\u0627\u0633\u062A\u0645\u062A\u0639 \u0628\u0627\u0644\u0625\u0646\u062A\u0631\u0646\u062A \u0627\u0644\u0645\u062C\u0627\u0646\u064A \u0623\u062B\u0646\u0627\u0621 \u0627\u0644\u062A\u0633\u0648\u0642",
+label_user:"\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A",ph_user:"you@email.com",
+label_pass:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",ph_pass:"\u0623\u0646\u0634\u0626 \u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631",
+optin:"\u0623\u0631\u063A\u0628 \u0641\u064A \u062A\u0644\u0642\u064A \u0627\u0644\u0639\u0631\u0648\u0636 \u0627\u0644\u062D\u0635\u0631\u064A\u0629 \u0648\u0627\u0644\u0639\u0631\u0648\u0636 \u0627\u0644\u062A\u0631\u0648\u064A\u062C\u064A\u0629 \u0648\u0627\u0644\u0623\u062E\u0628\u0627\u0631 \u0645\u0646 \u0634\u0631\u0643\u0627\u0621 \u0627\u0644\u0645\u0648\u0644.",
+btn_login:"\u0627\u062A\u0635\u0644 \u0645\u062C\u0627\u0646\u0627\u064B",
+terms:"\u0628\u0627\u0644\u0627\u062A\u0635\u0627\u0644\u060C \u0641\u0625\u0646\u0643 \u062A\u0648\u0627\u0641\u0642 \u0639\u0644\u0649 \u0634\u0631\u0648\u0637 \u0627\u0633\u062A\u062E\u062F\u0627\u0645 Wi-Fi \u0648\u0633\u064A\u0627\u0633\u0629 \u0627\u0644\u062E\u0635\u0648\u0635\u064A\u0629."}
+};
+var lang=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+if(!T[lang])lang='en';
+if(lang==='ar')document.documentElement.setAttribute('dir','rtl');
+document.querySelectorAll('[data-i18n]').forEach(function(el){
+var k=el.getAttribute('data-i18n');
+if(T[lang][k])el.textContent=T[lang][k];
+});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+var k=el.getAttribute('data-i18n-ph');
+if(T[lang][k])el.setAttribute('placeholder',T[lang][k]);
+});
+})();
+</script>
+</body>
+</html>

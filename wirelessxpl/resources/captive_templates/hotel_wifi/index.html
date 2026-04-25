@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="page_title">Welcome to Hotel Wi-Fi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Playfair Display','Georgia','Times New Roman',serif;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  display:flex;justify-content:center;align-items:center;min-height:100vh;
+  color:#f0e6d3;padding:20px;
+}
+.portal{
+  background:linear-gradient(180deg,rgba(26,26,46,0.95) 0%,rgba(15,52,96,0.92) 100%);
+  border:1px solid rgba(212,175,55,0.3);border-radius:16px;
+  padding:48px 40px 40px;width:100%;max-width:440px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(212,175,55,0.08);
+  position:relative;overflow:hidden;
+}
+.portal::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,#d4af37,transparent);
+}
+.icon{text-align:center;font-size:2.4em;margin-bottom:12px;
+  filter:drop-shadow(0 0 8px rgba(212,175,55,0.4))}
+h1{
+  text-align:center;font-size:1.5em;font-weight:600;
+  color:#d4af37;margin-bottom:6px;letter-spacing:0.5px;
+}
+.subtitle{
+  text-align:center;font-size:0.88em;color:#a89b8c;
+  margin-bottom:32px;font-family:'Segoe UI',Roboto,sans-serif;
+}
+.form-group{margin-bottom:20px}
+.form-group label{
+  display:block;font-size:0.78em;color:#c9b896;
+  margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px;
+  font-family:'Segoe UI',Roboto,sans-serif;
+}
+.form-group input{
+  width:100%;padding:14px 16px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(212,175,55,0.25);
+  border-radius:8px;font-size:0.95em;color:#f0e6d3;
+  outline:none;transition:border-color 0.3s,box-shadow 0.3s;
+  font-family:'Segoe UI',Roboto,sans-serif;
+}
+.form-group input:focus{
+  border-color:#d4af37;box-shadow:0 0 12px rgba(212,175,55,0.15);
+}
+.form-group input::placeholder{color:rgba(169,155,140,0.6)}
+button[type="submit"]{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#d4af37 0%,#b8962e 100%);
+  color:#1a1a2e;border:none;border-radius:8px;font-size:0.95em;
+  font-weight:700;cursor:pointer;text-transform:uppercase;
+  letter-spacing:1.5px;transition:transform 0.2s,box-shadow 0.2s;
+  font-family:'Segoe UI',Roboto,sans-serif;margin-top:8px;
+}
+button[type="submit"]:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(212,175,55,0.3);
+}
+button[type="submit"]:active{transform:translateY(0)}
+.terms{
+  text-align:center;font-size:0.72em;color:#7a6f63;
+  margin-top:24px;line-height:1.6;
+  font-family:'Segoe UI',Roboto,sans-serif;
+}
+.divider{
+  display:flex;align-items:center;gap:12px;margin:20px 0;
+}
+.divider::before,.divider::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,0.3),transparent);
+}
+.divider span{color:#a89b8c;font-size:0.75em;font-family:'Segoe UI',Roboto,sans-serif}
+@media(max-width:480px){
+  .portal{padding:36px 24px 32px;border-radius:12px}
+  h1{font-size:1.3em}
+  .icon{font-size:2em}
+}
+</style>
+</head>
+<body>
+<div class="portal">
+  <div class="icon">&#127976;</div>
+  <h1 data-i18n="title">Welcome to Hotel Wi-Fi</h1>
+  <p class="subtitle" data-i18n="subtitle">Please enter your room details to connect</p>
+  <div class="divider"><span>&#9830;</span></div>
+  <form method="POST" action="/login" autocomplete="off">
+    <div class="form-group">
+      <label for="room" data-i18n="label_room">Room Number</label>
+      <input type="text" id="room" name="username" required
+             data-i18n-ph="ph_room" placeholder="e.g. 401">
+    </div>
+    <div class="form-group">
+      <label for="guest" data-i18n="label_guest">Last Name</label>
+      <input type="password" id="guest" name="password" required
+             data-i18n-ph="ph_guest" placeholder="As registered at check-in">
+    </div>
+    <button type="submit" data-i18n="btn_connect">Connect</button>
+  </form>
+  <p class="terms" data-i18n="terms">By connecting, you agree to our terms of service and acceptable use policy. Network activity may be monitored for security purposes.</p>
+</div>
+<script>
+(function(){
+  var T={
+    en:{page_title:"Welcome to Hotel Wi-Fi",title:"Welcome to Hotel Wi-Fi",subtitle:"Please enter your room details to connect",label_room:"Room Number",label_guest:"Last Name",ph_room:"e.g. 401",ph_guest:"As registered at check-in",btn_connect:"Connect",terms:"By connecting, you agree to our terms of service and acceptable use policy. Network activity may be monitored for security purposes."},
+    pt:{page_title:"Bem-vindo ao Wi-Fi do Hotel",title:"Bem-vindo ao Wi-Fi do Hotel",subtitle:"Insira os dados do seu quarto para conectar",label_room:"Numero do Quarto",label_guest:"Sobrenome",ph_room:"ex. 401",ph_guest:"Conforme registro no check-in",btn_connect:"Conectar",terms:"Ao conectar, voce concorda com nossos termos de servico e politica de uso aceitavel. A atividade de rede pode ser monitorada por razoes de seguranca."},
+    es:{page_title:"Bienvenido al Wi-Fi del Hotel",title:"Bienvenido al Wi-Fi del Hotel",subtitle:"Ingrese los datos de su habitacion para conectarse",label_room:"Numero de Habitacion",label_guest:"Apellido",ph_room:"ej. 401",ph_guest:"Segun registro en recepcion",btn_connect:"Conectar",terms:"Al conectarse, acepta nuestros terminos de servicio y politica de uso aceptable. La actividad de red puede ser monitoreada por razones de seguridad."},
+    fr:{page_title:"Bienvenue sur le Wi-Fi de l'Hotel",title:"Bienvenue sur le Wi-Fi de l'Hotel",subtitle:"Veuillez entrer les details de votre chambre pour vous connecter",label_room:"Numero de Chambre",label_guest:"Nom de Famille",ph_room:"ex. 401",ph_guest:"Tel qu'enregistre a l'arrivee",btn_connect:"Se Connecter",terms:"En vous connectant, vous acceptez nos conditions d'utilisation et notre politique d'usage. L'activite reseau peut etre surveillee a des fins de securite."},
+    de:{page_title:"Willkommen beim Hotel-WLAN",title:"Willkommen beim Hotel-WLAN",subtitle:"Bitte geben Sie Ihre Zimmerdaten ein, um sich zu verbinden",label_room:"Zimmernummer",label_guest:"Nachname",ph_room:"z.B. 401",ph_guest:"Wie beim Check-in registriert",btn_connect:"Verbinden",terms:"Durch die Verbindung stimmen Sie unseren Nutzungsbedingungen und Richtlinien zu. Die Netzwerkaktivitaet kann aus Sicherheitsgruenden ueberwacht werden."},
+    it:{page_title:"Benvenuto al Wi-Fi dell'Hotel",title:"Benvenuto al Wi-Fi dell'Hotel",subtitle:"Inserisci i dati della tua camera per connetterti",label_room:"Numero di Camera",label_guest:"Cognome",ph_room:"es. 401",ph_guest:"Come registrato al check-in",btn_connect:"Connetti",terms:"Connettendoti, accetti i nostri termini di servizio e la politica di utilizzo accettabile. L'attivita di rete potrebbe essere monitorata per motivi di sicurezza."},
+    ja:{page_title:"\u30DB\u30C6\u30EBWi-Fi\u3078\u3088\u3046\u3053\u305D",title:"\u30DB\u30C6\u30EBWi-Fi\u3078\u3088\u3046\u3053\u305D",subtitle:"\u304A\u90E8\u5C4B\u306E\u60C5\u5831\u3092\u5165\u529B\u3057\u3066\u63A5\u7D9A\u3057\u3066\u304F\u3060\u3055\u3044",label_room:"\u90E8\u5C4B\u756A\u53F7",label_guest:"\u59D3",ph_room:"\u4F8B: 401",ph_guest:"\u30C1\u30A7\u30C3\u30AF\u30A4\u30F3\u6642\u306E\u767B\u9332\u540D",btn_connect:"\u63A5\u7D9A",terms:"\u63A5\u7D9A\u3059\u308B\u3053\u3068\u3067\u3001\u5229\u7528\u898F\u7D04\u304A\u3088\u3073\u5229\u7528\u30DD\u30EA\u30B7\u30FC\u306B\u540C\u610F\u3057\u305F\u3082\u306E\u3068\u307F\u306A\u3055\u308C\u307E\u3059\u3002\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u6D3B\u52D5\u306F\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u306E\u305F\u3081\u306B\u76E3\u8996\u3055\u308C\u308B\u5834\u5408\u304C\u3042\u308A\u307E\u3059\u3002"},
+    zh:{page_title:"\u6B22\u8FCE\u4F7F\u7528\u9152\u5E97Wi-Fi",title:"\u6B22\u8FCE\u4F7F\u7528\u9152\u5E97Wi-Fi",subtitle:"\u8BF7\u8F93\u5165\u60A8\u7684\u623F\u95F4\u4FE1\u606F\u4EE5\u8FDE\u63A5",label_room:"\u623F\u95F4\u53F7",label_guest:"\u59D3\u6C0F",ph_room:"\u4F8B\u5982 401",ph_guest:"\u4E0E\u5165\u4F4F\u767B\u8BB0\u4E00\u81F4",btn_connect:"\u8FDE\u63A5",terms:"\u8FDE\u63A5\u5373\u8868\u793A\u60A8\u540C\u610F\u6211\u4EEC\u7684\u670D\u52A1\u6761\u6B3E\u548C\u53EF\u63A5\u53D7\u4F7F\u7528\u653F\u7B56\u3002\u7F51\u7EDC\u6D3B\u52A8\u53EF\u80FD\u4F1A\u88AB\u76D1\u63A7\u4EE5\u786E\u4FDD\u5B89\u5168\u3002"},
+    ko:{page_title:"\uD638\uD154 Wi-Fi\uC5D0 \uC624\uC2E0 \uAC83\uC744 \uD658\uC601\uD569\uB2C8\uB2E4",title:"\uD638\uD154 Wi-Fi\uC5D0 \uC624\uC2E0 \uAC83\uC744 \uD658\uC601\uD569\uB2C8\uB2E4",subtitle:"\uAC1D\uC2E4 \uC815\uBCF4\uB97C \uC785\uB825\uD558\uC5EC \uC5F0\uACB0\uD558\uC138\uC694",label_room:"\uAC1D\uC2E4 \uBC88\uD638",label_guest:"\uC131",ph_room:"\uC608: 401",ph_guest:"\uCCB4\uD06C\uC778 \uC2DC \uB4F1\uB85D\uB41C \uC774\uB984",btn_connect:"\uC5F0\uACB0",terms:"\uC5F0\uACB0\uD558\uBA74 \uC11C\uBE44\uC2A4 \uC774\uC6A9 \uC57D\uAD00 \uBC0F \uC0AC\uC6A9 \uC815\uCC45\uC5D0 \uB3D9\uC758\uD558\uB294 \uAC83\uC73C\uB85C \uAC04\uC8FC\uB429\uB2C8\uB2E4. \uBCF4\uC548\uC744 \uC704\uD574 \uB124\uD2B8\uC6CC\uD06C \uD65C\uB3D9\uC774 \uBAA8\uB2C8\uD130\uB9C1\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4."},
+    ru:{page_title:"\u0414\u043E\u0431\u0440\u043E \u043F\u043E\u0436\u0430\u043B\u043E\u0432\u0430\u0442\u044C \u0432 Wi-Fi \u043E\u0442\u0435\u043B\u044F",title:"\u0414\u043E\u0431\u0440\u043E \u043F\u043E\u0436\u0430\u043B\u043E\u0432\u0430\u0442\u044C \u0432 Wi-Fi \u043E\u0442\u0435\u043B\u044F",subtitle:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043D\u043E\u043C\u0435\u0440\u0430 \u0434\u043B\u044F \u043F\u043E\u0434\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u044F",label_room:"\u041D\u043E\u043C\u0435\u0440 \u043A\u043E\u043C\u043D\u0430\u0442\u044B",label_guest:"\u0424\u0430\u043C\u0438\u043B\u0438\u044F",ph_room:"\u043D\u0430\u043F\u0440. 401",ph_guest:"\u041A\u0430\u043A \u043F\u0440\u0438 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438",btn_connect:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u044C\u0441\u044F",terms:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u044F\u0441\u044C, \u0432\u044B \u0441\u043E\u0433\u043B\u0430\u0448\u0430\u0435\u0442\u0435\u0441\u044C \u0441 \u0443\u0441\u043B\u043E\u0432\u0438\u044F\u043C\u0438 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F \u0438 \u043F\u043E\u043B\u0438\u0442\u0438\u043A\u043E\u0439 \u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u043E\u0433\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F. \u0421\u0435\u0442\u0435\u0432\u0430\u044F \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C \u043C\u043E\u0436\u0435\u0442 \u043E\u0442\u0441\u043B\u0435\u0436\u0438\u0432\u0430\u0442\u044C\u0441\u044F \u0432 \u0446\u0435\u043B\u044F\u0445 \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u043E\u0441\u0442\u0438."},
+    ar:{page_title:"\u0645\u0631\u062D\u0628\u064B\u0627 \u0628\u0643\u0645 \u0641\u064A \u0634\u0628\u0643\u0629 \u0627\u0644\u0641\u0646\u062F\u0642",title:"\u0645\u0631\u062D\u0628\u064B\u0627 \u0628\u0643\u0645 \u0641\u064A \u0634\u0628\u0643\u0629 \u0627\u0644\u0641\u0646\u062F\u0642",subtitle:"\u064A\u0631\u062C\u0649 \u0625\u062F\u062E\u0627\u0644 \u0628\u064A\u0627\u0646\u0627\u062A \u063A\u0631\u0641\u062A\u0643 \u0644\u0644\u0627\u062A\u0635\u0627\u0644",label_room:"\u0631\u0642\u0645 \u0627\u0644\u063A\u0631\u0641\u0629",label_guest:"\u0627\u0633\u0645 \u0627\u0644\u0639\u0627\u0626\u0644\u0629",ph_room:"\u0645\u062B\u0627\u0644: 401",ph_guest:"\u0643\u0645\u0627 \u0647\u0648 \u0645\u0633\u062C\u0644 \u0639\u0646\u062F \u0627\u0644\u0648\u0635\u0648\u0644",btn_connect:"\u0627\u062A\u0635\u0627\u0644",terms:"\u0628\u0627\u0644\u0627\u062A\u0635\u0627\u0644\u060C \u0641\u0625\u0646\u0643 \u062A\u0648\u0627\u0641\u0642 \u0639\u0644\u0649 \u0634\u0631\u0648\u0637 \u0627\u0644\u062E\u062F\u0645\u0629 \u0648\u0633\u064A\u0627\u0633\u0629 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0627\u0644\u0645\u0642\u0628\u0648\u0644. \u0642\u062F \u062A\u062A\u0645 \u0645\u0631\u0627\u0642\u0628\u0629 \u0646\u0634\u0627\u0637 \u0627\u0644\u0634\u0628\u0643\u0629 \u0644\u0623\u063A\u0631\u0627\u0636 \u0623\u0645\u0646\u064A\u0629."}
+  };
+  var lang=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+  if(!T[lang])lang='en';
+  var tr=T[lang];
+  if(lang==='ar')document.documentElement.setAttribute('dir','rtl');
+  document.documentElement.setAttribute('lang',lang);
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');
+    if(tr[k]){
+      if(el.tagName==='TITLE')document.title=tr[k];
+      else el.textContent=tr[k];
+    }
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var k=el.getAttribute('data-i18n-ph');
+    if(tr[k])el.setAttribute('placeholder',tr[k]);
+  });
+})();
+</script>
+</body>
+</html>
