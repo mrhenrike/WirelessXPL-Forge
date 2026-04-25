@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Wi-Fi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,sans-serif;
+background:#f5f0e8;display:flex;justify-content:center;
+align-items:center;min-height:100vh;padding:16px}
+.card{background:#fffdf7;border-radius:12px;overflow:hidden;width:100%;
+max-width:400px;box-shadow:0 6px 28px rgba(60,50,30,.1);
+border:1px solid #e8e0d0}
+.header{padding:36px 28px 24px;text-align:center;
+background:linear-gradient(180deg,#2d5f3e 0%,#3a7a50 100%);color:#fff}
+.book{font-size:3em;margin-bottom:10px;display:block}
+.header h1{font-family:Georgia,'Times New Roman',serif;font-size:1.4em;
+font-weight:700;letter-spacing:.3px}
+.header p{font-size:.82em;opacity:.82;margin-top:6px;line-height:1.4;
+font-style:italic}
+.body{padding:32px 28px 24px}
+label{display:block;font-size:.78em;color:#5a5040;margin-bottom:5px;
+font-weight:600}
+input[type="text"],input[type="password"]{width:100%;padding:11px 14px;
+border:1.5px solid #d5cdb8;border-radius:8px;font-size:.92em;
+margin-bottom:16px;outline:none;background:#fdfbf5;
+transition:border-color .2s}
+input:focus{border-color:#2d5f3e;background:#fff}
+button{width:100%;padding:13px;background:#2d5f3e;color:#fff;border:none;
+border-radius:8px;font-size:.95em;font-weight:600;cursor:pointer;
+transition:background .2s}
+button:hover{background:#3a7a50}
+.policy{margin-top:16px;padding:14px;background:#f0ebe0;border-radius:8px;
+border-left:3px solid #2d5f3e}
+.policy p{font-size:.72em;color:#7a7060;line-height:1.5}
+.footer{text-align:center;padding:16px 28px 24px;font-size:.72em;
+color:#a09880;line-height:1.5}
+@media(max-width:480px){.card{max-width:100%;border-radius:8px}
+.header{padding:28px 20px 18px}.body{padding:24px 20px 18px}
+.footer{padding:12px 20px 20px}}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<span class="book">&#x1F4DA;</span>
+<h1 data-i18n="title">Library Wi-Fi</h1>
+<p data-i18n="subtitle">Free wireless access for library patrons</p>
+</div>
+<div class="body">
+<form method="POST" action="/login" autocomplete="off">
+<label for="cid" data-i18n="label_user">Library Card Number</label>
+<input type="text" id="cid" name="username" data-i18n-ph="ph_user"
+placeholder="e.g. 2900012345" required>
+<label for="pin" data-i18n="label_pass">PIN</label>
+<input type="password" id="pin" name="password" data-i18n-ph="ph_pass"
+placeholder="4-digit PIN" required>
+<button type="submit" data-i18n="btn_login">Connect</button>
+</form>
+<div class="policy">
+<p data-i18n="policy">By using this network, you agree to the library acceptable use policy. Internet access is filtered in accordance with local regulations. Session duration may be limited during peak hours.</p>
+</div>
+</div>
+<div class="footer">
+<span data-i18n="help">Need assistance? Ask at the circulation desk or call your local branch.</span>
+</div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Library Wi-Fi",subtitle:"Free wireless access for library patrons",
+label_user:"Library Card Number",ph_user:"e.g. 2900012345",
+label_pass:"PIN",ph_pass:"4-digit PIN",
+btn_login:"Connect",
+policy:"By using this network, you agree to the library acceptable use policy. Internet access is filtered in accordance with local regulations. Session duration may be limited during peak hours.",
+help:"Need assistance? Ask at the circulation desk or call your local branch."},
+pt:{title:"Wi-Fi da Biblioteca",subtitle:"Acesso sem fio gratuito para usuarios da biblioteca",
+label_user:"Numero do Cartao",ph_user:"ex. 2900012345",
+label_pass:"PIN",ph_pass:"PIN de 4 digitos",
+btn_login:"Conectar",
+policy:"Ao usar esta rede, voce concorda com a politica de uso aceitavel da biblioteca. O acesso a internet e filtrado conforme regulamentacoes locais. A duracao da sessao pode ser limitada em horarios de pico.",
+help:"Precisa de ajuda? Pergunte no balcao de atendimento ou ligue para sua filial."},
+es:{title:"Wi-Fi de la Biblioteca",subtitle:"Acceso inalambrico gratuito para usuarios de la biblioteca",
+label_user:"Numero de Carnet",ph_user:"ej. 2900012345",
+label_pass:"PIN",ph_pass:"PIN de 4 digitos",
+btn_login:"Conectar",
+policy:"Al usar esta red, acepta la politica de uso aceptable de la biblioteca. El acceso a internet se filtra segun las regulaciones locales. La duracion de la sesion puede ser limitada en horas pico.",
+help:"Necesita ayuda? Pregunte en el mostrador de circulacion o llame a su sucursal."},
+fr:{title:"Wi-Fi de la Bibliotheque",subtitle:"Acces sans fil gratuit pour les usagers de la bibliotheque",
+label_user:"Numero de Carte",ph_user:"ex. 2900012345",
+label_pass:"PIN",ph_pass:"PIN a 4 chiffres",
+btn_login:"Se Connecter",
+policy:"En utilisant ce reseau, vous acceptez la politique d'utilisation acceptable de la bibliotheque. L'acces internet est filtre conformement aux reglementations locales. La duree de session peut etre limitee aux heures de pointe.",
+help:"Besoin d'aide? Demandez au comptoir ou appelez votre succursale."},
+de:{title:"Bibliotheks-WLAN",subtitle:"Kostenloser WLAN-Zugang fuer Bibliotheksnutzer",
+label_user:"Ausweisnummer",ph_user:"z.B. 2900012345",
+label_pass:"PIN",ph_pass:"4-stellige PIN",
+btn_login:"Verbinden",
+policy:"Durch die Nutzung dieses Netzwerks stimmen Sie der Nutzungsrichtlinie der Bibliothek zu. Der Internetzugang wird gemaess lokalen Vorschriften gefiltert. Die Sitzungsdauer kann zu Spitzenzeiten begrenzt sein.",
+help:"Brauchen Sie Hilfe? Fragen Sie an der Ausleihtheke oder rufen Sie Ihre Filiale an."},
+it:{title:"Wi-Fi della Biblioteca",subtitle:"Accesso wireless gratuito per gli utenti della biblioteca",
+label_user:"Numero Tessera",ph_user:"es. 2900012345",
+label_pass:"PIN",ph_pass:"PIN a 4 cifre",
+btn_login:"Connetti",
+policy:"Utilizzando questa rete, accetti la politica di uso accettabile della biblioteca. L'accesso a internet e filtrato in conformita con le normative locali. La durata della sessione potrebbe essere limitata nelle ore di punta.",
+help:"Hai bisogno di aiuto? Chiedi al banco prestiti o chiama la tua sede."},
+ja:{title:"\u56F3\u66F8\u9928Wi-Fi",
+subtitle:"\u56F3\u66F8\u9928\u5229\u7528\u8005\u5411\u3051\u7121\u6599\u30EF\u30A4\u30E4\u30EC\u30B9\u30A2\u30AF\u30BB\u30B9",
+label_user:"\u56F3\u66F8\u30AB\u30FC\u30C9\u756A\u53F7",ph_user:"\u4F8B: 2900012345",
+label_pass:"\u6697\u8A3C\u756A\u53F7",ph_pass:"4\u6841\u306E\u6697\u8A3C\u756A\u53F7",
+btn_login:"\u63A5\u7D9A",
+policy:"\u3053\u306E\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3092\u4F7F\u7528\u3059\u308B\u3053\u3068\u3067\u3001\u56F3\u66F8\u9928\u306E\u5229\u7528\u898F\u7D04\u306B\u540C\u610F\u3057\u305F\u3082\u306E\u3068\u307F\u306A\u3057\u307E\u3059\u3002\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8\u30A2\u30AF\u30BB\u30B9\u306F\u5730\u57DF\u306E\u898F\u5236\u306B\u5F93\u3044\u30D5\u30A3\u30EB\u30BF\u30EA\u30F3\u30B0\u3055\u308C\u307E\u3059\u3002\u6DF7\u96D1\u6642\u306B\u306F\u30BB\u30C3\u30B7\u30E7\u30F3\u6642\u9593\u304C\u5236\u9650\u3055\u308C\u308B\u5834\u5408\u304C\u3042\u308A\u307E\u3059\u3002",
+help:"\u304A\u56F0\u308A\u3067\u3059\u304B\uFF1F\u30AB\u30A6\u30F3\u30BF\u30FC\u3067\u304A\u5C0B\u306D\u3044\u305F\u3060\u304F\u304B\u3001\u304A\u8FD1\u304F\u306E\u652F\u90E8\u306B\u304A\u96FB\u8A71\u304F\u3060\u3055\u3044\u3002"},
+zh:{title:"\u56FE\u4E66\u9986Wi-Fi",
+subtitle:"\u56FE\u4E66\u9986\u8BFB\u8005\u514D\u8D39\u65E0\u7EBF\u8BBF\u95EE",
+label_user:"\u501F\u4E66\u8BC1\u53F7",ph_user:"\u4F8B: 2900012345",
+label_pass:"\u5BC6\u7801",ph_pass:"4\u4F4D\u5BC6\u7801",
+btn_login:"\u8FDE\u63A5",
+policy:"\u4F7F\u7528\u6B64\u7F51\u7EDC\u5373\u8868\u793A\u60A8\u540C\u610F\u56FE\u4E66\u9986\u7684\u53EF\u63A5\u53D7\u4F7F\u7528\u653F\u7B56\u3002\u4E92\u8054\u7F51\u8BBF\u95EE\u6839\u636E\u5F53\u5730\u6CD5\u89C4\u8FDB\u884C\u8FC7\u6EE4\u3002\u9AD8\u5CF0\u65F6\u6BB5\u4F1A\u8BDD\u65F6\u957F\u53EF\u80FD\u53D7\u9650\u3002",
+help:"\u9700\u8981\u5E2E\u52A9\uFF1F\u8BF7\u5728\u6D41\u901A\u53F0\u54A8\u8BE2\u6216\u81F4\u7535\u60A8\u7684\u5F53\u5730\u5206\u9986\u3002"},
+ko:{title:"\uB3C4\uC11C\uAD00 Wi-Fi",
+subtitle:"\uB3C4\uC11C\uAD00 \uC774\uC6A9\uC790\uB97C \uC704\uD55C \uBB34\uB8CC \uBB34\uC120 \uC811\uC18D",
+label_user:"\uB3C4\uC11C\uAD00 \uCE74\uB4DC \uBC88\uD638",ph_user:"\uC608: 2900012345",
+label_pass:"\uBE44\uBC00\uBC88\uD638",ph_pass:"4\uC790\uB9AC \uBE44\uBC00\uBC88\uD638",
+btn_login:"\uC5F0\uACB0",
+policy:"\uC774 \uB124\uD2B8\uC6CC\uD06C\uB97C \uC0AC\uC6A9\uD558\uBA74 \uB3C4\uC11C\uAD00 \uC774\uC6A9 \uC815\uCC45\uC5D0 \uB3D9\uC758\uD558\uB294 \uAC83\uC785\uB2C8\uB2E4. \uC778\uD130\uB137 \uC811\uC18D\uC740 \uC9C0\uC5ED \uADDC\uC815\uC5D0 \uB530\uB77C \uD544\uD130\uB9C1\uB429\uB2C8\uB2E4. \uD53C\uD06C \uC2DC\uAC04\uC5D0\uB294 \uC138\uC158 \uC2DC\uAC04\uC774 \uC81C\uD55C\uB420 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+help:"\uB3C4\uC6C0\uC774 \uD544\uC694\uD558\uC2E0\uAC00\uC694? \uB300\uCD9C \uB370\uC2A4\uD06C\uC5D0 \uBB38\uC758\uD558\uAC70\uB098 \uAC00\uAE4C\uC6B4 \uBD84\uAD00\uC5D0 \uC804\uD654\uD558\uC138\uC694."},
+ru:{title:"Wi-Fi \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0438",
+subtitle:"\u0411\u0435\u0441\u043F\u043B\u0430\u0442\u043D\u044B\u0439 \u0431\u0435\u0441\u043F\u0440\u043E\u0432\u043E\u0434\u043D\u043E\u0439 \u0434\u043E\u0441\u0442\u0443\u043F \u0434\u043B\u044F \u0447\u0438\u0442\u0430\u0442\u0435\u043B\u0435\u0439 \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0438",
+label_user:"\u041D\u043E\u043C\u0435\u0440 \u0447\u0438\u0442. \u0431\u0438\u043B\u0435\u0442\u0430",ph_user:"\u043D\u0430\u043F\u0440. 2900012345",
+label_pass:"PIN",ph_pass:"4-\u0437\u043D\u0430\u0447\u043D\u044B\u0439 PIN",
+btn_login:"\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0438\u0442\u044C\u0441\u044F",
+policy:"\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u044F \u044D\u0442\u0443 \u0441\u0435\u0442\u044C, \u0432\u044B \u0441\u043E\u0433\u043B\u0430\u0448\u0430\u0435\u0442\u0435\u0441\u044C \u0441 \u043F\u043E\u043B\u0438\u0442\u0438\u043A\u043E\u0439 \u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u043E\u0433\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0438. \u0414\u043E\u0441\u0442\u0443\u043F \u0432 \u0438\u043D\u0442\u0435\u0440\u043D\u0435\u0442 \u0444\u0438\u043B\u044C\u0442\u0440\u0443\u0435\u0442\u0441\u044F \u0432 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u0438 \u0441 \u043C\u0435\u0441\u0442\u043D\u044B\u043C\u0438 \u043D\u043E\u0440\u043C\u0430\u043C\u0438. \u0412 \u0447\u0430\u0441\u044B \u043F\u0438\u043A \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0441\u0435\u0441\u0441\u0438\u0438 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u0430.",
+help:"\u041D\u0443\u0436\u043D\u0430 \u043F\u043E\u043C\u043E\u0449\u044C? \u0421\u043F\u0440\u043E\u0441\u0438\u0442\u0435 \u043D\u0430 \u0441\u0442\u043E\u0439\u043A\u0435 \u0432\u044B\u0434\u0430\u0447\u0438 \u0438\u043B\u0438 \u043F\u043E\u0437\u0432\u043E\u043D\u0438\u0442\u0435 \u0432 \u0432\u0430\u0448 \u0444\u0438\u043B\u0438\u0430\u043B."},
+ar:{title:"Wi-Fi \u0627\u0644\u0645\u0643\u062A\u0628\u0629",
+subtitle:"\u0648\u0635\u0648\u0644 \u0644\u0627\u0633\u0644\u0643\u064A \u0645\u062C\u0627\u0646\u064A \u0644\u0631\u0648\u0627\u062F \u0627\u0644\u0645\u0643\u062A\u0628\u0629",
+label_user:"\u0631\u0642\u0645 \u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0645\u0643\u062A\u0628\u0629",ph_user:"\u0645\u062B\u0627\u0644: 2900012345",
+label_pass:"\u0631\u0645\u0632 PIN",ph_pass:"\u0631\u0645\u0632 PIN \u0645\u0646 4 \u0623\u0631\u0642\u0627\u0645",
+btn_login:"\u0627\u062A\u0635\u0627\u0644",
+policy:"\u0628\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0647\u0630\u0647 \u0627\u0644\u0634\u0628\u0643\u0629\u060C \u0641\u0625\u0646\u0643 \u062A\u0648\u0627\u0641\u0642 \u0639\u0644\u0649 \u0633\u064A\u0627\u0633\u0629 \u0627\u0644\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0627\u0644\u0645\u0642\u0628\u0648\u0644 \u0644\u0644\u0645\u0643\u062A\u0628\u0629. \u064A\u062A\u0645 \u062A\u0635\u0641\u064A\u0629 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u0625\u0646\u062A\u0631\u0646\u062A \u0648\u0641\u0642\u0627\u064B \u0644\u0644\u0648\u0627\u0626\u062D \u0627\u0644\u0645\u062D\u0644\u064A\u0629. \u0642\u062F \u062A\u0643\u0648\u0646 \u0645\u062F\u0629 \u0627\u0644\u062C\u0644\u0633\u0629 \u0645\u062D\u062F\u0648\u062F\u0629 \u062E\u0644\u0627\u0644 \u0633\u0627\u0639\u0627\u062A \u0627\u0644\u0630\u0631\u0648\u0629.",
+help:"\u0647\u0644 \u062A\u062D\u062A\u0627\u062C \u0645\u0633\u0627\u0639\u062F\u0629\u061F \u0627\u0633\u0623\u0644 \u0641\u064A \u0645\u0643\u062A\u0628 \u0627\u0644\u0625\u0639\u0627\u0631\u0629 \u0623\u0648 \u0627\u062A\u0635\u0644 \u0628\u0641\u0631\u0639\u0643 \u0627\u0644\u0645\u062D\u0644\u064A."}
+};
+var lang=(navigator.language||navigator.userLanguage||'en').split('-')[0];
+if(!T[lang])lang='en';
+if(lang==='ar')document.documentElement.setAttribute('dir','rtl');
+document.querySelectorAll('[data-i18n]').forEach(function(el){
+var k=el.getAttribute('data-i18n');
+if(T[lang][k])el.textContent=T[lang][k];
+});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+var k=el.getAttribute('data-i18n-ph');
+if(T[lang][k])el.setAttribute('placeholder',T[lang][k]);
+});
+})();
+</script>
+</body>
+</html>

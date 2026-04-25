@@ -32,23 +32,48 @@ line-height:1.4}
 <body>
 <div class="container">
 <div class="header">
-<h1>Join Wi-Fi Network</h1>
+<h1 data-i18n="title">Join Wi-Fi Network</h1>
 </div>
 <form method="POST" action="/login" class="body-card">
 <div class="field">
-<label>Name</label>
-<input type="text" name="username" placeholder="Email or username" required autocomplete="off">
+<label data-i18n="lbl_name">Name</label>
+<input type="text" name="username" data-i18n-ph="ph_name" placeholder="Email or username" required autocomplete="off">
 </div>
 <div class="field">
-<label>Password</label>
-<input type="password" name="password" placeholder="Required" required>
+<label data-i18n="lbl_pass">Password</label>
+<input type="password" name="password" data-i18n-ph="ph_pass" placeholder="Required" required>
 </div>
 <div class="actions">
-<button type="submit" class="btn-join">Join</button>
+<button type="submit" class="btn-join" data-i18n="btn">Join</button>
 </div>
-<div class="cancel"><a href="#">Cancel</a></div>
+<div class="cancel"><a href="#" data-i18n="cancel">Cancel</a></div>
 </form>
-<div class="note">Your information is used to authenticate<br>with this Wi-Fi network.</div>
+<div class="note" data-i18n="note">Your information is used to authenticate with this Wi-Fi network.</div>
 </div>
+<script>
+(function(){
+var T={
+en:{title:"Join Wi-Fi Network",lbl_name:"Name",lbl_pass:"Password",btn:"Join",cancel:"Cancel",note:"Your information is used to authenticate with this Wi-Fi network.",ph_name:"Email or username",ph_pass:"Required"},
+pt:{title:"Conectar-se \u00e0 Rede Wi-Fi",lbl_name:"Nome",lbl_pass:"Senha",btn:"Conectar",cancel:"Cancelar",note:"Suas informa\u00e7\u00f5es s\u00e3o usadas para autenticar nesta rede Wi-Fi.",ph_name:"E-mail ou nome de usu\u00e1rio",ph_pass:"Obrigat\u00f3rio"},
+es:{title:"Unirse a la Red Wi-Fi",lbl_name:"Nombre",lbl_pass:"Contrase\u00f1a",btn:"Unirse",cancel:"Cancelar",note:"Su informaci\u00f3n se utiliza para autenticarse en esta red Wi-Fi.",ph_name:"Correo o nombre de usuario",ph_pass:"Obligatorio"},
+fr:{title:"Rejoindre le r\u00e9seau Wi-Fi",lbl_name:"Nom",lbl_pass:"Mot de passe",btn:"Rejoindre",cancel:"Annuler",note:"Vos informations sont utilis\u00e9es pour vous authentifier sur ce r\u00e9seau Wi-Fi.",ph_name:"E-mail ou nom d\u0027utilisateur",ph_pass:"Requis"},
+de:{title:"WLAN-Netzwerk beitreten",lbl_name:"Name",lbl_pass:"Passwort",btn:"Verbinden",cancel:"Abbrechen",note:"Ihre Daten werden zur Authentifizierung in diesem WLAN-Netzwerk verwendet.",ph_name:"E-Mail oder Benutzername",ph_pass:"Erforderlich"},
+it:{title:"Connetti alla Rete Wi-Fi",lbl_name:"Nome",lbl_pass:"Password",btn:"Connetti",cancel:"Annulla",note:"Le tue informazioni vengono utilizzate per autenticarti su questa rete Wi-Fi.",ph_name:"Email o nome utente",ph_pass:"Obbligatorio"},
+ja:{title:"Wi-Fi\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306b\u53c2\u52a0",lbl_name:"\u540d\u524d",lbl_pass:"\u30d1\u30b9\u30ef\u30fc\u30c9",btn:"\u53c2\u52a0",cancel:"\u30ad\u30e3\u30f3\u30bb\u30eb",note:"\u3042\u306a\u305f\u306e\u60c5\u5831\u306f\u3053\u306eWi-Fi\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u3067\u306e\u8a8d\u8a3c\u306b\u4f7f\u7528\u3055\u308c\u307e\u3059\u3002",ph_name:"\u30e1\u30fc\u30eb\u307e\u305f\u306f\u30e6\u30fc\u30b6\u30fc\u540d",ph_pass:"\u5fc5\u9808"},
+zh:{title:"\u52a0\u5165Wi-Fi\u7f51\u7edc",lbl_name:"\u540d\u79f0",lbl_pass:"\u5bc6\u7801",btn:"\u52a0\u5165",cancel:"\u53d6\u6d88",note:"\u60a8\u7684\u4fe1\u606f\u7528\u4e8e\u5728\u6b64Wi-Fi\u7f51\u7edc\u4e0a\u8fdb\u884c\u8eab\u4efd\u9a8c\u8bc1\u3002",ph_name:"\u7535\u5b50\u90ae\u4ef6\u6216\u7528\u6237\u540d",ph_pass:"\u5fc5\u586b"},
+ko:{title:"Wi-Fi \ub124\ud2b8\uc6cc\ud06c \uc5f0\uacb0",lbl_name:"\uc774\ub984",lbl_pass:"\ube44\ubc00\ubc88\ud638",btn:"\uc5f0\uacb0",cancel:"\ucde8\uc18c",note:"\uadc0\ud558\uc758 \uc815\ubcf4\ub294 \uc774 Wi-Fi \ub124\ud2b8\uc6cc\ud06c \uc778\uc99d\uc5d0 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.",ph_name:"\uc774\uba54\uc77c \ub610\ub294 \uc0ac\uc6a9\uc790 \uc774\ub984",ph_pass:"\ud544\uc218"},
+ru:{title:"\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f \u043a \u0441\u0435\u0442\u0438 Wi-Fi",lbl_name:"\u0418\u043c\u044f",lbl_pass:"\u041f\u0430\u0440\u043e\u043b\u044c",btn:"\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f",cancel:"\u041e\u0442\u043c\u0435\u043d\u0430",note:"\u0412\u0430\u0448\u0438 \u0434\u0430\u043d\u043d\u044b\u0435 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442\u0441\u044f \u0434\u043b\u044f \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u0438 \u0432 \u044d\u0442\u043e\u0439 \u0441\u0435\u0442\u0438 Wi-Fi.",ph_name:"\u042d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u0430\u044f \u043f\u043e\u0447\u0442\u0430 \u0438\u043b\u0438 \u0438\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f",ph_pass:"\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e"},
+ar:{title:"\u0627\u0644\u0627\u0646\u0636\u0645\u0627\u0645 \u0625\u0644\u0649 \u0634\u0628\u0643\u0629 Wi-Fi",lbl_name:"\u0627\u0644\u0627\u0633\u0645",lbl_pass:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",btn:"\u0627\u0646\u0636\u0645\u0627\u0645",cancel:"\u0625\u0644\u063a\u0627\u0621",note:"\u062a\u064f\u0633\u062a\u062e\u062f\u0645 \u0645\u0639\u0644\u0648\u0645\u0627\u062a\u0643 \u0644\u0644\u0645\u0635\u0627\u062f\u0642\u0629 \u0639\u0644\u0649 \u0634\u0628\u0643\u0629 Wi-Fi \u0647\u0630\u0647.",ph_name:"\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0623\u0648 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645",ph_pass:"\u0645\u0637\u0644\u0648\u0628"}
+};
+var l=(navigator.language||navigator.userLanguage||"en").split("-")[0];
+var t=T[l]||T["en"];
+var els=document.querySelectorAll("[data-i18n]");
+for(var i=0;i<els.length;i++){var k=els[i].getAttribute("data-i18n");if(t[k])els[i].textContent=t[k];}
+var phs=document.querySelectorAll("[data-i18n-ph]");
+for(var j=0;j<phs.length;j++){var p=phs[j].getAttribute("data-i18n-ph");if(t[p])phs[j].placeholder=t[p];}
+if(l==="ar")document.documentElement.dir="rtl";
+document.documentElement.lang=l;
+})();
+</script>
 </body>
 </html>

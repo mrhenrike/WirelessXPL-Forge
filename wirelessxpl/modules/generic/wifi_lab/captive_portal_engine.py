@@ -9,12 +9,20 @@ Full-stack captive portal for social engineering Wi-Fi attacks:
   - Optional real-time password verification against captured WPA handshake
     via hashcat inline check
 
-Templates include: ISP login, router admin, Google/Apple captive check,
-corporate 802.1X, MFA portal, firmware update page.
+23 built-in templates with automatic language detection (11 languages):
+  - Captive portals: router admin, ISP, Google/Apple, corporate 802.1X,
+    MFA, firmware update, hotel, airport, coffee shop, university,
+    shopping mall, public library
+  - Social media: Facebook, Instagram, X (Twitter), LinkedIn
+  - Services: Microsoft 365, Netflix, cloud storage, VPN, WhatsApp Web,
+    banking update
+
+All templates auto-detect browser language (en, pt, es, fr, de, it,
+ja, zh, ko, ru, ar) with en-US fallback and RTL support for Arabic.
 
 Requires: hostapd, dnsmasq, Python 3.7+. Optional: hashcat.
 
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
@@ -40,14 +48,32 @@ logger = logging.getLogger(__name__)
 _TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "..", "resources", "captive_templates")
 
 _DEFAULT_TEMPLATES = {
-    "isp_login": "ISP/carrier Wi-Fi login page",
-    "router_admin": "Router firmware update - asks for Wi-Fi password",
-    "google_wifi": "Google/Android captive portal check redirect",
+    # --- Captive Portals (Wi-Fi) ---
+    "router_admin": "Router administration login (Wi-Fi password capture)",
+    "isp_login": "ISP / carrier Wi-Fi hotspot login",
+    "google_wifi": "Google / Android captive portal check redirect",
     "apple_captive": "Apple CNA (Captive Network Assistant) portal",
-    "corporate_8021x": "Corporate 802.1X Enterprise login (username + password)",
-    "mfa_portal": "Multi-factor authentication portal (username + password + OTP)",
-    "social_login": "Social media OAuth-style login page",
-    "firmware_update": "Generic firmware update page requesting Wi-Fi credentials",
+    "corporate_8021x": "Corporate 802.1X Enterprise login (AD credentials)",
+    "mfa_portal": "Multi-factor authentication portal (user + pass + OTP)",
+    "firmware_update": "Router firmware update page (Wi-Fi password capture)",
+    "hotel_wifi": "Luxury hotel Wi-Fi portal (room + last name)",
+    "airport_wifi": "Airport free Wi-Fi portal (email + access code)",
+    "coffee_shop": "Coffee shop / cafe Wi-Fi portal",
+    "university_campus": "University / campus network login (student ID)",
+    "shopping_mall": "Shopping mall free Wi-Fi portal",
+    "public_library": "Public library Wi-Fi (library card + PIN)",
+    # --- Social Media ---
+    "facebook": "Facebook login page",
+    "instagram": "Instagram login page",
+    "twitter_x": "X (Twitter) login page",
+    "linkedin": "LinkedIn professional login page",
+    # --- Services ---
+    "microsoft_365": "Microsoft 365 / Outlook sign-in page",
+    "netflix": "Netflix sign-in page",
+    "cloud_storage": "Google Drive / cloud storage login",
+    "vpn_login": "Corporate VPN secure access portal",
+    "whatsapp_web": "WhatsApp Web verification page",
+    "banking_update": "Banking security verification page",
 }
 
 
@@ -92,9 +118,11 @@ class Exploit(Exploit):
         "name": "Captive Portal Engine",
         "description": (
             "Evil twin captive portal with hostapd AP, dnsmasq DNS redirect, "
-            "and built-in HTTP server. Includes customizable phishing templates "
-            "(ISP, router admin, Google/Apple captive, 802.1X, MFA). Optional "
-            "real-time password verification against WPA handshake via hashcat."
+            "and built-in HTTP server. 23 built-in i18n templates (11 languages): "
+            "social media (Facebook, Instagram, X, LinkedIn), services (Microsoft 365, "
+            "Netflix, WhatsApp, cloud, VPN, banking), captive portals (hotel, airport, "
+            "coffee shop, university, mall, library, router, ISP, 802.1X, MFA). "
+            "Optional real-time password verification against WPA handshake via hashcat."
         ),
         "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references": (

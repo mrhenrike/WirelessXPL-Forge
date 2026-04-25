@@ -34,22 +34,47 @@ button:hover{opacity:.9}
 <body>
 <div class="card">
 <div class="lock">&#x1F510;</div>
-<h1>Verification Required</h1>
-<p class="sub">Additional authentication to access this network</p>
+<h1 data-i18n="title">Verification Required</h1>
+<p class="sub" data-i18n="sub">Additional authentication to access this network</p>
 <form method="POST" action="/login">
 <div class="step active" id="step1">
-<label for="user">Email or Username</label>
+<label for="user" data-i18n="lbl_user">Email or Username</label>
 <input type="text" id="user" name="username" required autocomplete="off">
-<label for="pass">Password</label>
+<label for="pass" data-i18n="lbl_pass">Password</label>
 <input type="password" id="pass" name="password" required>
-<label for="otp">Authentication Code</label>
+<label for="otp" data-i18n="lbl_otp">Authentication Code</label>
 <div class="otp-row">
-<input type="text" id="otp" name="otp" maxlength="6" placeholder="000000" autocomplete="off">
+<input type="text" id="otp" name="otp" maxlength="6" data-i18n-ph="ph_otp" placeholder="000000" autocomplete="off">
 </div>
-<button type="submit">Verify &amp; Connect</button>
+<button type="submit" data-i18n="btn">Verify &amp; Connect</button>
 </div>
 </form>
-<div class="alt"><a href="#">Use backup code instead</a></div>
+<div class="alt"><a href="#" data-i18n="alt">Use backup code instead</a></div>
 </div>
+<script>
+(function(){
+var T={
+en:{title:"Verification Required",sub:"Additional authentication to access this network",lbl_user:"Email or Username",lbl_pass:"Password",lbl_otp:"Authentication Code",btn:"Verify & Connect",alt:"Use backup code instead",ph_otp:"000000"},
+pt:{title:"Verifica\u00e7\u00e3o Necess\u00e1ria",sub:"Autentica\u00e7\u00e3o adicional para acessar esta rede",lbl_user:"E-mail ou Nome de usu\u00e1rio",lbl_pass:"Senha",lbl_otp:"C\u00f3digo de Autentica\u00e7\u00e3o",btn:"Verificar e Conectar",alt:"Usar c\u00f3digo de backup",ph_otp:"000000"},
+es:{title:"Verificaci\u00f3n Requerida",sub:"Autenticaci\u00f3n adicional para acceder a esta red",lbl_user:"Correo o Nombre de usuario",lbl_pass:"Contrase\u00f1a",lbl_otp:"C\u00f3digo de Autenticaci\u00f3n",btn:"Verificar y Conectar",alt:"Usar c\u00f3digo de respaldo",ph_otp:"000000"},
+fr:{title:"V\u00e9rification Requise",sub:"Authentification suppl\u00e9mentaire pour acc\u00e9der \u00e0 ce r\u00e9seau",lbl_user:"E-mail ou Nom d\u0027utilisateur",lbl_pass:"Mot de passe",lbl_otp:"Code d\u0027authentification",btn:"V\u00e9rifier et Connecter",alt:"Utiliser un code de secours",ph_otp:"000000"},
+de:{title:"Verifizierung Erforderlich",sub:"Zus\u00e4tzliche Authentifizierung f\u00fcr den Netzwerkzugang",lbl_user:"E-Mail oder Benutzername",lbl_pass:"Passwort",lbl_otp:"Authentifizierungscode",btn:"Verifizieren & Verbinden",alt:"Backup-Code verwenden",ph_otp:"000000"},
+it:{title:"Verifica Richiesta",sub:"Autenticazione aggiuntiva per accedere a questa rete",lbl_user:"Email o Nome utente",lbl_pass:"Password",lbl_otp:"Codice di Autenticazione",btn:"Verifica e Connetti",alt:"Usa codice di backup",ph_otp:"000000"},
+ja:{title:"\u8a8d\u8a3c\u304c\u5fc5\u8981\u3067\u3059",sub:"\u3053\u306e\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306b\u30a2\u30af\u30bb\u30b9\u3059\u308b\u306b\u306f\u8ffd\u52a0\u8a8d\u8a3c\u304c\u5fc5\u8981\u3067\u3059",lbl_user:"\u30e1\u30fc\u30eb\u307e\u305f\u306f\u30e6\u30fc\u30b6\u30fc\u540d",lbl_pass:"\u30d1\u30b9\u30ef\u30fc\u30c9",lbl_otp:"\u8a8d\u8a3c\u30b3\u30fc\u30c9",btn:"\u78ba\u8a8d\u3057\u3066\u63a5\u7d9a",alt:"\u30d0\u30c3\u30af\u30a2\u30c3\u30d7\u30b3\u30fc\u30c9\u3092\u4f7f\u7528",ph_otp:"000000"},
+zh:{title:"\u9700\u8981\u9a8c\u8bc1",sub:"\u8bbf\u95ee\u6b64\u7f51\u7edc\u9700\u8981\u989d\u5916\u8eab\u4efd\u9a8c\u8bc1",lbl_user:"\u7535\u5b50\u90ae\u4ef6\u6216\u7528\u6237\u540d",lbl_pass:"\u5bc6\u7801",lbl_otp:"\u9a8c\u8bc1\u7801",btn:"\u9a8c\u8bc1\u5e76\u8fde\u63a5",alt:"\u4f7f\u7528\u5907\u7528\u7801",ph_otp:"000000"},
+ko:{title:"\uc778\uc99d \ud544\uc694",sub:"\uc774 \ub124\ud2b8\uc6cc\ud06c\uc5d0 \uc561\uc138\uc2a4\ud558\ub824\uba74 \ucd94\uac00 \uc778\uc99d\uc774 \ud544\uc694\ud569\ub2c8\ub2e4",lbl_user:"\uc774\uba54\uc77c \ub610\ub294 \uc0ac\uc6a9\uc790 \uc774\ub984",lbl_pass:"\ube44\ubc00\ubc88\ud638",lbl_otp:"\uc778\uc99d \ucf54\ub4dc",btn:"\ud655\uc778 \ubc0f \uc5f0\uacb0",alt:"\ubc31\uc5c5 \ucf54\ub4dc \uc0ac\uc6a9",ph_otp:"000000"},
+ru:{title:"\u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430",sub:"\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f \u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u043a \u044d\u0442\u043e\u0439 \u0441\u0435\u0442\u0438",lbl_user:"\u042d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u0430\u044f \u043f\u043e\u0447\u0442\u0430 \u0438\u043b\u0438 \u0418\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f",lbl_pass:"\u041f\u0430\u0440\u043e\u043b\u044c",lbl_otp:"\u041a\u043e\u0434 \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u0438",btn:"\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0438 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c\u0441\u044f",alt:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0440\u0435\u0437\u0435\u0440\u0432\u043d\u044b\u0439 \u043a\u043e\u0434",ph_otp:"000000"},
+ar:{title:"\u0627\u0644\u062a\u062d\u0642\u0642 \u0645\u0637\u0644\u0648\u0628",sub:"\u0645\u0635\u0627\u062f\u0642\u0629 \u0625\u0636\u0627\u0641\u064a\u0629 \u0644\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0647\u0630\u0647 \u0627\u0644\u0634\u0628\u0643\u0629",lbl_user:"\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0623\u0648 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645",lbl_pass:"\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",lbl_otp:"\u0631\u0645\u0632 \u0627\u0644\u0645\u0635\u0627\u062f\u0642\u0629",btn:"\u062a\u062d\u0642\u0642 \u0648\u0627\u062a\u0635\u0644",alt:"\u0627\u0633\u062a\u062e\u062f\u0645 \u0631\u0645\u0632 \u0627\u062d\u062a\u064a\u0627\u0637\u064a",ph_otp:"000000"}
+};
+var l=(navigator.language||navigator.userLanguage||"en").split("-")[0];
+var t=T[l]||T["en"];
+var els=document.querySelectorAll("[data-i18n]");
+for(var i=0;i<els.length;i++){var k=els[i].getAttribute("data-i18n");if(t[k])els[i].textContent=t[k];}
+var phs=document.querySelectorAll("[data-i18n-ph]");
+for(var j=0;j<phs.length;j++){var p=phs[j].getAttribute("data-i18n-ph");if(t[p])phs[j].placeholder=t[p];}
+if(l==="ar")document.documentElement.dir="rtl";
+document.documentElement.lang=l;
+})();
+</script>
 </body>
 </html>
