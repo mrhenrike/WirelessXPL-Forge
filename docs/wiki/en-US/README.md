@@ -37,7 +37,7 @@ PNG gallery (MikrotikAPI-BF–style). Mermaid sources: [../../diagrams/architect
 | [05-creds-modules.md](05-creds-modules.md) | Default creds and brute force |
 | [06-exploits-modules.md](06-exploits-modules.md) | Exploits, `check()`, common options |
 | [07-scanners-and-autopwn.md](07-scanners-and-autopwn.md) | `router_scan`, `autopwn`, FortiGate SSL-VPN scanner |
-| [08-generic-modules.md](08-generic-modules.md) | PCAP, CVE lookup, wordlists, SNMP, UPnP, BTLE |
+| [08-generic-modules.md](08-generic-modules.md) | PCAP, CVE lookup, wordlists, BLE, Zigbee, WPA3 SAE flood, Wi-Fi scanner, WPS bully, WPE EAP, hcxdumptool live, SniffAir, Pwnagotchi, KNOB, BIAS, BLUFFS, SweynTooth, BrAcketooth, KillerBee |
 | [09-payloads-and-encoders.md](09-payloads-and-encoders.md) | Payloads and encoders |
 | [10-catalogs-and-tools.md](10-catalogs-and-tools.md) | JSON catalogs, `tools/` |
 | [11-troubleshooting.md](11-troubleshooting.md) | Common failures |
