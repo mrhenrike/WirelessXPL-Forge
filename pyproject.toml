@@ -63,6 +63,21 @@ serial = ["pyserial"]
 ml-gpu = ["torch>=2.0.0", "numpy>=1.24", "scikit-learn>=1.3", "joblib"]
 ml-lite = ["numpy>=1.24", "scikit-learn>=1.3", "joblib"]
 gpu-opencl = ["pyopencl", "numpy>=1.24"]
+sim = ["pyscard>=2.0.0"]
+sim-full = ["pyscard>=2.0.0", "pysim>=1.0", "cryptography>=41.0"]
+cellular = ["pyrtlsdr>=0.3.0"]
+cellular-full = ["pyrtlsdr>=0.3.0", "pysim>=1.0"]
+all-modules = [
+    "pyserial",
+    "pyscard>=2.0.0",
+    "pysim>=1.0",
+    "cryptography>=41.0",
+    "pyrtlsdr>=0.3.0",
+    "pyopencl",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "joblib",
+]
 dev = [
     "pytest",
     "pytest-forked",
