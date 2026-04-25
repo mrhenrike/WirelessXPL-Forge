@@ -8,11 +8,11 @@ SUMMARY
   EXPLOITS: 0 modules, 0 vendor/group buckets
   CREDENTIAL MODULES: 0 modules, 0 vendor/group buckets
   SCANNERS: 0 modules, 0 vendor/group buckets
-  GENERIC MODULES: 88 modules, 6 vendor/group buckets
+  GENERIC MODULES: 103 modules, 6 vendor/group buckets
   ENCODERS: 0 modules, 0 vendor/group buckets
   PAYLOADS: 0 modules, 0 vendor/group buckets
-  TOTAL MODULES: 88
-  DISTINCT CVEs: 29
+  TOTAL MODULES: 103
+  DISTINCT CVEs: 32
 
 PROGRAM FOOTPRINT
 --------------------
@@ -24,7 +24,7 @@ Files under wirelessxpl/: 272
 Largest top-level paths:
   wirelessxpl                             31.28 MiB  (99.0%)
   tools                                  258.60 KiB  (0.8%)
-  (repo root files)                       47.53 KiB  (0.1%)
+  (repo root files)                       48.41 KiB  (0.1%)
   .github                                  9.62 KiB  (0.0%)
   .travis                                     721 B  (0.0%)
 
@@ -47,418 +47,486 @@ wirelessxpl/resources/* direct children (largest):
 
 First-party .py file counts (excl. __pycache__):
   wirelessxpl/core       49
-  wirelessxpl/modules    96
+  wirelessxpl/modules    111
   wirelessxpl/libs       5
   tools                  35
   wxf.py                 1
 
-GENERIC MODULES (88)
+GENERIC MODULES (103)
 ========================================
 
-[BLUETOOTH] (10)
+[BLUETOOTH] (16)
 ------------------------------
-  1. BLE Crackle (Legacy Pairing Cracker)
+  1. BIAS BT Impersonation Attack Bridge
+     Path: generic/bluetooth/bias_attack_bridge.py
+     BIAS (CVE-2020-10135) — impersonates a Bluetooth BR/EDR device without the long-term key by exploiting authentication by
+     CVEs: CVE-2020-10135
+     Devices: bluetooth, BT BR/EDR Classic
+  2. BLE Crackle (Legacy Pairing Cracker)
      Path: generic/bluetooth/ble_crackle.py
      Pure Python BLE Legacy Pairing cracker. Extracts SMP pairing data from PCAPs, brute-forces the Temporary Key (TK, 0-9999
      Devices: bluetooth, bluetooth_le
-  2. BLE Phishing & Spoof
+  3. BLE Phishing & Spoof
      Path: generic/bluetooth/ble_phishing.py
      BLE-based social engineering: advertisement spam (Apple/Samsung/Google device spoofing), name-based lure for pairing, BL
      Devices: bluetooth
-  3. BT Baseband Attacks (BrakTooth + SweynTooth)
+  4. BLUFFS — BLE Session Key Downgrade
+     Path: generic/bluetooth/ble_bluffs_native.py
+     BLUFFS (CVE-2023-24023) — forces predictable BLE session keys by manipulating LL_FEATURE_RSP/PAIRING_FEATURE_REQ to disa
+     CVEs: CVE-2023-24023
+     Devices: ble, Bluetooth Low Energy
+  5. BT Baseband Attacks (BrakTooth + SweynTooth)
      Path: generic/bluetooth/bt_baseband_attack.py
      Orchestrates hardware-based BT Classic (BrakTooth/ESP32) and BLE (SweynTooth/nRF52840) baseband-level attacks. Manages a
      CVEs: CVE-2019-16336, CVE-2019-17060, CVE-2019-17061, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-19194, CVE-2019-19195, CVE-2019-19196, CVE-2021-28139
      Devices: bluetooth, bluetooth_classic, bluetooth_le
-  4. BT HID Injection (CVE-2023-45866 / CVE-2024-23717)
+  6. BT HID Injection (CVE-2023-45866 / CVE-2024-23717)
      Path: generic/bluetooth/bt_hid_injection.py
      Unauthenticated Bluetooth HID injection. Registers as a keyboard or mouse via SDP, forces Just Works SSP pairing, then i
      CVEs: CVE-2023-45866, CVE-2024-23717
      Devices: bluetooth, bluetooth_classic
-  5. BT Session Key Attacks (KNOB/BIAS/BLUFFS)
+  7. BT Session Key Attacks (KNOB/BIAS/BLUFFS)
      Path: generic/bluetooth/bt_session_attack.py
      Unified Bluetooth BR/EDR session security analysis. KNOB (CVE-2019-9506): entropy reduction to 1 byte + brute force. BIA
      CVEs: CVE-2019-9506, CVE-2020-10135, CVE-2023-24023
      Devices: bluetooth, bluetooth_classic
-  6. BTLEJack BLE Attack
+  8. BTLEJack BLE Attack
      Path: generic/bluetooth/ble_btlejack.py
      BLE sniff/jam/hijack orchestration using BTLEJack toolchain. Supports passive sniffing, active jamming, and takeover att
      Devices: bluetooth, bluetooth_le, ble
-  7. BlueBorne Attack (CVE-2017-0781/0785/1000251)
+  9. BlueBorne Attack (CVE-2017-0781/0785/1000251)
      Path: generic/bluetooth/blueborne_attack.py
      Native implementation of BlueBorne Bluetooth attacks. SDP info leak extracts ASLR bases from Android Bluedroid stack. BN
      CVEs: CVE-2017-0781, CVE-2017-0785, CVE-2017-1000251
      Devices: bluetooth, bluetooth_classic
-  8. Bluetooth LE Enumerate
+  10. Bluetooth LE Enumerate
      Path: generic/bluetooth/btle_enumerate.py
      Enumerating services and characteristics of a given Bluetooth Low Energy devices.
-  9. Bluetooth LE Scan
+  11. Bluetooth LE Scan
      Path: generic/bluetooth/btle_scan.py
      Scans for Bluetooth Low Energy devices.
-  10. Bluetooth LE Write
+  12. Bluetooth LE Write
      Path: generic/bluetooth/btle_write.py
      Writes data to target Bluetooth Low Energy device to given characteristic.
+  13. BrAcketooth BT Classic Stack Attack Bridge
+     Path: generic/bluetooth/braktooth_bridge.py
+     Bridges BrAcketooth 16+ BT Classic (BR/EDR) vulnerabilities: deadlock, memory corruption, L2CAP abuse, feature injection
+     Devices: bluetooth, BT BR/EDR Classic
+  14. KNOB BT Key Negotiation Attack Bridge
+     Path: generic/bluetooth/knob_attack_bridge.py
+     KNOB (CVE-2019-9506) — forces 1-byte entropy in BT BR/EDR key negotiation, enabling real-time brute-force of the session
+     CVEs: CVE-2019-9506
+     Devices: bluetooth, BT BR/EDR Classic
+  15. KillerBee Zigbee Bridge
+     Path: generic/bluetooth/killerbee_zigbee_bridge.py
+     Bridges KillerBee (IEEE 802.15.4 / Zigbee toolkit) as WXF module. Modes: zbid (hardware enum), zbdump (capture), zbrepla
+     Devices: zigbee, IEEE 802.15.4
+  16. SweynTooth BLE Stack Attack Bridge
+     Path: generic/bluetooth/ble_sweyntooth_bridge.py
+     Bridges SweynTooth BLE stack exploits: deadlock, crash, DoS, and FIPS pairing bypass on vulnerable SoCs (TI, NXP, Dialog
+     CVEs: CVE-2019-16336, CVE-2019-17071, CVE-2019-17516, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-17521, CVE-2019-9506
+     Devices: ble, Bluetooth Low Energy SoC
 
 [CVE] (2)
 ------------------------------
-  11. CVE Lookup by Banner / Vendor / Product
+  17. CVE Lookup by Banner / Vendor / Product
      Path: generic/cve/cve_lookup.py
      Queries the embedded CVE database for known vulnerabilities matching a target's vendor, product, version or raw banner. 
      Devices: Wireless lab — subset emphasises 802.11/WPA/WPA3/BLE-adjacent CVE strings
-  12. Zigbee Security Analysis (KillerBee Native)
+  18. Zigbee Security Analysis (KillerBee Native)
      Path: generic/cve/zigbee_attack.py
      Native Zigbee/IEEE 802.15.4 security toolkit. Protocol parsing, AES-CCM* decryption, network key extraction, beacon craf
      Devices: zigbee, ieee802154
 
-[EXTERNAL] (19)
+[EXTERNAL] (26)
 ------------------------------
-  13. Airgeddon Bridge
+  19. Airgeddon Bridge
      Path: generic/external/airgeddon_bridge.py
      Subprocess bridge to Airgeddon for handshake/WPS/evil-twin/WPA3 operations in authorized labs.
      Devices: wifi
-  14. Bruce Serial Bridge
+  20. Bruce Serial Bridge
      Path: generic/external/bruce_serial_bridge.py
      Serial orchestration bridge for Bruce firmware CLI. Sends command profiles (wifi/webui/arp/sniffer/nav/options), capture
      Devices: esp32, wifi, bluetooth
-  15. Bruce Upstream Tracker
+  21. Bruce Upstream Tracker
      Path: generic/external/bruce_upstream_tracker.py
      Shows complete BruceDevices/firmware issues+PRs catalog and a categorized useful subset mapped to WirelessXPL modules.
      Devices: wifi, bluetooth, esp32
-  16. Bruce/ESP32 Marauder firmware (lab notes)
+  22. Bruce/ESP32 Marauder firmware (lab notes)
      Path: generic/external/bruce_esp32_lab_notes.py
      Pointers to BruceDevices and ESP32 Marauder firmware: wardriving, raw sniffer hooks, deauth/beacon attacks and BLE scans
      Devices: ESP32 / Cardputer / M5Stack (user hardware)
-  17. EAPHammer Bridge
+  23. Bully WPS Brute-Force Bridge
+     Path: generic/external/bully_bridge.py
+     WPS PIN brute-force via bully (C binary, GPL-2.0). Supports standard PIN enumeration, specific PIN attempt, and Pixie Du
+     Devices: wifi, 802.11 WPS
+  24. EAPHammer Bridge
      Path: generic/external/eaphammer_bridge.py
      Evil twin WPA-Enterprise, PMKID, EAP spray e portais via EAPHammer (GPL-3.0 subprocess). PEAP/TTLS/MD5/GTC via --phase-1
      Devices: wifi
-  18. Fluxion Bridge
+  25. Fluxion Bridge
      Path: generic/external/fluxion_bridge.py
      Evil twin + captive portal with handshake verification via Fluxion (GPL-3.0 subprocess). 54+ vendor-branded templates, O
      Devices: wifi
-  19. OT Protocol Tools Bridge
+  26. Hashcatch Passive WPA Handshake Bridge
+     Path: generic/external/hashcatch_bridge.py
+     Purely passive WPA/WPA2 handshake capture using hashcatch (C binary). Hops channels and saves EAPOL handshakes to files 
+     Devices: wifi, 802.11 WPA/WPA2 EAPOL
+  27. OT Protocol Tools Bridge
      Path: generic/external/ot_protocol_bridge.py
      Orquestra ferramentas em submodules/OT: isf (Industrial Exploitation Framework / icssploit), ModBusSploit (console e mód
      Devices: ot, ics, modbus, plc, wifi
-  20. OneShot Bridge
+  28. OneShot Bridge
      Path: generic/external/oneshot_bridge.py
      WPS Pixie Dust, brute force online de PIN e WPS PBC via OneShot (subprocess), usando wpa_supplicant em modo gerenciado —
      Devices: wifi, wps
-  21. Reaver / Wash / Pixiewps Bridge
+  29. Pwnagotchi WPA Handshake Bridge
+     Path: generic/external/pwnagotchi_bridge.py
+     Interfaces with a Pwnagotchi device (RPi + AI) for autonomous WPA handshake harvesting. Modes: status (read device JSON 
+     Devices: wifi, 802.11 WPA2 EAPOL handshake
+  30. Reaver / Wash / Pixiewps Bridge
      Path: generic/external/reaver_bridge.py
      WPS: brute force de PIN e Pixie Dust via reaver (GPL-2.0), varredura WPS via wash, recuperação offline via pixiewps (GPL
      Devices: wifi, 802.11 WPS
-  22. Rogue Evil Twin Bridge
+  31. Rogue Evil Twin Bridge
      Path: generic/external/rogue_bridge.py
      Orquestração de evil twin via processo externo (GPL-3.0): open/WEP/WPA/WPA-EAP, hostapd, DHCP, FreeRADIUS, certificados,
      Devices: wifi, evil_twin
-  23. Router Firmware Analysis Bridge
+  32. Router Firmware Analysis Bridge
      Path: generic/external/router_firmware_bridge.py
      Orquestra ferramentas em submodules/IoT/third-party-router-poc: AESCrypt2 (C) para decrypt de config Huawei, HuaweiPassw
      Devices: router, huawei, firmware, iot
-  24. Social / Web OSINT Bridge
+  33. SniffAir Passive Wi-Fi Recon Bridge
+     Path: generic/external/sniffair_passive_recon.py
+     Passive Wi-Fi reconnaissance using SniffAir: captures probe requests, beacons, and EAP authentication frames. Modules: A
+     Devices: wifi, 802.11 passive recon EAP WPA
+  34. Social / Web OSINT Bridge
      Path: generic/external/social_recon_bridge.py
      Reconhecimento OSINT para campanhas Wi‑Fi autorizadas: consulta social via RapidAPI (social-search e similares), extraçã
      Devices: osint, wifi_workflow
-  25. Wifiphisher Bridge
+  35. Wifiphisher Bridge
      Path: generic/external/wifiphisher_bridge.py
      Evil twin + credential phishing via Wifiphisher (GPL-3.0 subprocess). Supports deauth, known-beacons, lure10, WPS-PBC, a
      Devices: wifi
-  26. Wifite2 Bridge
+  36. Wifite2 Bridge
      Path: generic/external/wifite2_bridge.py
      Orquestração de auditoria Wi‑Fi via Wifite2 (GPL-2.0 subprocess): WPA (handshake + crack), PMKID, WPS Pixie / PIN brute,
      Devices: wifi
-  27. Wireless tool prerequisite audit
+  37. Wireless tool prerequisite audit
      Path: generic/external/wireless_tool_prereq_audit.py
      Checks PATH for aircrack-ng suite, hcxtools, hashcat, bettercap, tshark. Use before wardriving / lab capture pipelines.
      Devices: Workstation / Kali / WSL lab host
-  28. bettercap Bridge
+  38. Wirespy Wi-Fi Monitor Bridge
+     Path: generic/external/wirespy_bridge.py
+     Automates Wi-Fi monitor mode, channel hopping, SSID discovery, and rogue AP creation via the wirespy Bash script (subpro
+     Devices: wifi, 802.11 monitor recon
+  39. bettercap Bridge
      Path: generic/external/bettercap_bridge.py
      Orquestra bettercap (GPL-3.0 subprocess): wifi.recon, wifi.deauth, wifi.assoc (PMKID), handshake para arquivo, arp.spoof
      Devices: wifi, ble, lan
-  29. hcxtools PCAP bridge
+  40. hcxdumptool Live PMKID/EAPOL Capture Bridge
+     Path: generic/external/hcxdumptool_live_bridge.py
+     Live Wi-Fi capture using hcxdumptool: PMKID from 802.11 association frames and 4-way EAPOL handshakes, written to pcapng
+     Devices: wifi, 802.11 WPA2/WPA3 PMKID/EAPOL
+  41. hcxtools PCAP bridge
      Path: generic/external/hcx_toolchain_bridge.py
      Invokes hcxpcapngtool (preferred) or hcxpcaptool on a WPA/WPA2/WPA3 capture to emit hashcat-compatible lines (22000 for 
      Devices: 802.11 WPA2/WPA3-transition PCAP/PCAPNG
-  30. mdk4 Bridge
+  42. hostapd-WPE EAP Harvest Bridge
+     Path: generic/external/hostapd_wpe_bridge.py
+     Starts a rogue WPA2-Enterprise AP using hostapd-WPE to capture EAP credentials (PEAP/MSCHAPv2, EAP-TTLS, LEAP, EAP-MD5).
+     Devices: wifi, 802.11 WPA2-Enterprise EAP
+  43. mdk4 Bridge
      Path: generic/external/mdk4_bridge.py
      Invoca mdk4 (GPL-3.0) como subprocesso: beacon flood (b), auth DoS (a), probe/SSID bruteforce (p), deauth (d), Michael T
      Devices: wifi
-  31. wifipumpkin3 Bridge
+  44. wifipumpkin3 Bridge
      Path: generic/external/wifipumpkin3_bridge.py
      Advanced rogue AP framework via wifipumpkin3 (Apache-2.0 subprocess). Supports captiveflask, Phishkin3 (MFA phishing), E
      Devices: wifi
 
 [PCAP] (12)
 ------------------------------
-  32. PCAP AP & Station Mapper
+  45. PCAP AP & Station Mapper
      Path: generic/pcap/pcap_ap_station_mapper.py
      Offline analysis of PCAP/PCAPNG captures to enumerate access points (BSSID, SSID, channel, encryption) and client statio
      Devices: Any 802.11 wireless capture
-  33. PCAP BLE / HCI advertising survey
+  46. PCAP BLE / HCI advertising survey
      Path: generic/pcap/pcap_ble_advertising_survey.py
      Iterates packets counting Scapy BTLE/HCI layer names — useful for Ubertooth, nRF Sniffer, or BlueZ *hcidump* exports. Pa
      Devices: BLE HCI / sniffer PCAP
-  34. PCAP EAPOL 4-way handshake survey
+  47. PCAP EAPOL 4-way handshake survey
      Path: generic/pcap/pcap_eapol_survey.py
      Offline analysis: classify EAPOL-Key frames (M1–M4), track nonces and replay counters, emit KRACK-family hints (CVE-2017
      CVEs: CVE-2017-13077
      Devices: 802.11 WPA2/WPA3-transition captures
-  35. PCAP Offline Credential Sniffer
+  48. PCAP Offline Credential Sniffer
      Path: generic/pcap/pcap_credential_sniffer.py
      Offline extraction of cleartext credentials from PCAP/PCAPNG captures. Detects HTTP Basic/Form auth, FTP USER/PASS, Teln
      Devices: Any network capture with cleartext protocols
-  36. PCAP Offline EAP/WPE Credential Harvester
+  49. PCAP Offline EAP/WPE Credential Harvester
      Path: generic/pcap/pcap_wpe_harvest.py
      Extracts EAP identities and challenge-response pairs from 802.1X authentication captures (WPA-Enterprise). Supports EAP-
      Devices: Any WPA-Enterprise / 802.1X network capture
-  37. PCAP Offline PMKID Attack (WPA/WPA2 Clientless)
+  50. PCAP Offline PMKID Attack (WPA/WPA2 Clientless)
      Path: generic/pcap/pcap_pmkid_attack.py
      Extracts PMKID from EAPOL message 1 for clientless WPA/WPA2 offline attacks. No full 4-way handshake required. Outputs h
      Devices: Any WPA/WPA2-PSK network (most modern APs include PMKID)
-  38. PCAP Offline TKIP/Michael Attack Analysis
+  51. PCAP Offline TKIP/Michael Attack Analysis
      Path: generic/pcap/pcap_tkip_downgrade.py
      Analyzes PCAP captures for TKIP vulnerabilities including Beck-Tews (QoS injection), Ohigashi-Morii (man-in-the-middle),
      Devices: Any WPA-TKIP or WPA2-TKIP mixed-mode network capture
-  39. PCAP Offline WEP Key Recovery
+  52. PCAP Offline WEP Key Recovery
      Path: generic/pcap/pcap_wep_crack.py
      Extracts WEP IVs from PCAP captures and runs offline statistical key recovery using aircrack-ng (FMS/PTW/KoreK). Reports
      Devices: Any WEP-encrypted 802.11 network capture
-  40. PCAP Offline WPA/WPA2 Dictionary Attack
+  53. PCAP Offline WPA/WPA2 Dictionary Attack
      Path: generic/pcap/pcap_offline_wpa_crack.py
      Runs an offline dictionary attack against WPA/WPA2 handshakes captured in PCAP files. Supports aircrack-ng (default) and
      Devices: Any WPA/WPA2 PSK network (captured handshake required)
-  41. PCAP Offline WPA3 Dragonblood Analysis
+  54. PCAP Offline WPA3 Dragonblood Analysis
      Path: generic/pcap/pcap_dragonblood.py
      Analyzes WPA3 SAE (Dragonfly) handshakes in PCAP captures for Dragonblood vulnerabilities: CVE-2019-9494 (timing side-ch
      CVEs: CVE-2019-9494, CVE-2019-9496
      Devices: Any WPA3-SAE or WPA3-Transition mode network capture
-  42. PCAP SQL Workspace
+  55. PCAP SQL Workspace
      Path: generic/pcap/pcap_sql_workspace.py
      Creates and manages a SQLite workspace for PCAP ingestion metadata and analyst notes.
      Devices: wifi, pcap
-  43. PCAP WPA/WPA2 Handshake Extractor
+  56. PCAP WPA/WPA2 Handshake Extractor
      Path: generic/pcap/pcap_handshake_extractor.py
      Offline extraction of EAPOL 4-way handshakes from PCAP/PCAPNG captures. Exports usable handshakes to individual PCAP fil
      Devices: Any 802.11 WPA/WPA2 wireless capture
 
-[WIFI_LAB] (44)
+[WIFI_LAB] (46)
 ------------------------------
-  44. AWDL Attack (OpenDrop/Owl)
+  57. AWDL Attack (OpenDrop/Owl)
      Path: generic/wifi_lab/awdl_attack.py
      AWDL/AirDrop lab workflows using OpenDrop and Owl as subprocesses. Supports discovery, send-test simulation, and AWDL st
      Devices: wifi, awdl
-  45. Adaptive Harvest
+  58. Adaptive Harvest
      Path: generic/wifi_lab/adaptive_harvest.py
      Score-driven collection loop for handshake/PMKID captures with adaptive channel selection.
      Devices: wifi
-  46. Auth/Assoc Flood
+  59. Auth/Assoc Flood
      Path: generic/wifi_lab/auth_flood.py
      Exhaust AP resources via mass authentication/association requests: random MAC auth flood (mdk4), AMOK mode, EAPOL-Start 
      Devices: wifi
-  47. Beacon Flood Advanced
+  60. Beacon Flood Advanced
      Path: generic/wifi_lab/beacon_flood_advanced.py
      Flood the RF spectrum with fake beacon frames: random SSIDs, AP cloning, wordlist-based SSIDs, and channel-targeted floo
      Devices: wifi
-  48. Captive portal (modern lab UI)
+  61. Captive portal (modern lab UI)
      Path: generic/wifi_lab/captive_portal_modern_lab.py
      Bindable HTTP portal logging form posts — intended with dnsmasq address=/#/ on a dedicated evil-twin NIC. No TLS (use re
      Devices: Isolated lab subnet
-  49. Connectivity Portal
+  62. Connectivity Portal
      Path: generic/wifi_lab/connectivity_portal.py
      Smart captive portal with OS connectivity detection and automatic language detection (en, pt-br, pt-pt, es). Triggers na
      Devices: wifi
-  50. Deauth / CSA Suite
+  63. Deauth / CSA Suite
      Path: generic/wifi_lab/deauth_csa_suite.py
      Deautenticação e desassociação 802.11 (aireplay-ng, Scapy, mdk4), anúncio de mudança de canal (CSA em beacon) e modos br
      Devices: wifi
-  51. Deauth Multi-Mode
+  64. Deauth Multi-Mode
      Path: generic/wifi_lab/deauth_multimode.py
      Multi-strategy deauthentication: targeted, broadcast, multi-AP, channel-hopping, and PMF-aware modes. Uses aireplay-ng, 
      Devices: wifi
-  52. Dual-Band Evil Twin
+  65. Dual-Band Evil Twin
      Path: generic/wifi_lab/dualband_evil_twin.py
      Simultaneous 2.4/5 GHz evil twin: rogue AP on one band while deauthing target on both bands. Requires 2 Wi-Fi interfaces
      Devices: wifi
-  53. Evil QR Attack
+  66. Evil QR Attack
      Path: generic/wifi_lab/evil_qr_attack.py
      Generate malicious QR codes for phishing: Wi-Fi auto-connect, captive portal redirect, session hijacking (WhatsApp/Disco
      Devices: wifi
-  54. Evil Twin Advanced
+  67. Evil Twin Advanced
      Path: generic/wifi_lab/evil_twin_advanced.py
      Full evil twin workflow: AP cloning, rogue AP (hostapd), DHCP/DNS (dnsmasq), captive portal with multiple phishing templ
      Devices: wifi
-  55. Evil twin lab runbook
+  68. Evil twin lab runbook
      Path: generic/wifi_lab/evil_twin_workflow.py
      Prints ordered steps and example hostapd/dnsmasq snippets; optional call into aireplay-ng barrage helper binary.
      Devices: Authorised isolated RF bench
-  56. Evil twin — 6× hostapd templates
+  69. Evil twin — 6× hostapd templates
      Path: generic/wifi_lab/evil_twin_hostapd_templates.py
      Generates configuration stubs including WPA3 transition (mixed) for studying downgrade paths alongside open/WPA2/SAE/OWE
      Devices: Authorised RF bench + compatible NIC
-  57. Evilginx prerequisite pointer
+  70. Evilginx prerequisite pointer
      Path: generic/wifi_lab/evilginx_prereq_pointer.py
      Locates ``evilginx`` on PATH and references the upstream project; use only in isolated phishing/MFA labs with written co
      Devices: Lab attacker host
-  58. FragAttacks (CVE-2020-24586..26146)
+  71. FragAttacks (CVE-2020-24586..26146)
      Path: generic/wifi_lab/fragattacks.py
      802.11 fragmentation and aggregation attack primitives. Fragment cache poisoning, mixed-key fragment reassembly, A-MSDU 
      CVEs: CVE-2020-24586, CVE-2020-24587, CVE-2020-24588, CVE-2020-26144, CVE-2020-26146
      Devices: wifi
-  59. GPS wardriving NMEA → NDJSON
+  72. GPS wardriving NMEA → NDJSON
      Path: generic/wifi_lab/gps_wardriving_ndjson.py
      Extracts coarse position rows for correlating with Wi-Fi/BLE logs.
      Devices: NMEA log file
-  60. Handshake Snooper
+  73. Handshake Snooper
      Path: generic/wifi_lab/handshake_snooper.py
      Automated WPA handshake capture: monitor mode, target scan, deauth to force re-auth, EAPOL capture, and handshake verifi
      Devices: wifi
-  61. Hashcat GPU/CPU orchestrator (WPA modes)
+  74. Hashcat GPU/CPU orchestrator (WPA modes)
      Path: generic/wifi_lab/hashcat_gpu_orchestrator.py
      Builds a hashcat argv for mode 22000/2500-class WPA material; prints devices (-I) and runs or dry-runs attack.
      Devices: Cracking workstation
-  62. KARMA / MANA Attack
+  75. KARMA / MANA Attack
      Path: generic/wifi_lab/karma_mana_attack.py
      Rogue AP that responds to all probe requests, impersonating any SSID the client searches for. Supports KARMA basic, MANA
      Devices: wifi
-  63. KR00K Attack (CVE-2019-15126)
+  76. KR00K Attack (CVE-2019-15126)
      Path: generic/wifi_lab/kr00k_attack.py
      Exploits Broadcom/Cypress Wi-Fi chip flaw: after deauth, buffered frames are transmitted encrypted with an all-zero Temp
      CVEs: CVE-2019-15126
      Devices: wifi
-  64. KRACK Attack (CVE-2017-13077..13088)
+  77. KRACK Attack (CVE-2017-13077..13088)
      Path: generic/wifi_lab/krack_attack.py
      Key Reinstallation Attacks on WPA2. Detects and exploits nonce reuse in the 4-way handshake (Message 3 replay), group ke
      CVEs: CVE-2017-13077
      Devices: wifi
-  65. MFA Phishing Portal
+  78. MFA Phishing Portal
      Path: generic/wifi_lab/mfa_phishing_portal.py
      Real-time MFA phishing via captive portal: local HTML clone with MFA field, external proxy (evilginx-style), or cloud re
      Devices: wifi
-  66. MITM Wi-Fi Bridge
+  79. MITM Wi-Fi Bridge
      Path: generic/wifi_lab/mitm_wifi_bridge.py
      Man-in-the-Middle via rogue AP bridge (NAT), ARP spoofing, DNS spoofing, or SSL stripping. Captures traffic and credenti
      Devices: wifi
-  67. MoMo Integrated Attack
+  80. MoMo Integrated Attack
      Path: generic/wifi_lab/momo_integrated_attack.py
      Integrated KARMA + PMKID-first + downgrade orchestration in a single authorized-lab workflow.
      Devices: wifi
-  68. PCAP RF anomaly scorer (+ optional ML)
+  81. PCAP RF anomaly scorer (+ optional ML)
      Path: generic/wifi_lab/pcap_rf_anomaly_ml.py
      802.11 management/data counters per file; optional IsolationForest when multiple PCAPs in a directory.
      Devices: Offline PCAP/PCAPNG
-  69. PCAP WPA handshake & PMKID validator
+  82. PCAP WPA handshake & PMKID validator
      Path: generic/wifi_lab/pcap_wpa_handshake_validate.py
      Reports 4-way EAPOL progress per STA/BSSID, PMKID availability, and optional hc22000 export probe via hcxpcapngtool.
      Devices: 802.11 WPA2 PCAP/PCAPNG
-  70. Responder Wi-Fi
+  83. Responder Wi-Fi
      Path: generic/wifi_lab/responder_wifi.py
      LLMNR/NBT-NS/mDNS poisoning via Responder on rogue AP interface. Captures NTLM hashes, HTTP credentials, and auth tokens
      Devices: wifi
-  71. SSID Confusion Attack (CVE-2023-52424)
+  84. SSID Confusion Attack (CVE-2023-52424)
      Path: generic/wifi_lab/ssid_confusion.py
      Multi-Channel Man-in-the-Middle with SSID rewriting. Clones target AP beacon with a trusted SSID, injects CSA to force c
      CVEs: CVE-2023-52424
      Devices: wifi
-  72. Selective Jammer
+  85. Selective Jammer
      Path: generic/wifi_lab/selective_jammer.py
      Surgical deauthentication: target specific clients by MAC instead of broadcast. Whitelist, blacklist, or auto-new modes.
      Devices: wifi
-  73. Transparent Proxy
+  86. Transparent Proxy
      Path: generic/wifi_lab/transparent_proxy.py
      Transparent proxy on rogue AP: HTTP inspection, JS/HTML injection, download spoofing, credential sniffing. Backends: mit
      Devices: wifi
-  74. WPA3 Attack Suite
+  87. WPA3 Attack Suite
      Path: generic/wifi_lab/wpa3_attack_suite.py
      Authorised-lab bridge: WPA3 transition downgrade (DragonShift / WPA3-Transition-mode-Downgrade-attack), SAE commit flood
      Devices: wifi
-  75. WPS Multi-Mode Attack
+  88. WPA3 SAE Commit Flood (native)
+     Path: generic/wifi_lab/wpa3_sae_flood_native.py
+     Floods a WPA3 AP with SAE Authentication commit frames from random spoofed MACs, exhausting the SAE state machine. Targe
+     CVEs: CVE-2019-9494
+     Devices: wifi, 802.11 WPA3 SAE
+  89. WPS Multi-Mode Attack
      Path: generic/wifi_lab/wps_multimode.py
      WPS attack suite: pixie-dust offline PIN recovery (pixiewps), online PIN brute-force (reaver/bully), PBC window exploit,
      Devices: wifi
-  76. Wardriving Deauth Loop
+  90. Wardriving Deauth Loop
      Path: generic/wifi_lab/wardriving_deauth_loop.py
      Automated wardriving pipeline with scan/deauth/capture rotations. Designed for authorized roaming assessments and handsh
      Devices: wifi
-  77. Wi-Fi Frame Replay
+  91. Wi-Fi Frame Replay
      Path: generic/wifi_lab/replay_attack.py
      Replay captured 802.11 frames: EAPOL (force re-auth), beacons (SSID spoof), authentication, probe responses, or arbitrar
      Devices: wifi
-  78. WiFi Sniffer
+  92. Wi-Fi Security Analyzer (native)
+     Path: generic/wifi_lab/wifi_security_analyzer.py
+     Passively scans Wi-Fi networks using Scapy beacon/probe-response sniffing. Parses RSN/WPA IEs to classify each BSS as WE
+     Devices: wifi, 802.11 a/b/g/n/ac/ax
+  93. WiFi Sniffer
      Path: generic/wifi_lab/wifi_sniffer.py
      Traffic sniffer for rogue AP: captures HTTP forms, Basic Auth, FTP/POP3/IMAP cleartext creds, DNS queries, cookies, and 
      Devices: wifi
-  79. Wireless IDS (Baseline/Anomaly)
+  94. Wireless IDS (Baseline/Anomaly)
      Path: generic/wifi_lab/wireless_ids.py
      Passive IDS helper that learns AP baseline from CSV scans and flags rogue/new BSSIDs for analyst review.
      Devices: wifi
-  80. Wireless research ecosystem (submodule) status
+  95. Wireless research ecosystem (submodule) status
      Path: generic/wifi_lab/research_ecosystem_status.py
      Maps GitHub WPA3/Wi-Fi research submodules to on-disk paths under the SafeLabs-style superproject layout.
      Devices: Workstation with superproject checkout
-  81. Wordlist orchestrator (Wi‑Fi / WPA lab)
+  96. Wordlist orchestrator (Wi‑Fi / WPA lab)
      Path: generic/wifi_lab/wordlist_orchestrator.py
      Modos static | osint | pattern | isp | combined | auto: localiza wordlists em submodules/Wordlists, invoca cewler/CeWL/w
      Devices: wifi, wpa_lab
-  82. _disclaimer
+  97. _disclaimer
      Path: generic/wifi_lab/_disclaimer.py
-  83. _i18n_service
+  98. _i18n_service
      Path: generic/wifi_lab/_i18n_service.py
-  84. aireplay-ng deauth / disassoc barrage
+  99. aireplay-ng deauth / disassoc barrage
      Path: generic/wifi_lab/aireplay_deauth_barrage.py
      Runs repeated aireplay-ng -0 bursts; optional dual-target alternation (BSSID + STA) and parallel streams for stubborn cl
      Devices: Linux lab interface (monitor mode)
-  85. hostapd rogue AP bridge
+  100. hostapd rogue AP bridge
      Path: generic/wifi_lab/rogue_ap_hostapd_bridge.py
      Writes hostapd.conf for AP mode (nl80211) and execs hostapd. Requires ap-mode capable NIC + correct driver.
      Devices: Linux AP-capable WLAN
-  86. mdk3 legacy bridge
+  101. mdk3 legacy bridge
      Path: generic/wifi_lab/mdk3_bridge.py
      Invokes mdk3 <iface> <mode> [options]. Modes include b, a, p, d, m, x, w, f.
      Devices: Linux monitor interface (legacy stacks)
-  87. mdk4 attack bridge
+  102. mdk4 attack bridge
      Path: generic/wifi_lab/mdk4_bridge.py
      Runs mdk4 <iface> <mode> [options]. Common modes: d (deauth/disassoc), b (beacon flood), a (auth DoS), p (probing), g (W
      Devices: Linux monitor interface + injection
 
 [WORDLIST] (1)
 ------------------------------
-  88. Interactive Wordlist Generator
+  103. Interactive Wordlist Generator
      Path: generic/wordlist/wordlist_generator.py
      Generates custom password and username wordlists based on target profile (corporate or personal). Applies mutation rules
      Devices: Any target — wordlist generation is target-independent
 
-CVE MASTER LIST (29)
+CVE MASTER LIST (32)
 ========================================
   1. CVE-2017-0781 -> generic/bluetooth/blueborne_attack.py
   2. CVE-2017-0785 -> generic/bluetooth/blueborne_attack.py
   3. CVE-2017-1000251 -> generic/bluetooth/blueborne_attack.py
   4. CVE-2017-13077 -> generic/pcap/pcap_eapol_survey.py, generic/wifi_lab/krack_attack.py
   5. CVE-2019-15126 -> generic/wifi_lab/kr00k_attack.py
-  6. CVE-2019-16336 -> generic/bluetooth/bt_baseband_attack.py
+  6. CVE-2019-16336 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_baseband_attack.py
   7. CVE-2019-17060 -> generic/bluetooth/bt_baseband_attack.py
   8. CVE-2019-17061 -> generic/bluetooth/bt_baseband_attack.py
-  9. CVE-2019-17517 -> generic/bluetooth/bt_baseband_attack.py
-  10. CVE-2019-17518 -> generic/bluetooth/bt_baseband_attack.py
-  11. CVE-2019-17519 -> generic/bluetooth/bt_baseband_attack.py
-  12. CVE-2019-17520 -> generic/bluetooth/bt_baseband_attack.py
-  13. CVE-2019-19194 -> generic/bluetooth/bt_baseband_attack.py
-  14. CVE-2019-19195 -> generic/bluetooth/bt_baseband_attack.py
-  15. CVE-2019-19196 -> generic/bluetooth/bt_baseband_attack.py
-  16. CVE-2019-9494 -> generic/pcap/pcap_dragonblood.py
-  17. CVE-2019-9496 -> generic/pcap/pcap_dragonblood.py
-  18. CVE-2019-9506 -> generic/bluetooth/bt_session_attack.py
-  19. CVE-2020-10135 -> generic/bluetooth/bt_session_attack.py
-  20. CVE-2020-24586 -> generic/wifi_lab/fragattacks.py
-  21. CVE-2020-24587 -> generic/wifi_lab/fragattacks.py
-  22. CVE-2020-24588 -> generic/wifi_lab/fragattacks.py
-  23. CVE-2020-26144 -> generic/wifi_lab/fragattacks.py
-  24. CVE-2020-26146 -> generic/wifi_lab/fragattacks.py
-  25. CVE-2021-28139 -> generic/bluetooth/bt_baseband_attack.py
-  26. CVE-2023-24023 -> generic/bluetooth/bt_session_attack.py
-  27. CVE-2023-45866 -> generic/bluetooth/bt_hid_injection.py
-  28. CVE-2023-52424 -> generic/wifi_lab/ssid_confusion.py
-  29. CVE-2024-23717 -> generic/bluetooth/bt_hid_injection.py
+  9. CVE-2019-17071 -> generic/bluetooth/ble_sweyntooth_bridge.py
+  10. CVE-2019-17516 -> generic/bluetooth/ble_sweyntooth_bridge.py
+  11. CVE-2019-17517 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_baseband_attack.py
+  12. CVE-2019-17518 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_baseband_attack.py
+  13. CVE-2019-17519 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_baseband_attack.py
+  14. CVE-2019-17520 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_baseband_attack.py
+  15. CVE-2019-17521 -> generic/bluetooth/ble_sweyntooth_bridge.py
+  16. CVE-2019-19194 -> generic/bluetooth/bt_baseband_attack.py
+  17. CVE-2019-19195 -> generic/bluetooth/bt_baseband_attack.py
+  18. CVE-2019-19196 -> generic/bluetooth/bt_baseband_attack.py
+  19. CVE-2019-9494 -> generic/pcap/pcap_dragonblood.py, generic/wifi_lab/wpa3_sae_flood_native.py
+  20. CVE-2019-9496 -> generic/pcap/pcap_dragonblood.py
+  21. CVE-2019-9506 -> generic/bluetooth/ble_sweyntooth_bridge.py, generic/bluetooth/bt_session_attack.py, generic/bluetooth/knob_attack_bridge.py
+  22. CVE-2020-10135 -> generic/bluetooth/bias_attack_bridge.py, generic/bluetooth/bt_session_attack.py
+  23. CVE-2020-24586 -> generic/wifi_lab/fragattacks.py
+  24. CVE-2020-24587 -> generic/wifi_lab/fragattacks.py
+  25. CVE-2020-24588 -> generic/wifi_lab/fragattacks.py
+  26. CVE-2020-26144 -> generic/wifi_lab/fragattacks.py
+  27. CVE-2020-26146 -> generic/wifi_lab/fragattacks.py
+  28. CVE-2021-28139 -> generic/bluetooth/bt_baseband_attack.py
+  29. CVE-2023-24023 -> generic/bluetooth/ble_bluffs_native.py, generic/bluetooth/bt_session_attack.py
+  30. CVE-2023-45866 -> generic/bluetooth/bt_hid_injection.py
+  31. CVE-2023-52424 -> generic/wifi_lab/ssid_confusion.py
+  32. CVE-2024-23717 -> generic/bluetooth/bt_hid_injection.py
 
 
 --- Generated by tools/generate_full_catalog.py ---
