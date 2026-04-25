@@ -1,7 +1,17 @@
 {
   "catalog_note": "\u00cdndice estendido offline para WirelessXPL-Forge (lookup). N\u00e3o substitui NVD/CISA; cruze sempre com firmware e PSIRT do fabricante.",
-  "entry_count": 159,
+  "entry_count": 167,
   "entries": [
+    {
+      "cve_id": "CVE-2008-5230",
+      "vendor": "generic",
+      "product": "wifi_lab",
+      "affected_versions": "Ver m\u00f3dulo: generic/wifi_lab/tkip_attack_suite.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/wifi_lab/tkip_attack_suite.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
     {
       "cve_id": "CVE-2010-1573",
       "vendor": "multi",
@@ -223,6 +233,16 @@
       "references": [
         "https://github.com/coincoin7/Wireless-Router-Vulnerability.git"
       ]
+    },
+    {
+      "cve_id": "CVE-2017-6956",
+      "vendor": "generic",
+      "product": "pcap",
+      "affected_versions": "Ver m\u00f3dulo: generic/pcap/pcap_rng_gtk_predictor.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/pcap/pcap_rng_gtk_predictor.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
     },
     {
       "cve_id": "CVE-2017-8225",
@@ -495,6 +515,26 @@
       "product": "wifi_lab",
       "affected_versions": "Ver m\u00f3dulo: generic/wifi_lab/kr00k_attack.py",
       "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/wifi_lab/kr00k_attack.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
+    {
+      "cve_id": "CVE-2019-16256",
+      "vendor": "generic",
+      "product": "sim",
+      "affected_versions": "Ver m\u00f3dulo: generic/sim/simjacker_info.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/sim/simjacker_info.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
+    {
+      "cve_id": "CVE-2019-16257",
+      "vendor": "generic",
+      "product": "sim",
+      "affected_versions": "Ver m\u00f3dulo: generic/sim/simjacker_info.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/sim/simjacker_info.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
       "cvss_score": 0.0,
       "access_vector": "REMOTE",
       "exploit_available": false
@@ -898,6 +938,16 @@
       "exploit_available": false
     },
     {
+      "cve_id": "CVE-2020-6098",
+      "vendor": "generic",
+      "product": "cellular",
+      "affected_versions": "Ver m\u00f3dulo: generic/cellular/ss7_sigploit_bridge.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/cellular/ss7_sigploit_bridge.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
+    {
       "cve_id": "CVE-2020-9325",
       "vendor": "dlink",
       "product": "router",
@@ -1071,6 +1121,16 @@
       "exploit_available": true
     },
     {
+      "cve_id": "CVE-2021-41794",
+      "vendor": "generic",
+      "product": "cellular",
+      "affected_versions": "Ver m\u00f3dulo: generic/cellular/ss7_sigploit_bridge.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/cellular/ss7_sigploit_bridge.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
+    {
       "cve_id": "CVE-2021-44228",
       "vendor": "generic",
       "product": "log4j",
@@ -1174,6 +1234,16 @@
       "exploit_available": true
     },
     {
+      "cve_id": "CVE-2022-39063",
+      "vendor": "generic",
+      "product": "cellular",
+      "affected_versions": "Ver m\u00f3dulo: generic/cellular/ss7_sigploit_bridge.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/cellular/ss7_sigploit_bridge.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
+    },
+    {
       "cve_id": "CVE-2022-40684",
       "vendor": "fortinet",
       "product": "fortigate",
@@ -1275,6 +1345,16 @@
       "references": [
         "https://github.com/EntySec/HatSploit.git"
       ]
+    },
+    {
+      "cve_id": "CVE-2023-23846",
+      "vendor": "generic",
+      "product": "cellular",
+      "affected_versions": "Ver m\u00f3dulo: generic/cellular/ss7_sigploit_bridge.py",
+      "description": "CVE citado no m\u00f3dulo WirelessXPL ``generic/cellular/ss7_sigploit_bridge.py``. Confirmar produto/vers\u00f5es no fabricante (NVD).",
+      "cvss_score": 0.0,
+      "access_vector": "REMOTE",
+      "exploit_available": false
     },
     {
       "cve_id": "CVE-2023-24023",
