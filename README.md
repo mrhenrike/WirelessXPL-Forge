@@ -1,8 +1,8 @@
 # WirelessXPL-Forge
 
-> **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
+> **Modular wireless security research framework** — the largest open wireless attack suite covering 802.11 (WPA/WPA2/WPA3/WPE/EAPOL), Bluetooth Classic/BLE, Zigbee, Z-Wave, Matter/Thread, V2X/DSRC, TPMS, UWB, DECT, NFC/RFID, SigFox/LoRaWAN, Cellular (2G-5G), SIM and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
 
-**Version:** 1.1.1 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13
+**Version:** 1.2.0 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13 | **Modules:** 135 | **CVEs:** 47
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
@@ -137,6 +137,10 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `research_ecosystem_status` | Status of all research submodule integrations |
 | `gps_wardriving_ndjson` | GPS NMEA → NDJSON wardriving log |
 | `wifi_sniffer` | Multi-backend sniffer (tcpdump/scapy/tshark) |
+| `cve_2024_30078_windows_wifi_driver` | **NEW** CVE-2024-30078 (CVSS 8.8) — Windows nwifi.sys RCE via VLAN frames |
+| `qualcomm_wlan_ml_ie_cve2024_45569` | **NEW** CVE-2024-45569 (CVSS 9.8) — Qualcomm WLAN ML IE memory corruption |
+| `airsnitch_isolation_bypass` | **NEW** AirSnitch (NDSS'26) — client isolation bypass via GTK abuse |
+| `wifiair_c2_beacon` | **NEW** WIFIAIR-C2 — covert C2 channel via 802.11 Vendor Specific Elements |
 
 ### PCAP Analysis (generic/pcap)
 
@@ -158,6 +162,8 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `blueborne_attack` | BlueBorne L2CAP overflow (kernel offset profiles) |
 | `ble_btlejack` | BTLEJack BLE sniff/jam/hijack |
 | `ble_crackle` | BLE Legacy Pairing key recovery |
+| `bt_rfcomm_oob_cve2025_13834` | **NEW** CVE-2025-13834 (CVSS 7.5) — RFCOMM TEST OOB kernel memory leak |
+| `zigbee_replay_cve2021_27289` | **NEW** CVE-2021-27289 (CVSS 8.8) — Zigbee frame counter replay bypass |
 
 ### CVE / Exploits (generic/cve)
 
@@ -167,6 +173,48 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `krack_attack` | KRACK (WPA2 4-way replay + msg3 collection) |
 | `ssid_confusion` | SSID Confusion attack |
 | `pmkid_attack` | PMKID clientless attack |
+
+### Z-Wave (generic/zwave) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `zwave_attack_suite` | CVE-2024-50920/50930 (CVSS 8.8) — fake node, RCE, replay, network key extraction |
+
+### Matter / Thread (generic/matter) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `matter_thread_bridge` | TLV overflow, commission scan, Thread border scan, fabric impersonation |
+
+### V2X / DSRC (generic/v2x) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `v2x_dsrc_attack` | BSM spoof/sniff, RSU impersonation, GPS replay via SDR @ 5.9 GHz |
+
+### TPMS (generic/tpms) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `tpms_spoof_replay` | Sniff/replay/spoof sensor TPMS 315/433 MHz via RTL-SDR + HackRF |
+
+### UWB (generic/uwb) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `uwb_relay_attack` | PKES relay attack, ranging manipulation, passkey relay (Decawave/Qorvo) |
+
+### DECT (generic/dect) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `dect_eavesdrop_bridge` | Scan, eavesdrop, clone handset IPUI, replay call @ 1.88-1.90 GHz |
+
+### NFC / RFID (generic/nfc) — NEW
+
+| Module | Description |
+|--------|-------------|
+| `nfc_relay_ndef_bridge` | NFCGate relay, NDEF inject, anticollision bypass, Mifare clone (ACR122U/PN532) |
 
 ### External Bridges (generic/external)
 

@@ -35,6 +35,8 @@ from pathlib import Path
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
@@ -160,6 +162,15 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         require_authorised_lab(self.i_know_scope)
+        _validator = HWValidator()
+        _gw = PhaseGateway("KNOB Attack")
+        _gw.phase(
+            "Bluetooth Adapter",
+            lambda: _validator.require(Requirement.BLUETOOTH_ADAPTER, silent=True),
+            fix_hint="Conecte um adaptador Bluetooth. hciconfig hci0 up",
+        )
+        if not _gw.run():
+            return
         mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:
             print_error("mode deve ser: {}".format(", ".join(sorted(self._VALID_MODES))))

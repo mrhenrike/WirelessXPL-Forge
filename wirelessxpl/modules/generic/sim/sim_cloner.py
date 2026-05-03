@@ -22,6 +22,8 @@ import subprocess
 from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.sim._disclaimer import (
     require_authorised_lab,
     require_sim_ownership,
@@ -468,6 +470,20 @@ class Exploit(Exploit):
             print_info(f"Batch complete: {count} programmed, {errors} errors")
 
     def run(self) -> None:
+        _validator = HWValidator()
+        _gw = PhaseGateway("SIM Cloner")
+        _gw.phase(
+            "SIM Card Reader",
+            lambda: _validator.require(Requirement.SIM_READER, silent=True),
+            fix_hint="Conecte um leitor SIM (ACR38U, ACS ACR38, ou similar).",
+        )
+        _gw.phase(
+            "pyscard",
+            lambda: _validator.require(Requirement.PYSCARD, silent=True),
+            fix_hint="pip install pyscard",
+        )
+        if not _gw.run():
+            return
         op = str(self.mode).strip().lower()
 
         if op == "info":

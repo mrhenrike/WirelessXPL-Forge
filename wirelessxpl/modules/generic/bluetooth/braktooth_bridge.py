@@ -32,6 +32,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
@@ -167,6 +169,15 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         require_authorised_lab(self.i_know_scope)
+        _validator = HWValidator()
+        _gw = PhaseGateway("BrakTooth BLE")
+        _gw.phase(
+            "nRF52 Dongle",
+            lambda: _validator.require(Requirement.NRF52_DONGLE, silent=True),
+            fix_hint="Conecte um dongle nRF52 com firmware BrakTooth.",
+        )
+        if not _gw.run():
+            return
         mode = str(self.mode).strip().lower()
         if mode == "info":
             self._info_mode()
