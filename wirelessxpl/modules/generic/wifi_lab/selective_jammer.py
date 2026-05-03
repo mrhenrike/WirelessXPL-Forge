@@ -26,6 +26,8 @@ from typing import List
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +101,16 @@ class Exploit(Exploit):
         """Execute selective jammer."""
         if not self.target_bssid:
             print_error("target_bssid is required.")
+            return
+
+        _validator = HWValidator()
+        _gw = PhaseGateway("Selective Jammer")
+        _gw.phase(
+            "HackRF One (TX para jamming)",
+            lambda: _validator.require(Requirement.HACKRF, silent=True),
+            fix_hint="Jamming requer HackRF One. RTL-SDR é somente RX.",
+        )
+        if not _gw.run():
             return
 
         require_authorised_lab()

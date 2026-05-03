@@ -24,6 +24,8 @@ import subprocess
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 
 logger = logging.getLogger(__name__)
 
@@ -145,6 +147,16 @@ class Exploit(Exploit):
 
         if op == "info":
             self._info()
+            return
+
+        _validator = HWValidator()
+        _gw = PhaseGateway("Proxmark3 RFID Bridge")
+        _gw.phase(
+            "Proxmark3",
+            lambda: _validator.require(Requirement.PROXMARK3, silent=True),
+            fix_hint="Conecte um Proxmark3. https://github.com/RfidResearchGroup/proxmark3",
+        )
+        if not _gw.run():
             return
 
         if not bool(self.i_know_scope):
