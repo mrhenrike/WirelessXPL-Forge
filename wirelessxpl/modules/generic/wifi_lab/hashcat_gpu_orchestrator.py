@@ -15,6 +15,8 @@ import subprocess
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 
 logger = logging.getLogger("wirelessxpl.wifi_lab.hashcat")
 
@@ -90,6 +92,15 @@ class Exploit(Exploit):
     )
 
     def run(self) -> None:
+        _validator = HWValidator()
+        _gw = PhaseGateway("Hashcat GPU Orchestrator")
+        _gw.phase(
+            "Hashcat",
+            lambda: _validator.require(Requirement.HASHCAT, silent=True),
+            fix_hint="apt install hashcat  ou  https://hashcat.net/hashcat/",
+        )
+        if not _gw.run():
+            return
         if not self.hash_file or not self.wordlist:
             print_error("Set hash_file and wordlist.")
             return

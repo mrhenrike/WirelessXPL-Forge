@@ -21,6 +21,8 @@ from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +126,16 @@ class Exploit(Exploit):
 
         if op == "info":
             self._info()
+            return
+
+        _validator = HWValidator()
+        _gw = PhaseGateway("SigFox/LoRaWAN Bridge")
+        _gw.phase(
+            "SDR Hardware",
+            lambda: _validator.require(Requirement.SDR_ANY, silent=True),
+            fix_hint="Conecte um SDR (HackRF, RTL-SDR, USRP).",
+        )
+        if not _gw.run():
             return
 
         if not bool(self.i_know_scope):

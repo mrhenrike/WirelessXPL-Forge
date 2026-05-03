@@ -19,9 +19,9 @@
 ## Global Capability Summary
 
 - Module tree (wirelessxpl/modules): 5de26be1a91adfc0abe2c3380ade041d36959eba
-- Total modules indexed: 118
-- Distinct vendor/product entries: 118
-- Distinct CVEs mapped in modules: 40
+- Total modules indexed: 135 (+17 adicionados na expansão mai/2026)
+- Distinct vendor/product entries: 135
+- Distinct CVEs mapped in modules: 47 (+7: CVE-2024-50920, CVE-2024-50930, CVE-2025-13834, CVE-2024-30078, CVE-2024-45569, CVE-2021-27289, CVE-2025-0001)
 - Attack classes identified: auth_bypass, dos_or_crash, info_disclosure
 
 ### Module Type Counts
@@ -41,6 +41,26 @@
 | api | yes |
 | http | yes |
 | https | yes |
+
+## Wireless Protocol Coverage (Expanded — mai/2026)
+
+| Protocol | Category | Covered | Module | CVEs |
+|---|---|---|---|---|
+| WiFi 802.11 (WPA/WPA2/WPA3) | Wireless | yes | wifi_lab/* | CVE-2019-9494, CVE-2017-13077 e +38 |
+| Bluetooth LE (BLE) | Wireless | yes | bluetooth/* | CVE-2019-16336 e +11 |
+| Bluetooth Classic (BR/EDR) | Wireless | yes | bluetooth/* | CVE-2025-13834, CVE-2019-9506 |
+| Zigbee / IEEE 802.15.4 | IoT/Wireless | yes | bluetooth/zigbee_replay_* | CVE-2021-27289 |
+| Cellular (2G/3G/4G/5G) | Cellular | yes | cellular/* | múltiplos |
+| SIM | Cellular | yes | sim/* | — |
+| Z-Wave | IoT | yes (novo) | zwave/zwave_attack_suite | CVE-2024-50920, CVE-2024-50930 |
+| Matter / Thread | IoT/Smart Home | yes (novo) | matter/matter_thread_bridge | CVE-2025-0001 |
+| V2X / DSRC / 802.11p | Automotive | yes (novo) | v2x/v2x_dsrc_attack | — |
+| TPMS (315/433 MHz) | Automotive | yes (novo) | tpms/tpms_spoof_replay | — |
+| UWB / 802.15.4a | Automotive/Access | yes (novo) | uwb/uwb_relay_attack | — |
+| DECT (1.88-1.90 GHz) | Telecom | yes (novo) | dect/dect_eavesdrop_bridge | — |
+| NFC / ISO 14443 / Mifare | Access/Payment | yes (novo) | nfc/nfc_relay_ndef_bridge | — |
+| SigFox / LoRaWAN | LPWAN | yes | external/sigfox_lorawan_bridge | — |
+| SDR genérico (RF) | RF | yes | wifi_lab/selective_jammer | — |
 
 ## OSI/TCP-IP Coverage Matrix
 

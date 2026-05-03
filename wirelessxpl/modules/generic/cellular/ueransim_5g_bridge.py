@@ -45,6 +45,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.hw_validator import HWValidator, Requirement
+from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
@@ -587,11 +589,19 @@ class Exploit(Exploit):
         """Execute the selected UERANSIM 5G mode."""
         mode = str(self.mode).strip().lower()
 
-        if mode == "info":
-            self._info_mode()
+        if mode in ("info", "cve_check"):
+            if mode == "info": self._info_mode()
+            else: self._cve_check()
             return
-        if mode == "cve_check":
-            self._cve_check()
+
+        _validator = HWValidator()
+        _gw = PhaseGateway("UERANSIM 5G Bridge")
+        _gw.phase(
+            "UERANSIM binary",
+            lambda: _validator.require(Requirement.UERANSIM, silent=True),
+            fix_hint="apt install ueransim  ou  https://github.com/aligungr/UERANSIM",
+        )
+        if not _gw.run():
             return
 
         if not self.i_know_scope:
