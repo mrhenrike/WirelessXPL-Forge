@@ -118,8 +118,7 @@ class Exploit(Exploit):
             "hcxdumptool",
             "-i",
             self.interface,
-            "--enable_status=1",
-            "-o",
+            "-w",
             str(cap_file),
         ]
         if self.target_channel:
