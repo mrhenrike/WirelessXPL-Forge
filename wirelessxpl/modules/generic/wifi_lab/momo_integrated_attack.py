@@ -75,7 +75,6 @@ class Exploit(Exploit):
                     str(self.interface),
                     "-o",
                     str(out) + "_pmkid.pcapng",
-                    "--enable_status=1",
                     "-c",
                     str(self.target_channel),
                 ]

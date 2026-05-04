@@ -147,10 +147,6 @@ class Exploit(Exploit):
         if channels:
             cmd.extend([f"--channel={channels}"])
 
-        status_interval = int(self.enable_status)
-        if status_interval > 0:
-            cmd.extend([f"--enable_status={status_interval}"])
-
         if bool(self.rca_scan):
             cmd.append("--active_beacon")
 
@@ -274,8 +270,7 @@ class Exploit(Exploit):
         ts = int(time.time())
         pcapng = os.path.join(outdir, f"apless_capture_{ts}.pcapng")
 
-        cmd = [hcx, "-i", iface, "-o", pcapng, "--active_beacon",
-               "--enable_status=2"]
+        cmd = [hcx, "-i", iface, "-w", pcapng, "--active_beacon"]
 
         channels = str(self.channel_list).strip()
         if channels:
