@@ -101,8 +101,6 @@ class Exploit(Exploit):
         cmd: List[str] = [bin_path, "-i", str(self.interface).strip(), "-o", out_file]
 
         status = max(0, min(7, int(self.enable_status)))
-        cmd.append("--enable_status={}".format(status))
-
         if self.rcascan:
             cmd.append("--rcascan=active")
 

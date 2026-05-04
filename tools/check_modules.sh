@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+cd /mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge
+MODULES=(
+    "generic/wifi_lab/handshake_snooper"
+    "generic/wifi_lab/wps_multimode"
+    "generic/wifi_lab/auth_flood"
+    "generic/wifi_lab/deauth_multimode"
+    "generic/wifi_lab/adaptive_harvest"
+    "generic/wifi_lab/pmkid_autopwn"
+    "generic/wifi_lab/fragattacks"
+    "generic/wifi_lab/krack_attack"
+    "generic/wifi_lab/beacon_flood_advanced"
+    "generic/wifi_lab/karma_mana_attack"
+    "generic/wifi_lab/evil_twin_workflow"
+    "generic/wifi_lab/connectivity_portal"
+    "generic/wifi_lab/wardriving_deauth_loop"
+    "generic/wifi_lab/momo_integrated_attack"
+    "generic/wifi_lab/tkip_attack_suite"
+    "generic/wifi_lab/ssid_confusion"
+    "generic/wifi_lab/wpa3_sae_flood_native"
+    "generic/wifi_lab/kr00k_attack"
+    "generic/wifi_lab/ap_less_client_attack"
+    "generic/external/hcxdumptool_live_bridge"
+    "generic/external/wireless_tool_prereq_audit"
+    "generic/pcap/pcap_pmkid_attack"
+    "generic/pcap/pcap_handshake_extractor"
+    "generic/bluetooth/btle_scan"
+    "generic/bluetooth/btle_enumerate"
+    "generic/bluetooth/ble_extra_attacks"
+    "generic/bluetooth/ble_phishing"
+)
+
+for mod in "${MODULES[@]}"; do
+    echo "=== $mod ==="
+    python3 wxf.py -m "$mod" 2>&1 | grep -E "Available options|required\.|is required"
+done

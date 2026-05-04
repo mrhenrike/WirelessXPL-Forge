@@ -97,8 +97,6 @@ class Exploit(Exploit):
 
         status = int(self.enable_status)
         if status > 0:
-            cmd.append(f"--enable_status={status}")
-
         sta = str(self.target_sta).strip()
         if sta:
             filterfile = os.path.join(outdir, f"filter_sta_{ts}.txt")
