@@ -18,14 +18,54 @@
 
 ## Global Capability Summary
 
-- Module tree (wirelessxpl/modules): 5de26be1a91adfc0abe2c3380ade041d36959eba
-- Total modules indexed: 135 (+17 adicionados na expansão mai/2026)
-- Distinct vendor/product entries: 135
-- Distinct CVEs mapped in modules: 47 (+7: CVE-2024-50920, CVE-2024-50930, CVE-2025-13834, CVE-2024-30078, CVE-2024-45569, CVE-2021-27289, CVE-2025-0001)
-- Attack classes identified: auth_bypass, dos_or_crash, info_disclosure
+- Module tree (wirelessxpl/modules): updated (EmbedXPL-Forge absorption — 2026-05-12)
+- Total modules indexed: 146 (+28 absorvidos do EmbedXPL-Forge em 2 sessões)
+- Distinct vendor/product entries: 146
+- Distinct CVEs mapped in modules: 47 (+7 novos: CVE-2019-15126, CVE-2013-0229, CVE-2020-13849, CVE-2017-7651, CVE-2019-9750, CVE-2023-37462, CVE-2019-9506)
+- Attack classes identified: auth_bypass, dos_or_crash, info_disclosure, lateral_movement, firmware_manipulation, protocol_abuse, key_extraction, replay_attack, spoofing, amplification_ddos
 
 ### Module Type Counts
-- generic: 118
+- generic: 146 (+28 novos via EmbedXPL-Forge absorption — 2 sessões)
+
+### Novos Módulos Absorvidos do EmbedXPL-Forge — Sessão 2 (2026-05-12)
+
+| Categoria | Módulo | Protocolo | CVE/Técnica |
+|---|---|---|---|
+| generic/bluetooth | `zigbee_network_key_extract` | Zigbee IEEE 802.15.4 | TC Link Key decrypt → network key extraction |
+| generic/bluetooth | `zigbee_rejoin_hijack` | Zigbee IEEE 802.15.4 | Beacon spoof → force rejoin → Transport Key capture |
+| generic/bluetooth | `ble_gatt_enum_unauth` | BLE (ATT/GATT) | Unauthenticated service/characteristic enumeration |
+| generic/bluetooth | `ble_spoofing_impersonation` | BLE (LL Advertising) | Advertising data replay → device identity cloning |
+| generic/zwave | `zwave_s0_key_extract` | Z-Wave RF | S0 all-zero temp key → network key trivial decryption |
+| generic/zwave | `zwave_replay_attack` | Z-Wave RF | No-S2 command replay → door unlock/switch/alarm |
+| generic/wifi_lab | `wifi_kr00k_cve_2019_15126` | Wi-Fi 802.11 (Broadcom) | CVE-2019-15126 — zero-TK CCMP decryption |
+| generic/iot_proto | `coap_block_overflow` | CoAP (UDP 5683) | CVE-2019-9750 — Block2 option heap overflow |
+| generic/iot_proto | `mqtt_broker_dos` | MQTT (TCP 1883) | CVE-2017-7651 — CONNECT/DISCONNECT cycling DoS |
+| generic/iot_proto | `mqtt_sys_acl_bypass_cve_2020_13849` | MQTT (TCP 1883) | CVE-2020-13849 — Mosquitto $SYS ACL bypass |
+| generic/iot_proto | `upnp_ssdp_rce_inject` | UPnP/SSDP | CVE-2013-0229 — SOAP injection + AddPortMapping |
+| generic/iot_proto | `upnp_ssdp_amplification` | SSDP (UDP 1900) | 20-50x amplification DDoS via spoofed M-SEARCH |
+| generic/iot_proto | `mdns_amplification` | mDNS (UDP 5353) | 5-30x amplification via QTYPE=ANY queries |
+| generic/automotive | `mercedes_mbux_bt_rce_cve_2023_37462` | BT BR/EDR | CVE-2023-37462 — MBUX NTG6 BT stack RCE |
+| generic/wearables | `xiaomi_miband_ble_breakmi` | BLE (GATT) | Auth key replay + biometric data exfiltration |
+
+### Novos Módulos Absorvidos do EmbedXPL-Forge (2026-05-12)
+
+| Categoria | Módulo | Protocolo | CVE/Técnica |
+|---|---|---|---|
+| generic/iot_proto | `mqtt_broker_enum_inject` | MQTT (TCP 1883) | Unauthenticated anon access, topic injection |
+| generic/iot_proto | `mqtt_lateral_pivot` | MQTT (TCP 1883) | Broker pivot para IoT internos |
+| generic/iot_proto | `coap_resource_enum` | CoAP (UDP 5683) | Resource discovery + UDP amplification DoS |
+| generic/iot_proto | `upnp_ssdp_attack` | UPnP/SSDP (UDP 1900) | CVE-2020-12695 CallStranger SSRF |
+| generic/iot_proto | `mdns_poisoning` | mDNS (UDP 5353) | Service enumeration + response poisoning |
+| generic/iot_proto | `dds_rtps_attack` | DDS/RTPS (UDP 7400) | Unauthenticated participant R/W (ROS2) |
+| generic/iot_proto | `tftp_firmware_attack` | TFTP (UDP 69) | Unauthenticated firmware download/upload |
+| generic/lorawan | `lorawan_adr_bitflip_cve_2022_39274` | LoRaWAN (RF) | CVE-2022-39274 ADR bit-flip DoS |
+| generic/lorawan | `lorawan_join_replay` | LoRaWAN (RF) | Join Accept replay — session hijack |
+| generic/automotive | `can_bus_attack` | CAN bus (SocketCAN) | ECU fuzzing, OBD-II enum, UDS reset |
+| generic/lateral_iot | `arp_spoof_iot_pivot` | ARP (L2) | MitM entre IoT e gateway |
+| generic/lateral_iot | `uart_shell_detect` | UART (serial) | Console embarcado multi-baud detection |
+| generic/lateral_iot | `fake_dhcp_server` | DHCP (UDP 67/68) | Rogue DHCP — gateway/DNS poisoning |
+| generic/bluetooth | `knob_native_cve_2019_9506` | BT BR/EDR (LMP) | CVE-2019-9506 — key entropy downgrade |
+| generic/bluetooth | `zigbee_touchlink_factory_reset` | Zigbee ZLL | Touchlink Factory Reset sem autenticação |
 
 ## Protocol Coverage (Inferred)
 
@@ -41,26 +81,6 @@
 | api | yes |
 | http | yes |
 | https | yes |
-
-## Wireless Protocol Coverage (Expanded — mai/2026)
-
-| Protocol | Category | Covered | Module | CVEs |
-|---|---|---|---|---|
-| WiFi 802.11 (WPA/WPA2/WPA3) | Wireless | yes | wifi_lab/* | CVE-2019-9494, CVE-2017-13077 e +38 |
-| Bluetooth LE (BLE) | Wireless | yes | bluetooth/* | CVE-2019-16336 e +11 |
-| Bluetooth Classic (BR/EDR) | Wireless | yes | bluetooth/* | CVE-2025-13834, CVE-2019-9506 |
-| Zigbee / IEEE 802.15.4 | IoT/Wireless | yes | bluetooth/zigbee_replay_* | CVE-2021-27289 |
-| Cellular (2G/3G/4G/5G) | Cellular | yes | cellular/* | múltiplos |
-| SIM | Cellular | yes | sim/* | — |
-| Z-Wave | IoT | yes (novo) | zwave/zwave_attack_suite | CVE-2024-50920, CVE-2024-50930 |
-| Matter / Thread | IoT/Smart Home | yes (novo) | matter/matter_thread_bridge | CVE-2025-0001 |
-| V2X / DSRC / 802.11p | Automotive | yes (novo) | v2x/v2x_dsrc_attack | — |
-| TPMS (315/433 MHz) | Automotive | yes (novo) | tpms/tpms_spoof_replay | — |
-| UWB / 802.15.4a | Automotive/Access | yes (novo) | uwb/uwb_relay_attack | — |
-| DECT (1.88-1.90 GHz) | Telecom | yes (novo) | dect/dect_eavesdrop_bridge | — |
-| NFC / ISO 14443 / Mifare | Access/Payment | yes (novo) | nfc/nfc_relay_ndef_bridge | — |
-| SigFox / LoRaWAN | LPWAN | yes | external/sigfox_lorawan_bridge | — |
-| SDR genérico (RF) | RF | yes | wifi_lab/selective_jammer | — |
 
 ## OSI/TCP-IP Coverage Matrix
 
@@ -120,7 +140,7 @@
 | L5-L7 | Application | Session/Presentation/Application | modbus_tcp | 1 | yes | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | dnp3 | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | opc_ua | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
-| L5-L7 | Application | Session/Presentation/Application | mqtt | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
+| L5-L7 | Application | Session/Presentation/Application | mqtt | 2 | yes | auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, lateral_movement_via_broker | anon_access_detection, topic_enumeration, payload_injection, broker_pivot | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | bacnet_ip | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 | L5-L7 | Application | Session/Presentation/Application | profinet_ethernet | 0 | no | default_credential_and_bruteforce_paths, auth_bypass_and_session_abuse, protocol_parser_and_input_injection_paths, management_api_and_header_abuse, snmp_read_write_and_trap_plane_misuse | credential_validation_matrix, auth_method_coverage_checks, protocol_specific_exploitability_checks, snmpv2_snmpv3_trap_operational_validation, api_and_web_management_flow_validation | P3 | P3 | P2 |
 
@@ -129,10 +149,10 @@
 | Layer | Total Protocol Hits |
 |---|---:|
 | L1 Physical | 1 |
-| L2 Data Link | 102 |
+| L2 Data Link | 110 (+8: ARP pivot, Zigbee Touchlink, LoRaWAN ×2, CAN bus, UART, mDNS, DDS) |
 | L3 Network | 0 |
-| L4 Transport | 2 |
-| L5-L7 Session/Presentation/Application | 31 |
+| L4 Transport | 4 (+2: CoAP UDP, TFTP UDP) |
+| L5-L7 Session/Presentation/Application | 37 (+6: MQTT ×2, UPnP/SSDP, DHCP rogue, BT KNOB, mDNS) |
 
 ## Market Priority Coverage (2010-2026)
 
@@ -2163,3 +2183,4 @@
 - Attack classes: none
 - Module paths:
   - `modules/generic/wordlist/wordlist_generator.py`
+

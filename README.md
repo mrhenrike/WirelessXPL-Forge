@@ -1,8 +1,8 @@
 # WirelessXPL-Forge
 
-> **Modular wireless security research framework** — the largest open wireless attack suite covering 802.11 (WPA/WPA2/WPA3/WPE/EAPOL), Bluetooth Classic/BLE, Zigbee, Z-Wave, Matter/Thread, V2X/DSRC, TPMS, UWB, DECT, NFC/RFID, SigFox/LoRaWAN, Cellular (2G-5G), SIM and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
+> **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
 
-**Version:** 1.2.0 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13 | **Modules:** 135 | **CVEs:** 47
+**Version:** 1.7.0 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
@@ -137,10 +137,6 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `research_ecosystem_status` | Status of all research submodule integrations |
 | `gps_wardriving_ndjson` | GPS NMEA → NDJSON wardriving log |
 | `wifi_sniffer` | Multi-backend sniffer (tcpdump/scapy/tshark) |
-| `cve_2024_30078_windows_wifi_driver` | **NEW** CVE-2024-30078 (CVSS 8.8) — Windows nwifi.sys RCE via VLAN frames |
-| `qualcomm_wlan_ml_ie_cve2024_45569` | **NEW** CVE-2024-45569 (CVSS 9.8) — Qualcomm WLAN ML IE memory corruption |
-| `airsnitch_isolation_bypass` | **NEW** AirSnitch (NDSS'26) — client isolation bypass via GTK abuse |
-| `wifiair_c2_beacon` | **NEW** WIFIAIR-C2 — covert C2 channel via 802.11 Vendor Specific Elements |
 
 ### PCAP Analysis (generic/pcap)
 
@@ -152,7 +148,7 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `pcap_dragonblood` | WPA3 Dragonblood SAE PCAP patterns |
 | `pcap_sql_workspace` | SQLite workspace for PCAP ingestion and analyst notes |
 
-### Bluetooth / BLE (generic/bluetooth)
+### Bluetooth / BLE / Zigbee (generic/bluetooth)
 
 | Module | Description |
 |--------|-------------|
@@ -162,8 +158,71 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `blueborne_attack` | BlueBorne L2CAP overflow (kernel offset profiles) |
 | `ble_btlejack` | BTLEJack BLE sniff/jam/hijack |
 | `ble_crackle` | BLE Legacy Pairing key recovery |
-| `bt_rfcomm_oob_cve2025_13834` | **NEW** CVE-2025-13834 (CVSS 7.5) — RFCOMM TEST OOB kernel memory leak |
-| `zigbee_replay_cve2021_27289` | **NEW** CVE-2021-27289 (CVSS 8.8) — Zigbee frame counter replay bypass |
+| `knob_native_cve_2019_9506` | **CVE-2019-9506** — BT BR/EDR key entropy downgrade para 1 byte |
+| `zigbee_touchlink_factory_reset` | Zigbee ZLL Touchlink Factory Reset sem autenticação (Hue, TRADFRI) |
+| `zigbee_network_key_extract` | **novo v1.7.0** — Extração de Network Key Zigbee via decrypt de Transport Key com TC Link Key pública |
+| `zigbee_rejoin_hijack` | **novo v1.7.0** — Zigbee Rejoin Hijack: beacon spoof → desassociação → captura Transport Key |
+| `ble_gatt_enum_unauth` | **novo v1.7.0** — BLE GATT enumeration sem autenticação (serviços, características, writable handles) |
+| `ble_spoofing_impersonation` | **novo v1.7.0** — BLE device cloning via advertising data replay (nome, UUIDs, manufacturer data) |
+
+### IoT Protocols (generic/iot_proto) — *novo v1.3.0+*
+
+| Module | Description |
+|--------|-------------|
+| `mqtt_broker_enum_inject` | MQTT — acesso anônimo, enumeração de tópicos e injeção de payload |
+| `mqtt_lateral_pivot` | MQTT — pivot via broker para alcançar dispositivos IoT internos |
+| `mqtt_broker_dos` | **novo v1.7.0** — **CVE-2017-7651** DoS por CONNECT/DISCONNECT cycling com LWT oversized |
+| `mqtt_sys_acl_bypass_cve_2020_13849` | **novo v1.7.0** — **CVE-2020-13849** Mosquitto ACL bypass via $SYS/# subscription |
+| `coap_resource_enum` | CoAP — discovery `.well-known/core` + fator de amplificação UDP |
+| `coap_block_overflow` | **novo v1.7.0** — **CVE-2019-9750** CoAP Block2 option heap overflow em stacks embarcados |
+| `upnp_ssdp_attack` | UPnP/SSDP — descoberta de dispositivos + **CVE-2020-12695** CallStranger SSRF |
+| `upnp_ssdp_rce_inject` | **novo v1.7.0** — **CVE-2013-0229** SOAP action injection + AddPortMapping sem auth |
+| `upnp_ssdp_amplification` | **novo v1.7.0** — SSDP amplification/reflection 20-50x via spoofed M-SEARCH |
+| `mdns_poisoning` | mDNS — enumeração passiva de serviços + envenenamento de respostas |
+| `mdns_amplification` | **novo v1.7.0** — mDNS amplification 5-30x via QTYPE=ANY queries (Bonjour/Avahi) |
+| `dds_rtps_attack` | DDS/RTPS — enumeração de participantes ROS2/automotivo (unauthenticated R/W) |
+| `tftp_firmware_attack` | TFTP — download/upload de firmware sem autenticação em dispositivos embarcados |
+
+### LoRaWAN (generic/lorawan) — *novo v1.3.0*
+
+| Module | Description |
+|--------|-------------|
+| `lorawan_adr_bitflip_cve_2022_39274` | **CVE-2022-39274** — ADR bit-flip para degradação de sinal/DoS em end-devices |
+| `lorawan_join_replay` | Join Accept Replay — session hijack por falta de replay protection (LoRaWAN 1.0.x) |
+
+### Automotive / CAN bus (generic/automotive) — *novo v1.3.0+*
+
+| Module | Description |
+|--------|-------------|
+| `can_bus_attack` | CAN bus — enumeração ECU via OBD-II, fuzzing de IDs, UDS ECU reset, frame replay |
+| `mercedes_mbux_bt_rce_cve_2023_37462` | **novo v1.7.0** — **CVE-2023-37462** Mercedes MBUX NTG6 Bluetooth RCE (scan, info, probe) |
+
+### Z-Wave (generic/zwave) — *novo v1.7.0*
+
+| Module | Description |
+|--------|-------------|
+| `zwave_s0_key_extract` | **CVE-2019** — Z-Wave S0 pairing sniff: temp key all-zeros → network key extraction |
+| `zwave_replay_attack` | Z-Wave command replay sem S2 (door_unlock, switch, thermostat) via SDR |
+
+### Wearables BLE (generic/wearables) — *novo v1.7.0*
+
+| Module | Description |
+|--------|-------------|
+| `xiaomi_miband_ble_breakmi` | Xiaomi Mi Band 3-7: advertising clone, auth key replay, biometric exfil (passos, HR, bateria) |
+
+### IoT Lateral Movement (generic/lateral_iot) — *novo v1.3.0*
+
+| Module | Description |
+|--------|-------------|
+| `arp_spoof_iot_pivot` | ARP Spoofing — MitM entre dispositivos IoT e gateway para interceptação |
+| `uart_shell_detect` | UART — detecção de console serial embarcado (multi-baud: 9600→921600) |
+| `fake_dhcp_server` | Rogue DHCP — servidor desonesto para redirecionar tráfego IoT (gateway/DNS control) |
+
+### Wi-Fi Lab — Kr00k (generic/wifi_lab)
+
+| Module | Description |
+|--------|-------------|
+| `wifi_kr00k_cve_2019_15126` | **novo v1.7.0** — **CVE-2019-15126** KR00K: deauth + CCMP zero-TK decryption (Broadcom/Cypress chips) |
 
 ### CVE / Exploits (generic/cve)
 
@@ -173,48 +232,6 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `krack_attack` | KRACK (WPA2 4-way replay + msg3 collection) |
 | `ssid_confusion` | SSID Confusion attack |
 | `pmkid_attack` | PMKID clientless attack |
-
-### Z-Wave (generic/zwave) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `zwave_attack_suite` | CVE-2024-50920/50930 (CVSS 8.8) — fake node, RCE, replay, network key extraction |
-
-### Matter / Thread (generic/matter) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `matter_thread_bridge` | TLV overflow, commission scan, Thread border scan, fabric impersonation |
-
-### V2X / DSRC (generic/v2x) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `v2x_dsrc_attack` | BSM spoof/sniff, RSU impersonation, GPS replay via SDR @ 5.9 GHz |
-
-### TPMS (generic/tpms) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `tpms_spoof_replay` | Sniff/replay/spoof sensor TPMS 315/433 MHz via RTL-SDR + HackRF |
-
-### UWB (generic/uwb) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `uwb_relay_attack` | PKES relay attack, ranging manipulation, passkey relay (Decawave/Qorvo) |
-
-### DECT (generic/dect) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `dect_eavesdrop_bridge` | Scan, eavesdrop, clone handset IPUI, replay call @ 1.88-1.90 GHz |
-
-### NFC / RFID (generic/nfc) — NEW
-
-| Module | Description |
-|--------|-------------|
-| `nfc_relay_ndef_bridge` | NFCGate relay, NDEF inject, anticollision bypass, Mifare clone (ACR122U/PN532) |
 
 ### External Bridges (generic/external)
 
@@ -293,3 +310,4 @@ Use against systems you do not own or have explicit written permission to test i
 
 **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://github.com/Uniao-Geek)  
 **Lineage:** [threat9/routersploit](https://github.com/threat9/routersploit) → RouterXPL-Forge → WirelessXPL-Forge
+
