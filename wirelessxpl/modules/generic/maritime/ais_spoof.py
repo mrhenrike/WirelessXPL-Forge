@@ -314,3 +314,34 @@ class AISSpoofAttack:
             return {"error": str(exc), "sent": sent}
 
         return {"success": True, "sent": sent, "duration_s": duration_s}
+
+    def run(
+        self,
+        mmsi: int = 123456789,
+        lat_dd: float = 1.264,
+        lon_dd: float = 103.826,
+        name: str = "PHANTOM",
+        speed_knots: float = 12.0,
+        course_deg: float = 90.0,
+    ) -> dict:
+        """Run a single AIS vessel spoof with provided parameters.
+
+        Args:
+            mmsi: 9-digit MMSI number.
+            lat_dd: Spoofed latitude in decimal degrees.
+            lon_dd: Spoofed longitude in decimal degrees.
+            name: Vessel name displayed on AIS receivers.
+            speed_knots: Speed over ground in knots.
+            course_deg: Course over ground in degrees.
+
+        Returns:
+            Result dict with generated sentence or transmission status.
+        """
+        return self.spoof_vessel(
+            mmsi=mmsi,
+            lat_dd=lat_dd,
+            lon_dd=lon_dd,
+            name=name,
+            speed_knots=speed_knots,
+            course_deg=course_deg,
+        )

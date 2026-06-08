@@ -172,6 +172,9 @@ class WirelessIDS:
     alerts when attack patterns are detected. Requires the interface to
     already be in monitor mode.
 
+    Attributes:
+        __info__: Module metadata.
+
     Args:
         interface: Wireless interface in monitor mode (e.g. 'wlan0mon').
         thresholds: Detection threshold configuration.
@@ -183,6 +186,24 @@ class WirelessIDS:
         simulate: When True, captures no real packets; runs a mock scenario
             instead showing what would be detected.
     """
+
+    __info__ = {
+        "name": "Wireless IDS (WIDS)",
+        "category": "wids",
+        "type": "detection",
+        "description": (
+            "Native Python passive 802.11 intrusion detection system. "
+            "Detects deauth floods, beacon floods, evil twin, rogue AP, "
+            "probe floods, and channel-hopping attacks. "
+            "Optional MQTT alerting via paho-mqtt."
+        ),
+        "detected_attacks": [
+            "DEAUTH_FLOOD", "BEACON_FLOOD", "PROBE_FLOOD",
+            "EVIL_TWIN", "ROGUE_AP", "CHANNEL_HOP", "SSID_CHANGE", "DISASSOC_FLOOD",
+        ],
+        "hw_req": ["WiFi adapter in monitor mode"],
+        "authors": ["Andre Henrique (@mrhenrike) | Uniao Geek"],
+    }
 
     def __init__(
         self,

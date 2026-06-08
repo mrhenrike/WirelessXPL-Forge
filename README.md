@@ -218,11 +218,38 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `uart_shell_detect` | UART — detecção de console serial embarcado (multi-baud: 9600→921600) |
 | `fake_dhcp_server` | Rogue DHCP — servidor desonesto para redirecionar tráfego IoT (gateway/DNS control) |
 
-### Wi-Fi Lab — Kr00k (generic/wifi_lab)
+### Wi-Fi Lab - SweynTooth BLE (generic/bluetooth/sweyntooth) - NEW v1.8.0
 
 | Module | Description |
 |--------|-------------|
-| `wifi_kr00k_cve_2019_15126` | **novo v1.7.0** — **CVE-2019-15126** KR00K: deauth + CCMP zero-TK decryption (Broadcom/Cypress chips) |
+| `sweyntooth_scanner` | Passive BLE scanner detecting SweynTooth-vulnerable firmware signatures |
+| `sweyntooth_cve_2019_16336` | CVE-2019-16336 - BLE Link Layer length overflow (Texas Instruments) |
+| `sweyntooth_cve_2019_17517` | CVE-2019-17517 - BLE data channel PDU overflow (Microchip) |
+| `sweyntooth_cve_2019_17519` | CVE-2019-17519 - BLE slave connection reject bypass (Dialog Semiconductor) |
+| `sweyntooth_cve_2019_17520` | CVE-2019-17520 - BLE public key crash on pairing (Telink) |
+
+### Wi-Fi Lab - FragAttacks (generic/wifi_lab/fragattacks) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `fragattacks_scanner` | Passive scanner detecting FragAttacks-vulnerable APs by beacon flags |
+| `fragattacks_cve_2020_26140` | CVE-2020-26140 - Plaintext data injection in non-strict WPA2 APs |
+| `fragattacks_cve_2020_26141` | CVE-2020-26141 - Fragment cache abuse / non-contiguous fragment injection |
+| `fragattacks_cve_2020_26143` | CVE-2020-26143 - Mixed plaintext/encrypted fragment acceptance |
+
+### Wi-Fi Lab - KRACK (generic/wifi_lab/krack) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `krack_scanner` | Passive scanner for KRACK nonce-reuse indicators (CVE-2017-13077..13088) |
+| `krack_4way_retransmit` | CVE-2017-13077 - PTK reinstallation via Msg3 retransmission |
+| `krack_group_key_retransmit` | CVE-2017-13080 - GTK reinstallation via group key handshake replay |
+
+### Wi-Fi Lab - Kr00k (generic/wifi_lab)
+
+| Module | Description |
+|--------|-------------|
+| `wifi_kr00k_cve_2019_15126` | **CVE-2019-15126** KR00K: deauth + CCMP zero-TK decryption (Broadcom/Cypress chips) |
 
 ### CVE / Exploits (generic/cve)
 
@@ -233,39 +260,231 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `ssid_confusion` | SSID Confusion attack |
 | `pmkid_attack` | PMKID clientless attack |
 
-### Sub-GHz (generic/subghz) - NEW v1.8.0
+### Sub-GHz Attack Suite (generic/subghz) - NEW v1.8.0
+
+> **LEGAL WARNING:** Transmitting on licensed Sub-GHz bands without authorization
+> is illegal in most jurisdictions. Use only on your own licensed equipment,
+> inside RF-shielded enclosures, or in authorized red team engagements.
+> Garage/gate spoofing without property owner consent is a criminal offense.
+
+#### Supported Protocols
+
+| Protocol | Bits | Frequency | Security | Module | HW Required |
+|----------|------|-----------|----------|--------|-------------|
+| EV1527 | 24 | 433 MHz | None | `subghz/static_code_replay` | HackRF / CC1101 |
+| Princeton/PT2262 | 24 | 315/433 MHz | None | `subghz/static_code_replay` | HackRF / CC1101 |
+| CAME | 12 | 303-868 MHz | None | `subghz/debruijn_bruteforce` | HackRF |
+| NICE Flo | 12 | 433/868 MHz | None | `subghz/debruijn_bruteforce` | HackRF |
+| KeeLoq | 64 | 433/868 MHz | Rolling code | `subghz/keeloq_*` | HackRF |
+| TPMS | var | 315/433 MHz | CRC only | `subghz/tpms/*` | RTL-SDR |
+
+#### Module Reference
 
 | Module | Description |
 |--------|-------------|
-| `static_code_replay` | EV1527/Princeton/CAME/NICE/Holtek/Chamberlain static code replay (PREREQ: HackRF/CC1101) |
+| `static_code_replay` | EV1527/Princeton/CAME/NICE/Holtek/Chamberlain static code replay |
 | `debruijn_bruteforce` | DeBruijn sequence bruteforce for 12-bit garage door protocols |
 | `keeloq_decoder` | KeeLoq rolling code frame decoder and analyzer |
 | `keeloq_replay` | KeeLoq rolling code replay within counter window |
+| `ev1527_vehicle_cve_2025_70994` | CVE-2025-70994 - EV1527 vehicle remote keyless entry replay |
+| `subghz_jammer` | Sub-GHz selective jammer (authorized testing only) |
+| `br_gate_scanner` | Brazilian gate/garage protocol scanner and recorder |
+| `tpms/tpms_decoder` | TPMS tire pressure sensor passive decoder |
+| `tpms/tpms_spoof` | TPMS spoofed tire pressure alert injection |
+| `tools/ook_analyzer` | OOK signal analyzer: preamble, bit timing, protocol identification |
+
+#### Usage Example - DeBruijn Bruteforce (CAME garage doors)
+
+```
+wxf > use generic/subghz/debruijn_bruteforce
+wxf (DeBruijn) > set protocol CAME
+wxf (DeBruijn) > set frequency 433.92
+wxf (DeBruijn) > set output_sub /tmp/came_brute.sub
+wxf (DeBruijn) > run
+
+[*] Generating DeBruijn sequence for CAME 12-bit at 433.92 MHz
+[*] Total codes to test: 4096
+[*] Estimated time at 287ms/code: ~4.8 minutes
+[+] Generated: /tmp/came_brute.sub (Flipper Zero compatible)
+[*] Load on Flipper: Sub-GHz -> Saved -> came_brute.sub -> Send
+```
+
+#### Usage Example - EV1527 Static Replay
+
+```
+wxf > use generic/subghz/static_code_replay
+wxf (StaticCodeReplay) > set protocol EV1527
+wxf (StaticCodeReplay) > set code 0xA3F21B
+wxf (StaticCodeReplay) > set frequency 433.92
+wxf (StaticCodeReplay) > set interface hackrf
+wxf (StaticCodeReplay) > set simulate true
+wxf (StaticCodeReplay) > run
+
+[SIMULATE] Would transmit EV1527 code 0xA3F21B at 433.92 MHz
+[SIMULATE] OOK pulse sequence: 24 bits, 350us/bit
+[!] Set simulate=false and interface=hackrf to transmit live
+```
+
+---
 
 ### Drone/UAV Security (generic/drones) - NEW v1.8.0
 
+> **LEGAL WARNING:** Unauthorized drone interference (deauth, disarm, GPS spoof,
+> command injection) violates aviation law in all jurisdictions.
+> In many countries it constitutes a federal criminal offense with severe penalties.
+> Use ONLY on drones you own, in shielded environments, or under explicit
+> written authorization from both the drone owner and relevant aviation authority.
+
 | Module | Description |
 |--------|-------------|
-| `drones/drone_scanner` | Drone discovery by WiFi SSID fingerprint (DJI, Parrot, Holy Stone, FPV) |
-| `drones/mavlink/*` | MAVLink attack suite: force disarm, GPS spoof, waypoint inject, geofence disable, param dump, flood DoS |
-| `drones/dji/*` | DJI WiFi deauth, CVE-2023-6951 QuickTransfer exfil, DroneID decoder info |
-| `drones/parrot/*` | Parrot ANAFI CVE-2019-3944 deauth, CVE-2019-3945 webcrash, UDP cmd inject |
-| `drones/holystone/*` | Holy Stone HSRID01 BLE DoS (CVE-2024-52876) |
-| `drones/fpv/*` | Eachine E52 TCP replay takeover, generic FPV UDP probe |
+| `drone_scanner` | Drone discovery by WiFi SSID fingerprint (DJI, Parrot, Holy Stone, FPV) |
+| `mavlink/mavlink_scanner` | MAVLink device scanner on UDP 14550 / TCP 5760 |
+| `mavlink/mavlink_force_disarm` | Force disarm command via MAV_CMD_COMPONENT_ARM_DISARM |
+| `mavlink/mavlink_gps_spoof` | Inject spoofed GPS NMEA to ground station / GCS |
+| `mavlink/mavlink_waypoint_inject` | Overwrite active mission waypoints |
+| `mavlink/mavlink_geofence_disable` | Disable geofence parameters via PARAM_SET |
+| `mavlink/mavlink_param_dump` | Dump all autopilot parameters (read-only audit) |
+| `mavlink/mavlink_flood_dos` | MAVLink message flood DoS |
+| `dji/dji_wifi_scan` | DJI drone SSID scanner and version extractor |
+| `dji/dji_deauth` | DJI WiFi deauthentication (landing interruption) |
+| `dji/dji_quicktransfer_exfil_cve_2023_6951` | CVE-2023-6951 - DJI QuickTransfer unauthenticated file exfil |
+| `parrot/parrot_anafi_deauth_cve_2019_3944` | CVE-2019-3944 - Parrot ANAFI WiFi deauth |
+| `parrot/parrot_anafi_webcrash_cve_2019_3945` | CVE-2019-3945 - Parrot ANAFI REST API crash |
+| `parrot/parrot_anafi_udp_cmd_inject` | Parrot ANAFI UDP command injection |
+| `parrot/parrot_bebop_dhcp_exhaust_cve_2022_46416` | CVE-2022-46416 - Parrot Bebop DHCP pool exhaustion |
+| `holystone/hsrid01_ble_dos_cve_2024_52876` | CVE-2024-52876 - Holy Stone HSRID01 BLE DoS |
+| `fpv/eachine_e52_tcp_takeover` | Eachine E52 TCP replay takeover |
+
+#### Usage Example - MAVLink Force Disarm
+
+```
+wxf > use generic/drones/mavlink/mavlink_force_disarm
+wxf (MAVForceDisarm) > set rhost 192.168.1.100
+wxf (MAVForceDisarm) > set rport 14550
+wxf (MAVForceDisarm) > set simulate true
+wxf (MAVForceDisarm) > run
+
+[SIMULATE] Would send MAV_CMD_COMPONENT_ARM_DISARM (param1=0, param2=21196)
+[SIMULATE] To: udp://192.168.1.100:14550 sysid=1 compid=1
+[!] Set simulate=false to send live command
+[!] PREREQ: Network access to drone on UDP 14550
+[!] WARNING: Force disarm on airborne drone causes crash
+```
+
+#### Usage Example - DJI QuickTransfer Exfil (CVE-2023-6951)
+
+```
+wxf > use generic/drones/dji/dji_quicktransfer_exfil_cve_2023_6951
+wxf (DJIQuickTransferExfil) > set rhost 192.168.2.1
+wxf (DJIQuickTransferExfil) > set output_dir /tmp/dji_exfil
+wxf (DJIQuickTransferExfil) > set simulate true
+wxf (DJIQuickTransferExfil) > run
+
+[SIMULATE] CVE-2023-6951: DJI QuickTransfer unauthenticated file access
+[SIMULATE] Target: http://192.168.2.1:80
+[SIMULATE] Would enumerate /DCIM/ and download media files
+[!] Set simulate=false for live exfil - requires WiFi association to DJI drone
+```
+
+---
 
 ### Maritime Security (generic/maritime) - NEW v1.8.0
+
+> **LEGAL WARNING:** AIS and NMEA spoofing at sea is illegal under SOLAS and
+> maritime law in all jurisdictions. It creates navigation safety hazards.
+> Use only in authorized lab environments or closed RF chambers.
 
 | Module | Description |
 |--------|-------------|
 | `nmea_spoof` | NMEA 0183 GPS/navigation sentence injection (TCP multiplexer) |
 | `ais_spoof` | AIS vessel position report spoofing with Type 1 bit encoding |
 
+#### Usage Example - AIS Vessel Spoof
+
+```
+wxf > use generic/maritime/ais_spoof
+wxf (AISSpoofAttack) > set target_host 192.168.1.100
+wxf (AISSpoofAttack) > set target_port 10110
+wxf (AISSpoofAttack) > set simulate true
+wxf (AISSpoofAttack) > run
+
+[SIMULATE] AIS Type 1 sentence for MMSI 123456789 (PHANTOM)
+[SIMULATE] Position: 1.264N / 103.826E at 12.0kn COG 90
+[SIMULATE] Sentence: !AIVDM,1,1,,A,15NN...
+[!] Set simulate=false + network access to AIS multiplexer (TCP 10110) to inject
+[!] WARNING: AIS spoofing is a maritime criminal offense
+```
+
+---
+
 ### Vehicular Radar (generic/vehicular_radar) - NEW v1.8.0
+
+> **LEGAL WARNING:** Active radar jamming or spoofing is illegal in most
+> jurisdictions and creates road safety hazards. Use ONLY in shielded
+> anechoic chambers or authorized test tracks with controlled access.
 
 | Module | Description |
 |--------|-------------|
-| `traffic_enforcement_scanner` | Kapsch RSU/Motorola Vigilant/Selea ANPR fingerprint scanner |
-| `fmcw_radar_attack` | FMCW automotive radar attack documentation (MadRadar/mmSpoof) |
+| `traffic_enforcement_scanner` | Kapsch RSU / Motorola Vigilant / Selea ANPR fingerprint scanner |
+| `fmcw_radar_attack` | FMCW automotive radar signal parameter calculator (MadRadar/mmSpoof) |
+
+#### Usage Example - Traffic Enforcement Scanner
+
+```
+wxf > use generic/vehicular_radar/traffic_enforcement_scanner
+wxf (TrafficEnforcementScanner) > set target_cidr 10.0.1.0/24
+wxf (TrafficEnforcementScanner) > run
+
+[*] Scanning 10.0.1.0/24 for traffic enforcement devices...
+[+] 10.0.1.42: Kapsch TrafficCom RSU | ports: 443,8443
+     CVEs: CVE-2025-25734, CVE-2025-25735, CVE-2025-25736
+[+] 10.0.1.67: Motorola Vigilant LPR | ports: 80,443
+     CVEs: CVE-2024-51023, CVE-2024-51024
+[*] Scan complete: 2 devices found
+```
+
+### WiFi Arsenal - Evidence, Wardrive, WIDS, Session (v1.8.0)
+
+| Module | Description |
+|--------|-------------|
+| `evidence_vault/evidence_vault` | Hash-chained tamper-evident audit ledger (ISO/IEC 27037 chain-of-custody) |
+| `wardrive/wardrive_logger` | GPS-tagged WiFi discovery logger with CSV/JSON/KML export |
+| `wids/wifi_ids` | Native Python WIDS: deauth flood, evil twin, rogue AP, beacon flood detection |
+| `session_manager/session_manager` | SQLite-backed pentest session manager with JSON export |
+| `bluetooth/bt_hid_keyboard_inject` | Bluetooth HID keyboard injection (Broadcom/BlueZ) |
+
+#### Usage Example - Evidence Vault
+
+```
+wxf > use generic/evidence_vault/evidence_vault
+wxf (EvidenceVault) > set session_id pentest_office_2026
+wxf (EvidenceVault) > set vault_dir /evidence
+wxf (EvidenceVault) > run scan --ssid "OfficeWiFi" --bssid AA:BB:CC:DD:EE:FF --channel 6 --rssi -65 --security WPA2
+
+[+] Evidence recorded: #0001 type=scan sha256=abc123...
+[+] Chain head: abc123...
+
+wxf (EvidenceVault) > verify
+[+] Chain VALID (3 records)
+[+] ISO/IEC 27037 chain-of-custody maintained
+```
+
+#### Usage Example - WIDS
+
+```
+wxf > use generic/wids/wifi_ids
+wxf (WirelessIDS) > set interface wlan0mon
+wxf (WirelessIDS) > set simulate true
+wxf (WirelessIDS) > run
+
+[SIMULATE] WIDS scenario: DEAUTH_FLOOD detected
+  BSSID: AA:BB:CC:DD:EE:FF | client: 11:22:33:44:55:66 | frames: 45/10s
+  Alert: DEAUTH_FLOOD severity=HIGH
+[SIMULATE] EVIL_TWIN detected - SSID 'OfficeWiFi' on new BSSID
+[*] To start live monitoring: set simulate false
+```
+
+---
 
 ### External Bridges (generic/external)
 

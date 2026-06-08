@@ -111,9 +111,24 @@ class EvidenceVault:
         vault_dir: Directory where the vault database and artifacts are stored.
             Resolved relative to the caller's CWD if not absolute.
         operator: Operator identifier (name or anonymized ID - never a password).
-        session_id: Logical session identifier; auto-generated if omitted.
-        simulate: When True, records are built in memory but not persisted.
+
+    Attributes:
+        __info__: Module metadata.
     """
+
+    __info__ = {
+        "name": "Evidence Vault",
+        "category": "evidence_vault",
+        "type": "forensics",
+        "description": (
+            "Hash-chained tamper-evident audit ledger for WiFi pentest. "
+            "ISO/IEC 27037 chain-of-custody compatible. "
+            "Records scans, handshakes, credentials with SHA-256 Merkle chain."
+        ),
+        "hw_req": ["None - software only"],
+        "standards": ["ISO/IEC 27037", "NIST SP 800-86"],
+        "authors": ["Andre Henrique (@mrhenrike) | Uniao Geek"],
+    }
 
     def __init__(
         self,

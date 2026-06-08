@@ -201,6 +201,33 @@ def compute_spoof_delay_ns(
     return (fake_delay - real_delay) * 1e9
 
 
+def run(
+    target: Optional[FMCWRadarTarget] = None,
+    radar: Optional[FMCWRadarParams] = None,
+) -> dict:
+    """Generate FMCW radar spoof parameters and return summary.
+
+    This is a calculation/planning function. Actual transmission requires
+    GNU Radio flowgraph on USRP/HackRF hardware.
+
+    Args:
+        target: Phantom target definition (defaults to 20 m ahead at 0 km/h).
+        radar: FMCW radar waveform params (defaults to 24 GHz ISM band).
+
+    Returns:
+        Spoof parameter dict including beat frequency, delay, and SDR config.
+    """
+    _target = target or FMCWRadarTarget()
+    _radar = radar or FMCWRadarParams()
+    params = generate_spoof_parameters(_target, _radar)
+    params["simulate"] = True
+    params["warning"] = (
+        "Active radar spoofing requires hardware and authorization. "
+        "This output describes signal parameters only."
+    )
+    return params
+
+
 def generate_spoof_parameters(
     target: FMCWRadarTarget,
     radar: FMCWRadarParams,
