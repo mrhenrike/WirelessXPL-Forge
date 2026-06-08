@@ -148,3 +148,40 @@
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-06-08 00:51-01:10] - Auditoria de qualidade WXF v1.8.0 - syntax, implementacao, README
+
+### Estado ao encerrar
+- Corrigido erro de sintaxe em wifi_lab/ap_less_client_attack.py (IndentationError linha 100 - if sem body)
+- Adicionado un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
+- Adicionado __info__ em: vidence_vault.py, wardrive_logger.py, wifi_ids.py, session_manager.py
+- README.md (EN) expandido com: Sub-GHz protocol table, DeBruijn/EV1527/MAVLink/AIS examples, FMCW radar, Evidence Vault, WIDS, SweynTooth, FragAttacks, KRACK sections
+- README.pt-BR.md completamente reescrito para v1.8.0 com todas as secoes novas em PT-BR
+- Todos os modulos dos BLOCOs A/B/C/F/I/M/O verificados: syntax OK, __info__ presente, simulate implementado onde aplicavel
+- Sessao anterior (paralela) ja commitou as mudancas antes do encerramento desta sessao
+
+### Commits realizados (pela sessao paralela)
+- d67ce62 - module quality fixes + README.md v1.8.0
+- 182ed8 - README.pt-BR.md update v1.8.0
+- 6761ed - docs(pt-BR) final v1.8.0 syntax samples
+
+### Proximo passo imediato
+- Integrar EvidenceVault com chamadas dos modulos de ataque existentes
+
+### Pendencias conhecidas
+- [ ] Integrar EvidenceVault com os ataques existentes (gravar evidencias automaticamente)
+- [ ] Adicionar mapa interativo Folium usando GeoJSON do WardriveLogger
+- [ ] Bluetooth BLE scanner real integrado ao framework WXF
+- [ ] Testes de integracao: ESP8266WIDSBridge + hardware real
+- [ ] Verificar se commits violaram regra no-AI-attribution (Co-authored-by Cursor detectado nos commits anteriores)
+
+### Ambiente necessario
+- Python 3.9+
+- pip install scapy paho-mqtt bleak
+- WiFi adapter em monitor mode para WirelessIDS
+- HackRF / CC1101 para modulos Sub-GHz ao vivo
+- RTL-SDR para TPMS decoder
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
