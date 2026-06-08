@@ -6,11 +6,17 @@
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
-[![Python 3.8–3.13](https://img.shields.io/badge/Python-3.8--3.13-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml)
-[![Release](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml)
-[![PyPI](https://img.shields.io/pypi/v/wirelessxpl.svg)](https://pypi.org/project/wirelessxpl/)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/v/wirelessxpl?color=red&label=PyPI&logo=pypi&logoColor=white" alt="PyPI"></a>
+  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/pyversions/wirelessxpl?color=blue&label=Python&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://github.com/mrhenrike/WirelessXPL-Forge/actions"><img src="https://img.shields.io/github/actions/workflow/status/mrhenrike/WirelessXPL-Forge/compat-matrix.yml?branch=master&label=CI&logo=github" alt="CI"></a>
+  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/dm/wirelessxpl?label=Downloads&logo=pypi" alt="Downloads"></a>
+  <img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License">
+  <img src="https://img.shields.io/badge/Version-1.8.0-green" alt="Version">
+  <img src="https://img.shields.io/badge/Modules-329%2B-brightgreen" alt="Modules">
+  <img src="https://img.shields.io/badge/Python-3.8--3.13-blue" alt="Python">
+  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey" alt="Platform">
+</p>
 
 ---
 
@@ -538,8 +544,14 @@ wxf (BruceSerialBridge) > run
 
 Full syntax reference, module usage samples, and configuration guides:
 
-- **[docs/wiki/en-US/](docs/wiki/en-US/)** — English (default)
-- **[docs/wiki/pt-BR/](docs/wiki/pt-BR/)** — Português
+- **[GitHub Wiki](https://github.com/mrhenrike/WirelessXPL-Forge/wiki)** — complete documentation
+  - [Quick Start](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/Quick-Start)
+  - [CLI Reference](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/CLI-Reference)
+  - [Sub-GHz Attacks](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/SubGHz-Attacks)
+  - [Drone Security](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/Drone-Security)
+  - [FragAttacks](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/FragAttacks)
+  - [KRACK](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/KRACK)
+  - [Evidence & Forensics](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/Evidence-Forensics)
 - **[docs/FULL_CATALOG.md](docs/FULL_CATALOG.md)** — complete module catalog
 - **[docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md)** — device coverage matrix
 
@@ -563,4 +575,3 @@ Use against systems you do not own or have explicit written permission to test i
 
 **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://github.com/Uniao-Geek)  
 **Lineage:** [threat9/routersploit](https://github.com/threat9/routersploit) → RouterXPL-Forge → WirelessXPL-Forge
-
