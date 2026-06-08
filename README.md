@@ -2,7 +2,7 @@
 
 > **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
 
-**Version:** 1.7.0 | **License:** BSD-3-Clause | **Python:** 3.8 – 3.13
+**Version:** 1.8.0 | **License:** BSD-3-Clause | **Python:** 3.8 - 3.13
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
@@ -232,6 +232,40 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `krack_attack` | KRACK (WPA2 4-way replay + msg3 collection) |
 | `ssid_confusion` | SSID Confusion attack |
 | `pmkid_attack` | PMKID clientless attack |
+
+### Sub-GHz (generic/subghz) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `static_code_replay` | EV1527/Princeton/CAME/NICE/Holtek/Chamberlain static code replay (PREREQ: HackRF/CC1101) |
+| `debruijn_bruteforce` | DeBruijn sequence bruteforce for 12-bit garage door protocols |
+| `keeloq_decoder` | KeeLoq rolling code frame decoder and analyzer |
+| `keeloq_replay` | KeeLoq rolling code replay within counter window |
+
+### Drone/UAV Security (generic/drones) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `drones/drone_scanner` | Drone discovery by WiFi SSID fingerprint (DJI, Parrot, Holy Stone, FPV) |
+| `drones/mavlink/*` | MAVLink attack suite: force disarm, GPS spoof, waypoint inject, geofence disable, param dump, flood DoS |
+| `drones/dji/*` | DJI WiFi deauth, CVE-2023-6951 QuickTransfer exfil, DroneID decoder info |
+| `drones/parrot/*` | Parrot ANAFI CVE-2019-3944 deauth, CVE-2019-3945 webcrash, UDP cmd inject |
+| `drones/holystone/*` | Holy Stone HSRID01 BLE DoS (CVE-2024-52876) |
+| `drones/fpv/*` | Eachine E52 TCP replay takeover, generic FPV UDP probe |
+
+### Maritime Security (generic/maritime) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `nmea_spoof` | NMEA 0183 GPS/navigation sentence injection (TCP multiplexer) |
+| `ais_spoof` | AIS vessel position report spoofing with Type 1 bit encoding |
+
+### Vehicular Radar (generic/vehicular_radar) - NEW v1.8.0
+
+| Module | Description |
+|--------|-------------|
+| `traffic_enforcement_scanner` | Kapsch RSU/Motorola Vigilant/Selea ANPR fingerprint scanner |
+| `fmcw_radar_attack` | FMCW automotive radar attack documentation (MadRadar/mmSpoof) |
 
 ### External Bridges (generic/external)
 
