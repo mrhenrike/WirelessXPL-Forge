@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import logging
 import os
+import struct
 import time
 from typing import Optional
 
@@ -68,7 +69,6 @@ def _build_amsdu_inject_frame(
     sa = bytes.fromhex(src_mac.replace(":", ""))
     subframe_payload = inject_payload
     subframe_len = struct.pack("!H", len(subframe_payload))
-    import struct
     subframe = da + sa + subframe_len + subframe_payload
 
     frame = RadioTap() / dot11 / qos / Raw(subframe)
