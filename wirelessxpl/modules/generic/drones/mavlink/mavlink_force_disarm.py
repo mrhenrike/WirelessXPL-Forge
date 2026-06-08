@@ -59,21 +59,13 @@ def _build_mavlink_v1_command_long(
 ) -> bytes:
     """Build MAVLink v1 COMMAND_LONG frame (msg_id=76)."""
     msg_id = 76
+    # COMMAND_LONG payload: 7x float32 + uint16 + 3x uint8 = 28+2+3 = 33 bytes
     payload = struct.pack(
-        "<ffffffffffHBBBBB",
+        "<fffffffHBBB",
         param1, param2, 0.0, 0.0, 0.0, 0.0, 0.0,
         command,
         target_sys, target_comp,
         0,  # confirmation
-        0, 0,  # unused -- align to 33 bytes? let's use explicit pack
-    )
-    payload = struct.pack(
-        "<fffffffHBBBB",
-        param1, param2, 0.0, 0.0, 0.0, 0.0, 0.0,
-        command,
-        target_sys, target_comp,
-        0,  # confirmation
-        0,  # reserved
     )
     header = struct.pack(
         "BBBBBB",
