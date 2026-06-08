@@ -235,3 +235,27 @@ class TrafficEnforcementScanner:
                     discovered.append(result)
 
         return discovered
+
+    def run(self) -> dict:
+        """Run scan and return structured results dict.
+
+        Returns:
+            Dict with discovered device count and device detail list.
+        """
+        devices = self.scan()
+        results = []
+        for d in devices:
+            results.append({
+                "ip": d.ip,
+                "vendor": d.vendor,
+                "model": d.model,
+                "open_ports": d.open_ports,
+                "banner": d.banner[:100] if d.banner else "",
+                "cves": d.cves,
+                "notes": d.notes,
+            })
+        return {
+            "target_cidr": self.target_cidr,
+            "devices_found": len(results),
+            "devices": results,
+        }

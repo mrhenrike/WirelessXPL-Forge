@@ -67,10 +67,26 @@ class SessionManager:
     executed attacks, file captures, and recovered credentials. Multiple
     sessions coexist in the same database.
 
+    Attributes:
+        __info__: Module metadata.
+
     Args:
         db_path: Path to the SQLite database file. Created on first use.
         simulate: When True, all write operations are skipped (dry-run mode).
     """
+
+    __info__ = {
+        "name": "Session Manager",
+        "category": "session_manager",
+        "type": "utility",
+        "description": (
+            "SQLite-backed WiFi pentest session manager. "
+            "Tracks networks, attacks, handshake captures, and recovered credentials "
+            "across multiple sessions with JSON export."
+        ),
+        "hw_req": ["None - software only"],
+        "authors": ["Andre Henrique (@mrhenrike) | Uniao Geek"],
+    }
 
     def __init__(
         self,
