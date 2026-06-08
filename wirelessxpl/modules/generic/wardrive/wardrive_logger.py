@@ -266,6 +266,9 @@ class WardriveLogger:
     Collects WiFi sightings with optional GPS coordinates from gpsd or NMEA
     source. Exports to CSV, JSON, and KML formats for map visualization.
 
+    Attributes:
+        __info__: Module metadata.
+
     Args:
         output_dir: Directory where export files are saved.
         session_id: Optional session identifier; auto-generated if omitted.
@@ -277,6 +280,22 @@ class WardriveLogger:
         simulate: When True, sightings are recorded in memory only.
         on_sighting: Optional callback called with each new WardriveSighting.
     """
+
+    __info__ = {
+        "name": "Wardrive Logger",
+        "category": "wardrive",
+        "type": "logger",
+        "description": (
+            "GPS-tagged WiFi network discovery logger with CSV, JSON, KML export. "
+            "Supports gpsd daemon, NMEA serial, or static coordinates. "
+            "Integrate with Wigle, Google Maps, or custom heat-map tools."
+        ),
+        "hw_req": [
+            "WiFi adapter with monitor-mode support",
+            "Optional: GPS receiver (gpsd or NMEA serial)",
+        ],
+        "authors": ["Andre Henrique (@mrhenrike) | Uniao Geek"],
+    }
 
     def __init__(
         self,
