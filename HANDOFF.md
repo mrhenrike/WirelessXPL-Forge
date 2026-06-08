@@ -94,3 +94,57 @@
 ### Paths importantes
 - Windows: `D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge`
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge`
+
+## [2026-06-08 03:42] - WiFi Arsenal Integration: Evidence Vault, WIDS, Wardrive, Portal Manager, Session Manager
+
+### Estado ao encerrar
+- Analisados 7 repositorios WiFi Arsenal (wifi-arsenal_1 a _7) em submodules/IoT/
+- Identificadas funcionalidades unicas nao existentes no WXF
+- Implementados 6 novos modulos em wirelessxpl/modules/generic/:
+  - evidence_vault/evidence_vault.py (reescrito): SQLite hash-chained audit ledger, ISO 27037 compativel
+  - wardrive/wardrive_logger.py (reescrito): GPS logger com gpsd/NMEA, export CSV/JSON/KML/GeoJSON
+  - wids/wifi_ids.py (reescrito): WIDS nativo Scapy, detecta 8 tipos de ataque, MQTT opcional
+  - evil_twin/portal_manager.py (NOVO): portal captivo stdlib, 8 templates HTML (ISPs BR + Google + Starbucks)
+  - wids/esp8266_wids_bridge.py (NOVO): bridge MQTT para ESP8266 WIDS hardware
+  - session_manager/session_manager.py (reescrito): persistencia SQLite multi-sessao completa
+- Todos os __init__.py atualizados com exports corretos
+- Sintaxe validada: python -m py_compile OK em todos os 6 arquivos
+- Commit: 92235aa "Add Evidence Vault, Wardrive Logger, WIDS, Portal Manager, Session Manager"
+- Push: https://github.com/mrhenrike/WirelessXPL-Forge.git master
+
+### Arquivos modificados
+- wirelessxpl/modules/generic/evidence_vault/__init__.py
+- wirelessxpl/modules/generic/evidence_vault/evidence_vault.py
+- wirelessxpl/modules/generic/wardrive/__init__.py
+- wirelessxpl/modules/generic/wardrive/wardrive_logger.py
+- wirelessxpl/modules/generic/wids/__init__.py
+- wirelessxpl/modules/generic/wids/wifi_ids.py
+- wirelessxpl/modules/generic/wids/esp8266_wids_bridge.py (NOVO)
+- wirelessxpl/modules/generic/evil_twin/__init__.py (NOVO)
+- wirelessxpl/modules/generic/evil_twin/portal_manager.py (NOVO)
+- wirelessxpl/modules/generic/session_manager/__init__.py
+- wirelessxpl/modules/generic/session_manager/session_manager.py
+
+### Proximo passo imediato
+- Integrar portal_manager ao fluxo existente de evil_twin no WXF
+- Testar WardriveLogger com GPS real (gpsd) em campo
+- Validar WirelessIDS com adaptador em monitor mode
+
+### Pendencias conhecidas
+- [ ] Integrar EvidenceVault com os ataques existentes (airgeddon wrapper, etc.)
+- [ ] Adicionar mapa interativo Folium/Leaflet usando GeoJSON do WardriveLogger
+- [ ] Bluetooth module (arsenal_2) - BluetoothScanner ainda nao integrado ao WXF
+- [ ] Portal templates adicionais: Microsoft, hotel, aeroporto
+- [ ] Teste de integracao do ESP8266WIDSBridge com hardware real
+- [ ] wifi_lab/ap_less_client_attack.py tem modificacao nao commitada (pre-existente)
+
+### Ambiente necessario
+- Python 3.9+
+- pip install scapy paho-mqtt bleak (para modulos avancados)
+- WiFi adapter em monitor mode para WirelessIDS real
+- ESP8266 com firmware WIDS para esp8266_wids_bridge
+- gpsd daemon para GPS real no WardriveLogger
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
