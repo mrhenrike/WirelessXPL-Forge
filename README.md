@@ -443,7 +443,7 @@ wxf (TrafficEnforcementScanner) > run
 [*] Scan complete: 2 devices found
 ```
 
-### WiFi Arsenal - Evidence, Wardrive, WIDS, Session (v1.8.0)
+### Forensics, Wardriving and Session Management (generic) - v1.8.0
 
 | Module | Description |
 |--------|-------------|
