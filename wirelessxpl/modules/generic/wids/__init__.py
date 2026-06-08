@@ -1,8 +1,15 @@
 """Wireless Intrusion Detection System (WIDS) modules.
 
-Adapted from: Cyber-umesh/ESP8266-WiFi-Arsenal-Red-Blue-Teaming-Toolkit
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from .wifi_ids import WirelessIDS, WIDSAlert, WIDSAlertType
+from .wifi_ids import WirelessIDS, WIDSAlert, AlertType, WIDSThresholds
+from .esp8266_wids_bridge import ESP8266WIDSBridge, decode_payload
 
-__all__ = ["WirelessIDS", "WIDSAlert", "WIDSAlertType"]
+__all__ = [
+    "WirelessIDS",
+    "WIDSAlert",
+    "AlertType",
+    "WIDSThresholds",
+    "ESP8266WIDSBridge",
+    "decode_payload",
+]

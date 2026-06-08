@@ -2,6 +2,6 @@
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from .session_manager import SessionManager, AssessmentSession
+from .session_manager import SessionManager, SessionInfo, AttackRecord
 
-__all__ = ["SessionManager", "AssessmentSession"]
+__all__ = ["SessionManager", "SessionInfo", "AttackRecord"]
