@@ -153,7 +153,8 @@
 
 ### Estado ao encerrar
 - Corrigido erro de sintaxe em wifi_lab/ap_less_client_attack.py (IndentationError linha 100 - if sem body)
-- Adicionado un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
+- Adicionado 
+un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Adicionado __info__ em: vidence_vault.py, wardrive_logger.py, wifi_ids.py, session_manager.py
 - README.md (EN) expandido com: Sub-GHz protocol table, DeBruijn/EV1527/MAVLink/AIS examples, FMCW radar, Evidence Vault, WIDS, SweynTooth, FragAttacks, KRACK sections
 - README.pt-BR.md completamente reescrito para v1.8.0 com todas as secoes novas em PT-BR
@@ -185,3 +186,57 @@
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-06-08 09:05] -- Wiki completa criada e README melhorado
+
+### Estado ao encerrar
+- Wiki completa criada e publicada em https://github.com/mrhenrike/WirelessXPL-Forge/wiki
+- 14 paginas criadas: Home, Quick-Start, CLI-Reference, Wi-Fi-Attacks, Bluetooth-BLE, SubGHz-Attacks, Drone-Security, Maritime-Security, Evidence-Forensics, Wardriving, WIDS, Hardware, FragAttacks, KRACK, Configuration
+- Cada pagina tem terminal I/O completo com exemplos realistas
+- README.md atualizado: badges completos (PyPI, Python, CI, Downloads, License, Version, Modules, Platform) + link direto para a wiki no GitHub
+- Secao "WiFi Arsenal" ja estava renomeada para "Forensics, Wardriving and Session Management" antes desta sessao
+- Nenhuma referencia a BLOCO X ou WiFi Arsenal encontrada no README
+- Commits: wiki (4632524), README (2cdea70) - ambos pushed para master
+
+### Proximo passo imediato
+- Verificar se a wiki esta visivelmente publicada em https://github.com/mrhenrike/WirelessXPL-Forge/wiki
+- Considerar adicionar README.pt-BR.md (ja referenciado na linha 7 do README mas arquivo pode nao existir)
+
+### Pendencias conhecidas
+- [ ] README.pt-BR.md referenciado no README mas pode nao existir
+- [ ] docs/wiki/en-US/ e docs/wiki/pt-BR/ referenciados em COVERAGE_MATRIX podem ser removidos do README (substituidos pelo GitHub Wiki)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Wiki local: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\.tmp\wxf_wiki
+
+## [2026-06-08 12:55] -- Wiki PT-BR completa: 15 paginas traduzidas
+
+### Estado ao encerrar
+- Criadas 15 paginas PT-BR completas com traducao integral (terminal I/O preservado)
+- Criado _Sidebar-ptBR.md com navegacao completa em portugues
+- Home.md atualizado com link para Home-pt-BR.md
+- Commit e push realizados: hash 6ad86e6
+
+### Arquivos criados
+- Home-pt-BR.md, Inicio-Rapido.md, Referencia-CLI.md, Configuracao.md
+- Ataques-WiFi.md, Bluetooth-BLE-ptBR.md, Ataques-SubGHz.md
+- Seguranca-Drones.md, Seguranca-Maritima.md, Evidencias-Forense.md
+- Wardriving-ptBR.md, WIDS-ptBR.md, Hardware-ptBR.md
+- FragAttacks-ptBR.md, KRACK-ptBR.md, _Sidebar-ptBR.md
+
+### Proximo passo imediato
+- Wiki PT-BR concluida. Verificar rendering no GitHub Wiki se necessario.
+
+### Pendencias conhecidas
+- [ ] Verificar rendering das paginas no GitHub Wiki
+
+### Ambiente necessario
+- Python 3.8+ (apenas para uso do framework)
+- Git com acesso ao repositorio mrhenrike/WirelessXPL-Forge.wiki
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Wiki local: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\.tmp\wxf_wiki
