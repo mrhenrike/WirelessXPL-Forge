@@ -637,6 +637,25 @@ class Exploit(Exploit):
         _run(cmd, timeout=t if t > 0 else 0, dry_run=bool(self.dry_run), capture=True)
 
     # -- Main dispatch --
+
+    def check(self) -> str:
+        """Verify external tool dependencies are installed."""
+        import shutil
+        tools: list[str] = []
+        src = getattr(self.__class__, "__doc__", "") or ""
+        for t in ("aircrack-ng", "airodump-ng", "aireplay-ng", "airmon-ng",
+                   "hashcat", "hcxdumptool", "hcxtools", "wifite", "bettercap",
+                   "kismet", "hostapd", "dnsmasq", "mdk4", "mdk3",
+                   "hostapd-wpe", "hostapd-mana", "eaphammer"):
+            if t.replace("-ng", "").replace("-", "") in (src + self.__class__.__name__).lower():
+                tools.append(t)
+        if not tools:
+            tools = ["aircrack-ng"]
+        missing = [t for t in tools if not shutil.which(t.rstrip("_"))]
+        if missing:
+            return f"Missing tools: {', '.join(missing)} - install before use"
+        return f"Tool dependencies found: {', '.join(tools)} - prerequisites OK"
+
     def run(self) -> None:
         op = str(self.mode).strip().lower()
         dispatch = {

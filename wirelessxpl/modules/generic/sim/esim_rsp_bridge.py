@@ -547,6 +547,19 @@ class Exploit(Exploit):
         except Exception as exc:
             print_error(f"Connection failed: {exc}")
 
+
+    def check(self) -> str:
+        """Verify SIM card reader and related tools are present."""
+        import shutil
+        tools = ["pySIM-shell", "pcsc_scan", "openssl"]
+        found = [t for t in tools if shutil.which(t)]
+        pysim = shutil.which("pySIM-shell") or shutil.which("pysim-shell")
+        if pysim:
+            return f"pySIM tools found at {pysim} - insert SIM card to proceed"
+        if found:
+            return f"Partial tools found: {', '.join(found)} - pySIM-shell missing"
+        return "SIM tools not found - install pysim, pcscd, pcsc-tools"
+
     def run(self) -> None:
         op = str(self.mode).strip().lower()
 
