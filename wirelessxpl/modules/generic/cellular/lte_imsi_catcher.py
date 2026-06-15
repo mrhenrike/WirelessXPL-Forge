@@ -619,6 +619,17 @@ class Exploit(Exploit):
             status = "[+] {}".format(p) if found else "[-] {}: not found".format(tool)
             (print_success if found else print_error)("  {}".format(status))
 
+
+    def check(self) -> str:
+        """Verify SDR hardware and cellular tools are available."""
+        import shutil
+        sdr_tools = ["uhd_find_devices", "osmocom_fft", "gr-gsm", "gnuradio-companion"]
+        gsm_tools = ["grgsm_livemon", "grgsm_decode", "kalibrate"]
+        found = [t for t in sdr_tools + gsm_tools if shutil.which(t)]
+        if found:
+            return f"SDR tools found: {', '.join(found)} - verify hardware connection"
+        return "No SDR tools found in PATH - install gnuradio, gr-osmosdr, gr-gsm"
+
     def run(self) -> None:
         op = str(self.mode).strip().lower()
 
