@@ -51,6 +51,24 @@ class Exploit(Exploit):
         )
         conn.commit()
 
+
+    def check(self) -> str:
+        """Verify pcap file or capture interface is available."""
+        import shutil
+        pcap_file = getattr(self, "pcap_file", None) or getattr(self, "capture_file", None)
+        iface = getattr(self, "iface", None)
+        if pcap_file:
+            import os
+            if os.path.isfile(str(pcap_file)):
+                size = os.path.getsize(str(pcap_file))
+                return f"PCAP file found: {pcap_file} ({size} bytes)"
+            return f"PCAP file not found: {pcap_file}"
+        if iface and shutil.which("tcpdump"):
+            return f"tcpdump available - capture interface: {iface}"
+        if shutil.which("wireshark") or shutil.which("tshark"):
+            return "Wireshark/tshark available - set pcap_file or iface"
+        return "Set pcap_file option or ensure tshark is installed"
+
     def run(self) -> None:
         db = Path(str(self.db_path))
         db.parent.mkdir(parents=True, exist_ok=True)

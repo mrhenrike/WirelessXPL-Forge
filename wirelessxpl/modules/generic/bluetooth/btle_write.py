@@ -20,6 +20,26 @@ class Exploit(BTLEClient):
     data = OptString("41424344", "Data (in hex format)")
     buffering = OptBool(True, "Buffering enabled: true/false. Results in real time.")
 
+
+    def check(self) -> str:
+        """Verify Bluetooth HCI adapter is present and accessible."""
+        import shutil
+        import subprocess
+        hci = getattr(self, "hci_iface", None) or getattr(self, "attacker_hci", None) or "hci0"
+        if shutil.which("hciconfig"):
+            try:
+                out = subprocess.check_output(
+                    ["hciconfig", str(hci)], stderr=subprocess.STDOUT, timeout=5
+                ).decode("utf-8", "replace")
+                if "BD Address" in out:
+                    return f"HCI adapter {hci} found - prerequisites OK"
+                return f"hciconfig {hci} responded but no BD Address - check adapter"
+            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                pass
+        if shutil.which("bluetoothctl"):
+            return "bluetoothctl available - verify adapter manually"
+        return "hciconfig not found in PATH - install bluez package"
+
     def run(self):
         try:
             data = bytes.fromhex(self.data)

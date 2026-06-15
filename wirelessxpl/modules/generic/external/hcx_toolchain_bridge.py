@@ -55,6 +55,25 @@ class Exploit(Exploit):
     show_info = OptBool(False, "Show capture info/quality summary (--info)")
     extra_args = OptString("", "Extra CLI args (advanced)", advanced=True)
 
+
+    def check(self) -> str:
+        """Verify external tool dependencies are installed."""
+        import shutil
+        tools: list[str] = []
+        src = getattr(self.__class__, "__doc__", "") or ""
+        for t in ("aircrack-ng", "airodump-ng", "aireplay-ng", "airmon-ng",
+                   "hashcat", "hcxdumptool", "hcxtools", "wifite", "bettercap",
+                   "kismet", "hostapd", "dnsmasq", "mdk4", "mdk3",
+                   "hostapd-wpe", "hostapd-mana", "eaphammer"):
+            if t.replace("-ng", "").replace("-", "") in (src + self.__class__.__name__).lower():
+                tools.append(t)
+        if not tools:
+            tools = ["aircrack-ng"]
+        missing = [t for t in tools if not shutil.which(t.rstrip("_"))]
+        if missing:
+            return f"Missing tools: {', '.join(missing)} - install before use"
+        return f"Tool dependencies found: {', '.join(tools)} - prerequisites OK"
+
     def run(self) -> None:
         """Execute hcxtools conversion with modern API support."""
         if not self.pcap_file or not os.path.isfile(self.pcap_file):

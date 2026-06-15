@@ -98,6 +98,34 @@ class Exploit(Exploit):
             str(self.target).strip(),
         ]
 
+
+    def check(self) -> str:
+        """Verify wireless interface is in monitor mode and ready."""
+        import shutil
+        import subprocess
+        iface = getattr(self, "iface", None) or getattr(self, "interface", None) or "wlan0"
+        if shutil.which("iwconfig"):
+            try:
+                out = subprocess.check_output(
+                    ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
+                ).decode("utf-8", "replace")
+                if "Monitor" in out:
+                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
+                if "no wireless extensions" not in out.lower():
+                    return f"Interface {iface} found but NOT in Monitor mode - run airmon-ng start {iface}"
+            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                pass
+        if shutil.which("iw"):
+            try:
+                out = subprocess.check_output(
+                    ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
+                ).decode("utf-8", "replace")
+                if str(iface) in out:
+                    return f"Interface {iface} detected via iw - verify monitor mode"
+            except Exception:
+                pass
+        return f"Interface {iface} not found - connect wireless adapter and enable monitor mode"
+
     def run(self) -> None:
         try:
             cmd = self._build_command()

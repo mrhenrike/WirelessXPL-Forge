@@ -416,6 +416,23 @@ class Exploit(Exploit):
             len(frames)))
         print_info("Use KillerBee hardware (ApiMote/CC2531) for actual injection.")
 
+
+    def check(self) -> str:
+        """Verify basic prerequisites for this exploit module."""
+        import shutil
+        target = getattr(self, "target", None)
+        if not target:
+            return "Set target option before running"
+        port = getattr(self, "port", None)
+        if port:
+            import socket
+            try:
+                with socket.create_connection((str(target), int(port)), timeout=5):
+                    return f"Target {target}:{port} is reachable"
+            except Exception:
+                return f"Target {target}:{port} is not reachable - check connectivity"
+        return f"Target set to {target} - run connectivity check manually"
+
     def run(self) -> None:
         """Execute Zigbee attack module."""
         if self.dry_run:

@@ -151,6 +151,25 @@ class Exploit(Exploit):
         )
         print_info("Formato do log WPE: username:challenge:response (NTLMv1) ou U:username:S:challenge:R:response")
 
+
+    def check(self) -> str:
+        """Verify external tool dependencies are installed."""
+        import shutil
+        tools: list[str] = []
+        src = getattr(self.__class__, "__doc__", "") or ""
+        for t in ("aircrack-ng", "airodump-ng", "aireplay-ng", "airmon-ng",
+                   "hashcat", "hcxdumptool", "hcxtools", "wifite", "bettercap",
+                   "kismet", "hostapd", "dnsmasq", "mdk4", "mdk3",
+                   "hostapd-wpe", "hostapd-mana", "eaphammer"):
+            if t.replace("-ng", "").replace("-", "") in (src + self.__class__.__name__).lower():
+                tools.append(t)
+        if not tools:
+            tools = ["aircrack-ng"]
+        missing = [t for t in tools if not shutil.which(t.rstrip("_"))]
+        if missing:
+            return f"Missing tools: {', '.join(missing)} - install before use"
+        return f"Tool dependencies found: {', '.join(tools)} - prerequisites OK"
+
     def run(self) -> None:
         """Execute hostapd-WPE bridge in selected mode."""
         require_authorised_lab(self.i_know_scope)
