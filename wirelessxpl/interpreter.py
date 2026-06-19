@@ -425,7 +425,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
             # Path-based hints provide a robust fallback even when module metadata is missing.
             path_tokens = module.split(".")
-            if "wifi_lab" in path_tokens or "external" in path_tokens:
+            if "wifi_lab" in path_tokens or "wifi" in path_tokens or "external" in path_tokens:
                 module_devices.add("wifi")
             if "bluetooth" in path_tokens:
                 module_devices.update({"bluetooth", "ble"})

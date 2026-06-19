@@ -53,6 +53,8 @@ dependencies = [
     "requests>=2.32.4",
     "pycryptodome",
     "scapy",
+    "dnslib>=0.9.24",
+    "cryptography>=41.0",
     "setuptools",
     "telnetlib3; python_version >= '3.13'",
     "qrcode[pil]",
