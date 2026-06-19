@@ -881,3 +881,61 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+
+## [2026-06-19 13:05] -- Modular pip extras por categoria wireless (v1.8.0)
+
+### Estado ao encerrar
+- Adicionados 9 novos optional-dependencies em pyproject.toml: wifi, bt, cellular, rf, drone, ir, gps, iot, all
+- Mantidos todos os extras legados: serial, ml-gpu, ml-lite, gpu-opencl, sim, sim-full, cellular-full, all-modules
+- dev atualizado com pytest-cov, black, ruff, mypy
+- Novo extra gpu (hashcat-ctypes Linux)
+- Versao bumped: 1.7.0.post1 -> 1.8.0 (pyproject.toml + wirelessxpl/__init__.py)
+- README.md: secao 'Instalacao / Installation' bilingual adicionada logo apos badges
+- docs/PREREQUISITES.md: tabela modular de extras adicionada no topo
+- docs/INSTALL.md: criado do zero, guia completo bilingual PT-BR/EN por caso de uso
+- Commit: 7b23168 - Modular pip extras by wireless technology category (v1.8.0)
+- Push: origin/master atualizado
+- PyPI: https://pypi.org/project/wirelessxpl/1.8.0/ publicado com sucesso
+
+### Proximo passo imediato
+- Verificar que pip install wirelessxpl[wifi] e pip install wirelessxpl[all] funcionam sem erros no PyPI publico
+
+### Pendencias conhecidas
+- [ ] dronekit nao esta sendo mantido ativamente - avaliar substituicao por pydronekit-la ou mavproxy
+- [ ] pybluez deprecated no PyPI - avaliar substituicao por bleak apenas no extra bt
+- [ ] Testar extras em ambiente Linux real (Kali) para confirmar instalacao sem erros
+
+### Ambiente necessario
+- Python 3.9+ para instalar com extras
+- Linux para extras bt (pybluez, dbus-python) e rf (pyrtlsdr)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\pyproject.toml
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/pyproject.toml
+
+## [2026-06-19 13:15] -- Redesign captive portal templates (44 arquivos)
+
+### Estado ao encerrar
+- Substituidos 44 templates HTML em wirelessxpl/resources/captive_templates/
+- Grupo 1 (15 hoteis): formulario CPF + data de nascimento + numero do quarto, mascara JS inline, paleta por marca
+- Grupo 2 (25 ISPs): tabs dinamicas CPF/E-mail/Celular/Usuario + senha, tema claro por padrao, Starlink dark theme, Coracao Mineiro com icone de coracao
+- Grupo 3 social (3): X.com clone dark com tabs e-mail/telefone/usuario; Twitch clone BG #0e0e10 abas por baixo; Spotify clone com botoes sociais decorativos e tabs
+- Grupo 4 fitness (1): SmartFit com logo CSS (Smart branco + Fit amarelo #FFE000) e tabs CPF/E-mail/Celular
+- Todos os formularios: action="/capture" method="POST", autocomplete="new-password" nos campos de senha
+- Commit: bbcf567 - Redesign captive portal templates with advanced forms
+- Push: origin master OK (7b23168..bbcf567)
+
+### Proximo passo imediato
+- Nenhum pendente nesta sessao; templates prontos para uso no wirelessxpl
+
+### Pendencias conhecidas
+- [ ] Adicionar suporte a CSRF token server-side quando o backend estiver implementado
+- [ ] Testes de renderizacao mobile real para templates dark (Pullman, Caesar Park, Starlink, X, Twitch, Spotify, SmartFit)
+
+### Ambiente necessario
+- Python 3.12+, wirelessxpl instalado localmente
+- git submodule: WirelessXPL-Forge em submodules/Uniao-Geek/
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
