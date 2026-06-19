@@ -20,6 +20,59 @@
 
 ---
 
+## Instalacao / Installation
+
+### Basico / Basic
+
+```bash
+pip install wirelessxpl
+```
+
+### Por tecnologia / By technology
+
+| Extra | Tecnologia | Pacotes incluidos | Tamanho estimado |
+|---|---|---|---|
+| `[wifi]` | WiFi 802.11 (WPS, WPA, evil twin, PMKID...) | scapy, dnslib, cryptography | +45 MB |
+| `[bt]` | Bluetooth BLE + Classic (KNOB, BLESA, GATT...) | bleak, pybluez | +8 MB |
+| `[cellular]` | Celular / SIM / LTE / 5G (IMSI, SS7, SIMjacker...) | pyscard, pytlv, pyserial | +5 MB |
+| `[rf]` | RF / SDR / SubGHz (RTL-SDR, replay, jam...) | pyrtlsdr, pyserial, pyusb, numpy | +50 MB |
+| `[drone]` | Drones / UAV / MAVLink (skyjack, spoof, deauth...) | pymavlink, dronekit | +20 MB |
+| `[ir]` | Infrared (blaster, replay...) | pyserial, pyusb | +3 MB |
+| `[gps]` | GPS / Wardriving (GPSD, GPX export...) | gpsd-py3, gpxpy | +3 MB |
+| `[iot]` | IoT / Zigbee / RFID (Killerbee, Zigator...) | pyserial, pyusb | +3 MB |
+| `[all]` | Todos os extras acima | (tudo acima) | ~135 MB |
+
+```bash
+# Exemplos:
+pip install "wirelessxpl[wifi]"
+pip install "wirelessxpl[wifi,bt,cellular]"
+pip install "wirelessxpl[all]"
+```
+
+> **Nota:** Ferramentas externas (aircrack-ng, hashcat, hcxdumptool) nao sao instaladas via pip.
+> Consulte [PREREQUISITES.md](docs/PREREQUISITES.md) para requisitos de hardware e software externos.
+
+---
+
+### By technology (English)
+
+| Extra | Technology | Included packages | Estimated size |
+|---|---|---|---|
+| `[wifi]` | WiFi 802.11 (WPS, WPA, evil twin, PMKID...) | scapy, dnslib, cryptography | +45 MB |
+| `[bt]` | Bluetooth BLE + Classic (KNOB, BLESA, GATT...) | bleak, pybluez | +8 MB |
+| `[cellular]` | Cellular / SIM / LTE / 5G (IMSI, SS7, SIMjacker...) | pyscard, pytlv, pyserial | +5 MB |
+| `[rf]` | RF / SDR / SubGHz (RTL-SDR, replay, jam...) | pyrtlsdr, pyserial, pyusb, numpy | +50 MB |
+| `[drone]` | Drones / UAV / MAVLink (skyjack, spoof, deauth...) | pymavlink, dronekit | +20 MB |
+| `[ir]` | Infrared (blaster, replay...) | pyserial, pyusb | +3 MB |
+| `[gps]` | GPS / Wardriving (GPSD, GPX export...) | gpsd-py3, gpxpy | +3 MB |
+| `[iot]` | IoT / Zigbee / RFID (Killerbee, Zigator...) | pyserial, pyusb | +3 MB |
+| `[all]` | All extras above | (all above) | ~135 MB |
+
+> **Note:** External tools (aircrack-ng, hashcat, hcxdumptool) are not installed via pip.
+> See [PREREQUISITES.md](docs/PREREQUISITES.md) for hardware and external software requirements.
+
+---
+
 ## About
 
 **WirelessXPL-Forge (WXF)** is an interactive shell and module framework for wireless security research. It provides:
@@ -69,9 +122,17 @@ Run `use generic/external/wireless_tool_prereq_audit` after install to verify yo
 
 ```bash
 pip install wirelessxpl
-# with serial support for Bruce/ESP32:
+# WiFi 802.11 completo:
+pip install "wirelessxpl[wifi]"
+# Bluetooth BLE + Classic:
+pip install "wirelessxpl[bt]"
+# RF / SDR:
+pip install "wirelessxpl[rf]"
+# Tudo:
+pip install "wirelessxpl[all]"
+# Com serial para Bruce/ESP32:
 pip install "wirelessxpl[serial]"
-# with ML signal classification:
+# Com ML de sinais:
 pip install "wirelessxpl[ml-lite]"
 ```
 
