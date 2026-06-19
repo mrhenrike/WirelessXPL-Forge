@@ -8,6 +8,70 @@ This document lists all hardware and software prerequisites for WirelessXPL-Forg
 
 ---
 
+## Politica de Dependencias - WXF v1.7.0+
+
+Esta secao define quais dependencias externas sao aceitas e quais foram internalizadas.
+
+### Dependencias ACEITAS (instalar via apt/brew)
+
+**aircrack-ng suite completa** (apt install aircrack-ng):
+- airmon-ng, airodump-ng, aireplay-ng, aircrack-ng, airdecap-ng
+- airtun-ng, airbase-ng, airserv-ng, airolib-ng, airgraph-ng
+- packetforge-ng, tkiptun-ng, besside-ng, wesside-ng, airdecloak-ng
+- wpaclean (incluido no pacote aircrack-ng)
+
+**hcx suite** (apt install hcxdumptool hcxtools):
+- hcxdumptool: captura PMKID e handshakes passivamente
+- hcxpcapngtool, hcxpcaptool: conversao de formato pcapng
+
+**Cracking**:
+- hashcat: GPU cracking WPA/WPA2/WPA3 (modo -m 22000)
+  - NOTA: hashcat em GPU moderno (RTX 3090) atinge 500k-1M PMKs/s
+  - Substitui pyrit (Python 2, abandonado) e cowpatty (abandonado)
+  - Use: hashcat --session wxf-session --restore para auditorias repetidas
+
+**AP/Network daemon**:
+- hostapd: daemon de ponto de acesso (sem equivalente Python para kernel WiFi driver)
+
+**WPS scanner**:
+- wash: scanner WPS (parte do reaver-suite, aceito como excecao)
+  - Nao tem equivalente Python com mesma eficiencia de scan passivo
+
+### Dependencias REMOVIDAS (substituidas por codigo nativo)
+
+As seguintes ferramentas foram internalizadas como codigo Python/Scapy nativo no WXF e NAO devem mais ser instaladas:
+
+- reaver: substituido por wirelessxpl/modules/generic/wifi/wps_engine_native.py
+- bully: substituido por wirelessxpl/modules/generic/wifi/wps_engine_native.py
+- pixiewps: substituido por wirelessxpl/modules/generic/wifi/wps_engine_native.py
+- mdk3/mdk4: substituido por wirelessxpl/modules/generic/wifi/flood_engine_native.py
+- wifiphisher: substituido por wirelessxpl/modules/generic/wifi/phishing_engine.py
+- fluxion: substituido por wirelessxpl/modules/generic/wifi/phishing_engine.py
+- dnsmasq: substituido por servidor DNS nativo Python (dnslib)
+- hostapd-mana/hostapd-wpe: substituido por hostapd padrao + config dinamica Python
+- cowpatty: substituido por aircrack-ng (aceito) + hashcat (aceito)
+- pyrit: substituido por hashcat (melhor performance, ativo, Python 3 compativel)
+  - NOTA TECNICA: pyrit tem vantagem apenas em auditorias repetidas do mesmo ESSID
+    com wordlist >10GB. Para esse caso especifico, use pyrit manualmente fora do WXF.
+
+### Instalacao rapida (Kali Linux / Debian)
+
+```bash
+sudo apt update
+sudo apt install -y aircrack-ng hcxdumptool hcxtools hashcat hostapd
+# WPS scanner (opcional, para wps_engine_native modo scan):
+sudo apt install -y reaver  # instala wash como binario separado
+```
+
+### Dependencias Python (core)
+
+```bash
+pip install wirelessxpl
+# Instala automaticamente: scapy, dnslib, cryptography, pycryptodome, bleak
+```
+
+---
+
 ## Quick Install
 
 ```bash

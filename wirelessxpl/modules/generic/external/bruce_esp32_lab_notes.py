@@ -65,7 +65,7 @@ class Exploit(Exploit):
         print_info("  - Bruce sniffer PCAP -> generic/pcap/pcap_handshake_extractor")
         print_info("  - Bruce handshake PCAP -> generic/pcap/pcap_eapol_survey")
         print_info("  - WPA3 frames -> generic/pcap/pcap_dragonblood")
-        print_info("  - Wardriving exports -> generic/wifi_lab/gps_wardriving_ndjson")
+        print_info("  - Wardriving exports -> generic/wifi/gps_wardriving_ndjson")
         print_info("Bruce upstream catalogs generated in WXF resources/catalogs:")
         print_info("  - brucedevices_firmware_issues_prs.json (full list)")
         print_info("  - brucedevices_firmware_useful_map.json (filtered useful set)")

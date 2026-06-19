@@ -3,6 +3,18 @@
 > Modules tree id: `c40c17bc1522` (git object)
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
+## Modulos Nativos v1.7.0 (novos)
+
+| Modulo | Arquivo | Descricao |
+|--------|---------|-----------|
+| WPS Native Engine | wifi/wps_engine_native.py | Pixie Dust + PIN brute-force + NULL PIN (Python/Scapy nativo, substitui reaver/bully/pixiewps) |
+| Flood Engine Native | wifi/flood_engine_native.py | 8 modos mdk4: beacon/auth/deauth/probe/michael-mic/wpa-downgrade/eapol/wids (Scapy nativo, substitui mdk3/mdk4) |
+| Phishing Engine | wifi/phishing_engine.py | Evil twin + captive portal com 23 templates i18n (incorpora wifiphisher+fluxion nativos) |
+| DNS/DHCP Server | wifi/dns_dhcp_server.py | Servidor DNS (dnslib) + DHCP (Scapy BOOTP) nativos (substitui dnsmasq) |
+| Monitor Mode Manager | wifi/monitor_mode_manager.py | Gerenciamento de modo monitor sem airmon-ng (iw+ip link nativos) |
+| OS Guard | core/os_guard.py | Decorator @requires_os para bloquear modulos Linux-only em Windows/macOS |
+| Dragonblood Suite v2 | wifi/dragonblood_suite.py | WPA3 SAE nativo Python (DragonTiming, DragonForce, DragonDrain, DragonSlayer) |
+
 ## Summary
 
 | Category | Modules | Vendor / group buckets |

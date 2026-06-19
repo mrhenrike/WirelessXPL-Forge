@@ -240,3 +240,358 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
 - Wiki local: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\.tmp\wxf_wiki
+
+## [2026-06-19 04:40] - Implementacao do modulo OS-Guard
+
+### Estado ao encerrar
+- Criado wirelessxpl/core/os_guard.py: sistema de verificacao de compatibilidade de OS por modulo via decorator @requires_os
+- Criado tests/__init__.py: arquivo vazio para reconhecimento do pacote de testes
+- Criado tests/test_os_guard.py: 17 testes unitarios cobrindo todos os requisitos de OS e o helper get_module_os_label
+- 17/17 testes passando com pytest (Python 3.13.5)
+- Nenhum arquivo existente foi modificado
+
+### Proximo passo imediato
+- Integrar @requires_os nos modulos existentes (ex: modules/wifi/, modules/bluetooth/) para habilitar a guard em producao
+
+### Pendencias conhecidas
+- [ ] Aplicar @requires_os(OSRequirement.LINUX_ONLY) nos modulos WiFi que usam monitor mode
+- [ ] Aplicar @requires_os(OSRequirement.LINUX_MAC) nos modulos Bluetooth/BLE
+- [ ] Aplicar @requires_os(OSRequirement.CROSS_PLATFORM) nos exporters e analisadores offline
+- [ ] Expor get_module_os_label na listagem do CLI (wxf.py ou interpreter.py)
+
+### Ambiente necessario
+- Python 3.13+
+- pytest 8.x para rodar os testes
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\core\os_guard.py
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\tests\test_os_guard.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/core/os_guard.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/tests/test_os_guard.py
+
+## [2026-06-19 04:45] - Phase 0A WXF Native Refactor
+
+### Estado ao encerrar
+- Auditoria completa de bridges proibidos em wirelessxpl/modules/generic/ (54 arquivos com referencias a binarios proibidos)
+- wifi_lab/ renomeado para wifi/ (73 arquivos raiz + 9 subdiretorios copiados)
+- Referencias internas "wifi_lab" substituidas por "wifi" em 41 arquivos copiados + 21 arquivos externos
+- interpreter.py: path_tokens check atualizado para incluir "wifi" (mantido "wifi_lab" por compatibilidade)
+- wifi_lab/DEPRECATED.md criado (aviso de deprecacao)
+- Bridges obsoletos removidos: airgeddon_bridge, wirespy_bridge, pwnagotchi_bridge, sniffair_passive_recon, hashcatch_bridge, pmk_precompute (wifi/ e wifi_lab/)
+- BRIDGE_AUDIT.md gerado em d:\Projetos-SafeLabs\.tmp\wxf-references\
+- docs/PREREQUISITES.md atualizado com secao "Politica de Dependencias - WXF v1.7.0+"
+
+### Arquivos modificados
+- wirelessxpl/modules/generic/wifi/ (NOVO - 82 arquivos)
+- wirelessxpl/modules/generic/wifi/__init__.py (NOVO conteudo)
+- wirelessxpl/modules/generic/wifi_lab/DEPRECATED.md (NOVO)
+- wirelessxpl/interpreter.py (path_tokens check)
+- wirelessxpl/modules/generic/bluetooth/*.py (9 arquivos - imports)
+- wirelessxpl/modules/generic/external/*.py (11 arquivos - imports)
+- docs/PREREQUISITES.md (secao de politica adicionada ao topo)
+- d:\Projetos-SafeLabs\.tmp\wxf-references\BRIDGE_AUDIT.md (NOVO)
+
+### Proximo passo imediato
+- Fase 0B: Criar wirelessxpl/modules/generic/wifi/wps_engine_native.py (substitui reaver/bully/pixiewps)
+
+### Pendencias conhecidas
+- [ ] wifi_lab/ ainda existe - remover apos validacao completa dos imports
+- [ ] external/momo_integrated_attack.py e external/evilginx_prereq_pointer.py listados mas existem em wifi_lab/ (nao em external/) - verificar se devem ser removidos de wifi_lab/ tambem
+- [ ] Fase 0B: wps_engine_native.py (substitui reaver/bully bridges)
+- [ ] Fase 0C: flood_engine_native.py (substitui mdk3/mdk4 bridges)
+- [ ] Fase 0D: phishing_engine.py (substitui wifiphisher/fluxion bridges)
+
+### Ambiente necessario
+- Python 3.10+
+- Sem commits/push - apenas mudancas locais
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\docs\PREREQUISITES.md
+- Windows: D:\Projetos-SafeLabs\.tmp\wxf-references\BRIDGE_AUDIT.md
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/docs/PREREQUISITES.md
+
+## [2026-06-19 04:49] -- Phase 0B: wps_engine_native.py criado
+
+### Estado ao encerrar
+- Criado wirelessxpl/modules/generic/wifi/wps_engine_native.py (~59 KB, ~1674 linhas)
+- Implementacao 100% Python/Scapy do protocolo WPS EAP-WSC (M1-M8)
+- Sem modificacoes em arquivos existentes; sem commit/push
+
+### Arquivos modificados (paths relativos)
+- wirelessxpl/modules/generic/wifi/wps_engine_native.py (novo, criado)
+
+### Commits realizados
+- nenhum (Phase 0B nao inclui commit)
+
+### Proximo passo imediato
+- Criar __init__.py no diretorio wifi/ (se Phase 0C for delegada)
+- Ou: rodar testes de importacao basicos (python -c "from wirelessxpl.modules.generic.wifi.wps_engine_native import Exploit")
+- Depois: integracao com o wxf.py dispatcher / CLI para registrar o novo modulo
+
+### Pendencias conhecidas
+- [ ] Teste de importacao no ambiente Linux (monitor mode, Scapy instalado)
+- [ ] Implementar M4-M8 completo para recuperacao de PSK via PIN correto (M8 path)
+- [ ] Adicionar suporte a fragmentacao EAP-WSC (flag 0x01 em frames grandes)
+- [ ] Integrar __init__.py se Phase 0C ainda nao foi executada
+
+### Ambiente necessario
+- Linux (Ubuntu/Kali) com interface WiFi em modo monitor
+- pip install scapy cryptography
+- sudo apt install reaver (para modo scan via wash)
+- Interface em monitor mode: sudo airmon-ng start wlan0
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wps_engine_native.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wps_engine_native.py
+
+## [2026-06-19 04:50] -- Phase 0C: flood_engine_native.py criado
+
+### Estado ao encerrar
+- Criado wirelessxpl/modules/generic/wifi/flood_engine_native.py (33 KB)
+- Implementa todos os 8 modos do mdk4 via Scapy nativo: b, a, d, p, m, g, e, w
+- Michael MIC calculado em Python puro (funcoes _michael_b + michael_mic)
+- send_deauth() exportada no nivel de modulo para uso por phishing_engine.py e handshake_snooper.py
+- RSN IE TKIP-only (_build_rsn_ie_tkip_only) para modo g (WPA downgrade)
+- EAPOL-Key MIC error report para modo m (Michael MIC shutdown)
+- Sem em dash, sem fingerprints, docstrings Google, zero linter errors
+
+### Proximo passo imediato
+- Outro agente cria/atualiza __init__.py do pacote wifi/ exportando send_deauth e michael_mic
+- Outro agente integra flood_engine_native.py nos modulos phishing_engine.py e handshake_snooper.py
+
+### Pendencias conhecidas
+- [ ] __init__.py do pacote wifi/ a ser atualizado (outro agente - Phase 0C sequencia)
+- [ ] Integracao com phishing_engine.py: import send_deauth from flood_engine_native
+- [ ] Integracao com handshake_snooper.py: import send_deauth from flood_engine_native
+- [ ] Testes funcionais no Linux com interface em monitor mode (requirem hardware real)
+
+### Ambiente necessario
+- Linux (Ubuntu/Kali) com interface WiFi em modo monitor
+- pip install scapy
+- sudo airmon-ng start wlan0
+- iw instalado para channel hop (modo b sem canal fixo e modo w)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\flood_engine_native.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/flood_engine_native.py
+
+## [2026-06-19 07:45] -- Phase 0E: dragonblood_suite.py native refactor
+
+### Estado ao encerrar
+- Refatorado: wirelessxpl/modules/generic/wifi/dragonblood_suite.py
+- Removidas 5 chamadas subprocess a binarios externos (dragontime, dragonforce, dragondrain, dragonslayer-client, dragonslayer-server)
+- Adicionadas 4 classes nativas: DragonTimingAttack, DragonForce, DragonDrain, DragonSlayer
+- Adicionado @requires_os(OSRequirement.LINUX_ONLY) na classe Exploit
+- Modos atualizados: timing, force, drain, slayer, info, downgrade_info
+- Versao: 1.0.0 -> 2.0.0
+- Zero erros de lint
+
+### Arquivo modificado
+- wirelessxpl/modules/generic/wifi/dragonblood_suite.py
+
+### Proximo passo imediato
+- python -m py_compile wirelessxpl/modules/generic/wifi/dragonblood_suite.py
+
+### Pendencias conhecidas
+- [ ] DragonSlayer: ataques reflection/invalid-curve exigem EAP state machine completa
+- [ ] DragonForce: captura passiva de respostas status=77 nao implementada
+
+### Ambiente necessario
+- Python 3.8+, Scapy, numpy (recomendado)
+- Linux, interface Wi-Fi em modo monitor, root/CAP_NET_RAW
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dragonblood_suite.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dragonblood_suite.py
+
+## [2026-06-19 04:50] -- Phase 0H: dns_dhcp_server + monitor_mode_manager
+
+### Estado ao encerrar
+- Criado dns_dhcp_server.py: CaptiveDNSServer (dnslib), CaptiveDHCPServer (Scapy), CaptiveNetwork, Exploit
+- Criado monitor_mode_manager.py: MonitorModeManager (context manager), Exploit
+- Nenhum arquivo existente modificado
+- Sem commit/push
+
+### Proximo passo imediato
+- Integrar dns_dhcp_server com captive_portal_engine (substituir dnsmasq)
+- Testar CaptiveDHCPServer em ambiente de lab com interface wlan0
+
+### Pendencias conhecidas
+- [ ] Integrar CaptiveNetwork no captive_portal_engine como alternativa a dnsmasq
+- [ ] Testar CaptiveDNSServer modo spoof com upstream forwarding real
+- [ ] Verificar comportamento do MonitorModeManager em interfaces que renomeiam (wlan0 -> wlan0mon)
+- [ ] Adicionar suporte a IPv6 no CaptiveDNSServer (AAAA redirect opcional)
+
+### Ambiente necessario
+- Python 3.7+
+- pip install dnslib scapy
+- Linux com root (port 53 e raw sockets)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dns_dhcp_server.py
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\monitor_mode_manager.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dns_dhcp_server.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/monitor_mode_manager.py
+
+## [2026-06-19 04:45] - Phase 0D WXF Native Refactor: phishing_engine.py
+
+### Estado ao encerrar
+- Criado wirelessxpl/modules/generic/wifi/phishing_engine.py (novo arquivo, 660+ linhas)
+- Zero erros de lint
+
+### O que foi implementado
+- APScanner: Scapy beacon/probe-response sniffer (BSSID, SSID, canal, RSSI, enc, clientes)
+- HostapdManager: gera wxf-hostapd.conf dinamicamente, inicia hostapd como subprocess com finally cleanup
+- DeauthWorker: lazy import de flood_engine_native; fallback Scapy Dot11Deauth inline; thread daemon
+- CaptiveNetworkStack: lazy import de dns_dhcp_server; fallback dnslib AllRedirectResolver em :53
+- PhishingHTTPServer: BaseHTTPRequestHandler; auto-selecao de template por UA + Accept-Language; connectivity check spoofing (iOS CNA, Android, Windows NLA); captura POST /capture
+- HandshakeVerifier: aircrack-ng -w - (stdin) para verificar handshake sem escrever senha no disco
+- _CredentialStore: JSON seguro - apenas SHA-256 da senha, nunca plaintext nos logs
+- _select_template(): auto-selecao por OS (Android->google_wifi, iOS->apple_captive, Windows->microsoft_365)
+- 23 templates detectados em wirelessxpl/resources/captive_templates/
+- class Exploit(WXF API): modos info | scan | list_templates | start | generate_config
+- Connectivity checks: captive.apple.com, connectivitycheck.gstatic.com, www.msftconnecttest.com e 6 outros
+
+### Arquivo criado
+- wirelessxpl/modules/generic/wifi/phishing_engine.py
+
+### Proximo passo imediato
+- python -m py_compile wirelessxpl/modules/generic/wifi/phishing_engine.py (em Linux com Scapy)
+- Testar modo scan: set mode scan; set interface_mon wlan0mon; set i_know_scope true; run
+
+### Pendencias conhecidas
+- [ ] flood_engine_native.send_deauth nao existe ainda - DeauthWorker usa Scapy inline como fallback
+- [ ] dns_dhcp_server nao existe ainda - CaptiveNetworkStack usa dnslib como fallback
+- [ ] DHCP nativo nao implementado no fallback dnslib (apenas DNS redirect)
+- [ ] Templates com campos customizados (hotel_wifi: room/last_name) capturados mas mapeamento nao especializado
+
+### Ambiente necessario
+- Python 3.8+, Scapy, hostapd
+- Linux (root/CAP_NET_RAW), interface em modo monitor + interface AP
+- Opcional: aircrack-ng, dnslib (pip install dnslib)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\phishing_engine.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/phishing_engine.py
+
+## [2026-06-19 04:45] -- Phase 0G WXF Native Refactor - WEP e TKIP
+
+### Estado ao encerrar
+- Refatorado in-place wep_attack_suite.py (v2.0.0): 7 substituicoes de aireplay-ng/airodump-ng por Scapy nativo
+- Refatorado in-place tkip_attack_suite.py (v2.0.0): michael_mic() nativo adicionado, Beck-Tews nativo como primario
+- Arquivos modificados:
+  - wirelessxpl/modules/generic/wifi/wep_attack_suite.py
+  - wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
+- Sem commits/push conforme instrucao
+
+### Substituicoes realizadas em wep_attack_suite.py
+- airodump-ng -> _capture_ivs_scapy() (thread Scapy sniffer, escreve pcap para aircrack-ng)
+- aireplay-ng -1 -> _fake_auth_loop() (Dot11Auth + Dot11AssoReq via sendp)
+- aireplay-ng -2 -> _interactive_replay_loop() (captura e replay de frames WEP)
+- aireplay-ng -3 -> _arp_replay_loop() (captura ARP WEP e replay continuo)
+- aireplay-ng -4 -> _chopchop_native() (algoritmo chopchop byte-a-byte nativo)
+- aireplay-ng -5 -> _frag_attack_loop() (injecao fragmentada com recalculo de numero de sequencia)
+- aireplay-ng -6 -> _caffe_latte_loop() (nudge a clientes via Dot11 data from-DS)
+- aireplay-ng -7 -> _hirte_loop() (CFrag via LLC/SNAP fragmentado)
+- aircrack-ng mantido: _try_crack() com comentario ACCEPTED DEP
+
+### Substituicoes realizadas em tkip_attack_suite.py
+- Adicionada michael_mic() em nivel de modulo (algoritmo completo IEEE 802.11 / Beck&Tews 2008)
+- _run_beck_tews() renomeado para _run_beck_tews_tkiptun() (mantido como ACCEPTED DEP)
+- _run_beck_tews_native() adicionado como caminho primario (Scapy + michael_mic)
+- Dispatch em run() atualizado: beck_tews -> _run_beck_tews_native() (fallback automatico para tkiptun-ng)
+- tkiptun-ng: todos os pontos de chamada marcados com ACCEPTED DEP
+
+### Proximo passo imediato
+- Testar em ambiente Linux com interface em modo monitor (python -m py_compile primeiro)
+- Ajustar timeout do chopchop se necessario para o ambiente alvo
+
+### Pendencias conhecidas
+- [ ] Teste de integracao em hardware real (wlan0mon)
+- [ ] _chopchop_native: validar heuristica de deauth vs aceitacao em APs reais
+- [ ] Beck-Tews nativo: implementar recuperacao completa de PTK via chopchop TKIP (atualmente demostra MIC, delega execucao ao tkiptun-ng)
+
+### Ambiente necessario
+- Python 3.8+, Scapy (pip install scapy)
+- aircrack-ng (apenas para aircrack-ng e tkiptun-ng)
+- Linux com interface em modo monitor e suporte a injecao
+- CAP_NET_RAW ou root
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wep_attack_suite.py
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\tkip_attack_suite.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wep_attack_suite.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
+
+## [2026-06-19 04:50] — Phase 0F: Refactor deauth/handshake modules to native Scapy
+
+### Estado ao encerrar
+- Refatoracao de 3 modulos em wirelessxpl/modules/generic/wifi_lab/ concluida in-place
+- handshake_snooper.py: v1.1.0 -> v2.0.0 (reescrita completa)
+- deauth_multimode.py: v1.0.0 -> v1.1.0 (alteracoes cirurgicas)
+- aireplay_deauth_barrage.py: v1.x -> v2.0.0 (reescrita com suporte Scapy)
+- deauth_csa_suite.py: nao modificado (ja possuia Scapy integrado)
+- selective_jammer.py: nao modificado (fora do escopo do Phase 0F)
+- Sem commits realizados (conforme instrucao)
+
+### Arquivos modificados
+- wirelessxpl/modules/generic/wifi_lab/handshake_snooper.py
+- wirelessxpl/modules/generic/wifi_lab/deauth_multimode.py
+- wirelessxpl/modules/generic/wifi_lab/aireplay_deauth_barrage.py
+
+### Subprocess calls removidos/substituidos
+
+handshake_snooper.py:
+- REMOVIDO: cowpatty subprocess (verify_method=cowpatty)
+- REMOVIDO: pyrit subprocess (verify_method=pyrit)
+- SUBSTITUIDO: airodump-ng como capturador primario -> Scapy sniff() EAPOL (use_airodump=False por padrao)
+- SUBSTITUIDO: aireplay-ng como unico deauth -> Scapy Dot11Deauth (native_deauth=True por padrao)
+- MANTIDO: airodump-ng como opcao (use_airodump=True), aceito como parte do aircrack-ng suite
+- MANTIDO: aireplay-ng como opcao (native_deauth=False), aceito como parte do aircrack-ng suite
+- MANTIDO: aircrack-ng como unico verificador
+- ADICIONADO: _classify_eapol_message() para deteccao M1/M2/M3/M4 via Key Information bitmasks
+- ADICIONADO: _capture_eapol_scapy() com stop_filter e threading.Event para parada antecipada
+- ADICIONADO: _send_deauth_native() (Scapy Dot11Deauth broadcast)
+
+deauth_multimode.py:
+- ALTERADO: backend default de "aireplay" para "native" (Scapy)
+- ADICIONADO: "native" ao VALID_BACKENDS
+- ADICIONADO: normalizacao "native" -> "scapy" no run()
+- ADICIONADO: prioridade native/scapy em _run_targeted_deauth_with_capture()
+- CORRIGIDO: tempfile.mkdtemp() -> Path(".tmp/wxf_deauth_...") em _run_targeted_deauth_with_capture()
+- CORRIGIDO: tempfile.TemporaryDirectory() -> Path(".tmp/wxf_scan_...") em _scan_clients()
+- REMOVIDO: import os (nao utilizado)
+
+aireplay_deauth_barrage.py:
+- SUBSTITUIDO: aireplay-ng como unico modo -> Scapy como modo primario (mode="native")
+- ADICIONADO: mode = OptString("native", ...) parametro
+- ADICIONADO: _send_deauth_scapy() metodo por burst
+- ADICIONADO: _run_scapy_barrage() loop de alta intensidade via Scapy
+- EXTRAIDO: logica aireplay para _run_aireplay_barrage() e _one_burst_aireplay()
+- CORRIGIDO: bug self.subprocess_timeout_s (nao existia) -> constante _BURST_SUBPROCESS_TIMEOUT_S=30
+- MANTIDO: aireplay-ng como opcao (mode="aireplay") com fallback automatico para Scapy
+
+### Proximo passo imediato
+- Testar em Linux: python -m py_compile wirelessxpl/modules/generic/wifi_lab/handshake_snooper.py
+- Integrar com Phase 0A (rename wifi_lab/ -> wifi/) quando aplicavel
+
+### Pendencias conhecidas
+- [ ] Teste com hardware real (wlan0mon) para validar captura EAPOL Scapy
+- [ ] selective_jammer.py: ainda usa aireplay-ng e mdk4 primariamente (nao era escopo 0F)
+- [ ] deauth_csa_suite.py: method default ainda e "deauth_aireplay" - potencial melhoria futura
+
+### Ambiente necessario
+- Python 3.8+, Scapy (pip install scapy)
+- aircrack-ng (opcional - para verificacao e modo airodump)
+- Linux com interface em modo monitor e suporte a injecao
+- CAP_NET_RAW ou root para sendp()
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\handshake_snooper.py
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\deauth_multimode.py
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\aireplay_deauth_barrage.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/handshake_snooper.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/deauth_multimode.py
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/aireplay_deauth_barrage.py

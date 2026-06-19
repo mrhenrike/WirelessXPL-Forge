@@ -37,7 +37,7 @@ import time
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi_lab._disclaimer import require_authorised_lab
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
