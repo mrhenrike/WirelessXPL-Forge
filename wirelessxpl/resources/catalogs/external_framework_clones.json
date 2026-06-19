@@ -32,16 +32,16 @@
       "clone_url": "https://github.com/wifiphisher/wifiphisher.git",
       "homepage": "https://wifiphisher.org",
       "license": "GPL-3.0",
-      "rxf_module": "generic/external/wifiphisher_bridge.py",
-      "notes": "Evil twin + captive portal phishing. GPL subprocess only — never import directly."
+      "rxf_module": "generic/wifi/phishing_engine.py",
+      "notes": "Evil twin + captive portal phishing. Incorporated natively into phishing_engine.py (v1.7.0)."
     },
     {
       "id": "fluxionnetwork-fluxion",
       "clone_url": "https://github.com/FluxionNetwork/fluxion.git",
       "homepage": "https://fluxionnetwork.github.io/fluxion/",
       "license": "GPL-3.0",
-      "rxf_module": "generic/external/fluxion_bridge.py",
-      "notes": "54+ vendor-branded portals, handshake snooper + verification, auto-mode, headless tmux. Shell script — subprocess bridge."
+      "rxf_module": "generic/wifi/phishing_engine.py",
+      "notes": "54+ vendor-branded portals, handshake snooper + verification, auto-mode, headless tmux. Incorporated natively into phishing_engine.py (v1.7.0)."
     },
     {
       "id": "thehackingsage-fluxion",
@@ -128,16 +128,16 @@
       "clone_url": "https://github.com/t6x/reaver-wps-fork-t6x.git",
       "homepage": "https://github.com/t6x/reaver-wps-fork-t6x",
       "license": "GPL-2.0",
-      "rxf_module": "generic/external/reaver_bridge.py",
-      "notes": "WPS PIN brute force (online), Pixie Dust (-K), wash scanner, session resumption, vendor-aware PINs."
+      "rxf_module": "generic/wifi/wps_engine_native.py",
+      "notes": "WPS PIN brute force (online), Pixie Dust (-K), wash scanner, session resumption, vendor-aware PINs. Incorporated natively into wps_engine_native.py (v1.7.0)."
     },
     {
       "id": "wiire-a-pixiewps",
       "clone_url": "https://github.com/wiire-a/pixiewps.git",
       "homepage": "https://github.com/wiire-a/pixiewps",
       "license": "GPL-3.0+",
-      "rxf_module": "generic/external/reaver_bridge.py",
-      "notes": "Offline WPS Pixie Dust PIN recovery from weak PRNG (Ralink/Broadcom/Realtek). Used alongside reaver."
+      "rxf_module": "generic/wifi/wps_engine_native.py",
+      "notes": "Offline WPS Pixie Dust PIN recovery from weak PRNG (Ralink/Broadcom/Realtek). Incorporated natively into wps_engine_native.py (v1.7.0)."
     },
     {
       "id": "aircrack-ng-mdk4",
