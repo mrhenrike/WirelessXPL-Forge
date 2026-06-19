@@ -228,7 +228,7 @@
         "description": "Broadcast beacons for common networks to trigger auto-connect",
         "tools": ["EAPHammer", "wifiphisher"],
         "mitre_id": null,
-        "wxf_module": "external/wifiphisher_bridge.py"
+        "wxf_module": "wifi/phishing_engine.py"
       },
       {
         "id": "WIFI-MITM-005",
@@ -268,7 +268,7 @@
         "description": "Real-time proxy capturing MFA tokens during phishing",
         "tools": ["evilginx2", "modlishka"],
         "mitre_id": null,
-        "wxf_module": "wifi_lab/evilginx_prereq_pointer.py"
+        "wxf_module": "wifi/mfa_phishing_portal.py"
       }
     ],
     "protocol_exploits": [
@@ -528,7 +528,7 @@
     "license": "GPL-3.0",
     "integration_method": "subprocess invocation (no code merge)",
     "submodule_path": "submodules/IoT/wifiphisher",
-    "wxf_bridge": "modules/generic/external/wifiphisher_bridge.py",
+    "wxf_bridge": "modules/generic/wifi/phishing_engine.py",
     "capabilities_from_issues_prs": {
       "open_prs_of_interest": [
         "#1562 - Manual attack initiation button for MITM",

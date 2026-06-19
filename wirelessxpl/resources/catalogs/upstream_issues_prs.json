@@ -89,7 +89,7 @@
       {"number": 1709, "title": "Fix bare except clauses", "status": "open", "impact": "code_quality", "incorporated": true, "wxf_note": "All WXF modules use specific exception handling"},
       {"number": 1673, "title": "Modernize installation + dependency management", "status": "open", "impact": "infrastructure", "incorporated": true, "wxf_note": "Bridge now supports modern/legacy entrypoint layouts and launcher detection"},
       {"number": 1553, "title": "Increase deauth channels to ch.233 (6GHz)", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "6GHz channel support noted for deauth modules"},
-      {"number": 1560, "title": "Packet sniffer module", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Optional inline tcpdump sniffer added to wifiphisher_bridge.py"},
+      {"number": 1560, "title": "Packet sniffer module", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "Optional inline tcpdump sniffer incorporated into phishing_engine.py"},
       {"number": 1481, "title": "Automation of MITM attacks", "status": "merged", "impact": "feature", "incorporated": true, "wxf_note": "Non-interactive mode already supported in WXF phishing modules"},
       {"number": 1577, "title": "Fix HTTP port forward to HTTPS downgrade", "status": "merged", "impact": "bug_fix", "incorporated": true, "wxf_note": "HTTPS downgrade handling in phishing templates"},
       {"number": 1467, "title": "Windows Lock Screen scenario", "status": "open", "impact": "feature", "incorporated": true, "wxf_note": "New phishing scenario idea for captive portal modules"},
@@ -129,7 +129,7 @@
     "prs": [
       {"number": 504, "title": "Wi-Fi 6 / WPA3 enhancements", "status": "closed", "impact": "feature", "incorporated": true, "wxf_note": "WPA3 handling noted for future modules"},
       {"number": 462, "title": "Fix missing arg PSK crack results WPS", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "WPS result parsing in wifite2_bridge"},
-      {"number": 460, "title": "Fix reaver output", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Reaver output parsing in reaver_bridge"},
+      {"number": 460, "title": "Fix reaver output", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Reaver output parsing incorporated into wps_engine_native"},
       {"number": 436, "title": "Allow airodump-ng to exit and get reaped", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Process management in bridge subprocess calls"}
     ]
   },
@@ -170,8 +170,8 @@
   "reaver": {
     "repo": "t6x/reaver-wps-fork-t6x",
     "issues": [
-      {"number": 387, "title": "Fixed memleaks + optimizations in fork", "status": "open", "impact": "performance", "incorporated": true, "wxf_note": "Noted for reaver_bridge process monitoring"},
-      {"number": 373, "title": "--no-associate flag not working", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Association handling in reaver_bridge"}
+      {"number": 387, "title": "Fixed memleaks + optimizations in fork", "status": "open", "impact": "performance", "incorporated": true, "wxf_note": "Noted for wps_engine_native process monitoring"},
+      {"number": 373, "title": "--no-associate flag not working", "status": "open", "impact": "bug_fix", "incorporated": true, "wxf_note": "Association handling in wps_engine_native"}
     ]
   },
   "hcxtools": {
