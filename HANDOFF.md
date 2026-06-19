@@ -751,3 +751,30 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-06-19 10:15] -- Remove bridges proibidos e wifi_lab duplicado
+
+### Estado ao encerrar
+- Removidos 3 bridges proibidos de wirelessxpl/modules/generic/external/:
+  mdk4_bridge.py, bettercap_bridge.py, wifite2_bridge.py
+- Removido diretorio wifi_lab/ inteiro (78 arquivos + subdirs) - era duplicata do canonical wifi/
+- Atualizado wifi/evil_twin_workflow.py: substituida referencia mdk4_bridge por
+  flood_engine_native e corrigido path wifi_lab -> wifi nas strings de ajuda
+- external/__init__.py estava limpo (sem imports dos bridges proibidos)
+- Commit: 73b6f59 - Remove prohibited external bridges and drop wifi_lab duplicate directory
+- Push: origin/master (920a097..73b6f59)
+
+### Proximo passo imediato
+- Nenhum pendente nesta frente; projeto em estado limpo sem bridges proibidos
+
+### Pendencias conhecidas
+- [ ] Verificar se outros bridges em external/ (aircrack_full_bridge, eaphammer_bridge, etc.)
+      passam pela mesma politica de dependencias (foram mantidos por nao serem listados como proibidos)
+
+### Ambiente necessario
+- Python 3.12+
+- Git com acesso ao remote https://github.com/mrhenrike/WirelessXPL-Forge.git
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
