@@ -2,9 +2,30 @@
 
 **Author:** Andre Henrique ([@mrhenrike](https://github.com/mrhenrike)) | **Uniao Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
 
-**Languages:** English (en-US)
+**Languages:** English (en-US) / Portugues (pt-BR)
 
 This document lists all hardware and software prerequisites for WirelessXPL-Forge modules. Most modules provide an `info` mode that works without any extra dependencies, allowing you to explore capabilities before investing in hardware.
+
+---
+
+## Instalacao modular / Modular installation
+
+| Extra pip | Tecnologia | Tamanho estimado | External tools required |
+|---|---|---|---|
+| (nenhum/none) | Core: WiFi nativo via Scapy | ~45 MB | aircrack-ng |
+| `[wifi]` | WiFi 802.11 completo | +0 MB (incluido no core) | aircrack-ng, hcxdumptool |
+| `[bt]` | Bluetooth/BLE | +8 MB | BlueZ (Linux) |
+| `[cellular]` | Celular/SIM/LTE/5G | +5 MB | SDR hardware, srsRAN |
+| `[rf]` | RF/SDR/SubGHz | +50 MB | RTL-SDR, HackRF |
+| `[drone]` | Drones/UAV | +20 MB | - |
+| `[ir]` | Infrared | +3 MB | IR hardware |
+| `[gps]` | GPS/Wardriving | +3 MB | GPSD |
+| `[iot]` | IoT/Zigbee/RFID | +3 MB | Zigbee sniffer |
+| `[all]` | Tudo | ~135 MB total | Todos acima |
+
+> Ferramentas externas nao gerenciadas pelo pip: aircrack-ng, hashcat, hcxdumptool, hostapd, wash
+
+---
 
 ---
 
