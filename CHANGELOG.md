@@ -4,6 +4,20 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 
 ---
 
+## [1.8.1] - 2026-06-19
+
+### Fixed
+- **wps_engine_native**: Added 802.11 Auth+AssocReq+EAPOL-Start sequence before the EAP-WSC sniff loop. Without this sequence the AP never sent EAP-Request/Identity and the WPS attack timed out indefinitely. Confirmed in field tests with WPS v1.0 APs.
+- **core/exploit.OptBool**: Now accepts native Python `bool` values in addition to strings "true"/"false". Previously calling `run(i_know_scope=True)` raised `OptionValidationError`.
+- **pmkid_autopwn**: Added explicit early check for `hcxdumptool` and `hcxpcapngtool` at the start of `run()`, with clear installation instructions, instead of silent or confusing failure.
+- **wps_engine_native**, **monitor_mode_manager**: Added channel drift warning to module docstrings (some APs advertise ch3 but operate on ch4 - try adjacent channels and use `iw dev <iface> scan` to confirm).
+
+### Notes
+- Field tests confirmed in lab environment with 44 APs detected, 33 with WPS enabled.
+- Known limitation: USB Wi-Fi adapters in VirtualBox EHCI passthrough may have TX injection restrictions depending on chipset.
+
+---
+
 ## [1.7.0] - 2026-06-19
 
 ### Novos modulos nativos (Python/Scapy - sem bridges externos)

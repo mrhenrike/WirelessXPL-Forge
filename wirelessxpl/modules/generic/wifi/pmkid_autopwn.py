@@ -343,6 +343,16 @@ class Exploit(Exploit):
         return f"Interface {iface} not found - connect wireless adapter and enable monitor mode"
 
     def run(self) -> None:
+        if not shutil.which("hcxdumptool"):
+            raise RuntimeError(
+                "hcxdumptool nao encontrado. Instale com: sudo apt install hcxdumptool\n"
+                "Alternativa: use o modo capture='scapy' para captura nativa sem hcxdumptool."
+            )
+        if not shutil.which("hcxpcapngtool"):
+            raise RuntimeError(
+                "hcxpcapngtool nao encontrado. Instale com: sudo apt install hcxtools"
+            )
+
         if not bool(self.i_know_scope):
             print_error("Set i_know_scope = true to confirm authorized lab.")
             return
