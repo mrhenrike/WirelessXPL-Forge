@@ -13,6 +13,11 @@ Features:
   - Injection capability detection via test frame
   - Context manager support (with MonitorModeManager(...) as iface:)
 
+Note: Some APs advertise a channel in their beacon frames but operate at a
+slightly different frequency (channel drift/mismatch). If scan reports ch3 but
+capture or injection fails, try adjacent channels (ch4, ch2). Use
+`iw dev <iface> scan` to confirm the actual operating frequency of the AP.
+
 OS requirement: Linux only.
 
 Version: 1.0.0
