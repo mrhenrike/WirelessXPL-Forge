@@ -726,3 +726,28 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-06-19 06:55] -- Sync wifi_lab/ -> wifi/ + 1.7.0.post1 PyPI
+
+### Estado ao encerrar
+- Sincronizados 3 modulos refatorados da Fase 0F de wifi_lab/ para wifi/
+  - handshake_snooper.py v2.0.0 (Scapy EAPOL nativo, sem cowpatty/pyrit)
+  - deauth_multimode.py v1.1.0 (backend nativo Scapy por padrao)
+  - aireplay_deauth_barrage.py v2.0.0 (Scapy como modo primario)
+- Imports ajustados de wifi_lab._disclaimer para wifi._disclaimer em todos os 3
+- Versao bump 1.7.0 -> 1.7.0.post1 em pyproject.toml e wirelessxpl/__init__.py
+- Commit: 920a097 - Sync refactored wifi modules + bump 1.7.0.post1 for PyPI
+- Tag: v1.7.0.post1 criada e publicada
+- Push: origin/master atualizado
+- PyPI: upload bem-sucedido - https://pypi.org/project/wirelessxpl/1.7.0.post1/
+
+### Proximo passo imediato
+- Aguardar propagacao do PyPI (~5-10min) e confirmar pip install wirelessxpl==1.7.0.post1
+
+### Pendencias conhecidas
+- [ ] pip index versions deve mostrar 1.7.0.post1 apos propagacao do cache PyPI
+- [ ] Verificar se wifi_lab/ ainda precisa de mais modulos sincronizados para wifi/
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
