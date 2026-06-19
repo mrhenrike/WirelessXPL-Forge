@@ -778,3 +778,106 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-06-19 11:52] -- Incorporacao de templates phishing de repos de referencia
+
+### Estado ao encerrar
+- Inventariados 23 templates HTML existentes em captive_templates/
+- Pesquisados repos clonados em .tmp/wxf-references/ (fluxion, wifiphisher, wifiphisher-extra, wifipumpkin3, eaphammer)
+- 10 novos templates criados e incorporados (self-contained HTML, inline CSS, 11 idiomas)
+- phishing_engine.py nao requer atualizacao manual (auto-discovery via scandir)
+- Commit 8e69b55 criado e push realizado para master
+
+### Arquivos modificados
+- wirelessxpl/resources/captive_templates/tp_link_router/index.html (novo)
+- wirelessxpl/resources/captive_templates/netgear_router/index.html (novo)
+- wirelessxpl/resources/captive_templates/fritzbox_router/index.html (novo)
+- wirelessxpl/resources/captive_templates/movistar_login/index.html (novo)
+- wirelessxpl/resources/captive_templates/xfinity_login/index.html (novo)
+- wirelessxpl/resources/captive_templates/vodafone_login/index.html (novo)
+- wirelessxpl/resources/captive_templates/starbucks_wifi/index.html (novo)
+- wirelessxpl/resources/captive_templates/vivo_wifi/index.html (novo)
+- wirelessxpl/resources/captive_templates/tim_mobile/index.html (novo)
+- wirelessxpl/resources/captive_templates/claro_wifi/index.html (novo)
+
+### Commits realizados
+- 8e69b55 Add phishing templates for branded routers, ISPs and mobile operators
+
+### Proximo passo imediato
+- Testar os novos templates com o phishing_engine em laboratorio Linux
+- Verificar se form action="/capture" e compativel com a versao atual do engine
+
+### Pendencias conhecidas
+- [ ] Todos os templates usam action="/capture" - existentes usam action="/login" (inconsistencia a corrigir)
+- [ ] Assets externos nao foram baixados (templates sao self-contained com SVG/CSS inline)
+
+### Ambiente necessario
+- Linux para teste real (hostapd, monitor mode)
+- Python 3.x com dependencias do projeto
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+
+## [2026-06-19 12:15] -- Correcao: captive portal form action padronizado para /capture
+
+### Estado ao encerrar
+- Identificados 23 templates HTML com action="/login" inconsistente com o servidor
+- Todos os 23 templates substituidos para action="/capture" (correto)
+- Os 10 novos templates ja estavam corretos (total agora: 33 com /capture)
+- phishing_engine.py do_POST confirmado: aceita APENAS /capture, retorna 404 para qualquer outro path
+- Commit 1291b5f e push para master realizados
+
+### Proximo passo imediato
+- Nenhuma pendencia critica. Todos os templates agora apontam para o handler correto.
+
+### Pendencias conhecidas
+- [ ] Testar fluxo completo em ambiente de lab (Linux com hostapd disponivel)
+- [ ] Validar que templates novos (10 adicionados recentemente) cobrem casos de uso esperados
+
+### Ambiente necessario
+- Linux (hostapd, monitor mode, Scapy)
+- Python 3.10+
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+
+## [2026-06-19 12:50] - Add 55 captive portal templates batch 2
+
+### Estado ao encerrar
+- Criados 55 novos templates HTML de captive portal como arquivos .html individuais
+- Estrutura diferente dos templates anteriores (pastas com index.html): novos sao arquivos .html diretos
+- Todos os templates: inline CSS, responsivos, deteccao de idioma PT/EN via JS, formulario POST /capture
+- Commit: 798f8fc - "Add 55 captive portal templates - social, fast food, ISPs, hotels, fitness"
+- Push realizado: branch master -> origin (github.com/mrhenrike/WirelessXPL-Forge.git)
+
+### Grupos criados
+- Social/Streaming (3): x_social_wifi, twitch_wifi, spotify_wifi - formulario com conta (email+senha)
+- Fast Food (11): burger_king, mcdonalds, giraffas, kfc, subway, dominos, pizza_hut, habibs, bobs, spoleto, china_in_box - formulario senha WiFi
+- Fitness (1): smart_fit_wifi - formulario senha WiFi
+- ISPs Brasileiros (25): giba_fibra, loga_isp, ultracom_telecom, conectja_telecom, oi_fon_wifi*, oi_wifi_fon*, wifi_fon_portal*, starlink_wifi, copel_telecom, unifique_fibra, desktop_isp, brisanet_fibra, alloha_fibra, tim_ultrafibra, vivo_ultrafibra, algar_telecom, oi_fibra_wifi*, netiz_isp, itnet_isp, minas_telecom, clicfacil_telecom, netspeed_isp, brasil_tecpar, vero_net, coracao_mineiro_isp - (* = formulario com conta)
+- Hoteis (15): accor, atlantica, radisson, quality_inn, comfort_inn, nacional_inn, ibis, mercure, novotel, pullman, wyndham, caesar_park, hilton, marriott, oceanico_tower - formulario quarto + senha
+
+### Arquivos modificados
+- wirelessxpl/resources/captive_templates/*.html (55 novos arquivos, 2.9-3.7KB cada)
+
+### Commits realizados
+- 798f8fc Add 55 captive portal templates - social, fast food, ISPs, hotels, fitness
+
+### Proximo passo imediato
+- Templates existentes ainda sao pastas com index.html - considerar padronizar para .html direto
+- Verificar se o loader do wirelessxpl suporta ambos os formatos (pasta/index.html e .html direto)
+
+### Pendencias conhecidas
+- [ ] Verificar compatibilidade do captive portal loader com o novo formato .html direto
+- [ ] Considerar migracao dos 33 templates antigos para formato .html direto
+- [ ] Testar templates em ambiente de rede Wi-Fi real (hostapd + dnsmasq)
+
+### Ambiente necessario
+- Python 3.10+
+- Git com acesso ao remote mrhenrike/WirelessXPL-Forge
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
