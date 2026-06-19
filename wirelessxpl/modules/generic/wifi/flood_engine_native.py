@@ -36,6 +36,7 @@ import time
 from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 from wirelessxpl.modules.generic.wifi._disclaimer import (
     require_authorised_lab,
@@ -793,6 +794,7 @@ def _run_wids_confusion(
 #  Exploit class                                                              #
 # --------------------------------------------------------------------------- #
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native 802.11 flood/DoS engine -- all mdk4 modes in Python/Scapy.
 
