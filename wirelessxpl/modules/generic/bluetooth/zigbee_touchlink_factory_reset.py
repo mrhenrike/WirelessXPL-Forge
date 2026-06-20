@@ -6,6 +6,7 @@ import os
 import time
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _ZIGBEE_TOUCHLINK_CHANNEL = 11  # Canal de descoberta primário Touchlink
@@ -48,6 +49,7 @@ def _build_factory_reset_command(inter_pan_transaction_id, seq_num=1):
     return payload
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Zigbee Touchlink Factory Reset Attack.
 

@@ -18,10 +18,12 @@ from pathlib import Path
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """Run BTLEJack workflows from WirelessXPL-Forge."""
 

@@ -13,7 +13,7 @@ import subprocess
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 
@@ -142,7 +142,7 @@ class Exploit(Exploit):
     }
 
     interface = OptString("wlan0", "WiFi interface name (Linux) -- ignored on Windows")
-    show_all = OptBoolean(False, "Show all detected SSIDs, not just drones")
+    show_all = OptBool(False, "Show all detected SSIDs, not just drones")
 
     def _validate(self) -> bool:
         return True

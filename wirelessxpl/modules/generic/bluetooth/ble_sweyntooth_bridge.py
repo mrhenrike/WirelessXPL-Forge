@@ -29,6 +29,7 @@ from wirelessxpl.core.exploit import *
 from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,7 @@ _ATTACKS: Dict[str, Dict[str, str]] = {
 }
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """SweynTooth BLE stack vulnerability bridge (subprocess)."""
 

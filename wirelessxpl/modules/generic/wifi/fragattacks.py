@@ -38,6 +38,7 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -161,6 +162,7 @@ def build_eapol_amsdu_injection(src: str, dst: str, bssid: str,
     return frame
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native 802.11 FragAttacks — fragmentation/aggregation vulnerabilities."""
 

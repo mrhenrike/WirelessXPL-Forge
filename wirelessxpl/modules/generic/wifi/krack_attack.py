@@ -40,6 +40,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Set, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -168,6 +169,7 @@ def _is_group_msg1(pkt) -> bool:
         return False
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native KRACK — WPA2 key reinstallation attack."""
 

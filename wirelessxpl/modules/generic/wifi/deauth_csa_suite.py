@@ -21,6 +21,7 @@ from typing import List, Optional, Sequence, Tuple
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,7 @@ _METHODS = frozenset({
 _BANDS = frozenset({"2g", "5g", "both"})
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Ponte unificada: deauth clássico, Scapy, mdk4, CSA e desassociação com hopping opcional."""
 

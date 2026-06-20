@@ -36,6 +36,7 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -190,6 +191,7 @@ def _brute_force_session_key(kc_prime: bytearray, entropy: int,
     return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native BT session key attacks: KNOB + BIAS + BLUFFS."""
 

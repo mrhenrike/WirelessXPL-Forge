@@ -17,7 +17,7 @@ import struct
 import time
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -74,7 +74,7 @@ class Exploit(Exploit):
     target = OptString("192.168.42.1", "ANAFI IP")
     port = OptInteger(7777, "ARSDK UDP port")
     command = OptString("takeoff", "Command: takeoff / land / emergency")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         cmd = str(self.command).strip().lower()

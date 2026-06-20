@@ -93,10 +93,9 @@ rf = [
     "numpy>=1.26",
 ]
 
-# Drones / UAV / MAVLink
+# Drones / UAV / MAVLink (dronekit removed - unmaintained; use pymavlink directly)
 drone = [
     "pymavlink>=2.4.41",
-    "dronekit>=2.9.2",
 ]
 
 # Infrared

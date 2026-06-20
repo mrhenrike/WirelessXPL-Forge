@@ -47,6 +47,7 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -149,6 +150,7 @@ SWEYNTOOTH_ATTACKS = {
 }
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """BT Baseband attack orchestrator — BrakTooth + SweynTooth."""
 

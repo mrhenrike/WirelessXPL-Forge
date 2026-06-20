@@ -2,51 +2,36 @@ from wirelessxpl.core.exploit.exploit import Exploit
 from wirelessxpl.core.exploit.option import OptInteger
 from wirelessxpl.core.exploit.printer import (
     print_error,
-    print_status
+    print_status,
 )
-from wirelessxpl.core.bluetooth.btle import (
-    ScanDelegate,
-    BTLEScanner
-)
-
-
-class Options:
-    """ Options used by the scanner """
-
-    def __init__(self, buffering, mac, enum_services):
-        self.buffering = buffering
-        self.mac = mac
-        self.enum_services = enum_services
+from wirelessxpl.core.bluetooth.btle import BTLEScanner, ScanDelegate
 
 
 class BTLEClient(Exploit):
-    """ Bluetooth Low Energy Client implementation """
+    """Bluetooth Low Energy Client (bleak-backed scanner)."""
 
     scan_time = OptInteger(10, "Number of seconds to scan for")
     buffering = False
     enum_services = False
 
     def btle_scan(self, mac=None):
-        """ Scans for Bluetooth Low Energy devices """
+        """Scan for BLE devices and return a list of Device objects."""
+        scanner = BTLEScanner(mac)
+        delegate = ScanDelegate()
+        delegate.options = type("_Opt", (), {"buffering": self.buffering, "mac": mac})()
 
-        options = Options(
-            self.buffering,
-            mac,
-            self.enum_services
-        )
-
-        scanner = BTLEScanner(options.mac).withDelegate(ScanDelegate(options))
-
-        if options.mac:
-            print_status("Scanning BTLE device...")
+        if mac:
+            print_status("Scanning for BTLE device {}...".format(mac))
         else:
-            print_status("Scanning for BTLE devices...")
+            print_status("Scanning for BTLE devices ({} s)...".format(self.scan_time))
 
         devices = []
         try:
-            devices = [res for res in scanner.scan(self.scan_time)]
+            devices = scanner.scan(float(self.scan_time))
+            for dev in devices:
+                delegate.handleDiscovery(dev, True, True)
         except Exception as err:
             print_error("Error: {}".format(err))
-            print_error("Check if your bluetooth hardware is connected")
+            print_error("Check if your Bluetooth adapter is connected and powered on.")
 
         return devices

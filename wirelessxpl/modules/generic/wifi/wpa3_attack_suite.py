@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +130,7 @@ def _find_sae_clogging_binary() -> Optional[Path]:
     return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """WPA3 lab orchestration: downgrade, SAE flood, CSA, timing, auto."""
 

@@ -15,6 +15,7 @@ import struct
 import os
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _AD_TYPE_FLAGS = 0x01
@@ -86,6 +87,7 @@ def _build_hci_le_set_adv_enable(enable=True):
     return opcode + struct.pack("B", 1) + param
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """BLE Device Spoofing/Cloning via Advertising Data Replay.
 
