@@ -91,7 +91,7 @@ class Exploit(Exploit):
     port = OptInteger(14550, "MAVLink UDP port")
     param_name = OptString("FENCE_ENABLE", "Parameter to set (FENCE_ENABLE or FENCE_ACTION)")
     param_value = OptFloat(0.0, "Parameter value (0 = disable)")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

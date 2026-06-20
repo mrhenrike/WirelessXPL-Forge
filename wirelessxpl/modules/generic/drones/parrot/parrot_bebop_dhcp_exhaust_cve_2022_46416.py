@@ -105,7 +105,7 @@ class Exploit(Exploit):
     target = OptString("192.168.42.1", "Bebop 2 DHCP server IP")
     count = OptInteger(256, "Number of unique DISCOVER requests to send")
     delay_ms = OptInteger(10, "Delay between requests in milliseconds")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         c = int(self.count)

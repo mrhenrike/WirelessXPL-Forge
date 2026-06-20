@@ -123,7 +123,7 @@ class Exploit(Exploit):
     protocol = OptString("CAME", "Target protocol (CAME/NICE/Holtek/Chamberlain/Ansonic)")
     output_file = OptString("", "Output .sub file path (default: .tmp/<protocol>_debruijn.sub)")
     show_time = OptBool(True, "Display estimated completion time")
-    simulate = OptBool(True, "Simulate only -- do not transmit")
+    simulate = OptBool(False, "Simulate only -- do not transmit")
 
     def _validate(self) -> bool:
         proto = str(self.protocol).strip()

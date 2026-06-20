@@ -82,7 +82,7 @@ class Exploit(Exploit):
 
     target = OptString("192.168.0.1", "Drone IP address")
     command = OptString("connect", "Command: connect / takeoff / land / hover / video_start")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         cmd = str(self.command).strip().lower()

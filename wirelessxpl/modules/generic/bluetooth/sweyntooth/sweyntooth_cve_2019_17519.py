@@ -92,7 +92,7 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target BLE MAC address")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         addr = str(self.target).strip()

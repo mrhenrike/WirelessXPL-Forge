@@ -65,7 +65,7 @@ class Exploit(Exploit):
     target_bssid = OptString("", "DJI drone AP BSSID (e.g. AA:BB:CC:DD:EE:FF)")
     client_mac = OptString("FF:FF:FF:FF:FF:FF", "Client MAC to deauth (broadcast = FF:FF:...)")
     count = OptInteger(50, "Number of deauth frames to send")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         bssid = str(self.target_bssid).strip()

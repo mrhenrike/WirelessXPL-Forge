@@ -80,7 +80,7 @@ class Exploit(Exploit):
     port = OptInteger(14550, "MAVLink UDP port")
     rate = OptInteger(1000, "Packets per second")
     duration = OptInteger(5, "Flood duration in seconds")
-    simulate = OptBool(True, "Simulate only (display rate, no TX)")
+    simulate = OptBool(False, "Simulate only (display rate, no TX)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():
