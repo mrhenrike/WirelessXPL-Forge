@@ -4,7 +4,8 @@
 # Interface: wlx24050f3d5f0a (RT5370 via WSL2 + kernel rt2800usb+)
 set -uo pipefail
 
-WXF="python3 /mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge/wxf.py"
+WXF_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WXF="python3 ${WXF_ROOT}/wxf.py"
 IFACE="wlx24050f3d5f0a"
 OWN_BSSID="72:4E:6B:1A:CB:90"   # UNIAOGEEK 2.4GHz
 OWN_5G_BSSID="72:4E:6B:1A:CB:94" # UNIAOGEEK_5G

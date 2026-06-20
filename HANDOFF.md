@@ -1,5 +1,46 @@
 # HANDOFF -- WirelessXPL-Forge
 
+## [2026-06-20 09:33] -- Mudança de ambiente: novo path Linux, fix pendências
+
+### Estado ao encerrar
+- Repositório migrado para ambiente Linux nativo (sem WSL2/mnt)
+- Novo path canonical: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
+- Wordlists (sibling): `/home/mrhenrike/Documentos/Projetos/WordListsForHacking`
+- Os 5 projetos estão em `/home/mrhenrike/Documentos/Projetos/`
+- Histórico reescrito com `git-filter-repo`: todos os commits agora têm autor `mrhenrike <henrique.santos@uniaogeek.com.br>`; atribuições de IA removidas
+- Hook `commit-msg` ativo em `.githooks/` (superprojeto); cada repo aponta via `core.hooksPath`
+- Regra do Cursor: `.cursor/rules/no-ai-attribution.mdc` (alwaysApply)
+- Auth GitHub configurada via `gh` CLI (HTTPS, token com escopo `repo`)
+
+### Fixes aplicados nesta sessão
+- `wirelessxpl/modules/generic/wifi/__init__.py`: adicionado `__getattr__` (PEP 562) para lazy binding de `FloodEngine`, `WPSEngine`, `PhishingEngine`, `CaptiveNetwork`, `MonitorModeManager`, `DragonbloodSuite`
+- `wirelessxpl/modules/generic/wifi/dragonblood_suite.py`: adicionado alias `DragonbloodSuite = Exploit`
+- `tools/`: todos os scripts com paths hardcoded `/mnt/d/Projetos-SafeLabs/` atualizados para derivar o root via `$(dirname "${BASH_SOURCE[0]}")/../`; scripts de crack usam `${WXF_WL_BASE:-<sibling>}` como base de wordlists
+- `tools/fix_paths.py` e `tools/fix_hcxdumptool.py`: portabilizados via `Path(__file__).parent`
+
+### Paths importantes (atualizados)
+- Linux: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
+- Wordlists: `/home/mrhenrike/Documentos/Projetos/WordListsForHacking`
+- Windows (legado, não usar): `D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge`
+
+### Pendências resolvidas
+- [x] `wifi/__init__.py` com classes em `__all__` não bound
+- [x] Alias `DragonbloodSuite` ausente em `dragonblood_suite.py`
+- [x] Paths hardcoded `/mnt/d/...` em todos os tools
+- [x] Atribuições de IA (`Co-authored-by: Cursor`, `Made-with: Cursor`) removidas do histórico git
+
+### Pendências restantes (requerem hardware)
+- [ ] Aplicar `@requires_os` nos módulos WiFi/BT restantes
+- [ ] Teste de integração com hardware real: monitor mode, BLE, RTL-SDR, MAVLink
+- [ ] WPS M4-M8 completo (PSK recovery via PIN correto)
+- [ ] DragonForce: captura passiva de respostas status=77
+- [ ] DragonSlayer: EAP state machine completa
+- [ ] Beck-Tews TKIP: recuperação completa de PTK via chopchop
+- [ ] Templates captive portal: CSRF token server-side
+- [ ] `dronekit` deprecated - avaliar substituição
+
+
+
 ## [2026-06-08 00:40] -- BLOCOs A,B,C,M,O,J expansion complete
 
 ### Estado ao encerrar
