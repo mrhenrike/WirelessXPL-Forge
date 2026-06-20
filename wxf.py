@@ -50,7 +50,22 @@ LOGGER.setLevel(logging.DEBUG)
 LOGGER.addHandler(log_handler)
 
 
+def _load_global_config() -> None:
+    """Initialize and display WXF global configuration at startup."""
+    try:
+        from wirelessxpl.core.config import WXFConfig
+        from wirelessxpl.core.exploit.printer import PrinterThread, printer_queue
+        # Make sure PrinterThread is running for the banner
+        PrinterThread().start()
+        cfg = WXFConfig.get()
+        cfg.print_banner()
+        printer_queue.join()
+    except Exception as exc:
+        print(f"\033[93m[!] Config init warning: {exc}\033[0m")
+
+
 def wirelessxpl(argv):
+    _load_global_config()
     try:
         from wirelessxpl.interpreter import WirelessXPLInterpreter
     except ModuleNotFoundError as err:

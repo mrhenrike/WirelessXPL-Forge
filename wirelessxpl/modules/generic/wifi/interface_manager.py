@@ -127,9 +127,9 @@ class Exploit(Exploit):
 
     mode = OptString(
         "list",
-        "Mode: list | assign | release | release_all | persist_nm | status",
+        "Mode: list | select | assign | release | release_all | persist_nm | status",
     )
-    interface = OptString("", "Interface name for assign/release modes")
+    interface  = OptString("", "Interface name or selection spec: 1 | 2 | 1,3 | 1-3 | all | <name>")
     role = OptString(
         ROLE_MONITOR,
         f"Role for assign mode: {ROLE_MONITOR} | {ROLE_INJECT} | {ROLE_AP} | {ROLE_MANAGED}",
@@ -171,6 +171,9 @@ class Exploit(Exploit):
         if op == "list":
             self._do_list(reg)
 
+        elif op == "select":
+            self._do_select(reg)
+
         elif op == "status":
             self._do_status(reg)
 
@@ -189,8 +192,99 @@ class Exploit(Exploit):
         else:
             print_error(
                 f"Unknown mode: {op!r}. "
-                "Valid: list | assign | release | release_all | persist_nm | status"
+                "Valid: list | select | assign | release | release_all | persist_nm | status"
             )
+
+    # ------------------------------------------------------------------
+    # select — numbered multi-select + set WXFConfig globals
+    # ------------------------------------------------------------------
+
+    def _do_select(self, reg: InterfaceRegistry) -> None:
+        """Numbered interface selection with multi-spec support.
+
+        spec: 1 | 2 | 1,3 | 1-3 | all | <ifname>
+
+        Sets iface_mon (first selected) and iface_inj (second selected)
+        in the global WXFConfig singleton.
+        """
+        try:
+            from wirelessxpl.core.config import WXFConfig
+        except ImportError:
+            print_error("WXFConfig not available.")
+            return
+
+        spec = str(self.interface).strip()
+        all_ifaces = reg.all()
+
+        if not spec:
+            # Just show list with usage
+            self._do_list(reg)
+            print_info("  Usage: set mode select")
+            print_info("         set interface <spec>    (1 | 2 | 1,3 | 1-3 | all | <name>)")
+            return
+
+        # Build numbered index (external/USB interfaces first)
+        external = [i for i in all_ifaces if not i.provides_internet and not i.name.startswith("wlp")]
+        internal = [i for i in all_ifaces if i.provides_internet or i.name.startswith("wlp")]
+        numbered = external  # only external ones are numbered
+
+        if not numbered:
+            print_error("No external USB interfaces found.")
+            return
+
+        # Parse spec
+        spec_lower = spec.lower()
+        selected: list = []
+        if spec_lower == "all":
+            selected = [i.name for i in numbered]
+        else:
+            # Check if it's a name
+            names = [i.name for i in numbered]
+            if spec in names:
+                selected = [spec]
+            elif "-" in spec and all(p.isdigit() for p in spec.split("-")):
+                a, b = map(int, spec.split("-", 1))
+                selected = [numbered[i-1].name for i in range(a, b+1) if 1 <= i <= len(numbered)]
+            else:
+                for part in spec.split(","):
+                    part = part.strip()
+                    if part.isdigit():
+                        idx = int(part)
+                        if 1 <= idx <= len(numbered):
+                            selected.append(numbered[idx-1].name)
+                    elif part in names:
+                        selected.append(part)
+
+        if not selected:
+            print_error(f"No interfaces matched spec {spec!r}. Use: 1 | 2 | 1,3 | 1-3 | all")
+            return
+
+        cfg = WXFConfig.get()
+        cfg.iface_mon  = selected[0] if len(selected) >= 1 else ""
+        cfg.iface_inj  = selected[1] if len(selected) >= 2 else ""
+        cfg.iface_extra = selected[2:] if len(selected) > 2 else []
+
+        print_success(f"Selected {len(selected)} interface(s): {selected}")
+        if cfg.iface_mon:
+            print_info(f"  iface_mon  (monitor/capture) → {cfg.iface_mon}")
+        if cfg.iface_inj:
+            print_info(f"  iface_inj  (inject/AP)      → {cfg.iface_inj}")
+        for ex in cfg.iface_extra:
+            print_info(f"  iface_extra                 → {ex}")
+
+        if len(selected) == 1:
+            print_warning(
+                "Apenas 1 interface selecionada. Ataques que precisam de 2 adaptadores "
+                "(handshake snooper, evil twin, CSA capture, MITM) vão precisar de outra."
+            )
+
+        # Unmanage selected from NM
+        for iface in selected:
+            try:
+                reg.assign(iface, role=ROLE_MONITOR, force=True)
+                print_info(f"  NM: {iface} → unmanaged")
+            except Exception:
+                pass
 
     # ------------------------------------------------------------------
     # Mode handlers
@@ -202,34 +296,83 @@ class Exploit(Exploit):
             print_error("No wireless interfaces found. Check iw / driver installation.")
             return
 
-        print_status(f"Wireless interfaces found: {len(interfaces)}")
-        _print_iface_table(interfaces)
+        try:
+            from wirelessxpl.core.config import WXFConfig, _is_usb_wifi
+            cfg = WXFConfig.get()
+        except Exception:
+            cfg = None
+            _is_usb_wifi = lambda x: x.startswith("wlx")
 
-        # Highlight internet interface
+        # Separate external USB from internal
+        external = [i for i in interfaces if not i.provides_internet and not i.name.startswith("wlp")]
+        internal = [i for i in interfaces if i.provides_internet or i.name.startswith("wlp")]
+
+        print_status(f"Wireless interfaces — {len(external)} external USB | {len(internal)} internal/internet")
+        sep = "-" * 100
+        print_info(sep)
+        print_info(
+            f"  {'#':>3}  {'IFACE':<24} {'PHY':<8} {'MODE':<10} {'DRIVER':<14} "
+            f"{'BANDS':<18} {'MON':>3} {'AP':>3} {'NM':>4}  ROLE / FLAGS"
+        )
+        print_info(sep)
+
+        for idx, i in enumerate(external, start=1):
+            mon  = "\033[92mY\033[0m" if i.supports_monitor else "\033[91mN\033[0m"
+            ap   = "\033[92mY\033[0m" if i.supports_ap      else "\033[91mN\033[0m"
+            nm   = "\033[92mY\033[0m" if i.nm_managed       else "\033[91mN\033[0m"
+            bands = "/".join(i.bands) if i.bands else "?"
+            role_str = _colored_role(i.role)
+            ch   = f" ch{i.channel}" if i.channel else ""
+            inet = _internet_tag(i)
+            # Global role indicator
+            global_role = ""
+            if cfg:
+                if i.name == cfg.iface_mon:
+                    global_role = "  \033[94m→ iface_mon (global)\033[0m"
+                elif i.name == cfg.iface_inj:
+                    global_role = "  \033[93m→ iface_inj (global)\033[0m"
+            print_info(
+                f"  \033[1m{idx:>3}\033[0m  {i.name:<24} {i.phy:<8} {i.current_mode:<10} {i.driver:<14} "
+                f"{bands:<18} {mon:>3} {ap:>3} {nm:>4}  {role_str}{ch}{inet}{global_role}"
+            )
+
+        if internal:
+            print_info(f"  {'-'*40}  [internal/internet — não usar para ataques]")
+            for i in internal:
+                inet = _internet_tag(i)
+                print_info(f"       {i.name:<24} {i.current_mode:<10} {i.driver:<14}{inet}")
+        print_info(sep)
+        print_info(
+            "  MON=monitor capable  AP=AP capable  NM=NetworkManager managed  "
+            "\033[91m[INTERNET]\033[0m=active gateway"
+        )
+        print_info("")
+
+        # Warnings
         inet_ifaces = [i for i in interfaces if i.provides_internet]
         if inet_ifaces:
-            names = ", ".join(i.name for i in inet_ifaces)
             print_warning(
-                f"Interface(s) providing internet: {names}\n"
-                "  Assigning these to monitor/inject mode WILL drop your connection.\n"
-                "  Use an external USB adapter for WXF tests."
+                f"Interface {inet_ifaces[0].name} fornece internet. "
+                "NÃO use-a para ataques sem force=true."
             )
+        if len(external) == 0:
+            print_error("NENHUMA interface USB externa encontrada! Conecte ao menos 1 adaptador.")
+        elif len(external) == 1:
+            print_warning(
+                "Apenas 1 interface externa. Módulos como handshake_snooper, evil_twin, "
+                "CSA capture precisam de 2 adaptadores."
+            )
+        else:
+            print_success(f"{len(external)} interfaces externas disponíveis.")
 
-        # Suggest unmanaged USB adapters
-        candidates = [
-            i for i in interfaces
-            if not i.provides_internet and i.supports_monitor
-        ]
-        if candidates:
-            print_success(
-                "Recommended interfaces for WXF (monitor capable, not internet-facing):"
-            )
-            for c in candidates:
-                bands = "/".join(c.bands) if c.bands else "?"
-                print_info(
-                    f"  {c.name}  ({c.driver}, {bands})"
-                    + (" [already in monitor]" if c.current_mode == "monitor" else "")
-                )
+        print_info("")
+        print_info("  Selecionar interfaces:")
+        print_info("    set mode select")
+        print_info("    set interface 1        (interface #1)")
+        print_info("    set interface 1,2      (#1 e #2)")
+        print_info("    set interface 1-3      (#1 até #3)")
+        print_info("    set interface all      (todas)")
+        print_info("    run")
 
     def _do_status(self, reg: InterfaceRegistry) -> None:
         assigned = [i for i in reg.all() if i.role != ROLE_IDLE]
