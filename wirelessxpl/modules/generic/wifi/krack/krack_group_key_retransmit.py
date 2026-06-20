@@ -90,7 +90,7 @@ class Exploit(Exploit):
     client_mac = OptString("", "Client MAC (target of GTK reinstall)")
     capture_timeout = OptInteger(60, "Capture timeout in seconds")
     retransmits = OptInteger(3, "Number of Group Key Msg1 retransmissions")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("ap_bssid", "client_mac"):

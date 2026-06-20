@@ -84,7 +84,7 @@ class Exploit(Exploit):
     session_name = OptString("", "Hashcat session name (--session)")
     status_timer = OptInteger(30, "Status timer interval in seconds (--status-timer)")
     optimized_kernels = OptBool(True, "Use optimized kernels -O (faster, limits password length)")
-    dry_run = OptBool(True, "Only print hashcat -I and final argv")
+    dry_run = OptBool(False, "Only print hashcat -I and final argv")
     extra_args = OptString(
         "",
         "Extra args split by space (e.g. --potfile-disable --increment)",

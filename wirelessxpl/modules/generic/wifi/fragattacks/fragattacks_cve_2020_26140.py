@@ -116,7 +116,7 @@ class Exploit(Exploit):
     ap_bssid = OptString("", "Target AP BSSID")
     inject_ip = OptString("192.168.1.2", "IP to inject (ARP destination)")
     attacker_mac = OptString("", "Attacker source MAC (auto-detect if empty)")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("victim_mac", "ap_bssid"):

@@ -115,7 +115,7 @@ class Exploit(Exploit):
     poison_gateway = OptString("10.0.0.1", "Next-hop gateway for injected route")
     metric = OptInteger(1, "Route metric (1=best, 16=infinity/withdraw)")
     repeat = OptInteger(5, "Number of times to send the poison")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         for field_name, field_val in [

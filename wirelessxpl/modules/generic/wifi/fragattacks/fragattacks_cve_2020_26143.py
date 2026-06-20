@@ -106,7 +106,7 @@ class Exploit(Exploit):
         "ARP request payload hex (default: ARP who-has 192.168.1.1)"
     )
     attacker_mac = OptString("02:00:00:00:00:03", "Source MAC for injected frames")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         bssid = str(self.ap_bssid).strip()
