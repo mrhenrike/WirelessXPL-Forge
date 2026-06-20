@@ -111,7 +111,7 @@ class Exploit(Exploit):
     ap_bssid = OptString("", "AP BSSID")
     payload_hex = OptString("aaaa030000000800", "Fragment payload as hex (default: LLC/SNAP+IP EtherType)")
     seq_num = OptInteger(1, "802.11 sequence number")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("victim_mac", "ap_bssid"):

