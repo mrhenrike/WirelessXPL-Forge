@@ -53,7 +53,7 @@ _AIRSNITCH_REPO = "https://github.com/vanhoefm/airsnitch"
 class AirSnitchIsolationBypass(Exploit):
     """AirSnitch — bridge para vanhoefm/airsnitch com gate de hardware."""
 
-    Protocol = Protocol.WIFI
+    target_protocol = Protocol.CUSTOM  # WiFi
 
     # ------------------------------------------------------------------
     # Opções
