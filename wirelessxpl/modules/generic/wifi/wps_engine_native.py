@@ -802,18 +802,36 @@ class WscSession:
             sendp(auth_pkt, iface=iface, verbose=False, count=3, inter=0.05)
             time.sleep(0.3)
 
-            # 2. AssocReq with minimal WPS IE (dd 09 00 50 f2 04 ...)
+            # 2. AssocReq with WPS IE and correct SSID
             wps_ie = b"\xdd\x09\x00\x50\xf2\x04\x10\x4a\x00\x01\x10"
+            # Try to get SSID from beacon first
+            ssid_bytes = self._ssid.encode() if hasattr(self, '_ssid') and self._ssid else b""
+            if not ssid_bytes:
+                # Quick beacon sniff to get SSID
+                ssid_sniff = []
+                from scapy.all import sniff as _sniff, Dot11Beacon, Dot11Elt as _Elt
+                def _grab_ssid(p):
+                    if p.haslayer(Dot11Beacon) and p.haslayer(Dot11) and bssid.lower() in p[Dot11].addr3.lower():
+                        e = p.getlayer(_Elt)
+                        while e:
+                            if e.ID == 0:
+                                ssid_sniff.append(e.info)
+                                break
+                            e = e.payload.getlayer(_Elt) if e.payload else None
+                _sniff(iface=iface, prn=_grab_ssid,
+                       stop_filter=lambda _: bool(ssid_sniff),
+                       timeout=3, store=False)
+                ssid_bytes = ssid_sniff[0] if ssid_sniff else b""
             assoc_pkt = (
                 RadioTap()
                 / Dot11(addr1=bssid, addr2=own_mac, addr3=bssid, type=0, subtype=0)
                 / Dot11AssoReq(cap=0x0431, listen_interval=10)
-                / Dot11Elt(ID=0, info=b"")
-                / Dot11Elt(ID=1, info=b"\x82\x84")
+                / Dot11Elt(ID=0, info=ssid_bytes)
+                / Dot11Elt(ID=1, info=b"\x82\x84\x8b\x96\x0c\x12\x18\x24")
                 / Raw(load=wps_ie)
             )
             sendp(assoc_pkt, iface=iface, verbose=False, count=3, inter=0.05)
-            time.sleep(0.3)
+            time.sleep(0.4)
 
             # 3. EAPOL-Start (type=1) triggers EAP-Request/Identity from the AP
             eapol_start = (

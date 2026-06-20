@@ -126,7 +126,7 @@ class Exploit(Exploit):
     priority = OptInteger(255, "VRRP priority to announce (255=master)")
     interval = OptInteger(1, "Advertisement interval in seconds")
     duration = OptInteger(10, "Duration to hold master role in seconds")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         vrid = int(self.vrid)

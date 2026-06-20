@@ -109,7 +109,7 @@ class Exploit(Exploit):
     capture_timeout = OptInteger(30, "Handshake capture timeout in seconds")
     msg3_retransmits = OptInteger(3, "Number of Msg3 retransmissions")
     deauth_first = OptBool(True, "Send deauth to force fresh handshake")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("ap_bssid", "client_mac"):

