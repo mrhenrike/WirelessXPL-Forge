@@ -5,6 +5,26 @@ import os
 import platform
 import sys
 
+# When running as root (sudo), include the original user's local site-packages
+# so packages like bleak, pycryptodome, scapy extensions, etc. are importable.
+def _add_user_site_packages() -> None:
+    import glob
+    # Check the real user's home (SUDO_USER, HOME before sudo, /home/*)
+    candidates = []
+    sudo_user = os.environ.get("SUDO_USER")
+    if sudo_user:
+        candidates.append(f"/home/{sudo_user}")
+    candidates.append(os.path.expanduser("~"))
+    for home in set(candidates):
+        user_lib = os.path.join(home, ".local", "lib")
+        if os.path.isdir(user_lib):
+            for p in glob.glob(os.path.join(user_lib, "python*/site-packages")):
+                if p not in sys.path:
+                    sys.path.insert(0, p)
+
+if os.name == "posix" and os.geteuid() == 0:
+    _add_user_site_packages()
+
 if sys.version_info.major < 3:
     print("WirelessXPL supports only Python3. Rerun application in Python3 environment.")
     exit(1)

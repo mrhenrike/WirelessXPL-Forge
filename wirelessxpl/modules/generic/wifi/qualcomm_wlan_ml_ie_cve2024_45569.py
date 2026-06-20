@@ -54,7 +54,7 @@ _POC_C_PATH = Path(__file__).parent / "poc" / "cve_2024_45569_ml_ie.c"
 class QualcommWlanMlIeCve202445569(Exploit):
     """CVE-2024-45569 — ML IE malformado via beacon injection (CVSS 9.8)."""
 
-    Protocol = Protocol.WIFI
+    target_protocol = Protocol.CUSTOM  # WiFi
 
     # ------------------------------------------------------------------
     # Opções

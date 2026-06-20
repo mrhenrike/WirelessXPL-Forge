@@ -55,7 +55,7 @@ _HOP_CHANNELS = [1, 6, 11, 3, 8, 13, 2, 7, 12, 5, 10]
 class WifiAirC2Beacon(Exploit):
     """WIFIAIR-C2 — C2 encoberto em beacons via VSE Tag 221."""
 
-    Protocol = Protocol.WIFI
+    target_protocol = Protocol.CUSTOM  # WiFi
 
     # ------------------------------------------------------------------
     # Opções

