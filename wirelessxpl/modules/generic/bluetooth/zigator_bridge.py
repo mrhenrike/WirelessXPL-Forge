@@ -361,7 +361,7 @@ class Exploit(Exploit):
             self._config_check()
             return
 
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         dispatch = {
             "decrypt": self._decrypt_mode,

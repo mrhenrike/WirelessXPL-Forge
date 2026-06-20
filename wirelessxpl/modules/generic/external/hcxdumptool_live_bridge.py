@@ -137,7 +137,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute live PMKID/EAPOL capture."""
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         iface = str(self.interface).strip()
         if not iface:

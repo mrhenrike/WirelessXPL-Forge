@@ -311,7 +311,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute Wi-Fi passive scan and print security assessment."""
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         iface = str(self.interface).strip()
         if not iface:
