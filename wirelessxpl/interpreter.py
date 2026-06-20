@@ -269,7 +269,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         self.show_sub_commands = ("info", "options", "advanced", "devices", "all", "creds", "exploits", "scanners", "wordlists")
         self.search_sub_commands = ("type", "device", "vendor")
 
-        self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search "])
+        self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search ", "glossary "])
         self.module_commands = ["run", "back", "set ", "setg ", "check"]
         self.module_commands.extend(self.global_commands)
         self.module_commands.sort()
@@ -343,6 +343,14 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
         if not len(module):
             print_error('A module is required when running non-interactively')
+            printer_queue.join()
+            return
+
+        # Special case: glossary command
+        if module.startswith("glossary"):
+            parts = module.split()
+            terms = parts[1:] if len(parts) > 1 else []
+            self.command_glossary(*terms)
             printer_queue.join()
             return
 
@@ -715,6 +723,51 @@ class WirelessXPLInterpreter(BaseInterpreter):
         print_info(self.global_help)
         if self.current_module:
             print_info("\n", self.module_help)
+
+    def command_glossary(self, *args, **kwargs):
+        """WXF Glossary — wireless security terms, acronyms and attack techniques.
+
+        Usage:
+            glossary                     → list all terms
+            glossary wpa                 → search for 'wpa'
+            glossary bssid ssid pmf      → multiple terms
+            glossary --list              → compact table
+            glossary --category wifi     → filter by category
+        """
+        from wirelessxpl.core.glossary import (
+            search_term, format_entry, format_compact_list, glossary_help, GLOSSARY
+        )
+        args_list = list(args)
+        if not args_list:
+            print_info(format_compact_list())
+            return
+
+        # Handle flags
+        if "--list" in args_list:
+            print_info(format_compact_list())
+            return
+
+        if "--category" in args_list:
+            idx = args_list.index("--category")
+            cat = args_list[idx + 1] if idx + 1 < len(args_list) else ""
+            print_info(format_compact_list(filter_category=cat))
+            return
+
+        if "--help" in args_list or args_list[0] == "help":
+            print_info(glossary_help())
+            return
+
+        # Search for each provided term
+        for query in args_list:
+            if query.startswith("--"):
+                continue
+            results = search_term(query)
+            if not results:
+                print_info(f"  Term '\033[93m{query}\033[0m' not found. "
+                           f"Try: glossary --list")
+            else:
+                for key, entry in results[:3]:  # max 3 results per query
+                    print_info(format_entry(key, entry))
 
     def command_exec(self, *args, **kwargs):
         os.system(args[0])
