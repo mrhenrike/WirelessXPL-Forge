@@ -53,7 +53,7 @@ _L2CAP_CID_RFCOMM = 0x0003
 class BtRfcommOobCve202513834(Exploit):
     """CVE-2025-13834 — RFCOMM TEST OOB Read em Python puro via BlueZ L2CAP raw."""
 
-    Protocol = Protocol.BLUETOOTH
+    target_protocol = Protocol.CUSTOM  # Bluetooth
 
     # ------------------------------------------------------------------
     # Opções

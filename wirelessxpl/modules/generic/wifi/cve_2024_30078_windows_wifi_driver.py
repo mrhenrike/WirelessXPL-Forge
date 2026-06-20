@@ -48,7 +48,7 @@ _POC_C_PATH = Path(__file__).parent / "poc" / "cve_2024_30078_vlan_rce.c"
 class Cve202430078WindowsWifiDriver(Exploit):
     """CVE-2024-30078 — VLAN tagged frame PoC via PolyglotOrchestrator(C)."""
 
-    Protocol = Protocol.WIFI
+    target_protocol = Protocol.CUSTOM  # WiFi
 
     # ------------------------------------------------------------------
     # Opções

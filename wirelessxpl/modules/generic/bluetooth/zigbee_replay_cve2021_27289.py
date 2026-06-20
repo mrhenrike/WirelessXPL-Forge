@@ -50,7 +50,7 @@ __info__ = {
 class ZigbeeReplayCve202127289(Exploit):
     """CVE-2021-27289 — Zigbee Replay com integração KillerBee."""
 
-    Protocol = Protocol.ZIGBEE
+    target_protocol = Protocol.CUSTOM  # Zigbee
 
     # ------------------------------------------------------------------
     # Opções

@@ -45,14 +45,22 @@ class Exploit(Exploit):
         with csv_path.open("r", encoding="utf-8", errors="ignore") as fh:
             reader = csv.reader(fh)
             for row in reader:
-                if len(row) < 14:
+                if not row:
                     continue
                 bssid = row[0].strip()
-                pwr = row[8].strip()
-                if ":" not in bssid:
+                if ":" not in bssid or len(bssid) != 17:
                     continue
+                # Support both airodump-ng CSV (14+ cols, pwr at col 8)
+                # and WXF compact CSV (4 cols: bssid,ssid,channel,rssi)
                 try:
-                    pwr_i = int(pwr)
+                    if len(row) >= 14:
+                        pwr_i = int(row[8].strip())
+                    elif len(row) >= 4:
+                        pwr_i = int(row[3].strip())
+                    else:
+                        pwr_i = -100
+                except ValueError:
+                    pwr_i = -100
                 except Exception:
                     pwr_i = -100
                 data[bssid] = pwr_i

