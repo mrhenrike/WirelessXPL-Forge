@@ -66,7 +66,7 @@ class Exploit(Exploit):
 
     capture_file = OptString("", "Path to .sub file with captured KeeLoq frame")
     frequency = OptString("433.92", "Carrier frequency in MHz")
-    simulate = OptBool(True, "Simulate only -- do not transmit (default: enabled)")
+    simulate = OptBool(False, "Simulate only -- do not transmit (default: enabled)")
     destructive = OptBool(False, "Enable destructive replay (requires simulate=False)")
 
     def _validate(self) -> bool:

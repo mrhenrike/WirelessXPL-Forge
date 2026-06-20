@@ -129,7 +129,7 @@ class Exploit(Exploit):
     hdop = OptFloat(0.5, "Spoofed HDOP (lower = higher quality)")
     burst = OptInteger(20, "Number of GPS_INPUT packets to send")
     interval_ms = OptInteger(200, "Interval between packets in milliseconds")
-    simulate = OptBool(True, "Simulate only (default: True)")
+    simulate = OptBool(False, "Simulate only (default: True)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

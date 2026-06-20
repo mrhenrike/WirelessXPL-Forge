@@ -74,7 +74,7 @@ class Exploit(Exploit):
     target = OptString("192.168.42.1", "ANAFI IP")
     port = OptInteger(7777, "ARSDK UDP port")
     command = OptString("takeoff", "Command: takeoff / land / emergency")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         cmd = str(self.command).strip().lower()

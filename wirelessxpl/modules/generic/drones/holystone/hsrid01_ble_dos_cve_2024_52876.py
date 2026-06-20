@@ -98,7 +98,7 @@ class Exploit(Exploit):
 
     target = OptString("", "HSRID01 BLE MAC address (e.g. AA:BB:CC:DD:EE:FF)")
     read_count = OptInteger(_CRASH_READ_COUNT, "Number of GATT reads before crash")
-    simulate = OptBool(True, "Simulate only (no BLE connection)")
+    simulate = OptBool(False, "Simulate only (no BLE connection)")
 
     def _validate(self) -> bool:
         addr = str(self.target).strip()

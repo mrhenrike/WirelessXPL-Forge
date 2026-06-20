@@ -113,7 +113,7 @@ class Exploit(Exploit):
     target_sys = OptInteger(1, "Target system ID")
     target_comp = OptInteger(1, "Target component ID")
     retries = OptInteger(3, "Number of command retries")
-    simulate = OptBool(True, "Simulate only (default: True)")
+    simulate = OptBool(False, "Simulate only (default: True)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

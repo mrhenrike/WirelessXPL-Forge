@@ -134,7 +134,7 @@ class Exploit(Exploit):
 
     target = OptString("", "Target BLE MAC address")
     scan_cves = OptString("16336,17517,17519,17520", "Comma-separated CVE suffixes to test")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         addr = str(self.target).strip()

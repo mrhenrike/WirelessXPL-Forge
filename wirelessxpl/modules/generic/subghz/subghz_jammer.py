@@ -106,7 +106,7 @@ class Exploit(Exploit):
     frequency = OptString("433.92", "Jamming frequency in MHz")
     jammer_type = OptString("full", "Jammer type: full / intermittent / random_burst")
     duration_ms = OptInteger(500, "Jamming duration in milliseconds")
-    simulate = OptBool(True, "Simulate only (default: True -- MUST be False for live TX)")
+    simulate = OptBool(False, "Simulate only (default: True -- MUST be False for live TX)")
     destructive = OptBool(False, "Enable destructive mode (MUST be True for live TX)")
     explicit_confirm = OptString(
         "",

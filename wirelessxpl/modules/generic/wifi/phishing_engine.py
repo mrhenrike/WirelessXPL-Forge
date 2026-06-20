@@ -342,8 +342,9 @@ class Exploit(Exploit):
     def list_templates(self) -> List[str]:
         """Return names of available captive portal templates.
 
-        Scans resources/captive_templates/ for subdirectories containing
-        an index.html file.
+        Scans resources/captive_templates/ for:
+          - Subdirectories containing an index.html file
+          - Direct .html files (newer format)
 
         Returns:
             Sorted list of template name strings.
@@ -354,18 +355,26 @@ class Exploit(Exploit):
         for entry in os.scandir(_TEMPLATE_DIR):
             if entry.is_dir() and os.path.isfile(os.path.join(entry.path, "index.html")):
                 found.append(entry.name)
-        return sorted(found)
+            elif entry.is_file() and entry.name.endswith(".html"):
+                # Direct .html template (strip extension for name)
+                found.append(entry.name[:-5])
+        return sorted(set(found))
 
     def _load_template_html(self, template_name: str, ssid: str) -> str:
-        """Load portal HTML from the template directory or return a default.
+        """Load portal HTML from template directory or .html file, with fallback.
+
+        Supports two template formats:
+          - Directory: captive_templates/<name>/index.html
+          - File:      captive_templates/<name>.html
 
         Args:
-            template_name: Template subdirectory name.
+            template_name: Template name (directory or file stem).
             ssid: SSID inserted into the inline fallback template.
 
         Returns:
             HTML string for the captive portal page.
         """
+        # Try directory format first
         tpl_path = os.path.join(_TEMPLATE_DIR, template_name, "index.html")
         if os.path.isfile(tpl_path):
             try:
@@ -373,6 +382,15 @@ class Exploit(Exploit):
                     return fh.read()
             except OSError as exc:
                 logger.warning("Could not read template %s: %s", tpl_path, exc)
+
+        # Try direct .html file format
+        tpl_path_html = os.path.join(_TEMPLATE_DIR, template_name + ".html")
+        if os.path.isfile(tpl_path_html):
+            try:
+                with open(tpl_path_html, "r", encoding="utf-8") as fh:
+                    return fh.read()
+            except OSError as exc:
+                logger.warning("Could not read template %s: %s", tpl_path_html, exc)
 
         # Inline minimal fallback
         return (
