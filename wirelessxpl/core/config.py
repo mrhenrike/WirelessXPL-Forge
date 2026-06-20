@@ -368,6 +368,8 @@ class WXFConfig:
     def print_banner(self) -> None:
         """Print startup config summary."""
         from wirelessxpl.core.exploit.printer import print_info, print_success, print_warning
+        import subprocess as _sp, shutil as _sh
+
         print_info("=" * 70)
         print_info("  WXF Global Configuration")
         print_info("=" * 70)
@@ -377,6 +379,19 @@ class WXFConfig:
         sim   = "\033[91m✗ OFF\033[0m" if not self.simulate else "\033[93m✓ ON\033[0m"
         print_info(f"  Modo         │ {destr}  │  simulate={sim}  │  T{self.timing}/{self.timing_name}")
         print_info(f"  LHOST:LPORT  │ \033[92m{self.lhost}:{self.lport}\033[0m  (reverse shell default)")
+
+        # GPU detection
+        if _sh.which("hashcat"):
+            try:
+                r = _sp.run(["hashcat", "-I"], capture_output=True, text=True, timeout=10)
+                gpu_lines = [l.strip() for l in r.stdout.splitlines()
+                             if "Name" in l and ("Iris" in l or "AMD" in l or "NVIDIA" in l or "GPU" in l.upper())]
+                if gpu_lines:
+                    print_info(f"  GPU          │ \033[92m{gpu_lines[0]}\033[0m  (hashcat -D 2 --force)")
+                else:
+                    print_info(f"  GPU          │ \033[93mSó CPU disponível\033[0m  (hashcat -D 1)")
+            except Exception:
+                pass
         print_info("")
 
         # Interfaces

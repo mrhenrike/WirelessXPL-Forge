@@ -653,13 +653,13 @@ class Exploit(Exploit):
         result: CrackResult,
         tmp_dir: Path,
     ) -> None:
-        # Device flags
+        # Device flags — Intel/AMD GPU require --force to bypass API warnings
         if be == "hashcat_gpu":
-            dev_args = ["-D", "2"]
+            dev_args = ["-D", "2", "--force"]   # D 2 = GPU (Intel Iris Xe, AMD, NVIDIA)
         elif be == "hashcat_cpu":
             dev_args = ["-D", "1", "--force"]
         else:  # hashcat_auto
-            dev_args = []
+            dev_args = ["--force"]  # auto-detect best device
 
         # Extra args
         extra: List[str] = []
