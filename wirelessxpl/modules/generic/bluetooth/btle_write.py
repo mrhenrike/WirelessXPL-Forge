@@ -1,7 +1,9 @@
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.bluetooth.btle_client import BTLEClient
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(BTLEClient):
     __info__ = {
         "name": "Bluetooth LE Write",

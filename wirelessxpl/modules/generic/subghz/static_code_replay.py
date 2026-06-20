@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import PROTOCOL_MAP, OOKEncoder
@@ -103,7 +103,7 @@ class Exploit(Exploit):
     frequency = OptString("433.92", "Frequency in MHz (e.g. 433.92, 315.0, 868.35)")
     repeats = OptInteger(3, "Number of transmit repetitions")
     interface = OptString("hackrf", "TX interface: hackrf | cc1101 | simulate")
-    simulate = OptBoolean(True, "Simulate only -- do not transmit (default: enabled)")
+    simulate = OptBool(True, "Simulate only -- do not transmit (default: enabled)")
 
     def _validate(self) -> bool:
         target_path = str(self.target).strip()

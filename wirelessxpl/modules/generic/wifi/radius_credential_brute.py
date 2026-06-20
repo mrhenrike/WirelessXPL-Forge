@@ -35,6 +35,7 @@ from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,7 @@ def _read_lines(filepath: str) -> List[str]:
     return lines
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """RADIUS/EAP credential brute-force via wpa_supplicant."""
 

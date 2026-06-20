@@ -35,6 +35,7 @@ from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,7 @@ def _resolve_zigator(custom_path: str) -> Optional[str]:
     return found
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Zigator - Zigbee traffic decryption, forging, injection, and IDS bridge."""
 

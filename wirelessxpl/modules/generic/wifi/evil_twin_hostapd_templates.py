@@ -13,6 +13,7 @@ from pathlib import Path
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
@@ -121,6 +122,7 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
     }
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Write six hostapd template files for SSID impersonation research."""
 

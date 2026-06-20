@@ -14,7 +14,7 @@ import logging
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 from wirelessxpl.protocols.subghz.keeloq_engine import (
@@ -105,7 +105,7 @@ class Exploit(Exploit):
 
     raw_frame = OptString("", "Raw 66-bit KeeLoq frame as hex (e.g. 0xABCDEF1234567890AB)")
     manufacturer_key = OptString("", "64-bit manufacturer key as hex (optional, for decryption)")
-    verbose = OptBoolean(True, "Show detailed frame analysis")
+    verbose = OptBool(True, "Show detailed frame analysis")
 
     def _validate(self) -> bool:
         raw = str(self.raw_frame).strip()

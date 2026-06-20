@@ -34,6 +34,7 @@ from wirelessxpl.modules.generic.wifi._i18n_service import (
     I18nPortalHandler,
     SUPPORTED_LOCALES,
 )
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +83,7 @@ class MFACredentialHandler(http.server.SimpleHTTPRequestHandler):
         logger.debug(fmt, *args)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """MFA phishing via captive portal with real-time token capture."""
 

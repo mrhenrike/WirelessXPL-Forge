@@ -1,75 +1,47 @@
-import time
-import binascii
-from bluepy.btle import Scanner, DefaultDelegate
+"""BLE scanner backed by bleak (replaces bluepy Scanner)."""
+from __future__ import annotations
+
+import asyncio
+from typing import List, Optional
+
 from .btle_device import Device
 
 
-class BTLEScanner(Scanner):
-    """ Bluetooth Low Energy Scanner """
+class BTLEScanner:
+    """Discover nearby BLE devices using bleak BleakScanner."""
 
-    def __init__(self, mac=None, iface=0):
-        Scanner.__init__(self, iface)
-        self.mac = mac
+    def __init__(self, mac: Optional[str] = None, iface: int = 0) -> None:
+        self.mac = mac.upper() if mac else None
+        self.iface = iface
 
-    def _decode_address(self, resp):
-        addr = binascii.b2a_hex(resp["addr"][0]).decode("utf-8")
-        return ":".join([addr[i: i + 2] for i in range(0, 12, 2)])
+    def scan(self, timeout: float = 10.0) -> List[Device]:
+        """Synchronous scan; returns list of Device objects."""
+        return asyncio.run(self._async_scan(timeout))
 
-    def _find_or_create(self, addr):
-        if addr in self.scanned:
-            dev = self.scanned[addr]
-        else:
-            dev = Device(addr, self.iface)
-            self.scanned[addr] = dev
+    async def _async_scan(self, timeout: float) -> List[Device]:
+        try:
+            from bleak import BleakScanner  # type: ignore[import-untyped]
+        except ImportError:
+            return []
 
-        return dev
+        results = await BleakScanner.discover(timeout=timeout, return_adv=True)
+        devices: List[Device] = []
+        for ble_dev, adv in results.values():
+            if self.mac and ble_dev.address.upper() != self.mac:
+                continue
+            devices.append(Device(ble_dev, adv))
 
-    def process(self, timeout=10.0):
-        start = time.time()
-
-        while True:
-            if timeout:
-                remain = start + timeout - time.time()
-                if remain <= 0.0:
-                    break
-            else:
-                remain = None
-
-            resp = self._waitResp(["scan", "stat"], remain)
-            if resp is None:
-                break
-
-            respType = resp["rsp"][0]
-
-            if respType == "stat":
-                if resp["state"][0] == "disc":
-                    self._mgmtCmd("scan")
-
-            elif respType == "scan":
-                addr = self._decode_address(resp)
-
-                if not self.mac or addr == self.mac:
-                    dev = self._find_or_create(addr)
-
-                    newData = dev._update(resp)
-
-                    if self.delegate:
-                        self.delegate.handleDiscovery(dev, (dev.updateCount <= 1), newData)
-
-                    if self.mac and dev.addr == self.mac:
-                        break
+        return devices
 
 
-class ScanDelegate(DefaultDelegate):
-    def __init__(self, options):
-        DefaultDelegate.__init__(self)
+class ScanDelegate:
+    """Compatibility shim — no-op in the bleak-based implementation."""
+
+    def __init__(self, options=None) -> None:
         self.options = options
 
-    def handleDiscovery(self, dev, isNewDev, isNewData):
-        if not isNewDev:
+    def handleDiscovery(self, dev: Device, is_new: bool, is_new_data: bool) -> None:
+        if not is_new:
             return
-        elif self.options.mac and dev.addr != self.options.mac:
-            return
-
-        if self.options.buffering:
+        if self.options and self.options.buffering:
             dev.print_info()

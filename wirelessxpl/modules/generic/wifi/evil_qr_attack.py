@@ -31,10 +31,12 @@ from wirelessxpl.modules.generic.wifi._i18n_service import (
     I18nPortalHandler,
     SUPPORTED_LOCALES,
 )
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Evil QR code phishing with multiple strategies."""
 

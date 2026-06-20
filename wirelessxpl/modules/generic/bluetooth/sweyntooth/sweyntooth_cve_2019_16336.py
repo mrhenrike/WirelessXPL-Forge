@@ -22,7 +22,7 @@ import sys
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -118,7 +118,7 @@ class Exploit(Exploit):
 
     target = OptString("", "Target BLE MAC address (AA:BB:CC:DD:EE:FF)")
     att_handle = OptInteger(0x0001, "ATT handle to write (0x0001 = Generic Access)")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         addr = str(self.target).strip()

@@ -18,7 +18,7 @@ import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -113,7 +113,7 @@ class Exploit(Exploit):
     target_sys = OptInteger(1, "Target system ID")
     target_comp = OptInteger(1, "Target component ID")
     retries = OptInteger(3, "Number of command retries")
-    simulate = OptBoolean(True, "Simulate only (default: True)")
+    simulate = OptBool(True, "Simulate only (default: True)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

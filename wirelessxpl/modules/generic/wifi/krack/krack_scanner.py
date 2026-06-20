@@ -12,7 +12,7 @@ import time
 from typing import Dict, List, Optional, Set
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -89,7 +89,7 @@ class Exploit(Exploit):
     interface = OptString("wlan0mon", "Monitor mode interface")
     ap_bssid = OptString("", "Target AP BSSID (empty = scan all)")
     scan_time = OptInteger(60, "Passive scan duration in seconds")
-    trigger_deauth = OptBoolean(False, "Send deauth to trigger fresh handshakes")
+    trigger_deauth = OptBool(False, "Send deauth to trigger fresh handshakes")
     client_mac = OptString("", "Client MAC to deauth (requires trigger_deauth=True)")
 
     def _validate(self) -> bool:
@@ -99,7 +99,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return True
 
-    @multi
     def run(self) -> None:
         """Scan for KRACK vulnerability indicators."""
         print_status("KRACK Vulnerability Scanner")

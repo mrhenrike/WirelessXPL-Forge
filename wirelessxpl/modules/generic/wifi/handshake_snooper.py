@@ -41,6 +41,7 @@ from typing import Dict, List, Optional, Tuple
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 try:
     from wirelessxpl.core.ml.handshake_scorer import HandshakeScorer
@@ -97,6 +98,7 @@ def _classify_eapol_message(eapol_raw: bytes) -> Optional[str]:
     return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Automated handshake capture with native Scapy EAPOL snooping."""
 

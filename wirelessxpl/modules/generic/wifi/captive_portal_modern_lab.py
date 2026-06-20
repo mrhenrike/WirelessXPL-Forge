@@ -16,6 +16,7 @@ from urllib.parse import parse_qs, urlparse
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 def _html_shell(title: str, inner: str) -> bytes:
@@ -76,6 +77,7 @@ def _html_shell(title: str, inner: str) -> bytes:
     return page.encode("utf-8")
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Threading HTTP server presenting a modern captive-style page."""
 

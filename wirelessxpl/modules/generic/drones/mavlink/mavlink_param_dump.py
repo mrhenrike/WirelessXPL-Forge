@@ -14,7 +14,7 @@ import time
 from typing import Dict, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -119,7 +119,7 @@ class Exploit(Exploit):
     target = OptString("192.168.1.1", "Drone IP")
     port = OptInteger(14550, "MAVLink UDP port")
     timeout = OptInteger(30, "Receive timeout in seconds")
-    security_only = OptBoolean(False, "Show only security-critical parameters")
+    security_only = OptBool(False, "Show only security-critical parameters")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

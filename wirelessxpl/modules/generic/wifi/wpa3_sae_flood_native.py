@@ -27,6 +27,7 @@ from typing import Any, Dict, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ def _random_mac() -> str:
     return ":".join(f"{b:02x}" for b in octets)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """WPA3 SAE commit flood — native Scapy implementation.
 

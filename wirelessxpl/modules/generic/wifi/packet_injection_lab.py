@@ -26,6 +26,7 @@ import time
 from typing import Any, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,7 @@ def _validate_mac(mac: str) -> bool:
     return True
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """802.11 packet injection lab: craft and inject arbitrary wireless frames."""
 

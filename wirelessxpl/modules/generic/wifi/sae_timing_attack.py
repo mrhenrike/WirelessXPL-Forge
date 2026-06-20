@@ -33,6 +33,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ def _ttest_ind(a: List[float], b: List[float]) -> Tuple[float, float]:
     return (t_stat, p_approx)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """SAE timing side-channel analysis for WPA3 password partitioning."""
 

@@ -20,7 +20,7 @@ from typing import List, Optional
 from urllib.parse import urljoin
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -87,9 +87,9 @@ class Exploit(Exploit):
 
     target = OptString("192.168.2.1", "DJI QuickTransfer mode IP")
     output_dir = OptString("", "Directory to save exfiltrated files (default: .tmp/dji_exfil/)")
-    enumerate_only = OptBoolean(False, "Enumerate file list without downloading")
+    enumerate_only = OptBool(False, "Enumerate file list without downloading")
     timeout = OptInteger(10, "HTTP request timeout in seconds")
-    simulate = OptBoolean(True, "Simulate only -- do not connect")
+    simulate = OptBool(True, "Simulate only -- do not connect")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

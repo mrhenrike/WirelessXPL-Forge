@@ -15,7 +15,7 @@ import time
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -120,7 +120,7 @@ class Exploit(Exploit):
     client_mac = OptString("", "Client MAC (for directed probes)")
     attacker_mac = OptString("02:00:00:00:00:04", "Source MAC for probe frames")
     test_cves = OptString("26140,26141,26143", "Comma-separated CVE suffixes to test")
-    simulate = OptBoolean(True, "Simulate only (describe probes without sending)")
+    simulate = OptBool(True, "Simulate only (describe probes without sending)")
 
     def _validate(self) -> bool:
         bssid = str(self.ap_bssid).strip()
@@ -133,7 +133,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Run FragAttacks multi-CVE scan."""
         print_status("FragAttacks Multi-CVE Scanner")

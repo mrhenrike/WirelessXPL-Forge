@@ -30,6 +30,7 @@ from typing import List, Optional
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +77,7 @@ address=/#/10.0.0.1
 """
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """KARMA/MANA rogue AP attack with probe-response spoofing."""
 

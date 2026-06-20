@@ -37,6 +37,7 @@ from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +61,7 @@ def _which_kb(tool: str) -> Optional[str]:
     return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """KillerBee — Zigbee / IEEE 802.15.4 attack and capture bridge."""
 

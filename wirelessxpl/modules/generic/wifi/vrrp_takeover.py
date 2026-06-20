@@ -18,9 +18,10 @@ import time
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptFloat, OptInteger, OptString,
+    Exploit, OptBool, OptFloat, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,7 @@ def _build_vrrp_advert_raw(
     return payload
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """VRRP active router takeover via priority 255 spoof.
 
@@ -124,7 +126,7 @@ class Exploit(Exploit):
     priority = OptInteger(255, "VRRP priority to announce (255=master)")
     interval = OptInteger(1, "Advertisement interval in seconds")
     duration = OptInteger(10, "Duration to hold master role in seconds")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         vrid = int(self.vrid)

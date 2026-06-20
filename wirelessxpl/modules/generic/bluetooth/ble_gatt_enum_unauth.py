@@ -14,6 +14,7 @@ import struct
 import os
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _ATT_OP_MTU_REQ = 0x02
@@ -70,6 +71,7 @@ def _props_to_str(props_byte):
     return "|".join(name for bit, name in _CHAR_PROPS.items() if props_byte & bit) or "None"
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """BLE GATT Unauthenticated Service/Characteristic Enumeration.
 

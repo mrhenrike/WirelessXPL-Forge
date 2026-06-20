@@ -21,10 +21,12 @@ from pathlib import Path
 from wirelessxpl.core.exploit import *
 
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """LLMNR/NBT-NS/mDNS Responder on rogue Wi-Fi interface."""
 

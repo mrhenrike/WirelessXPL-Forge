@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,7 @@ SNAP_HEADER = b"\xaa\xaa\x03\x00\x00\x00"
 ZERO_TK = b"\x00" * 16
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native KR00K attack — deauth + sniff + decrypt with all-zero TK."""
 

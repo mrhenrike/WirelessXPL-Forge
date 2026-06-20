@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import PROTOCOL_MAP
@@ -155,7 +155,7 @@ class Exploit(Exploit):
 
     input_file = OptString("", "Path to .sub file or RTL-SDR .bin IQ file")
     sample_rate = OptInteger(250000, "Sample rate in Hz (for IQ files, ignored for .sub)")
-    verbose = OptBoolean(True, "Show full analysis details")
+    verbose = OptBool(True, "Show full analysis details")
 
     def _validate(self) -> bool:
         f = str(self.input_file).strip()

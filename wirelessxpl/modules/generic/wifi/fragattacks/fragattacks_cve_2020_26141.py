@@ -16,7 +16,7 @@ import struct
 from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -111,7 +111,7 @@ class Exploit(Exploit):
     ap_bssid = OptString("", "AP BSSID")
     payload_hex = OptString("aaaa030000000800", "Fragment payload as hex (default: LLC/SNAP+IP EtherType)")
     seq_num = OptInteger(1, "802.11 sequence number")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("victim_mac", "ap_bssid"):
@@ -130,7 +130,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Inject CVE-2020-26141 TKIP fragment."""
         print_status("CVE-2020-26141 -- TKIP MIC Bypass on Fragments")

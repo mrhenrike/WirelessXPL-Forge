@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptString,
+    Exploit, OptBool, OptString,
     mute, multi, print_info, print_status, print_success,
 )
 
@@ -96,7 +96,7 @@ class Exploit(Exploit):
         "status": "informational",
     }
 
-    show_setup = OptBoolean(True, "Display GNU Radio setup instructions")
+    show_setup = OptBool(True, "Display GNU Radio setup instructions")
     sdr_type = OptString("rtlsdr", "SDR type: rtlsdr / hackrf / limesdr")
 
     @mute

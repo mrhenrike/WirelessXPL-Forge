@@ -29,6 +29,7 @@ from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,7 @@ def _which(binary: str) -> Optional[str]:
     return shutil.which(binary)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Online WPA/WPA2/WPA3 password brute-force via live authentication attempts."""
 

@@ -37,6 +37,7 @@ from typing import Any, List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +84,7 @@ def _parse_short_addr(value: str) -> int:
     return int(value.strip().replace("0x", "").replace("0X", ""), 16)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Zigbee network realignment attack - force rejoin and key exposure."""
 

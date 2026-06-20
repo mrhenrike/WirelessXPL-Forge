@@ -26,6 +26,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +147,7 @@ def _classify_security(
     return "OPEN"
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Wi-Fi security analyzer — passive scan and BSS security classification."""
 

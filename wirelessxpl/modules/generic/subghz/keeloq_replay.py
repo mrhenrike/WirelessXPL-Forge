@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 from wirelessxpl.protocols.subghz.keeloq_engine import decode_frame
@@ -66,8 +66,8 @@ class Exploit(Exploit):
 
     capture_file = OptString("", "Path to .sub file with captured KeeLoq frame")
     frequency = OptString("433.92", "Carrier frequency in MHz")
-    simulate = OptBoolean(True, "Simulate only -- do not transmit (default: enabled)")
-    destructive = OptBoolean(False, "Enable destructive replay (requires simulate=False)")
+    simulate = OptBool(True, "Simulate only -- do not transmit (default: enabled)")
+    destructive = OptBool(False, "Enable destructive replay (requires simulate=False)")
 
     def _validate(self) -> bool:
         cap = str(self.capture_file).strip()

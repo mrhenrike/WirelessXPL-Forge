@@ -35,6 +35,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -426,6 +427,7 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
             logger.warning("MAC spoof failed: %s", err)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native BT HID keystroke & mouse injection — CVE-2023-45866 / CVE-2024-23717."""
 

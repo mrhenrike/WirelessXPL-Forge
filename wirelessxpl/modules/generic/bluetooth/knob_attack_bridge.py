@@ -38,6 +38,7 @@ from wirelessxpl.core.exploit import *
 from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,7 @@ def _knob_root() -> Path:
     return Path(__file__).resolve().parents[5] / "knob-attack"
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """KNOB BT key negotiation attack (CVE-2019-9506) — bridge."""
 

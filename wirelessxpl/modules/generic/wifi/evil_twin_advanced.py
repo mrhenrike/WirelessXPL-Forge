@@ -44,6 +44,7 @@ from wirelessxpl.modules.generic.wifi._i18n_service import (
     I18nPortalHandler,
     SUPPORTED_LOCALES,
 )
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +109,7 @@ class CredentialHandler(http.server.SimpleHTTPRequestHandler):
         logger.debug(fmt, *args)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Advanced evil twin with captive portal template selection."""
 

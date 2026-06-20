@@ -14,7 +14,7 @@ import struct
 import time
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -91,7 +91,7 @@ class Exploit(Exploit):
     port = OptInteger(14550, "MAVLink UDP port")
     param_name = OptString("FENCE_ENABLE", "Parameter to set (FENCE_ENABLE or FENCE_ACTION)")
     param_value = OptFloat(0.0, "Parameter value (0 = disable)")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

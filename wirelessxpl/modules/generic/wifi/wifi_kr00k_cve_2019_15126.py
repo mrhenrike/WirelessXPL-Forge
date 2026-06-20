@@ -19,6 +19,7 @@ import threading
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,7 @@ SNAP_HEADER = b"\xaa\xaa\x03\x00\x00\x00"
 ZERO_TK = b"\x00" * 16
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """KR00K Attack (CVE-2019-15126) — deauth + sniff + decrypt com TK zero.
 

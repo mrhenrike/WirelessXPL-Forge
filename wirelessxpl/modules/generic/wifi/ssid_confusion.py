@@ -30,6 +30,7 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +139,7 @@ def build_csa_beacon(bssid: str, ssid: str, target_channel: int,
     return beacon
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Native SSID Confusion — MC-MitM with SSID rewriting."""
 

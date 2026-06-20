@@ -17,7 +17,7 @@ import struct
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -106,7 +106,7 @@ class Exploit(Exploit):
         "ARP request payload hex (default: ARP who-has 192.168.1.1)"
     )
     attacker_mac = OptString("02:00:00:00:00:03", "Source MAC for injected frames")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         bssid = str(self.ap_bssid).strip()
@@ -124,7 +124,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Inject CVE-2020-26143 broadcast A-MSDU frame."""
         print_status("CVE-2020-26143 -- Broadcast A-MSDU Plaintext Injection")

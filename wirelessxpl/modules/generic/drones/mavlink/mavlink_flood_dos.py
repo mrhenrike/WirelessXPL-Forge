@@ -16,7 +16,7 @@ import threading
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -80,7 +80,7 @@ class Exploit(Exploit):
     port = OptInteger(14550, "MAVLink UDP port")
     rate = OptInteger(1000, "Packets per second")
     duration = OptInteger(5, "Flood duration in seconds")
-    simulate = OptBoolean(True, "Simulate only (display rate, no TX)")
+    simulate = OptBool(True, "Simulate only (display rate, no TX)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

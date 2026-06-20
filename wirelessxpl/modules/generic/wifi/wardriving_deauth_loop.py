@@ -20,10 +20,12 @@ from pathlib import Path
 from typing import List
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     __info__ = {
         "name": "Wardriving Deauth Loop",

@@ -19,7 +19,7 @@ import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -116,7 +116,7 @@ class Exploit(Exploit):
     ap_bssid = OptString("", "Target AP BSSID")
     inject_ip = OptString("192.168.1.2", "IP to inject (ARP destination)")
     attacker_mac = OptString("", "Attacker source MAC (auto-detect if empty)")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("victim_mac", "ap_bssid"):
@@ -130,7 +130,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Inject CVE-2020-26140 A-MSDU frame."""
         print_status("CVE-2020-26140 -- FragAttacks A-MSDU Plaintext Injection")
