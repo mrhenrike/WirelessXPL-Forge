@@ -30,6 +30,7 @@ from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -853,6 +854,7 @@ def _arp_replay_scapy(iface: str, bssid: str, count: int = 1000) -> int:
     return injected
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Orchestrate all WEP attack vectors with automatic IV capture and cracking."""
 

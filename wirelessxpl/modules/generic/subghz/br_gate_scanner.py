@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 
@@ -133,7 +133,7 @@ class Exploit(Exploit):
     frequency = OptString("433.92", "Scan frequency in MHz")
     scan_time = OptInteger(30, "Passive scan duration in seconds")
     rtl433_path = OptString("rtl_433", "Path to rtl_433 binary")
-    verbose = OptBoolean(True, "Show detailed timing analysis")
+    verbose = OptBool(True, "Show detailed timing analysis")
 
     def _validate(self) -> bool:
         try:

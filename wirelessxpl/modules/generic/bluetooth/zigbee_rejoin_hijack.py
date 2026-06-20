@@ -21,6 +21,7 @@ import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _CHANNEL_MIN = 11
@@ -75,6 +76,7 @@ def _build_rejoin_trigger_frame(pan_bytes, coord_addr, target_bytes, seq_num):
     return frame_ctrl + seq + dst_pan + dst_addr + dst_pan + src_addr + nwk_disassoc
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Zigbee Rejoin Hijack via Beacon Spoofing e Transport Key Capture.
 

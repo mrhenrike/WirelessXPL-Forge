@@ -18,7 +18,7 @@ import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -74,8 +74,8 @@ class Exploit(Exploit):
     target = OptString("192.168.42.1", "ANAFI IP (default 192.168.42.1)")
     port = OptInteger(7777, "ANAFI SDK port (7777=UDP, 80=HTTP API)")
     payload_size = OptInteger(2048, "Oversized date string length (>1024 triggers crash)")
-    simulate = OptBoolean(True, "Simulate only")
-    use_http = OptBoolean(False, "Use HTTP API instead of UDP ARSDK")
+    simulate = OptBool(True, "Simulate only")
+    use_http = OptBool(False, "Use HTTP API instead of UDP ARSDK")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

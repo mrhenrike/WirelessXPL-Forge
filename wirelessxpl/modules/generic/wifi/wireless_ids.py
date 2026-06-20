@@ -16,10 +16,12 @@ from pathlib import Path
 from typing import Dict, Set
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     __info__ = {
         "name": "Wireless IDS (Baseline/Anomaly)",

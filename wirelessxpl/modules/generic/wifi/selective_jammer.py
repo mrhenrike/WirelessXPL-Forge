@@ -28,10 +28,12 @@ from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Selective client jammer — surgical deauth per client."""
 

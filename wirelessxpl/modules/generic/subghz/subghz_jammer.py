@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -106,8 +106,8 @@ class Exploit(Exploit):
     frequency = OptString("433.92", "Jamming frequency in MHz")
     jammer_type = OptString("full", "Jammer type: full / intermittent / random_burst")
     duration_ms = OptInteger(500, "Jamming duration in milliseconds")
-    simulate = OptBoolean(True, "Simulate only (default: True -- MUST be False for live TX)")
-    destructive = OptBoolean(False, "Enable destructive mode (MUST be True for live TX)")
+    simulate = OptBool(True, "Simulate only (default: True -- MUST be False for live TX)")
+    destructive = OptBool(False, "Enable destructive mode (MUST be True for live TX)")
     explicit_confirm = OptString(
         "",
         f"Set to '{_CONFIRM_STRING}' to acknowledge legal risk"

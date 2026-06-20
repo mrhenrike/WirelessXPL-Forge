@@ -15,7 +15,7 @@ import time
 from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptFloat, OptInteger, OptString,
+    Exploit, OptBool, OptFloat, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -119,7 +119,7 @@ class Exploit(Exploit):
     wp_lat = OptFloat(-23.5505, "Waypoint latitude")
     wp_lon = OptFloat(-46.6333, "Waypoint longitude")
     wp_alt = OptFloat(50.0, "Waypoint altitude in meters")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

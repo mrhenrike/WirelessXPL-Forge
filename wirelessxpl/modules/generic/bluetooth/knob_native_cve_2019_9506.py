@@ -5,6 +5,7 @@ import struct
 import os
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _LMP_OPCODE_ENCRYPTION_KEY_SIZE_REQ = 16
@@ -45,6 +46,7 @@ def _parse_bd_addr(addr_str):
         return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """CVE-2019-9506 KNOB — Bluetooth Encryption Key Entropy Downgrade.
 

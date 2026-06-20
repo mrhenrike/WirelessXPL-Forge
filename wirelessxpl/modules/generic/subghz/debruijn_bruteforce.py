@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import (
@@ -122,8 +122,8 @@ class Exploit(Exploit):
 
     protocol = OptString("CAME", "Target protocol (CAME/NICE/Holtek/Chamberlain/Ansonic)")
     output_file = OptString("", "Output .sub file path (default: .tmp/<protocol>_debruijn.sub)")
-    show_time = OptBoolean(True, "Display estimated completion time")
-    simulate = OptBoolean(True, "Simulate only -- do not transmit")
+    show_time = OptBool(True, "Display estimated completion time")
+    simulate = OptBool(True, "Simulate only -- do not transmit")
 
     def _validate(self) -> bool:
         proto = str(self.protocol).strip()

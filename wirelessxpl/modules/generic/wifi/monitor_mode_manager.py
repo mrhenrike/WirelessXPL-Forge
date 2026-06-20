@@ -35,16 +35,17 @@ from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
-# Processes that conflict with raw 802.11 injection and monitor mode.
+# Legacy: processes that conflict with monitor mode (only used as fallback
+# when nmcli is unavailable). Killing these globally drops ALL wifi connections;
+# prefer _unmanage_interface() which targets only the specific interface.
 _CONFLICTING_PROCESSES = (
-    "NetworkManager",
     "wpa_supplicant",
     "dhclient",
     "dhcpcd",
-    "avahi-daemon",
 )
 
 # Channels grouped by regulatory band (2.4 GHz and 5 GHz common set).
@@ -134,18 +135,34 @@ class MonitorModeManager:
     # Process management
     # ------------------------------------------------------------------
 
-    def _kill_conflicting(self) -> None:
-        """Send SIGTERM to processes that interfere with monitor mode.
+    def _unmanage_interface(self) -> None:
+        """Remove this interface from NetworkManager control only.
 
-        Only kills processes in the known conflict list; never kills
-        arbitrary user processes.
+        Preferred over killing NM/wpa_supplicant globally because it
+        leaves all other interfaces (including the internet connection)
+        intact. Falls back to killing wpa_supplicant/dhclient for this
+        interface only when nmcli is unavailable.
         """
+        if shutil.which("nmcli"):
+            _run(["nmcli", "device", "set", self._interface, "managed", "no"])
+            logger.info("nmcli: %s set to unmanaged (NM still running)", self._interface)
+            time.sleep(0.3)
+            return
+        # Fallback: kill only dhclient/wpa_supplicant bound to this iface.
         for proc in _CONFLICTING_PROCESSES:
-            if shutil.which("killall"):
-                _run(["killall", proc])
-            elif shutil.which("pkill"):
-                _run(["pkill", "-x", proc])
-        time.sleep(0.5)
+            if shutil.which("pkill"):
+                _run(["pkill", "-f", f"{proc}.*{self._interface}"])
+        time.sleep(0.3)
+
+    def _remanage_interface(self) -> None:
+        """Return this interface to NetworkManager management after disable()."""
+        if shutil.which("nmcli"):
+            _run(["nmcli", "device", "set", self._interface, "managed", "yes"])
+            logger.info("nmcli: %s returned to managed", self._interface)
+
+    def _kill_conflicting(self) -> None:
+        """Compatibility shim: delegate to _unmanage_interface."""
+        self._unmanage_interface()
 
     # ------------------------------------------------------------------
     # Mode switching
@@ -172,7 +189,7 @@ class MonitorModeManager:
         self._rfkill_unblock()
 
         if self._kill_processes:
-            self._kill_conflicting()
+            self._unmanage_interface()
 
         _run(["ip", "link", "set", self._interface, "down"])
 
@@ -228,6 +245,7 @@ class MonitorModeManager:
 
         self._enabled = False
         self._monitor_iface = None
+        self._remanage_interface()
         logger.info("Interface %s restored to managed mode", iface)
 
     # ------------------------------------------------------------------
@@ -335,7 +353,6 @@ class MonitorModeManager:
                 iface=iface,
                 count=1,
                 verbose=False,
-                timeout=2,
             )
             logger.info("Injection test succeeded on %s", iface)
             return True
@@ -424,6 +441,7 @@ class MonitorModeManager:
 # ---------------------------------------------------------------------------
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Monitor mode manager for 802.11 wireless interfaces."""
 
@@ -433,8 +451,9 @@ class Exploit(Exploit):
             "Enables and disables 802.11 monitor mode without airmon-ng by "
             "using iw, ip link, and rfkill directly. Supports channel hopping "
             "in a daemon thread, injection capability testing via Scapy, "
-            "and context manager usage. Kills conflicting processes "
-            "(NetworkManager, wpa_supplicant, dhclient) before enabling."
+            "and context manager usage. Uses 'nmcli device set managed no' to "
+            "release only the target interface from NetworkManager (safe for "
+            "multi-interface setups where other interfaces must stay connected)."
         ),
         "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references": (

@@ -26,6 +26,7 @@ import time
 from typing import Any, Dict, Optional
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,7 @@ def _resolve_domain(qname: str, domain_map: Dict[str, str]) -> Optional[str]:
     return None
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """DNS spoofing engine: intercept queries and inject spoofed A records."""
 

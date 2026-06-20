@@ -19,7 +19,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -108,8 +108,8 @@ class Exploit(Exploit):
     client_mac = OptString("", "Target client MAC address")
     capture_timeout = OptInteger(30, "Handshake capture timeout in seconds")
     msg3_retransmits = OptInteger(3, "Number of Msg3 retransmissions")
-    deauth_first = OptBoolean(True, "Send deauth to force fresh handshake")
-    simulate = OptBoolean(True, "Simulate only")
+    deauth_first = OptBool(True, "Send deauth to force fresh handshake")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("ap_bssid", "client_mac"):
@@ -123,7 +123,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Execute KRACK 4-way handshake key reinstallation."""
         print_status("KRACK CVE-2017-13077 -- 4-Way Handshake Key Reinstallation")

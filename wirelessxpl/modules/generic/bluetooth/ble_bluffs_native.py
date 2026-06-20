@@ -29,6 +29,7 @@ from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ def _bluffs_repo_root() -> Path:
     return Path(__file__).resolve().parents[5] / "bluffs"
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """BLUFFS BLE session downgrade attack (CVE-2023-24023).
 

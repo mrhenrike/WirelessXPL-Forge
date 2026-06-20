@@ -15,6 +15,7 @@ import struct
 import os
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
 _TC_LINK_KEY = bytes.fromhex("5A6967426565416C6C69616E63653039")
@@ -67,6 +68,7 @@ def _build_ccm_nonce(src_addr_64, frame_counter, security_level):
     return src_addr_64 + struct.pack("<I", frame_counter) + struct.pack("B", security_level)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """Zigbee Network Key Extraction via TC Link Key Decryption.
 

@@ -15,7 +15,7 @@ import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptFloat, OptInteger, OptString,
+    Exploit, OptBool, OptFloat, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -129,7 +129,7 @@ class Exploit(Exploit):
     hdop = OptFloat(0.5, "Spoofed HDOP (lower = higher quality)")
     burst = OptInteger(20, "Number of GPS_INPUT packets to send")
     interval_ms = OptInteger(200, "Interval between packets in milliseconds")
-    simulate = OptBoolean(True, "Simulate only (default: True)")
+    simulate = OptBool(True, "Simulate only (default: True)")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

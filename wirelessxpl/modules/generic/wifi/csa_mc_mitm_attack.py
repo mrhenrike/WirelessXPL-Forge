@@ -28,10 +28,12 @@ import struct
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
 
+@requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
     """CSA steering attack + PNL harvest + known-beacons flood."""
 

@@ -31,6 +31,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
@@ -279,6 +280,7 @@ def brute_force_tk(state: PairingState, progress_interval: int = 100000,
     return None
 
 
+@requires_os(OSRequirement.LINUX_MAC)
 class Exploit(Exploit):
     """Native BLE Legacy Pairing Cracker — TK brute-force + traffic decryption."""
 

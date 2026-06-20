@@ -14,7 +14,7 @@ import time
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBoolean, OptInteger, OptString,
+    Exploit, OptBool, OptInteger, OptString,
     mute, multi, print_error, print_info, print_status, print_success, print_warning,
 )
 
@@ -90,7 +90,7 @@ class Exploit(Exploit):
     client_mac = OptString("", "Client MAC (target of GTK reinstall)")
     capture_timeout = OptInteger(60, "Capture timeout in seconds")
     retransmits = OptInteger(3, "Number of Group Key Msg1 retransmissions")
-    simulate = OptBoolean(True, "Simulate only")
+    simulate = OptBool(True, "Simulate only")
 
     def _validate(self) -> bool:
         for field in ("ap_bssid", "client_mac"):
@@ -104,7 +104,6 @@ class Exploit(Exploit):
     def check(self) -> bool:
         return self._validate()
 
-    @multi
     def run(self) -> None:
         """Execute KRACK Group Key reinstallation."""
         print_status("KRACK CVE-2017-13080 -- Group Key Reinstallation")
