@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime
 
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-WXF_DIR = "/mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge"
+WXF_DIR = str(Path(__file__).parent.parent)
 IFACE = "wlx24050f3d5f0a"
 OUTDIR = f"/tmp/wxf_campaign_{TIMESTAMP}"
 os.makedirs(OUTDIR, exist_ok=True)

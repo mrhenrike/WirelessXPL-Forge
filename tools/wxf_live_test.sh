@@ -19,7 +19,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTDIR="/tmp/wxf_tests_$TIMESTAMP"
 mkdir -p "$OUTDIR"
 
-WXFDIR="/mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge"
+WXFDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$OUTDIR/wxf_full_test.log"
 REPORT="$OUTDIR/REPORT_$TIMESTAMP.md"
 
@@ -219,7 +219,7 @@ sect "FASE 8 — CVE Checks (FragAttacks, KRACK, WPA3)"
 info "Verificando vulnerabilidades CVE nos APs detectados via WirelessXPL-Forge..."
 
 # Executar via Python o módulo de análise de segurança WiFi
-cd "$WXFDIR" 2>/dev/null || cd /mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge
+cd "$WXFDIR"
 
 # Scan de APs com análise WPS/WPA via programa
 if [ -f "$WXFDIR/wirelessxpl.py" ] && command -v python3 &>/dev/null; then
