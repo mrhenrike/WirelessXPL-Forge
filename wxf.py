@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
 import logging.handlers
+import os
 import platform
 import sys
+
 if sys.version_info.major < 3:
     print("WirelessXPL supports only Python3. Rerun application in Python3 environment.")
     exit(1)
 if sys.version_info < (3, 8):
     print("WirelessXPL requires Python 3.8+ (detected: {}).".format(platform.python_version()))
     exit(1)
+
+# Root / Administrator check
+if os.name == "posix" and os.geteuid() != 0:
+    print("\033[91m[!] AVISO: WirelessXPL-Forge NÃO está rodando como root.\033[0m")
+    print("\033[93m    Módulos que usam monitor mode, raw sockets, deauth, injection e BLE\033[0m")
+    print("\033[93m    requerem privilégios root (Linux) ou Administrator (Windows).\033[0m")
+    print("\033[93m    Recomendado: sudo python3 wxf.py\033[0m")
+    print("")
+elif os.name == "posix":
+    print("\033[92m[+] Rodando como root — todos os módulos disponíveis.\033[0m")
 
 log_handler = logging.handlers.RotatingFileHandler(filename="wirelessxpl.log", maxBytes=500000)
 log_formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s       %(message)s")

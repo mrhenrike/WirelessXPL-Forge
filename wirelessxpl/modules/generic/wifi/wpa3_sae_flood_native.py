@@ -113,7 +113,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute SAE commit flood."""
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         iface = str(self.interface).strip()
         bssid = str(self.target_bssid).strip().upper()

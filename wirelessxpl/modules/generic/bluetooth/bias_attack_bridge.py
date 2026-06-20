@@ -154,7 +154,7 @@ class Exploit(Exploit):
         return "hciconfig not found in PATH - install bluez package"
 
     def run(self) -> None:
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
         mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:
             print_error("mode deve ser: {}".format(", ".join(sorted(self._VALID_MODES))))

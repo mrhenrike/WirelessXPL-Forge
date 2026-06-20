@@ -516,7 +516,7 @@ class Exploit(Exploit):
             self._info_mode()
             return
 
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         dispatch = {
             "realignment_inject": self._realignment_inject,

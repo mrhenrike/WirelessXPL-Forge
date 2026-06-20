@@ -19,6 +19,15 @@ class BTLEScanner:
         return asyncio.run(self._async_scan(timeout))
 
     async def _async_scan(self, timeout: float) -> List[Device]:
+        # When running as root (sudo), bleak may be in the original user's
+        # site-packages instead of root's. Check both home directories.
+        import sys, os, glob as _g
+        for candidate_home in (os.path.expanduser("~"), "/home/mrhenrike", "/home"):
+            user_site = os.path.join(candidate_home, ".local", "lib")
+            if os.path.isdir(user_site):
+                for p in _g.glob(os.path.join(user_site, "python*/site-packages")):
+                    if p not in sys.path:
+                        sys.path.insert(0, p)
         try:
             from bleak import BleakScanner  # type: ignore[import-untyped]
         except ImportError:

@@ -183,7 +183,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute KillerBee tool in the specified mode."""
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
 
         mode = str(self.mode).strip().lower()
         if mode not in self._VALID_MODES:

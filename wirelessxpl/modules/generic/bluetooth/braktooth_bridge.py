@@ -190,7 +190,7 @@ class Exploit(Exploit):
         return "hciconfig not found in PATH - install bluez package"
 
     def run(self) -> None:
-        require_authorised_lab(self.i_know_scope)
+        require_authorised_lab()
         _validator = HWValidator()
         _gw = PhaseGateway("BrakTooth BLE")
         _gw.phase(
