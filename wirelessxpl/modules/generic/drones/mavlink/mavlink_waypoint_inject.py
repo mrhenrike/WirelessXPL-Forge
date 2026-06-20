@@ -119,7 +119,7 @@ class Exploit(Exploit):
     wp_lat = OptFloat(-23.5505, "Waypoint latitude")
     wp_lon = OptFloat(-46.6333, "Waypoint longitude")
     wp_alt = OptFloat(50.0, "Waypoint altitude in meters")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

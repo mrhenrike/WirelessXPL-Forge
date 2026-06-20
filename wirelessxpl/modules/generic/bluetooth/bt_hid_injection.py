@@ -39,11 +39,11 @@ from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
-try:
-    import bluetooth
-    HAS_PYBLUEZ = True
-except ImportError:
-    HAS_PYBLUEZ = False
+import socket as _bt_socket
+# Native L2CAP socket — replaces pybluez (deprecated)
+_AF_BLUETOOTH = 31
+_BTPROTO_L2CAP = 0
+HAS_PYBLUEZ = True  # native socket always available
 
 try:
     import dbus
@@ -212,11 +212,11 @@ class L2CAPSocket:
     def __init__(self, target: str, psm: int) -> None:
         self.target = target
         self.psm = psm
-        self.sock: Optional[bluetooth.BluetoothSocket] = None
+        self.sock: Optional[_bt_socket.socket] = None
 
     def connect(self, timeout: float = 5.0) -> None:
         """Establish L2CAP connection."""
-        self.sock = bluetooth.BluetoothSocket(bluetooth.L2CAP)
+        self.sock = _bt_socket.socket(_AF_BLUETOOTH, _bt_socket.SOCK_SEQPACKET, _BTPROTO_L2CAP)
         self.sock.settimeout(timeout)
         self.sock.connect((self.target, self.psm))
         self.sock.setblocking(False)
@@ -548,9 +548,6 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         """Execute BT HID keystroke/mouse injection."""
-        if not HAS_PYBLUEZ:
-            print_error("pybluez is required. Install: pip install pybluez")
-            return
 
         if not self.target_address:
             print_error("target_address is required.")

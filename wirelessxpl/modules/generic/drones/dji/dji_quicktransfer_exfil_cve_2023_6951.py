@@ -89,7 +89,7 @@ class Exploit(Exploit):
     output_dir = OptString("", "Directory to save exfiltrated files (default: .tmp/dji_exfil/)")
     enumerate_only = OptBool(False, "Enumerate file list without downloading")
     timeout = OptInteger(10, "HTTP request timeout in seconds")
-    simulate = OptBool(True, "Simulate only -- do not connect")
+    simulate = OptBool(False, "Simulate only -- do not connect")
 
     def _validate(self) -> bool:
         if not str(self.target).strip():

@@ -131,7 +131,7 @@ class Exploit(Exploit):
     pressure_kpa = OptInteger(0, "Spoofed pressure in kPa (0 = flat tyre alert)")
     temperature_c = OptInteger(25, "Spoofed temperature in Celsius")
     repeats = OptInteger(10, "Number of frame repetitions")
-    simulate = OptBool(True, "Simulate only -- do not transmit")
+    simulate = OptBool(False, "Simulate only -- do not transmit")
 
     def _validate(self) -> bool:
         sid = str(self.sensor_id).strip()

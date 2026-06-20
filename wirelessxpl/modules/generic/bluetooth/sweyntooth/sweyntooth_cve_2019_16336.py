@@ -118,7 +118,7 @@ class Exploit(Exploit):
 
     target = OptString("", "Target BLE MAC address (AA:BB:CC:DD:EE:FF)")
     att_handle = OptInteger(0x0001, "ATT handle to write (0x0001 = Generic Access)")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
 
     def _validate(self) -> bool:
         addr = str(self.target).strip()

@@ -103,7 +103,7 @@ class Exploit(Exploit):
     frequency = OptString("433.92", "Frequency in MHz (e.g. 433.92, 315.0, 868.35)")
     repeats = OptInteger(3, "Number of transmit repetitions")
     interface = OptString("hackrf", "TX interface: hackrf | cc1101 | simulate")
-    simulate = OptBool(True, "Simulate only -- do not transmit (default: enabled)")
+    simulate = OptBool(False, "Simulate only -- do not transmit (default: enabled)")
 
     def _validate(self) -> bool:
         target_path = str(self.target).strip()

@@ -74,7 +74,7 @@ class Exploit(Exploit):
     target = OptString("192.168.42.1", "ANAFI IP (default 192.168.42.1)")
     port = OptInteger(7777, "ANAFI SDK port (7777=UDP, 80=HTTP API)")
     payload_size = OptInteger(2048, "Oversized date string length (>1024 triggers crash)")
-    simulate = OptBool(True, "Simulate only")
+    simulate = OptBool(False, "Simulate only")
     use_http = OptBool(False, "Use HTTP API instead of UDP ARSDK")
 
     def _validate(self) -> bool:
