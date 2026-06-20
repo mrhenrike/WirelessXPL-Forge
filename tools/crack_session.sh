@@ -6,7 +6,8 @@
 set -uo pipefail
 
 HASHES="/tmp/pmkid_hashes.txt"
-WL_BASE="/mnt/d/Projetos-SafeLabs/submodules/Wordlists"
+WXF_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WL_BASE="${WXF_WL_BASE:-$(dirname "$WXF_ROOT")}"
 WFH="$WL_BASE/WordListsForHacking/wfh.py"
 OUT="/tmp/wxf_crack_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$OUT"

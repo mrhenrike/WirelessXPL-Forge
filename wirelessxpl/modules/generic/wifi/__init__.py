@@ -22,6 +22,28 @@ __all__ = [
     "DragonbloodSuite",
 ]
 
+# Module-level __getattr__ for lazy class binding (PEP 562).
+# Each name resolves to the canonical Exploit (or named class) in its submodule.
+_LAZY_MAP: dict = {
+    "FloodEngine":      ("wirelessxpl.modules.generic.wifi.flood_engine_native",  "Exploit"),
+    "WPSEngine":        ("wirelessxpl.modules.generic.wifi.wps_engine_native",    "Exploit"),
+    "PhishingEngine":   ("wirelessxpl.modules.generic.wifi.phishing_engine",      "Exploit"),
+    "CaptiveNetwork":   ("wirelessxpl.modules.generic.wifi.dns_dhcp_server",      "CaptiveNetwork"),
+    "MonitorModeManager": ("wirelessxpl.modules.generic.wifi.monitor_mode_manager", "MonitorModeManager"),
+    "DragonbloodSuite": ("wirelessxpl.modules.generic.wifi.dragonblood_suite",    "Exploit"),
+}
+
+
+def __getattr__(name: str):
+    if name in _LAZY_MAP:
+        import importlib
+        mod_path, attr = _LAZY_MAP[name]
+        mod = importlib.import_module(mod_path)
+        obj = getattr(mod, attr)
+        globals()[name] = obj  # cache so subsequent access skips __getattr__
+        return obj
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 def send_deauth(interface: str, bssid: str, client: str = "FF:FF:FF:FF:FF:FF",
                 count: int = 10, reason: int = 7) -> None:

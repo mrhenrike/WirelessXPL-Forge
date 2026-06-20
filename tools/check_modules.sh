@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd /mnt/d/Projetos-SafeLabs/submodules/IoT/WirelessXPL-Forge
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 MODULES=(
     "generic/wifi_lab/handshake_snooper"
     "generic/wifi_lab/wps_multimode"

@@ -1267,3 +1267,7 @@ class Exploit(Exploit):
             )
             return
         handler()
+
+
+# Public alias so `from wirelessxpl.modules.generic.wifi import DragonbloodSuite` works.
+DragonbloodSuite = Exploit
