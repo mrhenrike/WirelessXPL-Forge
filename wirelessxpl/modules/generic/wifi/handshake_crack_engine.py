@@ -376,8 +376,19 @@ def _show_hashcat_cracked(hash_file: Path, mode: int, result: CrackResult) -> No
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
         for line in r.stdout.splitlines():
             pwd = line.strip()
-            if pwd and len(pwd) >= 8:
-                result.add_found(default_essid, pwd, "hashcat-potfile")
+            # Skip hashcat status/init messages (they start with specific patterns)
+            if not pwd or len(pwd) < 8 or len(pwd) > 63:
+                continue
+            # Skip hashcat header/status lines
+            if any(pwd.startswith(p) for p in (
+                "hashcat", "Session", "Status", "Hash.Mode", "Hash.Target",
+                "Time.", "Speed.", "Recovered", "Progress", "Rejected",
+                "Restore.Point", "Restore.Sub", "Candidates", "Hardware",
+                "Candidate", "Started", "Stopped", "Initializ", "OpenCL",
+                "Device", "Platform", "*", "[", "You have",
+            )):
+                continue
+            result.add_found(default_essid, pwd, "hashcat-potfile")
     except Exception as exc:
         logger.debug("hashcat --show: %s", exc)
 
