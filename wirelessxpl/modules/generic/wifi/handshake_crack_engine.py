@@ -547,6 +547,268 @@ def _run_cowpatty(
 
 
 # ---------------------------------------------------------------------------
+# Multi-ESSID detection and selection
+# ---------------------------------------------------------------------------
+
+def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
+    """Scan pcap/pcapng and return list of ESSIDs with valid WPA handshakes.
+
+    Uses Scapy directly (no aircrack-ng TUI dependency) to parse
+    beacon/probe frames for SSID discovery and EAPOL frames for handshake
+    detection. Works even when aircrack-ng uses ANSI/TUI output.
+
+    Returns:
+        List of dicts: {index, essid, bssid, encryption, handshakes, has_pmkid, has_hs}
+    """
+    try:
+        from scapy.all import rdpcap, Dot11, Dot11Beacon, Dot11Elt, EAPOL
+    except ImportError:
+        # Fallback to aircrack-ng parsing (may fail with TUI)
+        return _detect_essids_aircrack(pcap_path)
+
+    networks: Dict[str, Dict] = {}  # bssid → info
+    try:
+        pkts = rdpcap(str(pcap_path))
+    except Exception as exc:
+        logger.debug("rdpcap failed: %s", exc)
+        return []
+
+    # Pass 1: discover SSIDs from beacons and probe responses
+    for p in pkts:
+        if not p.haslayer(Dot11):
+            continue
+        bssid = (p[Dot11].addr3 or "").lower()
+        if not bssid or bssid == "ff:ff:ff:ff:ff:ff":
+            continue
+        if p.haslayer(Dot11Beacon) or (p.haslayer(Dot11) and p[Dot11].subtype == 5):
+            elt = p.getlayer(Dot11Elt)
+            ssid = ""
+            while elt:
+                if elt.ID == 0:
+                    try: ssid = elt.info.decode("utf-8", errors="replace")
+                    except: pass
+                    break
+                elt = elt.payload.getlayer(Dot11Elt) if elt.payload else None
+            if bssid not in networks:
+                networks[bssid] = {
+                    "bssid": bssid.upper(),
+                    "essid": ssid,
+                    "eapol_msgs": set(),
+                    "handshakes": 0,
+                    "has_pmkid": False,
+                    "has_hs": False,
+                }
+            elif ssid and not networks[bssid]["essid"]:
+                networks[bssid]["essid"] = ssid
+
+    # Pass 2: count EAPOL messages per AP (detect complete handshakes)
+    for p in pkts:
+        if not p.haslayer(EAPOL):
+            continue
+        if not p.haslayer(Dot11):
+            continue
+        # Determine AP BSSID from frame
+        src = (p[Dot11].addr2 or "").lower()
+        dst = (p[Dot11].addr1 or "").lower()
+        raw = bytes(p[EAPOL])
+        if len(raw) < 7 or raw[1] != 3:
+            continue
+        ki = (raw[5] << 8) | raw[6]
+        ack = bool(ki & 0x80); mic = bool(ki & 0x100); sec = bool(ki & 0x200)
+        if ack and not mic:    mtype, ap_bssid = "M1", src
+        elif mic and not ack and not sec: mtype, ap_bssid = "M2", dst
+        elif ack and mic and sec:         mtype, ap_bssid = "M3", src
+        elif mic and not ack and sec:     mtype, ap_bssid = "M4", dst
+        else: continue
+
+        if ap_bssid not in networks:
+            networks[ap_bssid] = {
+                "bssid": ap_bssid.upper(),
+                "essid": "",
+                "eapol_msgs": set(),
+                "handshakes": 0,
+                "has_pmkid": False,
+                "has_hs": False,
+            }
+        networks[ap_bssid]["eapol_msgs"].add(mtype)
+        msgs = networks[ap_bssid]["eapol_msgs"]
+        if "M1" in msgs and "M2" in msgs:
+            networks[ap_bssid]["handshakes"] = 1
+            networks[ap_bssid]["has_hs"] = True
+
+    # Build sorted result list
+    result: List[Dict] = []
+    idx = 0
+    for bssid, info in sorted(networks.items()):
+        if info.get("has_hs") or info.get("handshakes", 0) > 0:
+            idx += 1
+            enc = "WPA2"
+            hs_str = f"{info['handshakes']} handshake" if info["handshakes"] else ""
+            result.append({
+                "index":      idx,
+                "bssid":      info["bssid"],
+                "essid":      info["essid"],
+                "encryption": f"{enc} ({hs_str})" if hs_str else enc,
+                "handshakes": info["handshakes"],
+                "has_pmkid":  info.get("has_pmkid", False),
+                "has_hs":     True,
+            })
+
+    return result
+
+
+def _detect_essids_aircrack(pcap_path: Path) -> List[Dict]:
+    """Fallback: parse aircrack-ng stdout for network listing."""
+    if not shutil.which("aircrack-ng"):
+        return []
+    try:
+        r = subprocess.run(
+            ["aircrack-ng", str(pcap_path)],
+            capture_output=True, text=True, timeout=15,
+        )
+        networks: List[Dict] = []
+        idx = 0
+        for line in r.stdout.splitlines():
+            # Strip ANSI escape codes
+            clean = re.sub(r"\x1b\[[0-9;]*m|\x1b\[[0-9]*[ABCDJK]|\r", "", line)
+            m = re.match(
+                r"\s+(\d+)\s+([0-9A-Fa-f:]{17})\s+(.*?)\s{2,}(WPA\S*.*?)\s*$", clean
+            )
+            if m:
+                idx += 1
+                essid   = m.group(3).strip()
+                enc     = m.group(4).strip()
+                hs_count = 0
+                hs_m = re.search(r"(\d+)\s+handshake", enc)
+                if hs_m:
+                    hs_count = int(hs_m.group(1))
+                networks.append({
+                    "index": idx, "bssid": m.group(2).strip(),
+                    "essid": essid, "encryption": enc,
+                    "handshakes": hs_count, "has_pmkid": "PMKID" in enc,
+                    "has_hs": hs_count > 0 or "PMKID" in enc,
+                })
+        return networks
+    except Exception as exc:
+        logger.debug("aircrack detection: %s", exc)
+        return []
+
+
+def _detect_essids_from_hash(hash_path: Path) -> List[Dict]:
+    """Extract unique ESSIDs from a .hash / .22000 file."""
+    networks: List[Dict] = []
+    seen: set = set()
+    try:
+        idx = 0
+        for line in hash_path.read_text(errors="replace").splitlines():
+            parts = line.strip().split("*")
+            if len(parts) > 5:
+                try:
+                    essid = bytes.fromhex(parts[5]).decode("utf-8", errors="replace")
+                    bssid = ":".join(parts[3][i:i+2] for i in range(0, 12, 2)) if len(parts[3]) == 12 else parts[3]
+                    hash_type = "PMKID" if "WPA*01*" in line else "EAPOL"
+                    key = essid + bssid
+                    if key not in seen:
+                        seen.add(key)
+                        idx += 1
+                        networks.append({
+                            "index":      idx,
+                            "bssid":      bssid.upper(),
+                            "essid":      essid,
+                            "encryption": f"WPA2 {hash_type}",
+                            "handshakes": 1,
+                            "has_pmkid":  hash_type == "PMKID",
+                            "has_hs":     True,
+                        })
+                except Exception:
+                    pass
+    except Exception as exc:
+        logger.debug("Hash ESSID parse: %s", exc)
+    return networks
+
+
+def _resolve_essid_selection(
+    networks: List[Dict],
+    essid_spec: str,
+) -> List[str]:
+    """Resolve essid_spec to a list of ESSID strings to crack.
+
+    Spec formats:
+      (empty)      → if 1 network: auto-select; if >1: show list and use all
+      all          → all networks with handshake
+      1            → network at index 1
+      1,3          → networks at index 1 and 3
+      1-3          → networks at index 1 through 3
+      BeYellow     → exact ESSID match (case-sensitive)
+
+    Prints a selection table when multiple networks are detected.
+    """
+    with_hs = [n for n in networks if n.get("has_hs")]
+    without = [n for n in networks if not n.get("has_hs")]
+
+    if not with_hs:
+        print_warning("Nenhum ESSID com handshake válido encontrado no arquivo.")
+        return [""]  # let caller try anyway
+
+    # Always show the table when >1 network
+    if len(with_hs) > 1 or essid_spec.strip().lower() not in ("", "all"):
+        print_info("")
+        print_info(f"  {'#':>3}  {'BSSID':<20} {'HANDSHAKE':>10}  ESSID")
+        print_info(f"  {'─'*65}")
+        for n in with_hs:
+            hs_tag = f"{n['handshakes']} HS" if n['handshakes'] else ""
+            if n.get("has_pmkid"):
+                hs_tag += " +PMKID" if hs_tag else "PMKID"
+            enc_short = n["encryption"].replace("(", "").replace(")", "")[:12]
+            print_success(f"  \033[1m{n['index']:>3}\033[0m  {n['bssid']:<20} {hs_tag:>10}  {n['essid']}")
+        if without:
+            print_warning(f"  (+ {len(without)} rede(s) sem handshake capturado)")
+        print_info("")
+        print_info("  Seleção: set essid all | 1 | 1,2 | 1-3 | <nome>")
+        print_info("")
+
+    spec = essid_spec.strip()
+
+    # Single network → auto select
+    if len(with_hs) == 1 and not spec:
+        n = with_hs[0]
+        print_success(f"  Auto-selecionado: '{n['essid']}' ({n['bssid']})")
+        return [n["essid"]]
+
+    # Empty + multiple → crack all
+    if not spec or spec.lower() == "all":
+        essids = [n["essid"] for n in with_hs]
+        print_success(f"  Crackeando todos ({len(essids)}): {essids}")
+        return essids
+
+    # Exact ESSID match
+    by_name = [n["essid"] for n in with_hs if n["essid"] == spec]
+    if by_name:
+        return by_name
+
+    # Index selection (1, 1,2, 1-3)
+    selected_essids: List[str] = []
+    if "-" in spec and spec.replace("-", "").isdigit():
+        a, b = map(int, spec.split("-", 1))
+        selected_essids = [n["essid"] for n in with_hs if a <= n["index"] <= b]
+    else:
+        for part in spec.split(","):
+            part = part.strip()
+            if part.isdigit():
+                idx = int(part)
+                matches = [n["essid"] for n in with_hs if n["index"] == idx]
+                selected_essids.extend(matches)
+
+    if selected_essids:
+        print_success(f"  Selecionados: {selected_essids}")
+        return selected_essids
+
+    # Fallback: use spec as literal ESSID
+    print_warning(f"  Especificação '{spec}' não casou com nenhum índice/ESSID. Usando como ESSID literal.")
+    return [spec]
+
+
+# ---------------------------------------------------------------------------
 # WXF Exploit class
 # ---------------------------------------------------------------------------
 
@@ -609,7 +871,11 @@ class Exploit(Exploit):
         "random",
         "Wordlist scan order: random (default, dynamic shuffle) | forward (1ª→última) | reverse (última→1ª)",
     )
-    essid      = OptString("", "Target ESSID (required for aircrack/cowpatty, optional for hashcat)")
+    essid      = OptString(
+        "",
+        "Target ESSID: nome exato | all (todos) | 1,2,3 (índices) | 1-3 (range)\n"
+        "  Quando vazio e pcap tem múltiplos ESSIDs com handshake, o módulo lista e pede escolha.",
+    )
     rules      = OptString("", "Comma-separated rule files for hashcat (e.g. best64,dive) or 'none'")
     use_rules  = OptBool(False, "Apply best64 rules to wordlist (adds ~64x candidates)")
     masks      = OptString("", "Hashcat mask for brute-force (e.g. ?d?d?d?d?d?d?d?d for 8 digits)")
@@ -662,6 +928,29 @@ class Exploit(Exploit):
             self._inspect_input(input_path, file_type)
             return
 
+        # ── Multi-ESSID selection ──────────────────────────────────────
+        # For pcap/pcapng: detect all ESSIDs with valid handshakes and
+        # let the user choose which to crack.
+        # For hash files: list contained ESSIDs.
+        essid_spec = str(self.essid).strip()
+        essids_to_crack: List[str] = []
+
+        if file_type in ("pcap", "pcapng"):
+            detected = _detect_essids_with_handshakes(input_path)
+            if detected:
+                essids_to_crack = _resolve_essid_selection(detected, essid_spec)
+            else:
+                # No ESSID info → pass essid_spec as-is (may be empty for hashcat)
+                essids_to_crack = [essid_spec] if essid_spec else [""]
+        elif file_type == "hash22000":
+            detected = _detect_essids_from_hash(input_path)
+            if detected:
+                essids_to_crack = _resolve_essid_selection(detected, essid_spec)
+            else:
+                essids_to_crack = [essid_spec] if essid_spec else [""]
+        else:
+            essids_to_crack = [essid_spec] if essid_spec else [""]
+
         # Prepare wordlist with requested scan order
         order = str(self.wl_order).strip().lower() or "random"
         prepared_wordlist = wordlist_path
@@ -685,31 +974,53 @@ class Exploit(Exploit):
             backends = [backend_id]
 
         try:
-            for be in backends:
-                if be not in BACKENDS:
-                    print_error(f"Unknown backend {be!r}. Use 'list' to see options.")
-                    return
-                if BACKENDS[be]["bin"] and not shutil.which(BACKENDS[be]["bin"]):
-                    print_warning(f"Backend {be!r} not available ({BACKENDS[be]['bin']} not found). Skipping.")
-                    continue
-                print_success(f"Backend: {be} — {BACKENDS[be]['desc']}")
-                result = CrackResult()
-                self._run_backend(be, input_path, prepared_wordlist, file_type, result)
-                self._print_summary(be, result)
-                if result.found:
-                    return  # password found — stop
-                if backend_id != "auto":
-                    break
+            all_found: List[tuple] = []
+
+            for target_essid in essids_to_crack:
+                if target_essid:
+                    sep = f"{'─'*60}"
+                    print_info(f"\n{sep}")
+                    print_success(f"  Cracking ESSID: \033[1m{target_essid}\033[0m")
+                    print_info(sep)
+
+                for be in backends:
+                    if be not in BACKENDS:
+                        print_error(f"Unknown backend {be!r}. Use 'list' to see options.")
+                        return
+                    if BACKENDS[be]["bin"] and not shutil.which(BACKENDS[be]["bin"]):
+                        print_warning(f"Backend {be!r} not available ({BACKENDS[be]['bin']} not found). Skipping.")
+                        continue
+                    print_success(f"Backend: {be} — {BACKENDS[be]['desc']}")
+                    result = CrackResult()
+                    # Temporarily override essid for this iteration
+                    _saved_essid = self.essid
+                    self.essid = target_essid or self.essid
+                    self._run_backend(be, input_path, prepared_wordlist, file_type, result)
+                    self.essid = _saved_essid
+                    self._print_summary(be, result)
+                    if result.found:
+                        all_found.extend(result.found)
+                        break  # found for this ESSID → next ESSID
+                    if backend_id != "auto":
+                        break
+
+            # Final summary when multiple ESSIDs
+            if len(essids_to_crack) > 1:
+                print_info("")
+                print_success(f"  ══ RESULTADO FINAL ({len(essids_to_crack)} ESSIDs) ══")
+                print_success(f"  Crackeados: {len(all_found)}/{len(essids_to_crack)}")
+                for essid_r, pwd, src in all_found:
+                    print_success(f"    {essid_r!r:<35}  →  {pwd!r}  [{src}]")
+                if len(all_found) < len(essids_to_crack):
+                    missing = len(essids_to_crack) - len(all_found)
+                    print_warning(f"  {missing} ESSID(s) sem crack — tente outra wordlist.")
+
         finally:
-            # Cleanup temp shuffled/reversed wordlist
             if _tmp_wordlist and _tmp_wordlist.exists():
                 try:
                     _tmp_wordlist.unlink()
                 except Exception:
                     pass
-
-        if not any([CrackResult().found]):
-            pass  # handled in _print_summary
 
     # ------------------------------------------------------------------
     # Backend dispatcher
