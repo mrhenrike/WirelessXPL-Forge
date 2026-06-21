@@ -170,6 +170,46 @@ def _convert_for_john(input_path: Path, out_dir: Path) -> Optional[Path]:
 
 
 # ---------------------------------------------------------------------------
+# Wordlist order preparation
+# ---------------------------------------------------------------------------
+
+def _prepare_wordlist(wordlist_path: Path, order: str) -> Path:
+    """Prepare wordlist according to scan order.
+
+    Args:
+        wordlist_path: Original wordlist file.
+        order: 'random' (default) | 'forward' | 'reverse'
+
+    Returns:
+        Path to wordlist to use (original or shuffled/reversed temp copy).
+    """
+    import random as _random
+    order = order.strip().lower()
+
+    if order in ("forward", "fwd"):
+        print_info("  Wordlist order: FORWARD (1ª → última linha)")
+        return wordlist_path
+
+    if order in ("reverse", "rev", "inverted"):
+        print_status("  Wordlist order: REVERSE (última → 1ª linha) — preparando…")
+        lines = wordlist_path.read_bytes().split(b"\n")
+        lines.reverse()
+        tmp = Path(tempfile.mktemp(suffix="_rev.lst"))
+        tmp.write_bytes(b"\n".join(lines))
+        print_success(f"  Reversed wordlist: {tmp.name} ({len(lines):,} linhas)")
+        return tmp
+
+    # random (default) — embaralha toda a lista para ordem dinâmica imprevisível
+    print_status("  Wordlist order: RANDOM (dinâmico, embaralhado) — preparando…")
+    lines = wordlist_path.read_bytes().split(b"\n")
+    _random.shuffle(lines)
+    tmp = Path(tempfile.mktemp(suffix="_rnd.lst"))
+    tmp.write_bytes(b"\n".join(lines))
+    print_success(f"  Shuffled wordlist: {tmp.name} ({len(lines):,} linhas)")
+    return tmp
+
+
+# ---------------------------------------------------------------------------
 # Backend runners
 # ---------------------------------------------------------------------------
 
@@ -297,26 +337,47 @@ def _run_hashcat(
 
 
 def _show_hashcat_cracked(hash_file: Path, mode: int, result: CrackResult) -> None:
-    """Run hashcat --show to read cracked entries."""
+    """Run hashcat --show to read cracked entries from potfile."""
+    import os as _os
+    # Resolve correct potfile path (especially under sudo)
+    sudo_user = _os.environ.get("SUDO_USER", "")
+    potfile = ""
+    if sudo_user:
+        potfile = f"/home/{sudo_user}/.local/share/hashcat/hashcat.potfile"
+    else:
+        cand = _os.path.expanduser("~/.local/share/hashcat/hashcat.potfile")
+        if _os.path.exists(cand):
+            potfile = cand
+
+    cmd = ["hashcat", "-m", str(mode)]
+    if potfile:
+        cmd.extend(["--potfile-path", potfile])
+    else:
+        cmd.append("--potfile-disable")
+    # format 2 = plain password only; format 1 = hash only (no password)
+    # Use format 2 and extract ESSID from input hash file directly
+    cmd.extend(["--outfile-format=2", "--show", str(hash_file)])
+
+    # Pre-read ESSID from hash file for display
+    essid_map: dict = {}
     try:
-        r = subprocess.run(
-            ["hashcat", "-m", str(mode), "--potfile-disable",
-             "--outfile-format=2", "--show", str(hash_file)],
-            capture_output=True, text=True, timeout=10,
-        )
+        for line in hash_file.read_text(errors="replace").splitlines():
+            parts = line.strip().split("*")
+            if len(parts) > 5:
+                try:
+                    essid_map[line[:20]] = bytes.fromhex(parts[5]).decode("utf-8", errors="replace")
+                except Exception:
+                    pass
+        default_essid = list(essid_map.values())[0] if essid_map else "?"
+    except Exception:
+        default_essid = "?"
+
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
         for line in r.stdout.splitlines():
-            line = line.strip()
-            if line and ":" in line:
-                parts = line.rsplit(":", 1)
-                if len(parts) == 2:
-                    pwd = parts[1].strip()
-                    essid_hex = parts[0].split("*")[4] if "*" in parts[0] else "?"
-                    try:
-                        essid = bytes.fromhex(essid_hex).decode("utf-8", errors="replace")
-                    except Exception:
-                        essid = essid_hex
-                    if pwd:
-                        result.add_found(essid, pwd, "hashcat-potfile")
+            pwd = line.strip()
+            if pwd and len(pwd) >= 8:
+                result.add_found(default_essid, pwd, "hashcat-potfile")
     except Exception as exc:
         logger.debug("hashcat --show: %s", exc)
 
@@ -520,6 +581,10 @@ class Exploit(Exploit):
         "/home/mrhenrike/Documentos/Projetos/WordListsForHacking/passwords/wlist_brasil.lst",
         "Path to wordlist file",
     )
+    wl_order   = OptString(
+        "random",
+        "Wordlist scan order: random (default, dynamic shuffle) | forward (1ª→última) | reverse (última→1ª)",
+    )
     essid      = OptString("", "Target ESSID (required for aircrack/cowpatty, optional for hashcat)")
     rules      = OptString("", "Comma-separated rule files for hashcat (e.g. best64,dive) or 'none'")
     use_rules  = OptBool(False, "Apply best64 rules to wordlist (adds ~64x candidates)")
@@ -573,27 +638,51 @@ class Exploit(Exploit):
             self._inspect_input(input_path, file_type)
             return
 
+        # Prepare wordlist with requested scan order
+        order = str(self.wl_order).strip().lower() or "random"
+        prepared_wordlist = wordlist_path
+        _tmp_wordlist: Optional[Path] = None
+        if wordlist_path.exists() and not bool(self.masks):
+            try:
+                prepared_wordlist = _prepare_wordlist(wordlist_path, order)
+                if prepared_wordlist != wordlist_path:
+                    _tmp_wordlist = prepared_wordlist  # track for cleanup
+            except MemoryError:
+                print_warning("  Wordlist too large to shuffle in memory — using FORWARD order.")
+                prepared_wordlist = wordlist_path
+            except Exception as exc:
+                print_warning(f"  Wordlist prep failed ({exc}) — using FORWARD order.")
+                prepared_wordlist = wordlist_path
+
         # Resolve backend
         if backend_id == "auto":
             backends = self._auto_order()
         else:
             backends = [backend_id]
 
-        for be in backends:
-            if be not in BACKENDS:
-                print_error(f"Unknown backend {be!r}. Use 'list' to see options.")
-                return
-            if BACKENDS[be]["bin"] and not shutil.which(BACKENDS[be]["bin"]):
-                print_warning(f"Backend {be!r} not available ({BACKENDS[be]['bin']} not found). Skipping.")
-                continue
-            print_success(f"Backend: {be} — {BACKENDS[be]['desc']}")
-            result = CrackResult()
-            self._run_backend(be, input_path, wordlist_path, file_type, result)
-            self._print_summary(be, result)
-            if result.found:
-                return  # password found — stop
-            if backend_id != "auto":
-                break
+        try:
+            for be in backends:
+                if be not in BACKENDS:
+                    print_error(f"Unknown backend {be!r}. Use 'list' to see options.")
+                    return
+                if BACKENDS[be]["bin"] and not shutil.which(BACKENDS[be]["bin"]):
+                    print_warning(f"Backend {be!r} not available ({BACKENDS[be]['bin']} not found). Skipping.")
+                    continue
+                print_success(f"Backend: {be} — {BACKENDS[be]['desc']}")
+                result = CrackResult()
+                self._run_backend(be, input_path, prepared_wordlist, file_type, result)
+                self._print_summary(be, result)
+                if result.found:
+                    return  # password found — stop
+                if backend_id != "auto":
+                    break
+        finally:
+            # Cleanup temp shuffled/reversed wordlist
+            if _tmp_wordlist and _tmp_wordlist.exists():
+                try:
+                    _tmp_wordlist.unlink()
+                except Exception:
+                    pass
 
         if not any([CrackResult().found]):
             pass  # handled in _print_summary
@@ -663,8 +752,19 @@ class Exploit(Exploit):
 
         # Extra args
         extra: List[str] = []
-        if str(self.potfile).strip():
-            extra.extend(["--potfile-path", str(self.potfile)])
+        # When running as root (sudo), pass user's potfile path explicitly
+        # so previously cracked hashes are recognized immediately.
+        _default_potfile = ""
+        import os as _os
+        sudo_user = _os.environ.get("SUDO_USER", "")
+        if sudo_user:
+            _default_potfile = f"/home/{sudo_user}/.local/share/hashcat/hashcat.potfile"
+        elif _os.path.exists(_os.path.expanduser("~/.local/share/hashcat/hashcat.potfile")):
+            _default_potfile = _os.path.expanduser("~/.local/share/hashcat/hashcat.potfile")
+
+        potfile_arg = str(self.potfile).strip() or _default_potfile
+        if potfile_arg:
+            extra.extend(["--potfile-path", potfile_arg])
         if int(self.timeout_s) > 0:
             extra.extend(["--runtime", str(self.timeout_s)])
         if bool(self.verbose):
