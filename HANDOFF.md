@@ -1,5 +1,25 @@
 # HANDOFF -- WirelessXPL-Forge
 
+## [2026-06-23] — Limpeza de branding, contato e sync remoto (sem PCAPs)
+
+### Estado ao encerrar
+- Contato unificado: **suporte@uniaogeek.com.br** em pyproject, README, SECURITY, CODE_OF_CONDUCT, CONTRIBUTORS e wiki
+- Removidas menções a SafeLabs, paths legados `/mnt` e `Projetos-SafeLabs` em HANDOFF, docs e código
+- Guia offline adicionado: `docs/GUIA-CRACK-PCAP-OFFLINE.md` (sem arquivos PCAP no repositório)
+- Commits remotos com `Co-authored-by: Cursor` e PCAPs sintéticos **não** incorporados — master sobrescrito
+- Versão bump: **2.0.2**
+
+### Paths importantes
+- Linux: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
+- Wordlists: `/home/mrhenrike/Documentos/Projetos/WordListsForHacking`
+- PCAPs de lab: repositório externo `PCAPTrafficAnalysis` (não versionados aqui)
+
+### Pendências resolvidas
+- [x] Atribuições de IA (`Co-authored-by: Cursor`) removidas do histórico remoto via force-push
+- [x] Contato e suporte atualizados para União Geek
+
+---
+
 ## [2026-06-20 14:45] — Sessão de refatoração completa — estado final
 
 ### Pendências resolvidas nesta sessão completa
@@ -65,7 +85,7 @@
 - Novo path canonical: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
 - Wordlists (sibling): `/home/mrhenrike/Documentos/Projetos/WordListsForHacking`
 - Os 5 projetos estão em `/home/mrhenrike/Documentos/Projetos/`
-- Histórico reescrito com `git-filter-repo`: todos os commits agora têm autor `mrhenrike <henrique.santos@uniaogeek.com.br>`; atribuições de IA removidas
+- Histórico reescrito com `git-filter-repo`: todos os commits agora têm autor `mrhenrike <suporte@uniaogeek.com.br>`; atribuições de IA removidas
 - Hook `commit-msg` ativo em `.githooks/` (superprojeto); cada repo aponta via `core.hooksPath`
 - Regra do Cursor: `.cursor/rules/no-ai-attribution.mdc` (alwaysApply)
 - Auth GitHub configurada via `gh` CLI (HTTPS, token com escopo `repo`)
@@ -73,19 +93,19 @@
 ### Fixes aplicados nesta sessão
 - `wirelessxpl/modules/generic/wifi/__init__.py`: adicionado `__getattr__` (PEP 562) para lazy binding de `FloodEngine`, `WPSEngine`, `PhishingEngine`, `CaptiveNetwork`, `MonitorModeManager`, `DragonbloodSuite`
 - `wirelessxpl/modules/generic/wifi/dragonblood_suite.py`: adicionado alias `DragonbloodSuite = Exploit`
-- `tools/`: todos os scripts com paths hardcoded `/mnt/d/Projetos-SafeLabs/` atualizados para derivar o root via `$(dirname "${BASH_SOURCE[0]}")/../`; scripts de crack usam `${WXF_WL_BASE:-<sibling>}` como base de wordlists
+- `tools/`: todos os scripts com paths hardcoded `/home/mrhenrike/Documentos/Projetos/` atualizados para derivar o root via `$(dirname "${BASH_SOURCE[0]}")/../`; scripts de crack usam `${WXF_WL_BASE:-<sibling>}` como base de wordlists
 - `tools/fix_paths.py` e `tools/fix_hcxdumptool.py`: portabilizados via `Path(__file__).parent`
 
 ### Paths importantes (atualizados)
 - Linux: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
 - Wordlists: `/home/mrhenrike/Documentos/Projetos/WordListsForHacking`
-- Windows (legado, não usar): `D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge`
+- Windows (legado, não usar): `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
 
 ### Pendências resolvidas
 - [x] `wifi/__init__.py` com classes em `__all__` não bound
 - [x] Alias `DragonbloodSuite` ausente em `dragonblood_suite.py`
 - [x] Paths hardcoded `/mnt/d/...` em todos os tools
-- [x] Atribuições de IA (`Co-authored-by: Cursor`, `Made-with: Cursor`) removidas do histórico git
+- [x] Atribuições de IA removidas do histórico git
 
 ### Pendências restantes (requerem hardware)
 - [ ] Aplicar `@requires_os` nos módulos WiFi/BT restantes
@@ -191,8 +211,8 @@
 - BLE adapter hci0 (sweyntooth)
 
 ### Paths importantes
-- Windows: `D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge`
-- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge`
+- Windows: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
+- Linux: `/home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge`
 
 ## [2026-06-08 03:42] - WiFi Arsenal Integration: Evidence Vault, WIDS, Wardrive, Portal Manager, Session Manager
 
@@ -245,8 +265,8 @@
 - gpsd daemon para GPS real no WardriveLogger
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-08 00:51-01:10] - Auditoria de qualidade WXF v1.8.0 - syntax, implementacao, README
 
@@ -273,7 +293,7 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - [ ] Adicionar mapa interativo Folium usando GeoJSON do WardriveLogger
 - [ ] Bluetooth BLE scanner real integrado ao framework WXF
 - [ ] Testes de integracao: ESP8266WIDSBridge + hardware real
-- [ ] Verificar se commits violaram regra no-AI-attribution (Co-authored-by Cursor detectado nos commits anteriores)
+- [x] Atribuições de IA removidas do histórico remoto (force-push sem Co-authored-by)
 
 ### Ambiente necessario
 - Python 3.9+
@@ -283,8 +303,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - RTL-SDR para TPMS decoder
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-08 09:05] -- Wiki completa criada e README melhorado
 
@@ -306,9 +326,9 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - [ ] docs/wiki/en-US/ e docs/wiki/pt-BR/ referenciados em COVERAGE_MATRIX podem ser removidos do README (substituidos pelo GitHub Wiki)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
-- Wiki local: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\.tmp\wxf_wiki
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Wiki local: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\.tmp\wxf_wiki
 
 ## [2026-06-08 12:55] -- Wiki PT-BR completa: 15 paginas traduzidas
 
@@ -336,9 +356,9 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Git com acesso ao repositorio mrhenrike/WirelessXPL-Forge.wiki
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
-- Wiki local: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\.tmp\wxf_wiki
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Wiki local: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\.tmp\wxf_wiki
 
 ## [2026-06-19 04:40] - Implementacao do modulo OS-Guard
 
@@ -363,10 +383,10 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - pytest 8.x para rodar os testes
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\core\os_guard.py
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\tests\test_os_guard.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/core/os_guard.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/tests/test_os_guard.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\core\os_guard.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\tests\test_os_guard.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/core/os_guard.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/tests/test_os_guard.py
 
 ## [2026-06-19 04:45] - Phase 0A WXF Native Refactor
 
@@ -377,7 +397,7 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - interpreter.py: path_tokens check atualizado para incluir "wifi" (mantido "wifi_lab" por compatibilidade)
 - wifi_lab/DEPRECATED.md criado (aviso de deprecacao)
 - Bridges obsoletos removidos: airgeddon_bridge, wirespy_bridge, pwnagotchi_bridge, sniffair_passive_recon, hashcatch_bridge, pmk_precompute (wifi/ e wifi_lab/)
-- BRIDGE_AUDIT.md gerado em d:\Projetos-SafeLabs\.tmp\wxf-references\
+- BRIDGE_AUDIT.md gerado em /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/.tmp/wxf-references/
 - docs/PREREQUISITES.md atualizado com secao "Politica de Dependencias - WXF v1.7.0+"
 
 ### Arquivos modificados
@@ -388,7 +408,7 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - wirelessxpl/modules/generic/bluetooth/*.py (9 arquivos - imports)
 - wirelessxpl/modules/generic/external/*.py (11 arquivos - imports)
 - docs/PREREQUISITES.md (secao de politica adicionada ao topo)
-- d:\Projetos-SafeLabs\.tmp\wxf-references\BRIDGE_AUDIT.md (NOVO)
+- /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/.tmp/wxf-references/BRIDGE_AUDIT.md (NOVO)
 
 ### Proximo passo imediato
 - Fase 0B: Criar wirelessxpl/modules/generic/wifi/wps_engine_native.py (substitui reaver/bully/pixiewps)
@@ -405,11 +425,11 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Sem commits/push - apenas mudancas locais
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\docs\PREREQUISITES.md
-- Windows: D:\Projetos-SafeLabs\.tmp\wxf-references\BRIDGE_AUDIT.md
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/docs/PREREQUISITES.md
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\docs\PREREQUISITES.md
+- Windows: /home/mrhenrike/Documentos/Projetos\.tmp\wxf-references\BRIDGE_AUDIT.md
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/docs/PREREQUISITES.md
 
 ## [2026-06-19 04:49] -- Phase 0B: wps_engine_native.py criado
 
@@ -442,8 +462,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Interface em monitor mode: sudo airmon-ng start wlan0
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wps_engine_native.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wps_engine_native.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wps_engine_native.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wps_engine_native.py
 
 ## [2026-06-19 04:50] -- Phase 0C: flood_engine_native.py criado
 
@@ -473,8 +493,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - iw instalado para channel hop (modo b sem canal fixo e modo w)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\flood_engine_native.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/flood_engine_native.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\flood_engine_native.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/flood_engine_native.py
 
 ## [2026-06-19 07:45] -- Phase 0E: dragonblood_suite.py native refactor
 
@@ -502,8 +522,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Linux, interface Wi-Fi em modo monitor, root/CAP_NET_RAW
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dragonblood_suite.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dragonblood_suite.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dragonblood_suite.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dragonblood_suite.py
 
 ## [2026-06-19 04:50] -- Phase 0H: dns_dhcp_server + monitor_mode_manager
 
@@ -529,10 +549,10 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Linux com root (port 53 e raw sockets)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dns_dhcp_server.py
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\monitor_mode_manager.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dns_dhcp_server.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/monitor_mode_manager.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\dns_dhcp_server.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\monitor_mode_manager.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/dns_dhcp_server.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/monitor_mode_manager.py
 
 ## [2026-06-19 04:45] - Phase 0D WXF Native Refactor: phishing_engine.py
 
@@ -572,8 +592,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Opcional: aircrack-ng, dnslib (pip install dnslib)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\phishing_engine.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/phishing_engine.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\phishing_engine.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/phishing_engine.py
 
 ## [2026-06-19 04:45] -- Phase 0G WXF Native Refactor - WEP e TKIP
 
@@ -619,10 +639,10 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - CAP_NET_RAW ou root
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wep_attack_suite.py
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\tkip_attack_suite.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wep_attack_suite.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\wep_attack_suite.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi\tkip_attack_suite.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wep_attack_suite.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
 
 ## [2026-06-19 04:50] — Phase 0F: Refactor deauth/handshake modules to native Scapy
 
@@ -688,12 +708,12 @@ aireplay_deauth_barrage.py:
 - CAP_NET_RAW ou root para sendp()
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\handshake_snooper.py
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\deauth_multimode.py
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\aireplay_deauth_barrage.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/handshake_snooper.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/deauth_multimode.py
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/aireplay_deauth_barrage.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\handshake_snooper.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\deauth_multimode.py
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\modules\generic\wifi_lab\aireplay_deauth_barrage.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/handshake_snooper.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/deauth_multimode.py
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi_lab/aireplay_deauth_barrage.py
 
 ## [2026-06-19 05:00] - Phase 0J: v1.7.0 release cycle closed
 
@@ -723,8 +743,8 @@ aireplay_deauth_barrage.py:
 - PYPI_TOKEN em ~/.pypirc
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 04:55] - Refatoracao handshake_snooper + wep_attack_suite
 
@@ -760,8 +780,8 @@ aireplay_deauth_barrage.py:
 - Interface wireless em modo monitor com suporte a injecao de pacotes (Linux)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 04:55] -- Cleanup final WXF para v1.7.0
 
@@ -792,8 +812,8 @@ aireplay_deauth_barrage.py:
 - scapy, dnslib>=0.9.24, cryptography>=41.0, pycryptodome
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 04:54] - Implementar 3 modulos wifi nativos (dns_dhcp_server, monitor_mode_manager, phishing_engine)
 
@@ -823,8 +843,8 @@ aireplay_deauth_barrage.py:
 - Interface wireless com suporte a modo AP (wlan1) e monitor (wlan0mon)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 06:55] -- Sync wifi_lab/ -> wifi/ + 1.7.0.post1 PyPI
 
@@ -848,8 +868,8 @@ aireplay_deauth_barrage.py:
 - [ ] Verificar se wifi_lab/ ainda precisa de mais modulos sincronizados para wifi/
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 10:15] -- Remove bridges proibidos e wifi_lab duplicado
 
@@ -875,8 +895,8 @@ aireplay_deauth_barrage.py:
 - Git com acesso ao remote https://github.com/mrhenrike/WirelessXPL-Forge.git
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge
 
 ## [2026-06-19 11:52] -- Incorporacao de templates phishing de repos de referencia
 
@@ -915,8 +935,8 @@ aireplay_deauth_barrage.py:
 - Python 3.x com dependencias do projeto
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
 
 ## [2026-06-19 12:15] -- Correcao: captive portal form action padronizado para /capture
 
@@ -939,8 +959,8 @@ aireplay_deauth_barrage.py:
 - Python 3.10+
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
 
 ## [2026-06-19 12:50] - Add 55 captive portal templates batch 2
 
@@ -978,8 +998,8 @@ aireplay_deauth_barrage.py:
 - Git com acesso ao remote mrhenrike/WirelessXPL-Forge
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
 
 ## [2026-06-19 13:05] -- Modular pip extras por categoria wireless (v1.8.0)
 
@@ -1009,8 +1029,8 @@ aireplay_deauth_barrage.py:
 - Linux para extras bt (pybluez, dbus-python) e rf (pyrtlsdr)
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\pyproject.toml
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/pyproject.toml
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\pyproject.toml
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/pyproject.toml
 
 ## [2026-06-19 13:15] -- Redesign captive portal templates (44 arquivos)
 
@@ -1036,5 +1056,5 @@ aireplay_deauth_barrage.py:
 - git submodule: WirelessXPL-Forge em submodules/Uniao-Geek/
 
 ### Paths importantes
-- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
-- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+- Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
+- Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/

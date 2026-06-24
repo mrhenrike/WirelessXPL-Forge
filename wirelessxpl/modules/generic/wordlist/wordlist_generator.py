@@ -127,7 +127,7 @@ class Exploit(Exploit):
         profile.zip_code = _ask("ZIP/postal code (if relevant)")
         profile.phone_suffix = _ask("Phone number suffix — last 4-6 digits (if relevant)")
 
-        custom_raw = _ask("Custom seed words (comma-separated, e.g. 'safelabs,projeto,rede')")
+        custom_raw = _ask("Custom seed words (comma-separated, e.g. 'uniaogeek,projeto,rede')")
         if custom_raw:
             profile.custom_words = [w.strip() for w in custom_raw.split(",") if w.strip()]
 

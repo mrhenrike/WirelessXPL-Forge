@@ -13,7 +13,8 @@
 ## Reporting a vulnerability
 
 1. Use GitHub **private vulnerability reporting**: **Security → Report a vulnerability** on `mrhenrike/WirelessXPL-Forge`.
-2. Do not file a public issue with a full exploit before triage.
+2. Or email **[suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)** with subject `WXF Security`.
+3. Do not file a public issue with a full exploit before triage.
 3. Include:
    - Affected commit or tag
    - Minimal reproduction steps

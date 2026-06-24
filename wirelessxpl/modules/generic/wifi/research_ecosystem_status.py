@@ -60,7 +60,7 @@ class Exploit(Exploit):
     __info__ = {
         "name": "Wireless research ecosystem (submodule) status",
         "description": "Maps GitHub WPA3/Wi-Fi research submodules to on-disk paths "
-                       "under the SafeLabs-style superproject layout.",
+                       "under the União Geek superproject layout.",
         "authors": ("André Henrique (@mrhenrike)",),
         "references": (
             "https://wpa3.mathyvanhoef.com/",
