@@ -1,5 +1,19 @@
 # HANDOFF -- WirelessXPL-Forge
 
+## [2026-06-24] — Crack engine v2: HashCater + Cap2Hash nativos
+
+### Estado ao encerrar
+- `handshake_crack_engine`: `attack_flow=both`, máscaras smart ISP-BR, proteção térmica GPU
+- Cap2Hash nativo: `convert_only` + `input_dir` + `skip_converted`
+- Lote: `input_dir` processa múltiplos PCAP/hash com relatório cracked/failed
+- Versão **2.0.3** publicada PyPI
+
+### Novas opções principais
+- `attack_flow` wordlist | bruteforce | both
+- `smart_masks`, `mask_runtime_s`, `cooldown_s`, `gpu_temp_abort`, `log_file`
+
+---
+
 ## [2026-06-23] — Limpeza de branding, contato e sync remoto (sem PCAPs)
 
 ### Estado ao encerrar

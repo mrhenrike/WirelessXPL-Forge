@@ -49,13 +49,22 @@ O módulo **converte automaticamente** o formato quando necessário
 | Opção        | Padrão   | Descrição |
 |--------------|----------|-----------|
 | `backend`    | `auto`   | `auto \| hashcat_gpu \| hashcat_cpu \| hashcat_auto \| aircrack \| john \| cowpatty \| list` |
-| `input_file` | —        | Caminho do `.pcap/.pcapng` ou hash (`.hash/.22000/.hccapx`) |
+| `input_file` | —        | Caminho do `.pcap/.pcapng` ou hash (`.hash/.22000/.hc22000`) |
+| `input_dir`  | —        | Pasta com capturas/hashes (modo lote) |
 | `wordlist`   | (wlist_brasil) | Caminho da wordlist |
+| `attack_flow`| `wordlist` | `wordlist` \| `bruteforce` \| `both` (wordlist → máscaras) |
+| `smart_masks`| `true`   | Máscaras auto por SSID/ISP BR (VIVO, CLARO, NET…) |
 | `wl_order`   | `random` | Ordem de varredura: `random \| forward \| reverse` |
 | `essid`      | —        | ESSID alvo: nome exato \| `all` \| índices `1,2,3` \| range `1-3` (vazio = lista e pergunta) |
 | `rules`      | —        | Arquivos de regra do hashcat (ex.: `best64,dive`) ou `none` |
 | `use_rules`  | `false`  | Aplica `best64` à wordlist (~64× candidatos) |
-| `masks`      | —        | Máscara hashcat para brute-force (ex.: `?d?d?d?d?d?d?d?d`) |
+| `masks`      | —        | Máscara(s) hashcat, separadas por vírgula (vazio + smart_masks → auto) |
+| `mask_runtime_s` | `1800` | Tempo máximo por máscara na cadeia bruteforce |
+| `cooldown_s` | `60`     | Pausa entre runs hashcat (resfriamento GPU) |
+| `gpu_temp_abort` | `80` | `--hwmon-temp-abort` em °C (0 = desliga) |
+| `convert_only` | `false` | Só converter PCAP→`.hc22000` (Cap2Hash nativo) |
+| `skip_converted` | `true` | Pular se `.hc22000` já existe ao lado do PCAP |
+| `log_file`   | —        | Log de sessão (estilo HashCater) |
 | `potfile`    | —        | Caminho do potfile do hashcat (vazio = padrão) |
 | `timeout_s`  | `0`      | Tempo máximo em segundos (0 = ilimitado) |
 | `verbose`    | `false`  | Mostra a saída crua do backend |

@@ -10,7 +10,7 @@
 |-----------|-------|
 | **Name** | WirelessXPL-Forge |
 | **Short name** | WXF |
-| **Version** | 2.0.2 |
+| **Version** | 2.0.3 |
 | **License** | BSD-3-Clause |
 | **Python** | 3.8 – 3.13 |
 | **Platform** | Linux (preferred), macOS, WSL2 |
