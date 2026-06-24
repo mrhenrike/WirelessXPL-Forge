@@ -2,7 +2,7 @@
 
 > **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
 
-**Version:** 2.0.2 | **License:** BSD-3-Clause | **Python:** 3.8 - 3.13
+**Version:** 2.0.3 | **License:** BSD-3-Clause | **Python:** 3.8 - 3.13
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
@@ -12,7 +12,7 @@
   <a href="https://github.com/mrhenrike/WirelessXPL-Forge/actions"><img src="https://img.shields.io/github/actions/workflow/status/mrhenrike/WirelessXPL-Forge/compat-matrix.yml?branch=master&label=CI&logo=github" alt="CI"></a>
   <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/dm/wirelessxpl?label=Downloads&logo=pypi" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.0.2-green" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.0.3-green" alt="Version">
   <img src="https://img.shields.io/badge/Modules-329%2B-brightgreen" alt="Modules">
   <img src="https://img.shields.io/badge/Python-3.8--3.13-blue" alt="Python">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey" alt="Platform">
