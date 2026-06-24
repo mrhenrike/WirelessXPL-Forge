@@ -1,12 +1,22 @@
 # HANDOFF -- WirelessXPL-Forge
 
+## [2026-06-24] — Política: pyproject.toml e PyPI somente local
+
+### Estado ao encerrar
+- `pyproject.toml` removido do GitHub (`.gitignore`); template: `pyproject.toml.example`
+- Workflow `publish-pypi.yml` removido do repositório remoto
+- README/wiki: instalação via clone + `requirements.txt`; sem badges PyPI
+- Regra Cursor: `.cursor/rules/local-packaging.mdc`
+- Cópia local `pyproject.toml` (v2.0.3) permanece na máquina para build/twine manual
+
+---
+
 ## [2026-06-24] — Crack engine v2: HashCater + Cap2Hash nativos
 
 ### Estado ao encerrar
 - `handshake_crack_engine`: `attack_flow=both`, máscaras smart ISP-BR, proteção térmica GPU
 - Cap2Hash nativo: `convert_only` + `input_dir` + `skip_converted`
 - Lote: `input_dir` processa múltiplos PCAP/hash com relatório cracked/failed
-- Versão **2.0.3** publicada PyPI
 
 ### Novas opções principais
 - `attack_flow` wordlist | bruteforce | both
