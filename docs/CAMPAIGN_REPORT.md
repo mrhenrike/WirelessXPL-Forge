@@ -295,5 +295,5 @@ run
 
 ---
 
-*Relatório gerado por WirelessXPL-Forge v1.2.0 — SafeLabs Research*  
+*Relatório gerado por WirelessXPL-Forge v1.2.0 — União Geek*  
 *Campanha executada com I_KNOW_SCOPE=true em ambiente autorizado*

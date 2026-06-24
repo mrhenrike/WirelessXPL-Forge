@@ -5,15 +5,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wirelessxpl"
-version = "2.0.1"
+version = "2.0.2"
 description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "BSD-3-Clause" }
 authors = [
-    { name = "André Henrique (@mrhenrike) | União Geek", email = "contact@uniao-geek.dev" },
+    { name = "André Henrique (@mrhenrike) | União Geek", email = "suporte@uniaogeek.com.br" },
 ]
 maintainers = [
-    { name = "André Henrique (@mrhenrike) | União Geek", email = "contact@uniao-geek.dev" },
+    { name = "André Henrique (@mrhenrike) | União Geek", email = "suporte@uniaogeek.com.br" },
 ]
 keywords = [
     "wireless", "wifi", "wpa", "wpa3", "bluetooth", "ble", "zigbee", "rfid",

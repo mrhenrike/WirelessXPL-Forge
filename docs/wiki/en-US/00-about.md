@@ -10,7 +10,7 @@
 |-----------|-------|
 | **Name** | WirelessXPL-Forge |
 | **Short name** | WXF |
-| **Version** | 1.1.0 |
+| **Version** | 2.0.2 |
 | **License** | BSD-3-Clause |
 | **Python** | 3.8 – 3.13 |
 | **Platform** | Linux (preferred), macOS, WSL2 |
@@ -96,7 +96,8 @@ WirelessXPL-Forge/
 ## Maintainer
 
 **André Henrique** ([@mrhenrike](https://github.com/mrhenrike))  
-[União Geek](https://github.com/Uniao-Geek) — https://github.com/Uniao-Geek
+[União Geek](https://github.com/Uniao-Geek) — https://github.com/Uniao-Geek  
+**Support:** [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)
 
 ---
 

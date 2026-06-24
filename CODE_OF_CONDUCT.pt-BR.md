@@ -36,7 +36,7 @@ Este código aplica-se a:
 ## Segurança versus conduta
 
 Reportes de **vulnerabilidades no próprio software** devem seguir [SECURITY.pt-BR.md](SECURITY.pt-BR.md) ou [SECURITY.md](SECURITY.md).  
-Reportes de **comportamento** que violem este código: use o canal de reporte indicado em [SECURITY.pt-BR.md](SECURITY.pt-BR.md) (reporte privado) ou o fluxo sugerido pela plataforma.
+Reportes de **comportamento** que violem este código: [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br) ou o fluxo privado em [SECURITY.pt-BR.md](SECURITY.pt-BR.md).
 
 ## Responsabilidades das pessoas mantenedoras
 

@@ -1,7 +1,7 @@
 # WirelessXPL-Forge — Relatório de Validação Live
 
 **Data:** 2026-05-03 18:30–18:55 UTC-3  
-**Operador:** André Henrique (@mrhenrike) — SafeLabs Research  
+**Operador:** André Henrique (@mrhenrike) — União Geek  
 **Adaptador:** Ralink RT5370 USB (148f:5370) via usbipd → WSL2 (kernel 6.6.87.2-microsoft-standard-WSL2+)  
 **Interface:** `wlx24050f3d5f0a` | MAC: `24:05:0f:3d:5f:0a`  
 **Driver:** rt2800usb (carregado com sucesso no kernel + customizado)  
@@ -223,6 +223,6 @@ Clientes buscando SSIDs não conectados (Probe Requests):
 
 ---
 
-*Relatório gerado por WirelessXPL-Forge v1.2.0 — SafeLabs Research*  
+*Relatório gerado por WirelessXPL-Forge v1.2.0 — União Geek*  
 *Todos os testes realizados com autorização explícita (I_KNOW_SCOPE=true)*  
 *Redes vizinhas: apenas scan passivo e PMKID collection (sem autenticação forçada)*

@@ -6,7 +6,7 @@ By default only entries whose `sources` include ``user_seed`` are added (explici
 
 Paths: ``submodules/IoT/third-party-router-poc/<owner>__<repo>`` (GitLab uses owner path segments).
 
-Run from the *superproject root* (Projetos-SafeLabs), for example::
+Run from the *superproject root* (Documentos/Projetos), for example::
 
     python submodules/IoT/WirelessXPL-Forge/tools/add_git_submodules_from_catalog.py --dry-run
     python submodules/IoT/WirelessXPL-Forge/tools/add_git_submodules_from_catalog.py
@@ -71,7 +71,7 @@ def main() -> int:
         "--superproject-root",
         type=Path,
         default=None,
-        help="Root of Projetos-SafeLabs (default: parent of submodules/)",
+        help="Root of Documentos/Projetos (default: parent of submodules/)",
     )
     parser.add_argument(
         "--source",

@@ -36,7 +36,7 @@ This Code applies to:
 ## Security reports vs conduct reports
 
 **Vulnerabilities in this software** → follow [SECURITY.md](SECURITY.md).  
-**Conduct violations** → use the private reporting path in [SECURITY.md](SECURITY.md) or the platform’s community tools.
+**Conduct violations** → [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br) or GitHub private reporting in [SECURITY.md](SECURITY.md).
 
 ## Maintainer responsibilities
 

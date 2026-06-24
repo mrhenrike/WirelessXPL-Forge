@@ -10,6 +10,7 @@
 |------|---------|
 | Fork maintainer | [André Henrique (@mrhenrike)](https://github.com/mrhenrike) |
 | Organization | [União Geek](https://github.com/Uniao-Geek) |
+| Support | [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br) |
 
 ## Upstream lineage and credits
 
