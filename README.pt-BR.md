@@ -2,7 +2,7 @@
 
 > **Framework modular de pesquisa em segurança wireless** para 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID, Sub-GHz e segurança de drones - projetado para testes de invasão autorizados, pesquisa e educação.
 
-**Versão:** 1.8.0 | **Licença:** BSD-3-Clause | **Python:** 3.8 - 3.13
+**Versão:** 2.0.2 | **Licença:** BSD-3-Clause | **Python:** 3.8 - 3.13
 
 **Idioma:** **English (en-US):** [README.md](README.md) · **Português (pt-BR)** - padrão desta página
 
@@ -507,4 +507,5 @@ O uso contra sistemas que você não possui ou não tem permissão escrita expl�
 ---
 
 **Autor:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) | [União Geek](https://github.com/Uniao-Geek)  
+**Suporte:** [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)  
 **Linhagem:** [threat9/routersploit](https://github.com/threat9/routersploit) → RouterXPL-Forge → WirelessXPL-Forge

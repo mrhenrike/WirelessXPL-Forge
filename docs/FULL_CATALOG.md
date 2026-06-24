@@ -807,7 +807,7 @@ Approximate on-disk size (file bytes only; binary prefixes). When using git meta
 
 137. **Wireless research ecosystem (submodule) status**
    - Path: `generic/wifi_lab/research_ecosystem_status.py`
-   - Maps GitHub WPA3/Wi-Fi research submodules to on-disk paths under the SafeLabs-style superproject layout.
+   - Maps GitHub WPA3/Wi-Fi research submodules to on-disk paths under the União Geek superproject layout.
    - Devices: Workstation with superproject checkout
 
 138. **Wordlist orchestrator (Wi‑Fi / WPA lab)**

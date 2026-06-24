@@ -10,7 +10,7 @@ O **WirelessXPL-Forge (WXF)** é um framework modular de pesquisa em segurança 
 |----------|-------|
 | **Nome** | WirelessXPL-Forge |
 | **Nome curto** | WXF |
-| **Versão** | 1.1.0 |
+| **Versão** | 2.0.2 |
 | **Licença** | BSD-3-Clause |
 | **Python** | 3.8 – 3.13 |
 | **Plataforma** | Linux (preferido), macOS, WSL2 |
@@ -95,7 +95,8 @@ WirelessXPL-Forge/
 ## Mantenedor
 
 **André Henrique** ([@mrhenrike](https://github.com/mrhenrike))  
-[União Geek](https://github.com/Uniao-Geek) — https://github.com/Uniao-Geek
+[União Geek](https://github.com/Uniao-Geek) — https://github.com/Uniao-Geek  
+**Suporte:** [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)
 
 ---
 
