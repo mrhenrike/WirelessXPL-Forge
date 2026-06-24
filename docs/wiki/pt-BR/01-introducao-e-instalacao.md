@@ -21,23 +21,25 @@
 ## Requisitos
 
 - **Python 3.8 a 3.13**
-- Dependências principais com **`pip install wirelessxpl`** (veja abaixo) ou `pip install -r requirements.txt` a partir do clone
+- Dependências: `pip install -r requirements.txt` a partir do clone
+- Instalação editável: copie `pyproject.toml.example` → `pyproject.toml` (arquivo local, fora do GitHub) e `pip install -e ".[wifi]"`
 - Em **Python 3.13+**, o pacote `telnetlib3` substitui o `telnetlib` removido da biblioteca padrão
 - Módulos **PCAP** dependem de **Scapy**; no Windows, captura ao vivo pode exigir Npcap — análise **offline** de `.pcap` costuma bastar o Python
 
-## Instalação via PyPI (recomendado)
+## Instalação a partir do código fonte (recomendado)
 
 ```bash
+git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
+cd WirelessXPL-Forge
 python3 -m pip install -U pip
-pip install wirelessxpl
-# extras opcionais:
-pip install "wirelessxpl[serial]"    # pyserial / Bruce ESP32
-pip install "wirelessxpl[ml-lite]"   # ML leve
+python3 -m pip install -r requirements.txt
+cp pyproject.toml.example pyproject.toml
+pip install -e ".[wifi]"
 ```
 
-Após instalar, os entry points **`wxf`** e **`python -m wirelessxpl`** ficam no seu `PATH` (ver [projeto no PyPI](https://pypi.org/project/wirelessxpl/)).
+Depois: **`python wxf.py`**, **`wxf`** ou **`python -m wirelessxpl`**.
 
-## Instalação a partir do código fonte
+## Instalação com venv
 
 ```bash
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
@@ -46,7 +48,8 @@ python3 -m venv .venv
 source .venv/bin/activate   # Linux/macOS
 # .venv\Scripts\activate    # Windows
 python3 -m pip install -r requirements.txt
-pip install -e .   # opcional — modo editável
+cp pyproject.toml.example pyproject.toml
+pip install -e .
 ```
 
 ## Diagnóstico
