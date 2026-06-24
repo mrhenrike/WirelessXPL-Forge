@@ -14,7 +14,6 @@
 | **License** | BSD-3-Clause |
 | **Python** | 3.8 – 3.13 |
 | **Platform** | Linux (preferred), macOS, WSL2 |
-| **PyPI** | `pip install wirelessxpl` |
 | **Repository** | https://github.com/mrhenrike/WirelessXPL-Forge |
 | **Wiki** | https://github.com/mrhenrike/WirelessXPL-Forge/wiki |
 

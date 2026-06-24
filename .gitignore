@@ -1,3 +1,8 @@
+# Local-only packaging (não enviar ao GitHub)
+pyproject.toml
+.pypirc
+tools/publish_pypi_local.sh
+
 # IntelliJ project files
 .idea
 out

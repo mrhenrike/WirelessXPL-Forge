@@ -7,10 +7,7 @@
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
 
 <p align="center">
-  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/v/wirelessxpl?color=red&label=PyPI&logo=pypi&logoColor=white" alt="PyPI"></a>
-  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/pyversions/wirelessxpl?color=blue&label=Python&logo=python&logoColor=white" alt="Python"></a>
   <a href="https://github.com/mrhenrike/WirelessXPL-Forge/actions"><img src="https://img.shields.io/github/actions/workflow/status/mrhenrike/WirelessXPL-Forge/compat-matrix.yml?branch=master&label=CI&logo=github" alt="CI"></a>
-  <a href="https://pypi.org/project/wirelessxpl/"><img src="https://img.shields.io/pypi/dm/wirelessxpl?label=Downloads&logo=pypi" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License">
   <img src="https://img.shields.io/badge/Version-2.0.3-green" alt="Version">
   <img src="https://img.shields.io/badge/Modules-329%2B-brightgreen" alt="Modules">
@@ -22,13 +19,20 @@
 
 ## Instalacao / Installation
 
-### Basico / Basic
+### Basico / Basic (clone)
 
 ```bash
-pip install wirelessxpl
+git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
+cd WirelessXPL-Forge
+python3 -m pip install -r requirements.txt
+cp pyproject.toml.example pyproject.toml   # opcional — editable install
+pip install -e ".[wifi]"
+python wxf.py
 ```
 
-### Por tecnologia / By technology
+> `pyproject.toml` é **local** (não versionado no GitHub). Use o template `pyproject.toml.example`.
+
+### Por tecnologia / By technology (editable, após `pyproject.toml` local)
 
 | Extra | Tecnologia | Pacotes incluidos | Tamanho estimado |
 |---|---|---|---|
@@ -43,18 +47,18 @@ pip install wirelessxpl
 | `[all]` | Todos os extras acima | (tudo acima) | ~135 MB |
 
 ```bash
-# Exemplos:
-pip install "wirelessxpl[wifi]"
-pip install "wirelessxpl[wifi,bt,cellular]"
-pip install "wirelessxpl[all]"
+# Exemplos (com pyproject.toml local):
+pip install -e ".[wifi]"
+pip install -e ".[wifi,bt,cellular]"
+pip install -e ".[all]"
 ```
 
-> **Nota:** Ferramentas externas (aircrack-ng, hashcat, hcxdumptool) nao sao instaladas via pip.
+> **Nota:** Ferramentas externas (aircrack-ng, hashcat, hcxdumptool) não são instaladas via pip.
 > Consulte [PREREQUISITES.md](docs/PREREQUISITES.md) para requisitos de hardware e software externos.
 
----
-
 ### By technology (English)
+
+Same extras as the table above; use `pip install -e ".[wifi]"` etc. after creating local `pyproject.toml` from `pyproject.toml.example`.
 
 | Extra | Technology | Included packages | Estimated size |
 |---|---|---|---|
@@ -92,9 +96,9 @@ pip install "wirelessxpl[all]"
 
 ---
 
-## System prerequisites (outside the PyPI wheel)
+## System prerequisites (host tools)
 
-`pip install wirelessxpl` ships **only** the Python package and its declared dependencies. The table below lists **host tools** and **firmware** that are **not** inside the wheel: they are normal OS-level installs (apt, brew, upstream installers). **Bridge modules** in WXF still **integrate** them (`use` → `run`); they are not “disconnected”, they are **orchestrated subprocesses**. For licensing, size, and maintenance, we do **not** vendor upstream projects such as wifiphisher/eaphammer inside this repo — see **[docs/INTEGRATION_MODEL.md](docs/INTEGRATION_MODEL.md)** (native vs bridge vs GPL).
+The Python package and its declared dependencies install from the repo clone. The table below lists **host tools** and **firmware** that are **not** bundled: they are normal OS-level installs (apt, brew, upstream installers).
 
 | Tool | Role |
 |------|------|
@@ -110,7 +114,7 @@ pip install "wirelessxpl[all]"
 | **btlejack** *(optional)* | BLE sniff/jam/hijack via **bridge** |
 | **opendrop / owl** *(optional)* | AWDL/AirDrop lab via **bridge** |
 | **Bruce ESP32 firmware** *(optional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — device image; export PCAP to `generic/pcap/*` |
-| **pyserial** *(optional)* | Serial to Bruce (`pip install wirelessxpl[serial]`) |
+| **pyserial** *(optional)* | Serial to Bruce (`pip install -e ".[serial]"` with local `pyproject.toml`) |
 
 Run `use generic/external/wireless_tool_prereq_audit` after install to verify your PATH.
 
@@ -118,42 +122,21 @@ Run `use generic/external/wireless_tool_prereq_audit` after install to verify yo
 
 ## Quick Install
 
-### From PyPI
-
-```bash
-pip install wirelessxpl
-# WiFi 802.11 completo:
-pip install "wirelessxpl[wifi]"
-# Bluetooth BLE + Classic:
-pip install "wirelessxpl[bt]"
-# RF / SDR:
-pip install "wirelessxpl[rf]"
-# Tudo:
-pip install "wirelessxpl[all]"
-# Com serial para Bruce/ESP32:
-pip install "wirelessxpl[serial]"
-# Com ML de sinais:
-pip install "wirelessxpl[ml-lite]"
-```
-
-### From Source
-
 ```bash
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
 cd WirelessXPL-Forge
 pip install -r requirements.txt
+cp pyproject.toml.example pyproject.toml   # local only — not on GitHub
+pip install -e ".[wifi]"
 python wxf.py
-# or
-python -m wirelessxpl
-# or (after pip install -e .)
-wxf
 ```
 
 ### WSL2 / Kali (recommended for capture tools)
 
 ```bash
 sudo apt install aircrack-ng hcxtools hcxdumptool mdk4 hostapd dnsmasq tshark
-pip install wirelessxpl
+pip install -r requirements.txt
+pip install -e ".[wifi]"
 ```
 
 ---

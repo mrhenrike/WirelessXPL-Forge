@@ -14,7 +14,6 @@ O **WirelessXPL-Forge (WXF)** é um framework modular de pesquisa em segurança 
 | **Licença** | BSD-3-Clause |
 | **Python** | 3.8 – 3.13 |
 | **Plataforma** | Linux (preferido), macOS, WSL2 |
-| **PyPI** | `pip install wirelessxpl` |
 | **Repositório** | https://github.com/mrhenrike/WirelessXPL-Forge |
 | **Wiki** | https://github.com/mrhenrike/WirelessXPL-Forge/wiki |
 
@@ -73,7 +72,7 @@ WirelessXPL-Forge/
 │   └── libs/                  # utilitários compartilhados
 ├── tools/                     # ferramentas de desenvolvimento e CI
 ├── docs/                      # documentação, wiki, matriz de cobertura
-└── .github/workflows/         # CI/CD (compat-matrix + release + publicação PyPI)
+└── .github/workflows/         # CI/CD (compat-matrix)
 ```
 
 ---

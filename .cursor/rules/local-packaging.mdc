@@ -1,0 +1,13 @@
+---
+description: pyproject.toml e publicação PyPI são locais — não versionar no GitHub
+alwaysApply: true
+---
+
+# Empacotamento e PyPI — somente local
+
+- **Nunca** commitar `pyproject.toml` no repositório remoto.
+- Use `pyproject.toml.example` como template; cópia local: `cp pyproject.toml.example pyproject.toml`.
+- **Não** adicionar workflow de publicação PyPI (`.github/workflows/publish-pypi.yml`) ao GitHub.
+- Publicação PyPI: apenas na máquina do mantenedor (`build` + `twine` ou script local ignorado).
+- README/wiki no GitHub: instalação via **clone + requirements.txt** ou `pip install -e .` após criar `pyproject.toml` local.
+- Badges e links de PyPI não devem aparecer no README versionado no GitHub.

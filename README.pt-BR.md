@@ -8,8 +8,6 @@
 
 [![Python 3.8–3.13](https://img.shields.io/badge/Python-3.8--3.13-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/compat-matrix.yml)
-[![Release](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml/badge.svg)](https://github.com/mrhenrike/WirelessXPL-Forge/actions/workflows/publish-pypi.yml)
-[![PyPI](https://img.shields.io/pypi/v/wirelessxpl.svg)](https://pypi.org/project/wirelessxpl/)
 [![Licença](https://img.shields.io/badge/Licença-BSD%203--Clause-blue.svg)](LICENSE)
 
 ---
@@ -38,9 +36,9 @@ O **WirelessXPL-Forge (WXF)** é um shell interativo e framework de módulos par
 
 ---
 
-## Pré-requisitos do sistema (fora do wheel PyPI)
+## Pré-requisitos do sistema (ferramentas no host)
 
-O `pip install wirelessxpl` traz **apenas** o pacote Python e dependências declaradas. A tabela abaixo são **ferramentas no host** (apt, brew, instaladores) - **não** vão dentro do `.whl`. Os **módulos bridge** continuam **integrados** ao WXF (`use` → `run`); são **orquestração via subprocess**, não "ferramenta solta". Não incorporamos projetos inteiros (ex.: wifiphisher GPL) neste repositório - ver **[docs/INTEGRATION_MODEL.md](docs/INTEGRATION_MODEL.md)**.
+O pacote Python e dependências vêm do clone do repositório. A tabela abaixo são **ferramentas no host** (apt, brew, instaladores) — **não** fazem parte do código Python. Os **módulos bridge** continuam **integrados** ao WXF (`use` → `run`).
 
 | Ferramenta | Função |
 |------------|--------|
@@ -58,7 +56,7 @@ O `pip install wirelessxpl` traz **apenas** o pacote Python e dependências decl
 | **HackRF One / CC1101+ESP32** *(opcional)* | Transmissão Sub-GHz (TX+RX) para módulos subghz |
 | **RTL-SDR** *(opcional)* | Recepção passiva Sub-GHz (somente RX) |
 | **Firmware Bruce ESP32** *(opcional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) - imagem de dispositivo |
-| **pyserial** *(opcional)* | Serial Bruce (`pip install wirelessxpl[serial]`) |
+| **pyserial** *(opcional)* | Serial Bruce (`pip install -e ".[serial]"` com `pyproject.toml` local) |
 | **gpsd** *(opcional)* | GPS para módulos wardrive com georreferenciamento |
 
 Execute `use generic/external/wireless_tool_prereq_audit` após instalar para validar o PATH.
@@ -67,36 +65,21 @@ Execute `use generic/external/wireless_tool_prereq_audit` após instalar para va
 
 ## Instalação Rápida
 
-### Via PyPI
-
-```bash
-pip install wirelessxpl
-# com suporte serial para Bruce/ESP32:
-pip install "wirelessxpl[serial]"
-# com classificação ML de sinal:
-pip install "wirelessxpl[ml-lite]"
-# com suporte GPS para wardrive:
-pip install "wirelessxpl[gps]"
-```
-
-### Via código fonte
-
 ```bash
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
 cd WirelessXPL-Forge
 pip install -r requirements.txt
+cp pyproject.toml.example pyproject.toml   # local — não versionado no GitHub
+pip install -e ".[wifi]"
 python wxf.py
-# ou
-python -m wirelessxpl
-# ou (após pip install -e .)
-wxf
 ```
 
 ### WSL2 / Kali (recomendado para ferramentas de captura)
 
 ```bash
 sudo apt install aircrack-ng hcxtools hcxdumptool mdk4 hostapd dnsmasq tshark gpsd
-pip install wirelessxpl
+pip install -r requirements.txt
+pip install -e ".[wifi]"
 ```
 
 ---
