@@ -1,46 +1,27 @@
 #!/usr/bin/env python3
 
 import logging.handlers
-import os
 import platform
 import sys
+from pathlib import Path
 
-# When running as root (sudo), include the original user's local site-packages
-# so packages like bleak, pycryptodome, scapy extensions, etc. are importable.
-def _add_user_site_packages() -> None:
-    import glob
-    # Check the real user's home (SUDO_USER, HOME before sudo, /home/*)
-    candidates = []
-    sudo_user = os.environ.get("SUDO_USER")
-    if sudo_user:
-        candidates.append(f"/home/{sudo_user}")
-    candidates.append(os.path.expanduser("~"))
-    for home in set(candidates):
-        user_lib = os.path.join(home, ".local", "lib")
-        if os.path.isdir(user_lib):
-            for p in glob.glob(os.path.join(user_lib, "python*/site-packages")):
-                if p not in sys.path:
-                    sys.path.insert(0, p)
+_ROOT = Path(__file__).resolve().parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
-if os.name == "posix" and os.geteuid() == 0:
-    _add_user_site_packages()
+from tools.venv_bootstrap import ensure_runtime
 
-if sys.version_info.major < 3:
-    print("WirelessXPL supports only Python3. Rerun application in Python3 environment.")
-    exit(1)
+ensure_runtime(__file__)
+
 if sys.version_info < (3, 8):
     print("WirelessXPL requires Python 3.8+ (detected: {}).".format(platform.python_version()))
     exit(1)
 
-# Root / Administrator check
+import os
+
 if os.name == "posix" and os.geteuid() != 0:
-    print("\033[91m[!] AVISO: WirelessXPL-Forge NÃO está rodando como root.\033[0m")
-    print("\033[93m    Módulos que usam monitor mode, raw sockets, deauth, injection e BLE\033[0m")
-    print("\033[93m    requerem privilégios root (Linux) ou Administrator (Windows).\033[0m")
-    print("\033[93m    Recomendado: sudo python3 wxf.py\033[0m")
-    print("")
-elif os.name == "posix":
-    print("\033[92m[+] Rodando como root — todos os módulos disponíveis.\033[0m")
+    print("\033[93m[!] Not running as root — RF/monitor/BLE modules may be unavailable.\033[0m")
+    print("\033[93m    Recommended: sudo python3 wxf.py\033[0m\n")
 
 log_handler = logging.handlers.RotatingFileHandler(filename="wirelessxpl.log", maxBytes=500000)
 log_formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s       %(message)s")
@@ -51,11 +32,9 @@ LOGGER.addHandler(log_handler)
 
 
 def _load_global_config() -> None:
-    """Initialize and display WXF global configuration at startup."""
     try:
         from wirelessxpl.core.config import WXFConfig
         from wirelessxpl.core.exploit.printer import PrinterThread, printer_queue
-        # Make sure PrinterThread is running for the banner
         PrinterThread().start()
         cfg = WXFConfig.get()
         cfg.print_banner()
@@ -64,21 +43,43 @@ def _load_global_config() -> None:
         print(f"\033[93m[!] Config init warning: {exc}\033[0m")
 
 
-def wirelessxpl(argv):
+def _launcher(argv):
     _load_global_config()
     try:
         from wirelessxpl.interpreter import WirelessXPLInterpreter
     except ModuleNotFoundError as err:
         print("WirelessXPL bootstrap error: missing Python dependency: {}".format(err))
-        print("Run: python -m pip install -r requirements.txt")
-        print("Optional diagnostics: python tools/env_doctor.py")
+        print("Run: pip install -r requirements.txt")
+        print("Check: wxf --doctor")
         raise SystemExit(1)
 
-    rxf = WirelessXPLInterpreter()
+    wxf = WirelessXPLInterpreter()
     if len(argv[1:]):
-        rxf.nonInteractive(argv)
+        wxf.nonInteractive(argv)
     else:
-        rxf.start()
+        wxf.start()
+
+
+def wirelessxpl(argv):
+    from tools.xpl_cli import ProductInfo, bootstrap
+
+    try:
+        import tomllib
+        _ver = tomllib.loads((_ROOT / "pyproject.toml").read_text())["project"]["version"]
+    except Exception:
+        _ver = "2.0.4"
+
+    product = ProductInfo(
+        name="WirelessXPL-Forge",
+        slug="wirelessxpl-forge",
+        version=_ver,
+        cli_name="wxf",
+        min_python=(3, 8),
+        pip_package="wirelessxpl-forge",
+        setup_hint="pip install -r requirements.txt",
+    )
+    bootstrap(argv, product, _launcher)
+
 
 if __name__ == "__main__":
     try:
