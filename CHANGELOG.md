@@ -4,6 +4,14 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 
 ---
 
+## [2.0.4] - 2026-06-25
+
+### Added
+- Global CLI flags via `tools/xpl_cli.py`: `-h`/`--help`, `-V`/`--version`, `-i`/`--interactive`, `--doctor`/`--check`
+- Colorized help banner on `wxf --help`
+
+---
+
 ## [1.8.1] - 2026-06-19
 
 ### Fixed
