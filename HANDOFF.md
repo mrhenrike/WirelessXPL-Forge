@@ -1082,3 +1082,19 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge\wirelessxpl\resources\captive_templates\
 - Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/resources/captive_templates/
+
+---
+
+## [2026-08-13 16:20] -- Authorship cleanup + sync
+
+### Estado ao encerrar
+- Trailers Cursor/Copilot removidos do historico da default branch (onde aplicavel)
+- Hook `.githooks/commit-msg` ativo via `core.hooksPath=.githooks`
+- Remoto alinhado apos force-with-lease / push
+
+### Proximo passo imediato
+- Em clones antigos: fetch + reset da default branch
+
+### Paths importantes
+- Windows: `D:\Projetos-SafeLabs\submodules\Uniao-Geek\`
+- Linux: `/mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/`
