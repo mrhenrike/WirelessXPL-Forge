@@ -1098,3 +1098,70 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: `D:\Projetos-SafeLabs\submodules\Uniao-Geek\`
 - Linux: `/mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/`
+
+## [2026-09-13 16:30] -- CVE Intel 2025-2026 + 12 novos modulos
+
+### Estado ao encerrar
+- Dossi de intel criado: docs/NEW_CVE_INTEL_2026.md (17 CVEs novos catalogados)
+- 5 catalogos JSON atualizados: +17 CVEs, +10 repos, +7 intel sources, +12 exploitdb entries
+- 12 novos modulos implementados, todos passando py_compile
+- README.md e FULL_CATALOG.md atualizados com secoes v2.1.0
+- Commit: 9293085 -- push para origin/master realizado
+
+### Modulos criados (12 total)
+
+**Tier 1 (alto impacto)**
+- wirelessxpl/modules/generic/wifi/fragattacks/fragattacks_amsdu_mesh_cve_2025_27558.py
+- wirelessxpl/modules/generic/bluetooth/whisperpair_fast_pair_cve_2025_36911.py
+- wirelessxpl/modules/generic/drones/mavlink/mavlink_serial_control_shell_cve_2026_1579.py
+- wirelessxpl/modules/generic/drones/dji/dji_ble_duml_cred_sniff_cve_2026_77812.py
+- wirelessxpl/modules/generic/drones/dji/dji_bt_duml_unauth_cve_2026_78306.py
+
+**Tier 2 (bom impacto, HW especifico)**
+- wirelessxpl/modules/generic/subghz/rkes_rollback_replay_cve_2026_49319.py
+- wirelessxpl/modules/generic/drones/px4/px4_log_stack_overflow_cve_2026_32743.py
+- wirelessxpl/modules/generic/iot_proto/zigbee/zigbee_ezsp_green_power_bof_cve_2025_8414.py
+
+**Tier 3 (SDR/orquestradores externos)**
+- wirelessxpl/modules/generic/cellular/fiveghoul_5gnr_dos.py
+- wirelessxpl/modules/generic/cellular/llfuzz_baseband_cve_scanner.py
+- wirelessxpl/modules/generic/cellular/sni5gect_5gnr_sniff_inject.py
+- wirelessxpl/modules/generic/iot_proto/lorawan/lorawan_frag_transport_oob_cve_2026_12363.py
+
+### Novo subdiretorio criado
+- wirelessxpl/modules/generic/drones/px4/ (px4-specific modules)
+
+### Catalogo de CVEs
+- cve_extended_catalog.json: 167 -> 184 entradas
+- all_known_wireless_attacks.json: v2.1.0
+- external_framework_clones.json: +10 repos (bluesploit, 5ghoul, Sni5Gect, LLFuzz, RollJam, etc.)
+- external_tool_intel_sources.json: +7 sources
+- exploitdb_wireless_catalog.json: +12 notable CVEs + drone section
+
+### Commits realizados
+- 9293085 -- Add 12 new CVE modules and intel dossier for wireless 2025-2026 scope
+
+### Proximo passo imediato
+- Testar modulos Tier 1 com hardware real (BLE adapter, drone em lab, WiFi adapter monitor mode)
+- CVEs em embargo da 5Ghoul (12 HIGH, embargo set-2025) -- checar release quando publicados
+- Minerar V33RU/bluesploit (160 modulos) para mais referencias de ataques BT/BLE
+
+### Pendencias conhecidas
+- [ ] Testar fragattacks_amsdu_mesh com AP mesh real e interface 802.11s
+- [ ] Validar whisperpair com accessorio Fast Pair em lab (bleak + hci0)
+- [ ] Validar mavlink_serial_control_shell com PX4 em bench (UDP 14550)
+- [ ] Testar DJI DUML com drone real em lab RF-isolado
+- [ ] 12 CVEs 5Ghoul em embargo -- implementar quando publicados
+- [ ] Minerar V33RU/bluesploit para novos modulos BT/BLE
+- [ ] Atualizar version bump em wirelessxpl/__init__.py para v2.1.0
+
+### Ambiente necessario
+- Python 3.8+
+- pip install bleak scapy pymavlink pyserial (para modulos ativos)
+- Linux com hci0 BLE adapter para modulos bluetooth
+- USRP B210 + srsRAN para modulos 5G/cellular (Tier 3)
+- HackRF One ou CC1101 para SubGHz (Tier 2)
+
+### Paths importantes
+- Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
+- Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
