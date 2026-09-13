@@ -3,6 +3,27 @@
 > Modules tree id: `c40c17bc1522` (git object)
 > Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
+## Modulos Novos v2.1.0 (2026-09-13) - CVE Intel 2025-2026
+
+| Modulo | Arquivo | CVE(s) | Tier |
+|--------|---------|--------|------|
+| FragAttacks A-MSDU Mesh Bypass | wifi/fragattacks/fragattacks_amsdu_mesh_cve_2025_27558.py | CVE-2025-27558 | T1 |
+| WhisperPair Fast Pair Bypass | bluetooth/whisperpair_fast_pair_cve_2025_36911.py | CVE-2025-36911 | T1 |
+| MAVLink SERIAL_CONTROL Shell | drones/mavlink/mavlink_serial_control_shell_cve_2026_1579.py | CVE-2026-1579 | T1 |
+| DJI BLE DUML Cleartext Creds | drones/dji/dji_ble_duml_cred_sniff_cve_2026_77812.py | CVE-2026-77812 | T1 |
+| DJI BT DUML Unauth Command | drones/dji/dji_bt_duml_unauth_cve_2026_78306.py | CVE-2026-78306 | T1 |
+| RKES Rollback-Replay (Suzuki Swift) | subghz/rkes_rollback_replay_cve_2026_49319.py | CVE-2026-49319 | T2 |
+| PX4 Log Stack Overflow DoS | drones/px4/px4_log_stack_overflow_cve_2026_32743.py | CVE-2026-32743 | T2 |
+| Zigbee EZSP Green Power BOF Scanner | iot_proto/zigbee/zigbee_ezsp_green_power_bof_cve_2025_8414.py | CVE-2025-8414 | T2 |
+| 5Ghoul 5G NR DoS Orchestrator | cellular/fiveghoul_5gnr_dos.py | CVE-2023-33042/43/44, CVE-2024-20003/04 | T3 |
+| LLFuzz Baseband CVE Scanner | cellular/llfuzz_baseband_cve_scanner.py | CVE-2025-21477/20659/26780/81/82 | T3 |
+| Sni5Gect 5G NR Sniff+Inject | cellular/sni5gect_5gnr_sniff_inject.py | 5G NR pre-auth | T3 |
+| LoRaWAN frag_transport OOB | iot_proto/lorawan/lorawan_frag_transport_oob_cve_2026_12363.py | CVE-2026-12363 | T3 |
+
+Intel dossier: docs/NEW_CVE_INTEL_2026.md
+
+---
+
 ## Modulos Nativos v1.7.0 (novos)
 
 | Modulo | Arquivo | Descricao |

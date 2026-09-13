@@ -410,6 +410,69 @@
       "license": "BSD-2-Clause",
       "rxf_module": "generic/external/killerbee_bridge.py",
       "notes": "KillerBee — Zigbee/IEEE 802.15.4 security research framework (sniffing, injection, replay)."
+    },
+    {
+      "id": "v33ru-bluesploit",
+      "clone_url": "https://github.com/V33RU/bluesploit.git",
+      "homepage": "https://v33ru.github.io/bluesploit/",
+      "license": "MIT (see upstream)",
+      "notes": "Bluetooth exploit framework: 160 modules (87 exploits, 29 DoS, 12 scanners), 40+ CVE PoCs 2010-2026; BR/EDR + BLE + Mesh; supports Ubertooth/nRF52840/BTLEJack/HackRF. Mine for BT attack references."
+    },
+    {
+      "id": "pira12-whisperpair-poc",
+      "clone_url": "https://github.com/pira12/WhisperPair-PoC.git",
+      "homepage": "https://whisperpair.eu",
+      "license": "See upstream",
+      "notes": "WhisperPair CVE-2025-36911 PoC: Python CLI + l2flood.c for Google Fast Pair pairing-mode bypass and BLE L2CAP flood. Logic ported to wirelessxpl/modules/generic/bluetooth/whisperpair_fast_pair_cve_2025_36911.py."
+    },
+    {
+      "id": "ap425q-whisper-pair",
+      "clone_url": "https://github.com/ap425q/whisper-pair.git",
+      "license": "See upstream",
+      "notes": "WhisperPair vulnerability scanner (CVE-2025-36911); scanner logic ported to WXF BLE module."
+    },
+    {
+      "id": "asset-group-5ghoul",
+      "clone_url": "https://github.com/asset-group/5ghoul-5g-nr-attacks.git",
+      "homepage": "https://asset-group.github.io/disclosures/5ghoul/",
+      "license": "See upstream",
+      "notes": "5Ghoul 5G NR attack PoC + fuzzer (Qualcomm/MediaTek basebands); CVE-2023-33042/43/44 etc.; requires USRP B210 + srsRAN. Orchestrated by wirelessxpl/modules/generic/cellular/fiveghoul_5gnr_dos.py."
+    },
+    {
+      "id": "asset-group-sni5gect",
+      "clone_url": "https://github.com/asset-group/Sni5Gect-5GNR-sniffing-and-exploitation.git",
+      "license": "See upstream",
+      "notes": "5G NR sniffing, injection, downgrade, auth bypass, modem crash framework; orchestrated by sni5gect_5gnr_sniff_inject.py."
+    },
+    {
+      "id": "syssec-kaist-llfuzz",
+      "clone_url": "https://github.com/SysSec-KAIST/LLFuzz.git",
+      "license": "See upstream",
+      "notes": "LLFuzz OTA baseband lower-layer fuzzer; CVE-2025-21477/20659/26780/81/82; requires USRP + srsRAN. Referenced by llfuzz_baseband_cve_scanner.py."
+    },
+    {
+      "id": "g4meover18-rolljam",
+      "clone_url": "https://github.com/G4MEOVER18/RollJam.git",
+      "license": "See upstream",
+      "notes": "Flipper Zero RollJam PoC for rolling-code 433 MHz capture+replay; jam+capture timing logic ported to rkes_rollback_replay_cve_2026_49319.py."
+    },
+    {
+      "id": "g4meover18-protopirate",
+      "clone_url": "https://github.com/G4MEOVER18/ProtoPirate.git",
+      "license": "See upstream",
+      "notes": "27+ keyfob protocol decoder/encoder for Flipper Zero; protocol definitions referenced for WXF SubGHz modules."
+    },
+    {
+      "id": "wincr4ck-rf-keyfob-research",
+      "clone_url": "https://github.com/wincr4ck/rf-keyfob-research.git",
+      "license": "See upstream",
+      "notes": "433 MHz automotive keyfob RF research: OOK demodulation, chip family detection (PT2262/EV1527/KeeLoq/AUT64), replay analysis."
+    },
+    {
+      "id": "byteme1001-dji-catnect",
+      "clone_url": "https://github.com/ByteMe1001/DJI-CatNect.git",
+      "license": "See upstream",
+      "notes": "DJI CVE-2026-1743 Wi-Fi pairing replay PoC (C); DUML frame structure referenced for Python ports of CVE-2026-77812 and CVE-2026-78306 modules."
     }
   ]
 }

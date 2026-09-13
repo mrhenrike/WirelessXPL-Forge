@@ -2027,6 +2027,76 @@
         "huawei_s5735l"
       ],
       "notes": "Ingerido por tools/embed_local_third_party_poc_intel.py; triagem contínua."
+    },
+    {
+      "id": "whisperpair-cve-2025-36911",
+      "name": "WhisperPair Fast Pair Pairing Bypass PoC",
+      "url": "https://github.com/pira12/WhisperPair-PoC",
+      "type": "active-exploit-poc",
+      "domain": "bluetooth_ble",
+      "scope_alignment": "high",
+      "integration_status": "ported_to_native_module",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "5ghoul-5g-nr-attacks",
+      "name": "5Ghoul 5G NR DoS PoC + Fuzzer",
+      "url": "https://github.com/asset-group/5ghoul-5g-nr-attacks",
+      "type": "active-exploit-poc",
+      "domain": "cellular_5g",
+      "scope_alignment": "high",
+      "integration_status": "orchestrated_external",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "sni5gect-5gnr",
+      "name": "Sni5Gect 5G NR Sniff + Injection Framework",
+      "url": "https://github.com/asset-group/Sni5Gect-5GNR-sniffing-and-exploitation",
+      "type": "active-exploit-framework",
+      "domain": "cellular_5g",
+      "scope_alignment": "high",
+      "integration_status": "orchestrated_external",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "llfuzz-baseband",
+      "name": "LLFuzz Cellular Baseband Lower Layer Fuzzer (KAIST)",
+      "url": "https://github.com/SysSec-KAIST/LLFuzz",
+      "type": "fuzzer",
+      "domain": "cellular_baseband",
+      "scope_alignment": "high",
+      "integration_status": "orchestrated_external",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "rolljam-subghz",
+      "name": "G4MEOVER18 RollJam 433 MHz Rolling Code PoC",
+      "url": "https://github.com/G4MEOVER18/RollJam",
+      "type": "active-exploit-poc",
+      "domain": "subghz_rke",
+      "scope_alignment": "high",
+      "integration_status": "ported_to_native_module",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "v33ru-bluesploit-framework",
+      "name": "BlueSploit Bluetooth Exploit Framework",
+      "url": "https://github.com/V33RU/bluesploit",
+      "type": "active-exploit-framework",
+      "domain": "bluetooth_ble",
+      "scope_alignment": "high",
+      "integration_status": "queued_for_mining",
+      "test_matrix_status": "tracked"
+    },
+    {
+      "id": "cve-2026-49319-rkes",
+      "name": "Alps Alpine R53R0 RKES Rollback Replay Advisory (ASRG)",
+      "url": "https://www.asrg.io/security-advisories/cve-2026-49319-suzuki-swift-2024-rkes-rollback-replay",
+      "type": "advisory-research",
+      "domain": "subghz_automotive",
+      "scope_alignment": "high",
+      "integration_status": "ported_to_native_module",
+      "test_matrix_status": "tracked"
     }
   ]
 }

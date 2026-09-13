@@ -254,6 +254,12 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `zwave_s0_key_extract` | **CVE-2019** — Z-Wave S0 pairing sniff: temp key all-zeros → network key extraction |
 | `zwave_replay_attack` | Z-Wave command replay sem S2 (door_unlock, switch, thermostat) via SDR |
 
+### Bluetooth / BLE - WhisperPair (generic/bluetooth) - NEW v2.1.0
+
+| Module | Description |
+|--------|-------------|
+| `whisperpair_fast_pair_cve_2025_36911` | **CVE-2025-36911** WhisperPair: Google Fast Pair pairing-mode bypass; scan for 0xFE2C devices + KBP injection + Account Key inject + BR/EDR MAC extraction |
+
 ### Wearables BLE (generic/wearables) — *novo v1.7.0*
 
 | Module | Description |
@@ -277,6 +283,12 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `sweyntooth_cve_2019_17517` | CVE-2019-17517 - BLE data channel PDU overflow (Microchip) |
 | `sweyntooth_cve_2019_17519` | CVE-2019-17519 - BLE slave connection reject bypass (Dialog Semiconductor) |
 | `sweyntooth_cve_2019_17520` | CVE-2019-17520 - BLE public key crash on pairing (Telink) |
+
+### Wi-Fi / 802.11 - Mesh FragAttacks (generic/wifi/fragattacks) - NEW v2.1.0
+
+| Module | Description |
+|--------|-------------|
+| `fragattacks_amsdu_mesh_cve_2025_27558` | **CVE-2025-27558** - FragAttacks A-MSDU mesh bypass: injects arbitrary packets into 802.11s mesh via crafted MSDU that bypasses the ad-hoc mitigation (companion: CVE-2025-38512 Linux patch) |
 
 ### Wi-Fi Lab - FragAttacks (generic/wifi_lab/fragattacks) - NEW v1.8.0
 
@@ -404,6 +416,43 @@ wxf (StaticCodeReplay) > run
 | `parrot/parrot_bebop_dhcp_exhaust_cve_2022_46416` | CVE-2022-46416 - Parrot Bebop DHCP pool exhaustion |
 | `holystone/hsrid01_ble_dos_cve_2024_52876` | CVE-2024-52876 - Holy Stone HSRID01 BLE DoS |
 | `fpv/eachine_e52_tcp_takeover` | Eachine E52 TCP replay takeover |
+
+### Drones/UAV - New CVEs v2.1.0 (generic/drones)
+
+| Module | Description |
+|--------|-------------|
+| `mavlink/mavlink_serial_control_shell_cve_2026_1579` | **CVE-2026-1579** PX4 MAVLink missing auth: send unsigned SERIAL_CONTROL (msg_id=126) for interactive NSH shell on flight controller (CVSS 9.8) |
+| `px4/px4_log_stack_overflow_cve_2026_32743` | **CVE-2026-32743** PX4 MavlinkLogHandler sscanf stack overflow: create deep FTP path then request log list to crash MAVLink task (DoS) |
+| `dji/dji_ble_duml_cred_sniff_cve_2026_77812` | **CVE-2026-77812** DJI BLE DUML cleartext credential exposure: passively sniff Wi-Fi PSK/SSID/UUID from BLE traffic during DJI Fly connection |
+| `dji/dji_bt_duml_unauth_cve_2026_78306` | **CVE-2026-78306** DJI Bluetooth DUML unauthenticated command: modify Wi-Fi config / overwrite PSK / disable wireless interfaces (CVSS 8.5) |
+
+### SubGHz - New CVE v2.1.0 (generic/subghz)
+
+| Module | Description |
+|--------|-------------|
+| `rkes_rollback_replay_cve_2026_49319` | **CVE-2026-49319** Alps Alpine R53R0 RKES rollback-replay: record two consecutive 433 MHz fob transmissions to replay pair for vehicle lock/unlock (Suzuki Swift 2024) |
+
+### Zigbee - New CVE v2.1.0 (generic/iot_proto/zigbee)
+
+| Module | Description |
+|--------|-------------|
+| `zigbee_ezsp_green_power_bof_cve_2025_8414` | **CVE-2025-8414** Silicon Labs EZSP Green Power host buffer overflow scanner: detect EZSP hosts, query SDK version, probe with crafted oversized GP frame |
+
+### LoRaWAN - New CVE v2.1.0 (generic/iot_proto/lorawan)
+
+| Module | Description |
+|--------|-------------|
+| `lorawan_frag_transport_oob_cve_2026_12363` | **CVE-2026-12363** Zephyr RTOS frag_transport OOB write: DATA_FRAGMENT with frag_index_n=0 underflows array index in FragDecoderProcess() corrupting FUOTA session |
+
+### Cellular / 5G - New v2.1.0 (generic/cellular)
+
+| Module | Description |
+|--------|-------------|
+| `fiveghoul_5gnr_dos` | **5Ghoul** (CVE-2023-33042/43/44, CVE-2024-20003/04): orchestrator for 5G NR pre-auth DoS attacks via rogue gNB (USRP B210 + srsRAN prereq) |
+| `llfuzz_baseband_cve_scanner` | **LLFuzz** (CVE-2025-21477, CVE-2025-20659, CVE-2025-26780/81/82): baseband CVE catalog + USB modem fingerprint + chipset vulnerability assessment |
+| `sni5gect_5gnr_sniff_inject` | **Sni5Gect**: 5G NR sniffing, injection, downgrade, auth bypass, and fingerprinting orchestrator (USRP B210 prereq) |
+
+---
 
 #### Usage Example - MAVLink Force Disarm
 
