@@ -1165,3 +1165,27 @@ aireplay_deauth_barrage.py:
 ### Paths importantes
 - Windows: D:\Projetos-SafeLabs\submodules\Uniao-Geek\WirelessXPL-Forge
 - Linux: /mnt/predator/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge
+
+## [2026-09-14] TupaXPL-Forge - Sugestao de evolucao upstream
+
+### Origem
+TupaXPL-Forge usa WXF como motor de ataques wireless.
+Kill chain wireless em: offsecforge/kill_chain/ (a implementar)
+
+### O que TupaXPL planeja contribuir
+- Scripts wifi-recon integrados do lab: laboratory/wifi-recon/scripts/
+- Bridge WXF em offsecforge/intel/wirelessxpl_bridge.py
+
+### Pendencias para PR
+- [ ] wifi-recon scripts adaptados para contrato WXF
+- [ ] Abrir issue: "feat: add wifi-recon lab integration scripts"
+
+## [2026-09-15 17:40] -- Sync com SuiteXPL Sprint 4
+
+### Estado
+- Wireless modules integrados ao EmbedXPL via wirelessxpl_forge_bridge.py
+- forge scan detecta dispositivos via goaccess (suporte a wireless vendors)
+- Todos os sprints do plano CVE 2024-2026 concluidos
+
+### Proximos passos
+- Nenhuma pendencia critica
