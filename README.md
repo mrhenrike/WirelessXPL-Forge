@@ -1,3 +1,22 @@
+<p align="center">
+  <img src="docs/img/wirelessxpl-forge-banner_16x9.png" alt="WirelessXPL-Forge Banner" width="100%"/>
+</p>
+
+<p align="center">
+  [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square&logo=python)](https://python.org)
+  [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-informational?style=flat-square)](README.md#compatibility)
+  [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+  [![XPL Suite](https://img.shields.io/badge/XPL--Forge-Suite-red?style=flat-square)](https://github.com/mrhenrike)
+  [![Issues](https://img.shields.io/github/issues/mrhenrike/WirelessXPL-Forge?style=flat-square)](https://github.com/mrhenrike/WirelessXPL-Forge/issues)
+  [![Last Commit](https://img.shields.io/github/last-commit/mrhenrike/WirelessXPL-Forge?style=flat-square)](https://github.com/mrhenrike/WirelessXPL-Forge/commits)
+</p>
+
+---
+
+> **Platform Note:** This framework is designed and tested primarily on **Linux** (Debian/Ubuntu/Kali). Most hardware-dependent modules (wireless adapters, USB devices, raw socket access, firmware tools) require Linux. Running on Windows or macOS may cause errors or limited functionality in many modules. Linux is strongly recommended for maximum compatibility.
+
+---
+
 # WirelessXPL-Forge
 
 > **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
@@ -5,15 +24,6 @@
 **Version:** 2.0.3 | **License:** BSD-3-Clause | **Python:** 3.8 - 3.13
 
 **Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
-
-<p align="center">
-  <a href="https://github.com/mrhenrike/WirelessXPL-Forge/actions"><img src="https://img.shields.io/github/actions/workflow/status/mrhenrike/WirelessXPL-Forge/compat-matrix.yml?branch=master&label=CI&logo=github" alt="CI"></a>
-  <img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.0.3-green" alt="Version">
-  <img src="https://img.shields.io/badge/Modules-329%2B-brightgreen" alt="Modules">
-  <img src="https://img.shields.io/badge/Python-3.8--3.13-blue" alt="Python">
-  <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey" alt="Platform">
-</p>
 
 ---
 
