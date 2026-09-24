@@ -1,7 +1,0 @@
-requests>=2.33.0; python_version >= "3.10"
-requests==2.32.4; python_version < "3.10"
-pycryptodome
-scapy
-setuptools
-telnetlib3; python_version >= "3.13"
-qrcode[pil]
