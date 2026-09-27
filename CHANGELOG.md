@@ -4,6 +4,12 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 
 ---
 
+## [minor-sync-2026-09-26] - 2026-09-26
+
+### Changed
+- EmbedXPL v5.0.0 sync: search engine + autopwn modules deployed
+- Domain contracts updated (DOMAIN-CONTRACTS.md)
+
 ## [2.0.4] - 2026-06-25
 
 ### Added
