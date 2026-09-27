@@ -1,0 +1,18 @@
+feat: wps_multimode v2.0 + deauth_multimode v2.0 — ataques e2e
+
+wps_multimode v2.0:
+- Modo auto: pixie_dust → null_pin → pin_wordlist sequencial
+- Gerador WPS PIN com checksum Luhn correto (10M validos, 11k efetivos)
+- Modo pin_wordlist: testa todos os PINs validos com retry e cooldown
+- Modo hashcat_gpu: crack offline via RTX 4060 CUDA WSL2
+- Retry automatico entre backends (reaver → bully)
+- Deteccao de WPS lock com backoff adaptativo
+- Salva resultado em arquivo
+
+deauth_multimode v2.0:
+- Scan de clientes via airodump (5s) para deauth targetado
+- Captura simultanea de handshake (airodump em background)
+- mdk4 como backend primario (mais eficaz que aireplay no WSL)
+- Fallback automatico: mdk4 → aireplay → scapy
+- Ajuste de canal automatico antes do ataque
+- Verificacao de handshake apos cada rodada de deauth
