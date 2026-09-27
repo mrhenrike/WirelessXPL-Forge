@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0-wireless",
+  "description": "WirelessXPL-Forge: offline 802.11 / WPA / WPA3 / TKIP / WPE analysis, BLE tooling, and wordlist helpers. Live capture and cracking delegate to system tools (aircrack-ng, hcxtools, hashcat).",
+  "operational_policy": {
+    "prohibited_in_project_scope": [
+      "operational_botnets_and_c2_infrastructure",
+      "malware_persistence_campaigns_against_third_parties",
+      "intentional_device_bricking_or_destructive_floods_outside_authorized_lab"
+    ],
+    "note": "WirelessXPL-Forge: 802.11/BLE lab orchestration only. Router / switch modules: RouterXPL-Forge; perimeter: FirewallXPL-Forge."
+  },
+  "default_allow_classes": [
+    "wifi",
+    "wlan",
+    "ble",
+    "80211",
+    "wpa_lab"
+  ],
+  "domain_defaults": {
+    "exploits": [
+      "wifi",
+      "wlan",
+      "ble",
+      "80211",
+      "wpa_lab"
+    ],
+    "creds": [
+      "wifi",
+      "wlan",
+      "ble",
+      "80211",
+      "wpa_lab"
+    ]
+  },
+  "prefix_rules": [],
+  "file_overrides": {}
+}

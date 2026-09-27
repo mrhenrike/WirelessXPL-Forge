@@ -1,0 +1,9 @@
+feat: WirelessXPL-Forge v1.2.0 — expansao maxima de cobertura wireless
+
+- Core: phase_gateway.py, hw_validator.py, polyglot_orchestrator.py
+- 7 novos protocolos: Z-Wave, Matter/Thread, V2X/DSRC, TPMS, UWB, DECT, NFC
+- 6 novos CVE bridges: CVE-2025-13834, CVE-2021-27289, CVE-2024-30078,
+  CVE-2024-45569 (CVSS 9.8), AirSnitch (NDSS-26), WIFIAIR-C2
+- HW gates (HWValidator + PhaseGateway) em 10 modulos existentes
+- Docs: COVERAGE_MATRIX 135 modulos 47 CVEs, PREREQUISITES, README v1.2.0
+- Live validation: 11/11 PASS, BLE scan 2 dispositivos, WiFi 7 redes

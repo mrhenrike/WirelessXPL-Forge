@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "id": "wifi7-80211be-threat-vectors",
+    "title": "Wi-Fi 7 (IEEE 802.11be / EHT) — threat vectors / vetores de ameaça",
+    "version": "1.0.0",
+    "language_notes": "Summaries in pt-BR; identifiers and references en-US where standard.",
+    "curator": "André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek",
+    "purpose": "Defensive alignment and lab scoping: 802.11be (EHT) introduces MLO and wider multi-band use; WPA3 remains the primary link-security layer alongside implementation risk.",
+    "related_catalog": "wirelessxpl/resources/catalogs/wifi6_80211ax_threat_vectors.json",
+    "usage_policy": "Reference only for authorized testing, education, and hardening. No operational abuse."
+  },
+  "standards_context": {
+    "ieee_amendment": "802.11be",
+    "marketing_name": "Wi-Fi 7",
+    "features_note": "Extremely High Throughput (EHT), typically 2.4/5/6 GHz operation, optional Multi-Link Operation (MLO) across links.",
+    "security_note": "802.11be defines PHY/MAC features (incl. MLO). WPA2/WPA3 and 802.11w (PMF) remain the security posture layers; Wi-Fi CERTIFIED 7 program aligns new gear with modern baseline expectations, but transitional modes, bugs, and upper-layer trust failures preserve classical wireless threats."
+  },
+  "vectors": [
+    {
+      "id": "deauth-dissoc-pmf",
+      "names": {
+        "pt-BR": "Desautenticação / dissociação (quadros de gestão)",
+        "en-US": "Deauthentication and disassociation abuse"
+      },
+      "summary_pt": "Forçar desconexões ou perturbar reassociação continua relevante onde PMF (802.11w) não está exigido de forma consistente ou onde existem falhas de implementação. WPA3 melhora o modelo de chave (SAE vs. PSK clássico) mas não substitui, por si só, a proteção integral de todos os quadros de gestão — PMF é o mecanismo a configurar e validar em AP e clientes.",
+      "summary_en": "Forged disconnects remain relevant when 802.11w PMF is inconsistent or buggy. WPA3 addresses PSK exchange weaknesses but does not auto-fix all management-frame abuse; validate PMF end-to-end.",
+      "mitigations": [
+        "PMF required/compatible em BSS; patch cadence em clientes legados.",
+        "Monitorização de rajadas de deauth anómalas."
+      ],
+      "references": []
+    },
+    {
+      "id": "offline-dictionary-sae",
+      "names": {
+        "pt-BR": "Força bruta / dicionário (especialmente PSK fraca)",
+        "en-US": "Offline brute force and weak passphrases"
+      },
+      "summary_pt": "WPA3-Personal com SAE reduz o modelo de ameaça de offline cracking típico do WPA2-PSK, mas implementações degradadas, modos mistos ou passwords humanas muito fracas ainda podem ser objeto de ataque — sobretudo quando laboratórios testam política real, não só o rótulo WPA3.",
+      "summary_en": "SAE improves on classic WPA2-PSK offline attacks, but weak passphrases, mixed modes, or flawed stacks can still be abused; test the deployed configuration, not the brochure.",
+      "mitigations": [
+        "Passphrases longas e aleatórias ou 802.1X empresarial.",
+        "Desativar modos de transição desnecessários após inventário de clientes."
+      ],
+      "references": [
+        "https://wpa3.mathyvanhoef.com/"
+      ]
+    },
+    {
+      "id": "evil-twin",
+      "names": {
+        "pt-BR": "Evil Twin (AP com SSID falso)",
+        "en-US": "Evil twin (cloned SSID)"
+      },
+      "summary_pt": "Réplica de SSID e parâmetros visíveis para atrair associação; em PSK o cliente pode voltar a entregar o segredo à rede errada se não houver política de confiança forte (Enterprise + verificação de certificado reduz o risco relativo a portal/credencial).",
+      "summary_en": "SSID cloning attracts clients; without strong trust anchors, users or devices may authenticate to the wrong network.",
+      "mitigations": [
+        "802.1X com validação de servidor; segmentação guest; literacia de utilizadores."
+      ],
+      "references": []
+    },
+    {
+      "id": "mlo-multi-link",
+      "names": {
+        "pt-BR": "Superfície MLO (Multi-Link Operation)",
+        "en-US": "Multi-Link Operation (MLO) attack surface"
+      },
+      "summary_pt": "MLO agrega ligações em várias bandas; a complexidade de negociação, políticas de encaminhamento e falhas de binding podem, em teoria, ser abusadas para degradar confidencialidade ou disponibilidade (por exemplo, pressionar tráfego para um elo mais exposto, explorar bugs de firmware na troca de ligações, ou causar instabilidade de handover). Pesquisa e CVEs específicos evoluem com o ecossistema — tratar como área de inventário e teste controlado.",
+      "summary_en": "MLO multi-band operation increases negotiation complexity; implementation defects or policy manipulation could steer traffic, break availability, or expose weaker links—track vendor advisories and lab-validation programs.",
+      "mitigations": [
+        "Firmware atualizado em AP e clientes MLO-capable.",
+        "Monitorizar anomalias de throughput/handover; baseline patches por fabricante."
+      ],
+      "references": []
+    },
+    {
+      "id": "sae-protocol-manipulation",
+      "names": {
+        "pt-BR": "Manipulação do intercâmbio SAE / subgroup (WPA3-Personal)",
+        "en-US": "SAE exchange manipulation (WPA3-Personal class)"
+      },
+      "summary_pt": "Ataques à família Dragonblood e similares visam fraquezas de desenho ou implementação no handshake SAE (incl. vetores de canal lateral ou grupos incorretos). Continua relevante para stacks não corrigidos.",
+      "summary_en": "Dragonblood-class issues target SAE design/implementation flaws; patched ecosystems reduce risk but legacy firmware remains exposed.",
+      "mitigations": [
+        "Patches de fornecedor; desativar algoritmos/grupos obsoletos conforme advisory."
+      ],
+      "references": [
+        "https://wpa3.mathyvanhoef.com/",
+        "https://papers.mathyvanhoef.com/esorics2019.pdf"
+      ]
+    },
+    {
+      "id": "mitm-edge",
+      "names": {
+        "pt-BR": "Man-in-the-Middle após compromisso de confiança",
+        "en-US": "Man-in-the-middle after trust failure"
+      },
+      "summary_pt": "Com AP ou DHCP/ARP sob controlo do atacante — ou CPE comprometido — o tráfego pode ser redirecionado ou inspecionado independentemente das melhorias de taxa do Wi-Fi 7.",
+      "summary_en": "Rogue DHCP/ARP or compromised CPE enables MITM regardless of EHT PHY features.",
+      "mitigations": [
+        "TLS obrigatório para aplicações; segmentação; endurecimento do CPE (sem admin WAN aberta)."
+      ],
+      "references": []
+    },
+    {
+      "id": "dos-ddos-airtime",
+      "names": {
+        "pt-BR": "DoS / DDoS (carga no AP ou consumo de tempo de antena)",
+        "en-US": "DoS / DDoS (AP overload or airtime exhaustion)"
+      },
+      "summary_pt": "Inundações de autenticação, consumo de recursos no controlador ou interferência podem anular benefícios de eficiência (incl. mecanismos como preamble puncturing) ao saturar o meio ou a fila do AP.",
+      "summary_en": "Auth floods or RF congestion can negate efficiency features by exhausting AP or spectrum resources.",
+      "mitigations": [
+        "Rate limits, QoS e planeamento de canal; redundância de AP em venues críticos."
+      ],
+      "references": []
+    },
+    {
+      "id": "session-hijacking-layers",
+      "names": {
+        "pt-BR": "Roubo ou reutilização de sessão (camadas superiores ou stacks quebradas)",
+        "en-US": "Session hijacking (upper layers or broken 802.11 state)"
+      },
+      "summary_pt": "Após autenticação bem-sucedida, o risco frequentemente migra para cookies de aplicação, tokens ou, em bugs graves, estado de chave/roaming — não é exclusivo do Wi-Fi 7 mas permanece no modelo de ameaça holistic.",
+      "summary_en": "Post-association risk often shifts to application sessions or rare roaming/state bugs; not Wi-Fi-7-specific but in scope for edge assessments.",
+      "mitigations": [
+        "HSTS, rotação de tokens, endurecimento de roaming corporativo (802.11r/k onde aplicável)."
+      ],
+      "references": []
+    },
+    {
+      "id": "firmware-zero-day-eht",
+      "names": {
+        "pt-BR": "Firmware / CVEs em chipsets EHT (antes ou após patch)",
+        "en-US": "Firmware and chipset CVEs (802.11be class devices)"
+      },
+      "summary_pt": "Novas pilhas MLO/EHT multiplicam a superfície em controladores de rádio e drivers; vulnerabilidades de dia zero ou N-day não patcheadas comprometem o edge sem necessidade de quebrar WPA3 no ar.",
+      "summary_en": "Fresh EHT/MLO firmware stacks expand radio-controller attack surface; unpatched RCE or key leakage bypasses air-interface crypto assumptions.",
+      "mitigations": [
+        "Canal de atualização automático; segregação de gestão; monitorizar boletins do fabricante."
+      ],
+      "references": []
+    },
+    {
+      "id": "sniffing-metadata",
+      "names": {
+        "pt-BR": "Sniffing — metadados, tráfego mal protegido ou configuração errada",
+        "en-US": "Sniffing — metadata, cleartext paths, or misconfiguration"
+      },
+      "summary_pt": "Com criptografia de enlace forte, o conteúdo de dados permanece protegido, mas endereços, tamanhos, tempos ou SSIDs podem vazar; redes guest abertas ou TLS omitido nas aplicações devolvem superfície legível.",
+      "summary_en": "Strong link crypto protects payloads, but metadata persists; open guest WLANs or missing TLS restores cleartext exposure.",
+      "mitigations": [
+        "TLS em todo o tráfego sensível; guest isolado; desativar protocolos legados desnecessários."
+      ],
+      "references": []
+    }
+  ],
+  "baseline_practices_pt": [
+    "WPA3-Personal (SAE) ou WPA3-Enterprise com 802.1X onde suportado.",
+    "Senhas longas e únicas (ou gestão central de credenciais).",
+    "Firmware AP e clientes críticos sempre atualizado.",
+    "Desativar administração remota do router na Internet (WAN) salvo VPN/IP allowlist explícita."
+  ],
+  "baseline_practices_en": [
+    "WPA3-Personal (SAE) or WPA3-Enterprise with 802.1X where supported.",
+    "Long unique passphrases or centralized credential policy.",
+    "Patch AP and critical client stacks aggressively.",
+    "Disable Internet-exposed router administration unless via VPN or strict allowlisting."
+  ]
+}
