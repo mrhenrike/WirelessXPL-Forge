@@ -4,6 +4,11 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 
 ---
 
+## [2.1.2] - 2026-10-06
+
+### Changed
+- Release alignment: sync package version with GitHub tag + PyPI ship (HEAD beyond v2.1.1).
+
 ## [minor-sync-2026-09-26] - 2026-09-26
 
 ### Changed
