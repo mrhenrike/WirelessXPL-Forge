@@ -129,3 +129,20 @@ packages/**/build.sh
 packages/**/build.ps1
 *.example
 *.sample
+
+# === Secrets & credentials — NEVER commit ===
+.env
+.env.*
+*.env
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa
+id_rsa.*
+*.credentials
+credentials.json
+secrets.json
