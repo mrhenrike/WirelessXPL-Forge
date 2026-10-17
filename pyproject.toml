@@ -58,6 +58,7 @@ dependencies = [
     "setuptools",
     "telnetlib3; python_version >= '3.13'",
     "qrcode[pil]",
+    "xpl-core>=0.1.0",
 ]
 
 [project.optional-dependencies]
