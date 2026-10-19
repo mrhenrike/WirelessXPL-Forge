@@ -15,22 +15,9 @@ sys.path.insert(0, str(ROOT))
 def test_shells_shim_imports() -> None:
     from wirelessxpl.core.shells import (
         SHELL_TYPES,
-        ShellEngine,
-        ShellError,
-        ShellHandler,
-        ShellMode,
-        ShellStatus,
         SessionManager,
-        SessionState,
-        ShellSession,
-        RawTCPShell,
-        RawUDPShell,
-        generate_payload,
-        generate_msf_rc,
-        reverse_shell_payload,
-        tty_upgrade_commands,
-        start_listener,
-        ReverseListener,
+        ShellEngine,
+        ShellHandler,
     )
     assert ShellEngine is not None
     assert ShellHandler is not None
@@ -45,8 +32,9 @@ def test_shells_shim_all_exports() -> None:
 
 
 def test_shell_engine_is_abc() -> None:
-    from wirelessxpl.core.shells import ShellEngine
     import abc
+
+    from wirelessxpl.core.shells import ShellEngine
     assert issubclass(type(ShellEngine), abc.ABCMeta)
 
 
@@ -69,7 +57,7 @@ def test_session_state_has_values() -> None:
 
 
 def test_shell_error_hierarchy() -> None:
-    from wirelessxpl.core.shells import ShellError, ShellConnectionError, ShellTimeoutError, ShellIOError
+    from wirelessxpl.core.shells import ShellConnectionError, ShellError, ShellIOError, ShellTimeoutError
     assert issubclass(ShellConnectionError, ShellError)
     assert issubclass(ShellTimeoutError, ShellError)
     assert issubclass(ShellIOError, ShellError)

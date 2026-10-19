@@ -11,7 +11,6 @@ import subprocess
 import sys
 from typing import List, Tuple
 
-
 REQUIRED_IMPORTS: Tuple[str, ...] = (
     "requests",
     "Crypto",

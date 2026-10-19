@@ -4,14 +4,12 @@
 from __future__ import annotations
 
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-
 import csv
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
-
 
 PROVIDERS: List[Dict[str, object]] = [
     {"platform": "shodan", "required_env": ["SHODAN_API_KEY"]},

@@ -15,16 +15,15 @@ from wirelessxpl.core.bt_crypto import (
     _add_one,
     _add_two,
     _nonlin_subs,
+    _permute,
     _pht,
     _phts,
-    _permute,
     _rotate_key,
     _xor_bytes,
     e1,
     e3,
     kdf,
 )
-
 
 # ---------------------------------------------------------------------------
 # S-box tables

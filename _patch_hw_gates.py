@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Aplica HWValidator + PhaseGateway nos módulos existentes que não têm gate de hardware."""
 
-import re
 from pathlib import Path
 
 BASE = Path(__file__).parent / "wirelessxpl" / "modules" / "generic"

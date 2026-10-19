@@ -4,13 +4,11 @@
 from __future__ import annotations
 
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-
 import csv
 import json
 import re
 from pathlib import Path
 from typing import Dict, List
-
 
 # ---------------------------------------------------------------------------
 # Keyword normalisation helpers (shared logic with generate_coverage_matrix)
