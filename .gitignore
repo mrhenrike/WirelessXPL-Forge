@@ -100,15 +100,12 @@ Pipfile.lock
 
 .tmp/
 
-# Local-only: packaging, CI/CD and contributor metadata kept out of the public tree
-.github/workflows/
+# Local-only: contributor metadata kept out of the public tree
 .github/dependabot.yml
 .github/CODEOWNERS
 CODEOWNERS
 .github/FUNDING.yml
 FUNDING.yml
-.github/ISSUE_TEMPLATE*
-.github/PULL_REQUEST_TEMPLATE*
 CONTRIBUTING*
 CONTRIBUTORS*
 .travis.yml
