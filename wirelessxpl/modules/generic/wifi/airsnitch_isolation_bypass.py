@@ -17,7 +17,6 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
-import time
 from pathlib import Path
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol

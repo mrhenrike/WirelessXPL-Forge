@@ -31,13 +31,11 @@ import os
 import shutil
 import struct
 import subprocess
-import time
-from pathlib import Path
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -46,9 +44,11 @@ try:
         Dot15d4,
         Dot15d4Cmd,
         Dot15d4FCS,
-        raw as scapy_raw,
-        wrpcap,
         rdpcap,
+        wrpcap,
+    )
+    from scapy.all import (
+        raw as scapy_raw,
     )
     HAS_SCAPY = True
 except ImportError:

@@ -9,15 +9,22 @@ HW_REQ: RTL-SDR v3 + 433 MHz antenna (passive only, no TX).
 """
 from __future__ import annotations
 
+import json
 import logging
 import subprocess
-import json
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)

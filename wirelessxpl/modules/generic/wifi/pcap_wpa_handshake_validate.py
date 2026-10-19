@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
 from wirelessxpl.core.pcap.wifi_offline import extract_pmkid, survey_eapol_fourway_sessions

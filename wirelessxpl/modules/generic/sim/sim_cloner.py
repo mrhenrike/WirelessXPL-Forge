@@ -33,8 +33,8 @@ logger = logging.getLogger(__name__)
 
 HAS_PYSIM = False
 try:
-    from pySim.transport.pcsc import PcscSimLink
     from pySim.commands import SimCardCommands
+    from pySim.transport.pcsc import PcscSimLink
     HAS_PYSIM = True
 except ImportError:
     pass

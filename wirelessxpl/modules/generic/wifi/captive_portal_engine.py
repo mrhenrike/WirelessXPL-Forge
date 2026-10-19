@@ -27,7 +27,6 @@ Version: 2.0.0
 
 from __future__ import annotations
 
-import hashlib
 import http.server
 import json
 import logging
@@ -41,8 +40,8 @@ import urllib.parse
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 

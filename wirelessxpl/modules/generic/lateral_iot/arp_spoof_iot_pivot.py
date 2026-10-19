@@ -3,12 +3,11 @@
 
 import socket
 import struct
-import time
-import threading
 import subprocess
+import threading
+import time
 
 from wirelessxpl.core.exploit import *
-
 
 _ARP_OP_REQUEST = 1
 _ARP_OP_REPLY = 2

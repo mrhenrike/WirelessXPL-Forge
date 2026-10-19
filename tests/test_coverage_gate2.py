@@ -16,9 +16,9 @@ sys.path.insert(0, str(ROOT))
 
 def test_exception_hierarchy() -> None:
     from wirelessxpl.core.exploit.exceptions import (
-        WirelessXPLException,
         OptionValidationError,
         StopThreadPoolExecutor,
+        WirelessXPLException,
     )
     assert issubclass(OptionValidationError, WirelessXPLException)
     assert issubclass(StopThreadPoolExecutor, WirelessXPLException)
@@ -63,8 +63,8 @@ def test_optip_empty() -> None:
 
 
 def test_optip_invalid() -> None:
-    from wirelessxpl.core.exploit.option import OptIP
     from wirelessxpl.core.exploit.exceptions import OptionValidationError
+    from wirelessxpl.core.exploit.option import OptIP
     opt = OptIP("", "target")
     with pytest.raises(OptionValidationError):
         opt.__set__("", "invalid.address.here")
@@ -79,8 +79,8 @@ def test_optport_valid() -> None:
 
 
 def test_optport_invalid_range() -> None:
-    from wirelessxpl.core.exploit.option import OptPort
     from wirelessxpl.core.exploit.exceptions import OptionValidationError
+    from wirelessxpl.core.exploit.option import OptPort
     opt = OptPort(80, "port")
     with pytest.raises(OptionValidationError):
         opt.__set__("", 0)
@@ -105,8 +105,8 @@ def test_optbool_false_values() -> None:
 
 
 def test_optbool_invalid() -> None:
-    from wirelessxpl.core.exploit.option import OptBool
     from wirelessxpl.core.exploit.exceptions import OptionValidationError
+    from wirelessxpl.core.exploit.option import OptBool
     opt = OptBool(False, "flag")
     with pytest.raises(OptionValidationError):
         opt.__set__("", "maybe")
@@ -141,8 +141,8 @@ def test_optmac_valid() -> None:
 
 
 def test_optmac_invalid() -> None:
-    from wirelessxpl.core.exploit.option import OptMAC
     from wirelessxpl.core.exploit.exceptions import OptionValidationError
+    from wirelessxpl.core.exploit.option import OptMAC
     opt = OptMAC("", "mac")
     with pytest.raises(OptionValidationError):
         opt.__set__("", "not-a-mac")
@@ -362,7 +362,7 @@ def test_exp45_log45_inverse() -> None:
 
 
 def test_add_one_xor_positions() -> None:
-    from wirelessxpl.core.bt_crypto import _add_one, _XOR_INDICES
+    from wirelessxpl.core.bt_crypto import _XOR_INDICES, _add_one
     a = bytearray(range(16))
     b = bytearray([1] * 16)
     result = _add_one(a, b)
@@ -374,7 +374,7 @@ def test_add_one_xor_positions() -> None:
 
 
 def test_add_two_complement() -> None:
-    from wirelessxpl.core.bt_crypto import _add_two, _XOR_INDICES
+    from wirelessxpl.core.bt_crypto import _XOR_INDICES, _add_two
     a = bytearray(range(16))
     b = bytearray([1] * 16)
     result = _add_two(a, b)

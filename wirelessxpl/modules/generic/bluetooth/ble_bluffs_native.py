@@ -21,15 +21,14 @@ Version: 1.0.0
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import subprocess
 from pathlib import Path
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +181,7 @@ class Exploit(Exploit):
             "firmware patch and InternalBlue are required."
         )
         try:
-            from scapy.layers.bluetooth4LE import BTLE, BTLE_ADV  # type: ignore  # noqa: F401
+            from scapy.layers.bluetooth4LE import BTLE, BTLE_ADV  # type: ignore
             print_info("Scapy BLE layers: OK")
         except ImportError:
             print_info("Scapy BLE layers not available (pip install scapy[bt])")

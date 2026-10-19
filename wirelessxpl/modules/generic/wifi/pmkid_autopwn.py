@@ -16,7 +16,6 @@ Version: 2.0.0
 from __future__ import annotations
 
 import logging
-import os
 import random
 import struct
 import threading
@@ -25,8 +24,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
@@ -115,7 +121,7 @@ class Exploit(Exploit):
 
     def check(self) -> str:
         try:
-            from scapy.all import conf  # noqa: F401
+            from scapy.all import conf
             return "Scapy available — ready for native PMKID capture"
         except ImportError:
             return "Scapy not installed: pip install scapy"
@@ -124,8 +130,16 @@ class Exploit(Exploit):
         require_authorised_lab()
         try:
             from scapy.all import (
-                RadioTap, Dot11, Dot11Auth, Dot11AssoReq, Dot11Elt,
-                EAPOL, Raw, sendp, sniff, wrpcap,
+                EAPOL,
+                Dot11,
+                Dot11AssoReq,
+                Dot11Auth,
+                Dot11Elt,
+                RadioTap,
+                Raw,
+                sendp,
+                sniff,
+                wrpcap,
             )
         except ImportError:
             print_error("Scapy not installed.")
@@ -226,7 +240,7 @@ class Exploit(Exploit):
         targets_to_probe = [target_bssid] if target_bssid else None
 
         def assoc_loop():
-            from scapy.all import RadioTap, Dot11, Dot11Auth, Dot11AssoReq, Dot11Elt, sendp, Raw
+            from scapy.all import Dot11, Dot11AssoReq, Dot11Auth, Dot11Elt, RadioTap, Raw, sendp
             probed: Set[str] = set()
             end = time.time() + int(self.capture_time) - 5
             rounds = 0

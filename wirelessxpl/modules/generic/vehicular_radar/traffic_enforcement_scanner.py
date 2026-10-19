@@ -9,12 +9,12 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 from __future__ import annotations
 
+import concurrent.futures
+import ipaddress
 import socket
 import ssl
-import concurrent.futures
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
-import ipaddress
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -149,8 +149,8 @@ class TrafficEnforcementScanner:
         """
         try:
             proto = "https" if use_ssl else "http"
-            import urllib.request
             import urllib.error
+            import urllib.request
 
             ctx = ssl.create_default_context()
             ctx.check_hostname = False

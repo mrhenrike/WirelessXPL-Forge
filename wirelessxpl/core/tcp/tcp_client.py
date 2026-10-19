@@ -1,13 +1,9 @@
 import socket
 
-from wirelessxpl.core.exploit.exploit import Exploit
-from wirelessxpl.core.exploit.exploit import Protocol
+from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool
-from wirelessxpl.core.exploit.printer import print_status
-from wirelessxpl.core.exploit.printer import print_error
-from wirelessxpl.core.exploit.utils import is_ipv4
-from wirelessxpl.core.exploit.utils import is_ipv6
-
+from wirelessxpl.core.exploit.printer import print_error, print_status
+from wirelessxpl.core.exploit.utils import is_ipv4, is_ipv6
 
 TCP_SOCKET_TIMEOUT = 8.0
 

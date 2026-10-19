@@ -25,7 +25,6 @@ import shutil
 import signal
 import subprocess
 import textwrap
-import time
 from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *

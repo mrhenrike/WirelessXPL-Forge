@@ -156,9 +156,9 @@ def auto_select_backend(
 
         return CPUBackend()
 
+    from wirelessxpl.core.gpu.cpu_backend import CPUBackend
     from wirelessxpl.core.gpu.cuda_backend import CUDABackend
     from wirelessxpl.core.gpu.opencl_backend import OpenCLBackend
-    from wirelessxpl.core.gpu.cpu_backend import CPUBackend
 
     candidates = [CUDABackend(), ROCmBackend(), OpenCLBackend()]
 

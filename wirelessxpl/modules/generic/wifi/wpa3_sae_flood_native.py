@@ -19,15 +19,14 @@ Version: 1.0.0
 from __future__ import annotations
 
 import logging
-import os
 import random
 import threading
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +130,8 @@ class Exploit(Exploit):
                 Dot11Auth,
                 RadioTap,
                 sendp,
+            )
+            from scapy.all import (
                 conf as scapy_conf,
             )
         except ImportError:

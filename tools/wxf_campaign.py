@@ -5,13 +5,12 @@ Modo: usuário interagindo como no Metasploit (use, set, run)
 Interface: wlx24050f3d5f0a (RT5370 via WSL2)
 """
 
-import subprocess
-import sys
-import time
 import json
 import os
-from pathlib import Path
+import subprocess
+import time
 from datetime import datetime
+from pathlib import Path
 
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 WXF_DIR = str(Path(__file__).parent.parent)
@@ -67,14 +66,14 @@ def wxf(module, opts: dict, timeout: int = 60) -> str:
     cmd = ["python3", "wxf.py", "-m", module]
     for k, v in opts.items():
         cmd += ["-s", f"{k} {v}"]
-    
+
     print(f"\033[32m[wxf]\033[0m use {module}")
     for k, v in opts.items():
         print(f"\033[32m[wxf]\033[0m   set {k} {v}")
-    print(f"\033[33m[wxf]\033[0m run")
-    
+    print("\033[33m[wxf]\033[0m run")
+
     LOG.write(f"\n[MODULE] {module}\n[OPTS] {opts}\n")
-    
+
     try:
         r = subprocess.run(
             cmd,

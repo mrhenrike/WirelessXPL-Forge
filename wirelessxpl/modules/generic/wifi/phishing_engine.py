@@ -38,8 +38,8 @@ import urllib.parse
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -534,7 +534,7 @@ class Exploit(Exploit):
                 if encoded:
                     self.wfile.write(encoded)
 
-            def do_GET(self) -> None:  # noqa: N802
+            def do_GET(self) -> None:
                 path = urllib.parse.urlparse(self.path).path
 
                 check = CONNECTIVITY_CHECKS.get(path)
@@ -559,7 +559,7 @@ class Exploit(Exploit):
 
                 self._send_html(200, portal_html)
 
-            def do_POST(self) -> None:  # noqa: N802
+            def do_POST(self) -> None:
                 path = urllib.parse.urlparse(self.path).path
                 if path != "/capture":
                     self.send_response(404)
@@ -879,7 +879,7 @@ class Exploit(Exploit):
         if not shutil.which("iw"):
             missing.append("iw (apt install iw)")
         try:
-            import scapy  # noqa: F401
+            import scapy
         except ImportError:
             missing.append("scapy (pip install scapy)")
         if missing:

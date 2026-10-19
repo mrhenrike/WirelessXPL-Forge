@@ -42,7 +42,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.hw_validator import HWValidator, Requirement

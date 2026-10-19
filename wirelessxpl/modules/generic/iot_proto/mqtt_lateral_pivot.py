@@ -5,7 +5,6 @@ import re
 import socket
 import struct
 import time
-import threading
 
 from wirelessxpl.core.exploit import *
 

@@ -19,14 +19,12 @@ from __future__ import annotations
 
 import binascii
 import logging
-import os
 import random
 import select
 import socket
 import struct
-import threading
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -41,6 +39,7 @@ L2CAP_KNOWN_OFFSETS: Dict[str, Dict[str, int]] = {
 }
 
 import socket as _bt_socket
+
 _AF_BLUETOOTH = 31
 _BTPROTO_L2CAP = 0
 _BTPROTO_RFCOMM = 3
@@ -48,9 +47,17 @@ HAS_PYBLUEZ = True  # native sockets — no pybluez needed
 
 try:
     from scapy.layers.bluetooth import (
-        BluetoothUserSocket, HCI_Cmd_Create_Connection, HCI_Cmd_Reset,
-        HCI_Command_Hdr, HCI_Hdr, L2CAP_ConfReq, L2CAP_ConfResp,
-        L2CAP_ConnReq, L2CAP_ConnResp, L2CAP_Hdr, L2CAP_InfoReq,
+        BluetoothUserSocket,
+        HCI_Cmd_Create_Connection,
+        HCI_Cmd_Reset,
+        HCI_Command_Hdr,
+        HCI_Hdr,
+        L2CAP_ConfReq,
+        L2CAP_ConfResp,
+        L2CAP_ConnReq,
+        L2CAP_ConnResp,
+        L2CAP_Hdr,
+        L2CAP_InfoReq,
         L2CAP_InfoResp,
     )
     HAS_SCAPY_BT = True

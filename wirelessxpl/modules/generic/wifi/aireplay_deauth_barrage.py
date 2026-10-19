@@ -19,12 +19,10 @@ import shutil
 import subprocess
 import threading
 import time
-from pathlib import Path
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +109,7 @@ class Exploit(Exploit):
         Raises:
             ImportError: Propagated if Scapy is not installed.
         """
-        from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp
+        from scapy.all import Dot11, Dot11Deauth, RadioTap, sendp
 
         target_sta = self._resolve_target_sta(stream_id, burst_idx)
         bssid = str(self.bssid).strip().lower()
@@ -137,7 +135,7 @@ class Exploit(Exploit):
         alternating directed/broadcast targeting.
         """
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp  # noqa: F401
+            from scapy.all import Dot11, Dot11Deauth, RadioTap, sendp
         except ImportError:
             print_error("Scapy not installed. Install with: pip install scapy")
             return

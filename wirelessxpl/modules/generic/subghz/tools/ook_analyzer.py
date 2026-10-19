@@ -15,11 +15,19 @@ import math
 import struct
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import PROTOCOL_MAP
 from wirelessxpl.protocols.subghz.sub_file_parser import parse as parse_sub

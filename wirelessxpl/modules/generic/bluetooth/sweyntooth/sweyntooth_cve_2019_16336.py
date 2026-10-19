@@ -16,21 +16,28 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 import struct
 import sys
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     import bleak
-    from bleak import BleakClient, BleakScanner, BleakError
+    from bleak import BleakClient, BleakError, BleakScanner
     HAS_BLEAK = True
 except ImportError:
     HAS_BLEAK = False

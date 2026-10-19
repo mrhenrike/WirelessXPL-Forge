@@ -11,12 +11,11 @@ full network compromise.
 Requer adaptador IEEE 802.15.4 em modo promíscuo no canal alvo.
 """
 
-import struct
 import os
+import struct
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _TC_LINK_KEY = bytes.fromhex("5A6967426565416C6C69616E63653039")
 

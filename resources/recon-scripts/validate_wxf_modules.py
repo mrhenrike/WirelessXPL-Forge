@@ -2,8 +2,8 @@
 """WXF Module Validator — tests all wifi_lab modules load correctly.
 Author: André Henrique (@mrhenrike) | União Geek
 """
-import sys
 import os
+import sys
 
 sys.path.insert(0, "/mnt/d/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge")
 os.chdir("/mnt/d/Projetos-SafeLabs/submodules/Uniao-Geek/WirelessXPL-Forge")

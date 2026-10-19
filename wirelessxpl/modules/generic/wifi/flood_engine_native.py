@@ -28,7 +28,6 @@ from __future__ import annotations
 import logging
 import os
 import random
-import shutil
 import string
 import struct
 import subprocess
@@ -37,7 +36,6 @@ from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 from wirelessxpl.modules.generic.wifi._disclaimer import (
     require_authorised_lab,
     warn_pmf_ios,

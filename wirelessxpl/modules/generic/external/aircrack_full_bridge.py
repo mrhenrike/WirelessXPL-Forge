@@ -31,9 +31,7 @@ from __future__ import annotations
 import logging
 import os
 import shutil
-import signal
 import subprocess
-import time
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *

@@ -1,10 +1,10 @@
+from wirelessxpl.core.bluetooth.btle import BTLEScanner, ScanDelegate
 from wirelessxpl.core.exploit.exploit import Exploit
 from wirelessxpl.core.exploit.option import OptInteger
 from wirelessxpl.core.exploit.printer import (
     print_error,
     print_status,
 )
-from wirelessxpl.core.bluetooth.btle import BTLEScanner, ScanDelegate
 
 
 class BTLEClient(Exploit):

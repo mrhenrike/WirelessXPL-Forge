@@ -16,7 +16,6 @@ import hashlib
 import html
 import json
 import logging
-import os
 import sqlite3
 import tarfile
 import uuid

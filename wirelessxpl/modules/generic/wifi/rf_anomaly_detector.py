@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import collections
 import logging
-import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -138,7 +137,7 @@ def _has_csa_ie(pkt: Any) -> bool:
 class Finding:
     """Single anomaly finding."""
 
-    __slots__ = ("technique", "severity", "description", "evidence", "count")
+    __slots__ = ("count", "description", "evidence", "severity", "technique")
 
     def __init__(self, technique: str, severity: str, description: str,
                  evidence: str = "", count: int = 1) -> None:

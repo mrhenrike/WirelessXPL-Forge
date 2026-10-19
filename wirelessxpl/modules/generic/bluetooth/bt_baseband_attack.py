@@ -42,9 +42,7 @@ from __future__ import annotations
 import logging
 import os
 import shutil
-import struct
 import time
-from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -328,7 +326,6 @@ class Exploit(Exploit):
 
     def check(self) -> str:
         """Verify Bluetooth HCI adapter is present and accessible."""
-        import shutil
         import subprocess
         hci = getattr(self, "hci_iface", None) or getattr(self, "attacker_hci", None) or "hci0"
         if shutil.which("hciconfig"):

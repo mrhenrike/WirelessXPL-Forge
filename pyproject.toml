@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wirelessxpl"
-version = "2.1.2"
+version = "2.2.0"
 description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
-license = { text = "BSD-3-Clause" }
+license = { text = "XSRL-1.0" }
 authors = [
     { name = "André Henrique (@mrhenrike) | União Geek", email = "suporte@uniaogeek.com.br" },
 ]
@@ -32,7 +32,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: POSIX",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS",
@@ -58,6 +57,7 @@ dependencies = [
     "setuptools",
     "telnetlib3; python_version >= '3.13'",
     "qrcode[pil]",
+    "xpl-core>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -197,7 +197,8 @@ Changelog = "https://github.com/mrhenrike/WirelessXPL-Forge/releases"
 "Source Code" = "https://github.com/mrhenrike/WirelessXPL-Forge"
 
 [project.scripts]
-wxf = "wirelessxpl.__main__:main"
+wxf        = "wirelessxpl.__main__:main"
+wirelessxpl = "wirelessxpl.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -205,6 +206,7 @@ include = ["wirelessxpl*"]
 
 [tool.setuptools.package-data]
 wirelessxpl = [
+    "py.typed",
     "resources/**/*.json",
     "resources/**/*.csv",
     "resources/**/*.yaml",
@@ -212,11 +214,95 @@ wirelessxpl = [
     "modules/**/*.py",
 ]
 
-[tool.flake8]
-max-line-length = 120
-extend-ignore = ["E501"]
-exclude = [".git", "__pycache__", ".tmp", ".log", "routerxpl.egg-info"]
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_reexport = true
+mypy_path = "."
+
+[[tool.mypy.overrides]]
+module = [
+    "scapy.*",
+    "bleak.*",
+    "dbus.*",
+    "smartcard.*",
+    "usb.*",
+    "serial.*",
+    "rtlsdr.*",
+    "pyopencl.*",
+    "torch.*",
+    "sklearn.*",
+    "joblib.*",
+    "pymavlink.*",
+    "gpsd.*",
+    "gpxpy.*",
+    "dnslib.*",
+    "qrcode.*",
+    "Crypto.*",
+    "telnetlib3.*",
+    "netaddr.*",
+    "hashcat.*",
+]
+ignore_missing_imports = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "SIM", "RUF"]
+ignore = [
+    "E501",
+    "E701",
+    "E702",
+    "E721",
+    "E741",
+    "F403",
+    "F405",
+    "B007",
+    "B008",
+    "B023",
+    "B028",
+    "B904",
+    "SIM102",
+    "SIM103",
+    "SIM105",
+    "SIM108",
+    "SIM110",
+    "SIM113",
+    "SIM114",
+    "SIM115",
+    "SIM117",
+    "SIM210",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "RUF005",
+    "RUF012",
+    "RUF013",
+    "RUF015",
+    "RUF046",
+    "RUF059",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"wirelessxpl/modules/**" = ["F401", "F524", "F601", "F821", "F841", "F842", "E402", "E722", "E731", "I001"]
+"wirelessxpl/libs/**" = ["F821"]
+"wirelessxpl/interpreter.py" = ["F821"]
+"tests/**" = ["E402"]
+"tools/**" = ["E402", "E712"]
+"live_validation.py" = ["W291"]
+"wxf.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["wirelessxpl"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+addopts = "-v --tb=short"

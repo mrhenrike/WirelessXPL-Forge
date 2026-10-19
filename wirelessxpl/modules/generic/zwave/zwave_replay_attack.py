@@ -10,10 +10,8 @@ Requer SDR com capacidade Z-Wave TX/RX na frequência alvo.
 """
 
 import struct
-import os
 
 from wirelessxpl.core.exploit import *
-
 
 _CC_BASIC = 0x20
 _CC_BINARY_SWITCH = 0x25

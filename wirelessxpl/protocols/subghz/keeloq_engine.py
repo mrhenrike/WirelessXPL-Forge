@@ -14,7 +14,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-
 # KeeLoq NLFC (Non-Linear Function) lookup table -- 32-bit extraction
 # Derived from the hardware circuit described in AN642
 _NLF = 0x3A5C742E
@@ -187,10 +186,10 @@ def learn_key_simple(serial: int) -> int:
 
 
 __all__ = [
-    "keeloq_encrypt",
-    "keeloq_decrypt",
+    "KeeLoqFrame",
     "decode_frame",
     "decode_frame_with_key",
+    "keeloq_decrypt",
+    "keeloq_encrypt",
     "learn_key_simple",
-    "KeeLoqFrame",
 ]

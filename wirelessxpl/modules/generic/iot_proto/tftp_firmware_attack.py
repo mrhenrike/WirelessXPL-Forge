@@ -1,13 +1,11 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
+import os
 import socket
 import struct
-import os
-import time
 
 from wirelessxpl.core.exploit import *
-
 
 _TFTP_OP_RRQ = 1
 _TFTP_OP_WRQ = 2

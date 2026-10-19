@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import os
 from collections import defaultdict
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
@@ -27,7 +27,6 @@ if SCAPY_AVAILABLE:
         ARP,
         Dot11,
         Dot11Beacon,
-        Dot11Elt,
         Dot11ProbeResp,
     )
 
@@ -60,7 +59,7 @@ def _extract_known_bssids(packets: list) -> set:
 class _AnomalyRecord:
     """Tracks a single Hole196 anomaly detection."""
 
-    __slots__ = ("frame_index", "anomaly_type", "detail")
+    __slots__ = ("anomaly_type", "detail", "frame_index")
 
     def __init__(self, frame_index: int, anomaly_type: str, detail: str) -> None:
         self.frame_index = frame_index

@@ -5,7 +5,7 @@ Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao
 
 from __future__ import annotations
 
-from wirelessxpl.core.exploit.printer import print_error, print_status
+from wirelessxpl.core.exploit.printer import print_status
 
 
 def require_authorised_lab() -> bool:

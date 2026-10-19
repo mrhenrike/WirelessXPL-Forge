@@ -24,9 +24,7 @@ Version: 1.0.0
 """
 from __future__ import annotations
 
-import base64
 import gzip
-import io
 import logging
 import os
 import re
@@ -34,18 +32,23 @@ import select
 import socket
 import struct
 import subprocess
-import sys
 import threading
 import time
 import zlib
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from pathlib import Path
 from socketserver import ThreadingMixIn
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
@@ -83,7 +86,7 @@ _IMG_ALT = '<img src="/wxf_banner" alt="[WXF intercepted]" style="max-width:100%
 
 def _get_iface_info(iface: str) -> Tuple[str, str, str]:
     """Return (ip, mac, netmask_cidr) for the given interface."""
-    from scapy.all import get_if_addr, get_if_hwaddr, conf
+    from scapy.all import get_if_addr, get_if_hwaddr
     ip  = get_if_addr(iface)
     mac = get_if_hwaddr(iface)
     # Get CIDR from /proc
@@ -367,7 +370,7 @@ def _inject_into_xml(body: bytes) -> bytes:
             else:
                 text = xxe_decl + text
             text = text + _XXE_COMMENT
-            print_info(f"  [XXE] injected XXE probe into XML body")
+            print_info("  [XXE] injected XXE probe into XML body")
             return text.encode("utf-8", errors="replace")
     except Exception:
         pass
@@ -647,7 +650,7 @@ class Exploit(Exploit):
         if missing:
             return f"Missing tools: {', '.join(missing)}"
         try:
-            from scapy.all import conf  # noqa: F401
+            from scapy.all import conf
         except ImportError:
             return "scapy not installed: pip install scapy"
         return "Prerequisites OK (iptables + sysctl + scapy)"
