@@ -1,14 +1,12 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
+import os
 import socket
 import struct
 import time
-import threading
-import os
 
 from wirelessxpl.core.exploit import *
-
 
 _DHCP_DISCOVER = 1
 _DHCP_OFFER = 2

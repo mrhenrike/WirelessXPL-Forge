@@ -29,22 +29,19 @@ from __future__ import annotations
 import http.server
 import json
 import logging
-import os
 import shutil
 import subprocess
 import threading
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 from urllib.parse import parse_qs
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
-from wirelessxpl.modules.generic.wifi._i18n_service import (
-    I18nPortalHandler,
-    SUPPORTED_LOCALES,
-)
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._i18n_service import (
+    SUPPORTED_LOCALES,
+    I18nPortalHandler,
+)
 
 logger = logging.getLogger(__name__)
 

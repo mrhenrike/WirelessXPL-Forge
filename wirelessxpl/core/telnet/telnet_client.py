@@ -3,12 +3,9 @@ try:
 except ImportError:
     import telnetlib3 as telnetlib
 
-from wirelessxpl.core.exploit.exploit import Exploit
-from wirelessxpl.core.exploit.exploit import Protocol
+from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool
-from wirelessxpl.core.exploit.printer import print_success
-from wirelessxpl.core.exploit.printer import print_error
-
+from wirelessxpl.core.exploit.printer import print_error, print_success
 
 TELNET_TIMEOUT = 30.0
 
@@ -69,7 +66,7 @@ class TelnetCli:
 
                 (i, obj, res) = self.telnet_client.expect([b"Incorrect", b"incorrect"], 5)
 
-                if i == -1 and any([x in res for x in [b"#", b"$", b">"]]) or len(res) > 500:  # big banner e.g. mikrotik
+                if (i == -1 and any([x in res for x in [b"#", b"$", b">"]])) or len(res) > 500:  # big banner e.g. mikrotik
                     print_success(self.peer, "Telnet Authentication Successful - Username: '{}' Password: '{}'".format(username, password), verbose=self.verbosity)
                     return True
                 else:

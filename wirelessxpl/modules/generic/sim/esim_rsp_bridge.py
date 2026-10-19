@@ -16,11 +16,10 @@ from __future__ import annotations
 
 import logging
 import os
-import json
 import socket
 import ssl
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.sim._disclaimer import (
@@ -32,9 +31,9 @@ logger = logging.getLogger(__name__)
 
 HAS_PYSIM_RSP = False
 try:
-    from pySim.esim import rsp as pysim_rsp
     from pySim.esim import es2p as pysim_es2p
     from pySim.esim import es8p as pysim_es8p
+    from pySim.esim import rsp as pysim_rsp
     HAS_PYSIM_RSP = True
 except ImportError:
     pass
@@ -42,7 +41,7 @@ except ImportError:
 HAS_PYSCARD = False
 try:
     from smartcard.System import readers as sc_readers
-    from smartcard.util import toHexString, toBytes
+    from smartcard.util import toBytes, toHexString
     HAS_PYSCARD = True
 except ImportError:
     pass
@@ -216,7 +215,7 @@ class Exploit(Exploit):
             # Parse TLV to extract actual EID value
             print_success(f"EID (raw): {eid_hex}")
             if len(eid_hex) >= 32:
-                print_info(f"EID is a 32-digit identifier unique to this eUICC")
+                print_info("EID is a 32-digit identifier unique to this eUICC")
         elif (sw >> 8) == 0x61:
             remaining = sw & 0xFF
             get_response = [0x00, 0xC0, 0x00, 0x00, remaining]
@@ -518,7 +517,7 @@ class Exploit(Exploit):
             context = ssl.create_default_context()
             with socket.create_connection((host, port), timeout=10) as sock:
                 with context.wrap_socket(sock, server_hostname=host) as ssock:
-                    print_success(f"TLS connection established")
+                    print_success("TLS connection established")
                     print_info(f"  Protocol: {ssock.version()}")
                     cert = ssock.getpeercert()
                     if cert:

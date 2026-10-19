@@ -17,7 +17,7 @@ import math
 import os
 import struct
 from collections import Counter, defaultdict
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
@@ -25,7 +25,7 @@ from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
 logger = logging.getLogger(__name__)
 
 if SCAPY_AVAILABLE:
-    from scapy.all import Dot11, EAPOL
+    from scapy.all import EAPOL, Dot11
 
 
 def _extract_gtk_from_eapol(raw_eapol: bytes) -> Optional[bytes]:

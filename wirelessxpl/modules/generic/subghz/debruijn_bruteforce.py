@@ -13,18 +13,26 @@ HW_REQ: HackRF One OR Flipper Zero OR Bruce ESP32.
 from __future__ import annotations
 
 import logging
-import math
-import os
 from pathlib import Path
 from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import (
-    PROTOCOL_MAP, AnsonicEncoder, CAMEEncoder,
-    ChamberlainEncoder, HoltekEncoder, NICEEncoder,
+    AnsonicEncoder,
+    CAMEEncoder,
+    ChamberlainEncoder,
+    HoltekEncoder,
+    NICEEncoder,
 )
 from wirelessxpl.protocols.subghz.sub_file_parser import SubGHzSignal, generate
 

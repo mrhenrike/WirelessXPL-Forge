@@ -35,11 +35,17 @@ from typing import Any, Callable, Optional
 logger = logging.getLogger(__name__)
 
 try:
-    from scapy.layers.dot11 import (  # type: ignore
-        Dot11, Dot11Beacon, Dot11Deauth, Dot11Disas, Dot11Elt,
-        Dot11ProbeReq, Dot11ProbeResp, RadioTap,
-    )
     from scapy.all import AsyncSniffer  # type: ignore
+    from scapy.layers.dot11 import (  # type: ignore
+        Dot11,
+        Dot11Beacon,
+        Dot11Deauth,
+        Dot11Disas,
+        Dot11Elt,
+        Dot11ProbeReq,
+        Dot11ProbeResp,
+        RadioTap,
+    )
     _SCAPY_AVAILABLE = True
 except ImportError:
     _SCAPY_AVAILABLE = False
@@ -252,7 +258,6 @@ class WirelessIDS:
 
     def _init_mqtt(self, host: str, port: int, topic: str) -> None:
         try:
-            import json as _json
             client = mqtt.Client(client_id=f"wxf-wids-{uuid.uuid4().hex[:6]}")
             client.connect(host, port, keepalive=30)
             client.loop_start()
@@ -352,7 +357,7 @@ class WirelessIDS:
             with suppress(Exception):
                 ssid = pkt[Dot11Elt].info.decode("utf-8", errors="replace")
             with suppress(Exception):
-                channel = int(ord(pkt[Dot11Elt:3].info))
+                channel = ord(pkt[Dot11Elt:3].info)
 
             # Beacon flood
             rate = self._beacon_rate.record()

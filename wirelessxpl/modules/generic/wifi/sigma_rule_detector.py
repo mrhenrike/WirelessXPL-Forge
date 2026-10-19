@@ -23,7 +23,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 
@@ -530,4 +530,4 @@ class Exploit(Exploit):
         print()
 
 
-import collections  # noqa: E402 - placed here to avoid shadowing Exploit base import
+import collections

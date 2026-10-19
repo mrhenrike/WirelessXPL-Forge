@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, Union
 
 import numpy as np
 
@@ -19,7 +19,6 @@ _JOBLIB: Any = None
 
 try:
     import joblib as _joblib_mod  # type: ignore
-
     from sklearn.ensemble import (  # type: ignore
         IsolationForest,
         RandomForestClassifier,

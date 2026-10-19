@@ -21,13 +21,12 @@ import logging
 from pathlib import Path
 
 from wirelessxpl.core.exploit import *
-
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.modules.generic.wifi._i18n_service import (
-    I18nPortalHandler,
     SUPPORTED_LOCALES,
+    I18nPortalHandler,
 )
-from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 try:
     from wirelessxpl.core.ml.portal_optimizer import PortalOptimizer

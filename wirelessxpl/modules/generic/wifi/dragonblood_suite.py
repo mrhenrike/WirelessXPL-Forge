@@ -42,8 +42,12 @@ try:
         Dot11,
         Dot11Auth,
         RadioTap,
-        conf as scapy_conf,
         sendp,
+    )
+    from scapy.all import (
+        conf as scapy_conf,
+    )
+    from scapy.all import (
         sniff as scapy_sniff,
     )
     HAS_SCAPY = True
@@ -781,7 +785,7 @@ class DragonSlayer:
             return False
 
         print_status(
-            f"Scanning for EAP-pwd (802.1X) on "
+            "Scanning for EAP-pwd (802.1X) on "
             + (self._bssid if self._bssid else "any BSSID")
             + f" via {self._interface}..."
         )

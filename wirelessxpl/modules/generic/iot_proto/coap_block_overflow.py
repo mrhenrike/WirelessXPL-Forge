@@ -10,13 +10,12 @@ estouro de buffer em libcoap, microcoap, Zephyr CoAP, Contiki-NG.
 CVE relacionado: CVE-2019-9750 (libcoap buffer overflow).
 """
 
+import os
 import socket
 import struct
-import os
 import time
 
 from wirelessxpl.core.exploit import *
-
 
 _COAP_VER = 1
 _TYPE_CON = 0

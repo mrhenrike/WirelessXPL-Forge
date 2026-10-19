@@ -2,11 +2,9 @@
 # Adaptado para WirelessXPL-Forge
 
 import struct
-import os
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _LMP_OPCODE_ENCRYPTION_KEY_SIZE_REQ = 16
 _HCI_CREATE_CONNECTION = 0x0405

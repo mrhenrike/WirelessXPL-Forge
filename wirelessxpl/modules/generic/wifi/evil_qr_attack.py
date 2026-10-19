@@ -18,20 +18,17 @@ Version: 1.0.0
 from __future__ import annotations
 
 import http.server
-import json
 import logging
-import threading
 from pathlib import Path
 from typing import Optional
 
 from wirelessxpl.core.exploit import *
-
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.modules.generic.wifi._i18n_service import (
-    I18nPortalHandler,
     SUPPORTED_LOCALES,
+    I18nPortalHandler,
 )
-from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 

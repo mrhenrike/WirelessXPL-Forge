@@ -18,12 +18,11 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
+import struct
 import time
 
 from wirelessxpl.core.exploit import *
-
 
 _DOT11_FC_DATA = 0x0808
 _EAPOL_VERSION = 0x02

@@ -17,11 +17,8 @@ from __future__ import annotations
 
 import logging
 import os
-import struct
 import threading
-import time
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -30,8 +27,15 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        Dot11, Dot11CCMP, Dot11Deauth, Ether, RadioTap,
-        rdpcap, sendp, sniff, wrpcap,
+        Dot11,
+        Dot11CCMP,
+        Dot11Deauth,
+        Ether,
+        RadioTap,
+        rdpcap,
+        sendp,
+        sniff,
+        wrpcap,
     )
     HAS_SCAPY = True
 except ImportError:

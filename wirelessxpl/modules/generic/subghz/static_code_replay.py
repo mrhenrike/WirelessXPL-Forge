@@ -11,19 +11,24 @@ from __future__ import annotations
 
 import logging
 import os
-import struct
 import subprocess
-import tempfile
-import time
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
-from wirelessxpl.protocols.subghz.ook_encoder import PROTOCOL_MAP, OOKEncoder
-from wirelessxpl.protocols.subghz.sub_file_parser import SubGHzSignal, generate, parse
+from wirelessxpl.protocols.subghz.ook_encoder import PROTOCOL_MAP
+from wirelessxpl.protocols.subghz.sub_file_parser import SubGHzSignal, parse
 
 logger = logging.getLogger(__name__)
 

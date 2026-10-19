@@ -8,7 +8,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 import numpy as np
 
@@ -283,8 +283,10 @@ class APFingerprinter:
 
         try:
             from scapy.compat import raw  # type: ignore
-            from scapy.layers.dot11 import Dot11  # type: ignore
-            from scapy.layers.dot11 import Dot11Beacon  # type: ignore
+            from scapy.layers.dot11 import (
+                Dot11,  # type: ignore
+                Dot11Beacon,  # type: ignore
+            )
             from scapy.utils import PcapReader  # type: ignore
         except ImportError:
             logger.info("scapy indisponível; train_from_captures não executado.")

@@ -20,12 +20,10 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _ZLL_PROFILE_ID = 0xC05E
 _INTERPAN_FRAME_TYPE = 0x03
