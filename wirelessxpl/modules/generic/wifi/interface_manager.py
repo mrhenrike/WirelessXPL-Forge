@@ -35,14 +35,25 @@ import subprocess
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptString,
-    print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptString,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
-from wirelessxpl.core.exploit.printer import color_blue, color_green, color_red
+from wirelessxpl.core.exploit.printer import color_green, color_red
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.core.wifi.interface_registry import (
-    InterfaceInfo, InterfaceRegistry,
-    ROLE_MONITOR, ROLE_INJECT, ROLE_AP, ROLE_MANAGED, ROLE_IDLE,
+    ROLE_AP,
+    ROLE_IDLE,
+    ROLE_INJECT,
+    ROLE_MANAGED,
+    ROLE_MONITOR,
+    InterfaceInfo,
+    InterfaceRegistry,
 )
 
 _DISCLAIMER = (

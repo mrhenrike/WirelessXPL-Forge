@@ -12,11 +12,20 @@ import logging
 import socket
 import struct
 import time
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptFloat, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptFloat,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)

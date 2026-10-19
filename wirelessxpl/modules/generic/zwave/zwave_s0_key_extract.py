@@ -10,11 +10,10 @@ key pública, comprometendo todo o tráfego S0 encriptado.
 Requer SDR ou sniffer Z-Wave na frequência alvo (908.42 MHz US / 868.42 MHz EU).
 """
 
-import struct
 import os
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _ZWAVE_S0_TEMP_KEY = b"\x00" * 16
 

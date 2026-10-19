@@ -22,19 +22,17 @@ import json
 import logging
 import shutil
 import subprocess
-import threading
 from pathlib import Path
 from typing import Optional
 from urllib.parse import parse_qs
 
 from wirelessxpl.core.exploit import *
-
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
 from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.modules.generic.wifi._i18n_service import (
-    I18nPortalHandler,
     SUPPORTED_LOCALES,
+    I18nPortalHandler,
 )
-from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 

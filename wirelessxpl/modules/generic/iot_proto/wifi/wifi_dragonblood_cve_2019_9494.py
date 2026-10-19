@@ -19,14 +19,12 @@ References:
 Version: 1.0.0
 """
 
-import struct
-import os
-import hmac
 import hashlib
-import time
+import hmac
+import os
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _SAE_GROUP_19 = 19  # NIST P-256
 _SAE_STATUS_SUCCESS = 0

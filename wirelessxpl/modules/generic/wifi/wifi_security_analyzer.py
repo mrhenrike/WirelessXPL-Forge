@@ -21,12 +21,11 @@ import logging
 import os
 import threading
 import time
-from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +200,7 @@ class Exploit(Exploit):
     def _parse_beacon(self, pkt: Any) -> None:
         """Scapy packet callback: extract BSS info from beacons and probe responses."""
         try:
-            from scapy.all import Dot11Beacon, Dot11ProbeResp, Dot11Elt  # type: ignore
+            from scapy.all import Dot11Beacon, Dot11Elt, Dot11ProbeResp  # type: ignore
         except ImportError:
             return
 
@@ -331,7 +330,7 @@ class Exploit(Exploit):
             return
 
         try:
-            from scapy.all import sniff, Dot11  # type: ignore
+            from scapy.all import Dot11, sniff  # type: ignore
         except ImportError:
             print_error("Scapy não instalado. Execute: pip install scapy")
             return

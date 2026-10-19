@@ -21,10 +21,9 @@ References:
 Version: 1.0.0
 """
 
+import re
 import struct
 import time
-import hashlib
-import re
 from collections import OrderedDict
 
 from wirelessxpl.core.exploit import *

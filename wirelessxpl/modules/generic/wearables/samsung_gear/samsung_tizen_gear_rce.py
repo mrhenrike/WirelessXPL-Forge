@@ -24,12 +24,11 @@ References:
 Version: 1.0.0
 """
 
+import hashlib
+import os
 import socket
 import struct
 import time
-import os
-import hashlib
-import re
 from collections import OrderedDict
 
 from wirelessxpl.core.exploit import *

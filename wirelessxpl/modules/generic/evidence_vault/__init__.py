@@ -4,6 +4,6 @@ Provides forensically defensible chain-of-custody compatible with ISO/IEC 27037.
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from .evidence_vault import EvidenceVault, CaptureRecord, CredentialRecord, NetworkRecord
+from .evidence_vault import CaptureRecord, CredentialRecord, EvidenceVault, NetworkRecord
 
-__all__ = ["EvidenceVault", "CaptureRecord", "CredentialRecord", "NetworkRecord"]
+__all__ = ["CaptureRecord", "CredentialRecord", "EvidenceVault", "NetworkRecord"]

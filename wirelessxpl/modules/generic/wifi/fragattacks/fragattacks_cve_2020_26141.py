@@ -12,19 +12,30 @@ Aggregation and Fragmentation", USENIX Security 2021.
 from __future__ import annotations
 
 import logging
-import struct
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        Dot11, Dot11QoS, Dot11CCMP, RadioTap, Raw, sendp,
+        Dot11,
+        Dot11CCMP,
+        Dot11QoS,
+        RadioTap,
+        Raw,
+        sendp,
     )
     HAS_SCAPY = True
 except ImportError:
@@ -165,7 +176,7 @@ class Exploit(Exploit):
             print_error("Frame build failed (Scapy not available?)")
             return
 
-        from scapy.all import sendp, Raw, RadioTap
+        from scapy.all import RadioTap, Raw, sendp
         try:
             sendp(RadioTap() / Raw(frame_bytes[len(bytes(RadioTap())):]),
                   iface=iface, count=3, inter=0.1, verbose=False)

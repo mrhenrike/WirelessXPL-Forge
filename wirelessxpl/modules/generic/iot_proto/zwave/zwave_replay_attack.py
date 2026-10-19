@@ -21,11 +21,8 @@ Version: 1.0.0
 """
 
 import struct
-import os
-import time
 
 from wirelessxpl.core.exploit import *
-
 
 _ZWAVE_HOME_ID_LEN = 4
 _ZWAVE_NODE_ID_LEN = 1

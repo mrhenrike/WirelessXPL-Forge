@@ -21,18 +21,15 @@ Version: 1.0.0
 from __future__ import annotations
 
 import logging
-import os
 import random
 import shutil
 import string
 import subprocess
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
@@ -89,7 +86,7 @@ class Exploit(Exploit):
     def _build_beacon(self, ssid: str, bssid: str, channel: int, encryption: str) -> bytes:
         """Build a beacon frame using Scapy."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt
+            from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap
         except ImportError:
             return b""
 

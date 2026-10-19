@@ -19,8 +19,8 @@ Version: 1.0.0
 
 from __future__ import annotations
 
-import platform
 import functools
+import platform
 from enum import Enum
 from typing import Callable, Type, TypeVar, Union
 

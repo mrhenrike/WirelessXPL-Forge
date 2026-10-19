@@ -12,11 +12,9 @@ de dados e ataques MitM.
 """
 
 import struct
-import os
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _AD_TYPE_FLAGS = 0x01
 _AD_TYPE_COMPLETE_16 = 0x03

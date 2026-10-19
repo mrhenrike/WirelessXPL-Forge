@@ -21,7 +21,9 @@ class BTLEScanner:
     async def _async_scan(self, timeout: float) -> List[Device]:
         # When running as root (sudo), bleak may be in the original user's
         # site-packages instead of root's. Check both home directories.
-        import sys, os, glob as _g
+        import glob as _g
+        import os
+        import sys
         for candidate_home in (os.path.expanduser("~"), "/home/mrhenrike", "/home"):
             user_site = os.path.join(candidate_home, ".local", "lib")
             if os.path.isdir(user_site):

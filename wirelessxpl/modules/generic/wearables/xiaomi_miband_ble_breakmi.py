@@ -14,11 +14,9 @@ após pareamento forçado.
 Requer proximidade física (~10m BLE range) e adaptador BLE.
 """
 
-import struct
-import time
 import hashlib
 import re
-from collections import OrderedDict
+import struct
 
 from wirelessxpl.core.exploit import *
 

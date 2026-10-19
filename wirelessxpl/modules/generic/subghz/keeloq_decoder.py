@@ -11,17 +11,22 @@ HW_REQ: RTL-SDR (passive capture) OR HackRF One (passive RX mode).
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 from wirelessxpl.protocols.subghz.keeloq_engine import (
     KeeLoqFrame,
     decode_frame,
     decode_frame_with_key,
-    keeloq_decrypt,
 )
 
 logger = logging.getLogger(__name__)

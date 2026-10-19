@@ -19,11 +19,9 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 
 from __future__ import annotations
 
-import io
 import json
 import logging
 import threading
-import time
 import urllib.parse
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -350,7 +348,7 @@ h2{text-align:center;margin-bottom:20px;font-size:15px;color:#444;font-weight:40
 # ---------------------------------------------------------------------------
 
 class _CaptureEntry:
-    __slots__ = ("timestamp", "remote_addr", "data")
+    __slots__ = ("data", "remote_addr", "timestamp")
 
     def __init__(self, remote_addr: str, data: dict[str, str]) -> None:
         self.timestamp = datetime.now(timezone.utc).isoformat()

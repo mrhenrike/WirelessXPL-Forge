@@ -22,13 +22,13 @@ from __future__ import annotations
 
 import logging
 import os
-import time
 import random
 import struct
+import time
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 
 logger = logging.getLogger(__name__)
 
@@ -89,8 +89,13 @@ class Exploit(Exploit):
     def _check_scapy(self):
         try:
             from scapy.all import (
-                RadioTap, Dot11, Dot11Beacon, Dot11Elt,
-                Dot11ProbeReq, sendp, sniff,
+                Dot11,
+                Dot11Beacon,
+                Dot11Elt,
+                Dot11ProbeReq,
+                RadioTap,
+                sendp,
+                sniff,
             )
             return True
         except ImportError:
@@ -99,7 +104,7 @@ class Exploit(Exploit):
 
     def _csa_inject(self) -> None:
         """Inject fake CSA action frames."""
-        from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp, Raw
+        from scapy.all import Dot11, RadioTap, Raw, sendp
 
         iface = str(self.interface).strip()
         bssid = str(self.target_bssid).strip()
@@ -149,7 +154,7 @@ class Exploit(Exploit):
 
     def _pnl_harvest(self) -> None:
         """Passively capture probe requests to build client PNL."""
-        from scapy.all import Dot11, Dot11ProbeReq, Dot11Elt, sniff
+        from scapy.all import Dot11, Dot11Elt, Dot11ProbeReq, sniff
 
         iface = str(self.interface).strip()
         if not iface:
@@ -195,7 +200,7 @@ class Exploit(Exploit):
 
     def _known_beacons(self) -> None:
         """Flood beacon frames with common/harvested SSIDs."""
-        from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, sendp
+        from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap, sendp
 
         iface = str(self.interface).strip()
         if not iface:

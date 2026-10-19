@@ -20,11 +20,8 @@ Version: 1.0.0
 """
 
 import struct
-import os
-import time
 
 from wirelessxpl.core.exploit import *
-
 
 _LMP_OPCODE_ENCRYPTION_KEY_SIZE_REQ = 16
 _LMP_OPCODE_ENCRYPTION_KEY_SIZE_MASK_REQ = 0x10

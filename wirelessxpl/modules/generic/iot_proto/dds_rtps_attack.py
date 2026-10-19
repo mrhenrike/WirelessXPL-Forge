@@ -1,13 +1,12 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
+import os
 import socket
 import struct
-import os
 import time
 
 from wirelessxpl.core.exploit import *
-
 
 _RTPS_MAGIC = b"RTPS"
 _RTPS_MAJOR = 2

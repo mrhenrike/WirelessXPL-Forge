@@ -92,8 +92,8 @@ class Exploit(HTTPClient):
         return resp is not None and resp.status_code in (200, 301, 302, 401, 403)
 
     def _authenticate(self) -> "str | None":
-        import json as _json
         import base64
+        import json as _json
 
         luci_payload = _json.dumps({
             "method": "login",

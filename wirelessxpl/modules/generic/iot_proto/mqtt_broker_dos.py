@@ -12,8 +12,8 @@ CVE relacionado: CVE-2017-7651 (Mosquitto memory leak via will messages).
 
 import socket
 import struct
-import time
 import threading
+import time
 
 from wirelessxpl.core.exploit import *
 

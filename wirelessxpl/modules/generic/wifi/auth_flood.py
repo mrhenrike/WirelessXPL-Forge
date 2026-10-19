@@ -25,9 +25,8 @@ import time
 from typing import List
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +79,7 @@ class Exploit(Exploit):
     def _scapy_eapol_flood(self) -> None:
         """Flood EAPOL-Start frames via Scapy."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Auth, EAPOL, Ether, sendp
+            from scapy.all import EAPOL, Dot11, Dot11Auth, Ether, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required for EAPOL flood.")
             return
@@ -109,7 +108,7 @@ class Exploit(Exploit):
     def _scapy_auth_flood(self) -> None:
         """Flood 802.11 Open Auth frames from random MACs via Scapy."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Auth, sendp
+            from scapy.all import Dot11, Dot11Auth, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required for auth_flood.")
             return
@@ -139,7 +138,7 @@ class Exploit(Exploit):
     def _scapy_mesh_flood(self) -> None:
         """Flood 802.11s Mesh Beacon frames via Scapy."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, sendp
+            from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required for mesh_flood.")
             return
@@ -170,7 +169,7 @@ class Exploit(Exploit):
     def _scapy_cts_flood(self) -> None:
         """Flood CTS frames to reserve channel time (NAV attack)."""
         try:
-            from scapy.all import RadioTap, Dot11, sendp
+            from scapy.all import Dot11, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required for CTS flood.")
             return

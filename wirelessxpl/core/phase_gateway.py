@@ -161,7 +161,7 @@ class PhaseGateway:
             try:
                 passed = bool(check())
                 detail = ""
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 passed = False
                 detail = f"Exception: {type(exc).__name__}: {exc}"
                 logger.debug("Phase '%s' raised: %s", name, exc, exc_info=True)

@@ -1,5 +1,5 @@
-from wirelessxpl.core.exploit import *
 from wirelessxpl.core.bluetooth.btle_client import BTLEClient
+from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 
