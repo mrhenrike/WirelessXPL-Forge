@@ -1,12 +1,11 @@
 import socket
+
 import requests
 import urllib3
 
-from wirelessxpl.core.exploit.exploit import Exploit
-from wirelessxpl.core.exploit.exploit import Protocol
+from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool
 from wirelessxpl.core.exploit.printer import print_error
-
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

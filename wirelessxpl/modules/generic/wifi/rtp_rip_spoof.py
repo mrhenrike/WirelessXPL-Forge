@@ -16,11 +16,19 @@ import logging
 import socket
 import struct
 import time
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -28,8 +36,14 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        IP, UDP, RIP, RIPEntry,
-        Raw, sendp, send, conf,
+        IP,
+        RIP,
+        UDP,
+        Raw,
+        RIPEntry,
+        conf,
+        send,
+        sendp,
     )
     HAS_SCAPY = True
     HAS_SCAPY_RIP = True
@@ -197,7 +211,7 @@ class Exploit(Exploit):
                     sock.sendto(payload, (target_ip, _RIP_PORT))
                     print_info(f"Sent RIPv1 UDP {i + 1}/{repeat}")
                     time.sleep(0.5)
-                print_success(f"RIPv1 injection complete.")
+                print_success("RIPv1 injection complete.")
             except PermissionError:
                 print_error("Binding UDP 520 requires root/administrator.")
             except Exception as exc:

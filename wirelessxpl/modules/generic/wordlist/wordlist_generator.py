@@ -15,9 +15,9 @@ import os
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.wordlist.generator import (
     TargetProfile,
+    estimate_size_human,
     generate_wordlist,
     save_wordlist,
-    estimate_size_human,
 )
 
 

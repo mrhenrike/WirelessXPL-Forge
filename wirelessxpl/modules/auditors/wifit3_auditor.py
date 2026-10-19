@@ -8,15 +8,25 @@ interface on Linux, Windows, and macOS.
 This module provides a programmatic interface to wifit3's capabilities
 and extends them with WirelessXPL's session management and reporting.
 """
-import subprocess
-import shutil
 import os
+import shutil
+import subprocess
 import sys
 from typing import List, Optional
 
 try:
-    from wirelessxpl.core.exploit import Exploit, OptBool, OptStr, OptInt, mute, \
-        print_error, print_info, print_status, print_success, print_warning
+    from wirelessxpl.core.exploit import (
+        Exploit,
+        OptBool,
+        OptInt,
+        OptStr,
+        mute,
+        print_error,
+        print_info,
+        print_status,
+        print_success,
+        print_warning,
+    )
 except ImportError:
     # Fallback for standalone use
     def print_status(m): print(f"[*] {m}")

@@ -32,8 +32,8 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +44,8 @@ try:
         Dot11Auth,
         RadioTap,
         rdpcap,
+    )
+    from scapy.all import (
         sniff as scapy_sniff,
     )
     HAS_SCAPY = True

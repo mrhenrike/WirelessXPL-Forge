@@ -10,7 +10,6 @@ import re
 from pathlib import Path
 from typing import Dict, List, Set
 
-
 # ---------------------------------------------------------------------------
 # Keyword normalisation helpers (same logic as generate_coverage_matrix.py)
 # ---------------------------------------------------------------------------

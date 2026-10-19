@@ -9,8 +9,8 @@ Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import (
     SCAPY_AVAILABLE,
-    load_packets,
     extract_cleartext_credentials,
+    load_packets,
 )
 
 

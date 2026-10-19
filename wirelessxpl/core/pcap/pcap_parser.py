@@ -9,7 +9,6 @@ Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-
 from __future__ import annotations
 
 import logging
-import os
 import re
 import struct
 from dataclasses import dataclass, field
@@ -19,24 +18,26 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 logger = logging.getLogger("wirelessxpl.pcap")
 
 try:
-    from scapy.all import (
-        PcapReader,
-        PcapNgReader,
-        rdpcap,
+    from scapy.all import (  # noqa: F401
+        EAPOL,
+        IP,
+        TCP,
+        UDP,
         Dot11,
-        Dot11Beacon,
-        Dot11ProbeReq,
-        Dot11ProbeResp,
         Dot11AssoReq,
         Dot11AssoResp,
         Dot11Auth,
+        Dot11Beacon,
         Dot11Deauth,
         Dot11Elt,
-        EAPOL,
-        TCP,
-        UDP,
+        Dot11ProbeReq,
+        Dot11ProbeResp,
+        PcapNgReader,
+        PcapReader,
         Raw,
-        IP,
+        rdpcap,
+    )
+    from scapy.all import (  # noqa: F401
         conf as scapy_conf,
     )
 
@@ -350,7 +351,7 @@ def extract_stations(packets: List[Any]) -> Dict[str, Station]:
 
         dot11 = pkt[Dot11]
         frame_type = dot11.type
-        frame_subtype = dot11.subtype
+        _frame_subtype = dot11.subtype
 
         # Probe requests → station with probed SSID
         if pkt.haslayer(Dot11ProbeReq):

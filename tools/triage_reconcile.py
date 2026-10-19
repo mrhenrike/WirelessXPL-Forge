@@ -6,8 +6,7 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-from typing import Dict, List, Tuple
-
+from typing import Dict, Tuple
 
 RESOLVED_PATTERNS: Tuple[str, ...] = (
     "paramiko dsskey removed",

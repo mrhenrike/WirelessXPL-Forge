@@ -27,8 +27,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import time
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
@@ -44,18 +42,18 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 HAS_PYSCARD = False
 try:
-    from smartcard.System import readers as list_readers  # type: ignore[import-untyped]
     from smartcard.CardConnection import CardConnection  # type: ignore[import-untyped]
-    from smartcard.util import toHexString, toBytes  # type: ignore[import-untyped]
+    from smartcard.System import readers as list_readers  # type: ignore[import-untyped]
+    from smartcard.util import toBytes, toHexString  # type: ignore[import-untyped]
     HAS_PYSCARD = True
 except ImportError:
     pass
 
 HAS_PYSIM = False
 try:
-    from pySim.transport.pcsc import PcscSimLink  # type: ignore[import-untyped]
-    from pySim.commands import SimCardCommands  # type: ignore[import-untyped]
     from pySim.cards import SimCard  # type: ignore[import-untyped]
+    from pySim.commands import SimCardCommands  # type: ignore[import-untyped]
+    from pySim.transport.pcsc import PcscSimLink  # type: ignore[import-untyped]
     HAS_PYSIM = True
 except ImportError:
     pass

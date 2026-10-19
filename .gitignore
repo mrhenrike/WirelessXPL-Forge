@@ -100,15 +100,12 @@ Pipfile.lock
 
 .tmp/
 
-# Local-only: packaging, CI/CD and contributor metadata kept out of the public tree
-.github/workflows/
+# Local-only: contributor metadata kept out of the public tree
 .github/dependabot.yml
 .github/CODEOWNERS
 CODEOWNERS
 .github/FUNDING.yml
 FUNDING.yml
-.github/ISSUE_TEMPLATE*
-.github/PULL_REQUEST_TEMPLATE*
 CONTRIBUTING*
 CONTRIBUTORS*
 .travis.yml
@@ -129,3 +126,20 @@ packages/**/build.sh
 packages/**/build.ps1
 *.example
 *.sample
+
+# === Secrets & credentials — NEVER commit ===
+.env
+.env.*
+*.env
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa
+id_rsa.*
+*.credentials
+credentials.json
+secrets.json

@@ -19,12 +19,10 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _MHDR_JOIN_REQUEST = 0x00
 _MHDR_JOIN_ACCEPT = 0x20
@@ -67,7 +65,8 @@ def _build_join_accept(app_nonce, net_id, dev_addr, dl_settings, rx_delay, cflis
 def _compute_mic(msg):
     """Placeholder MIC (AES-CMAC required in production)."""
     try:
-        import hmac, hashlib
+        import hashlib
+        import hmac
         return hmac.new(b"\x00" * 16, msg, hashlib.sha256).digest()[:4]
     except Exception:
         return b"\x00" * 4

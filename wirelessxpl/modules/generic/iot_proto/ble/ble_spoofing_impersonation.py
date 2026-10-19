@@ -19,11 +19,8 @@ Version: 1.0.0
 """
 
 import struct
-import os
-import time
 
 from wirelessxpl.core.exploit import *
-
 
 _AD_TYPE_FLAGS = 0x01
 _AD_TYPE_COMPLETE_16 = 0x03

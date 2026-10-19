@@ -33,11 +33,10 @@ from __future__ import annotations
 
 import logging
 import os
-import struct
 import threading
 import time
 from collections import defaultdict
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -46,9 +45,23 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        ARP, EAPOL, ICMP, IP, LLC, SNAP,
-        Dot11, Dot11Auth, Dot11CCMP, Dot11Deauth, Dot11QoS,
-        RadioTap, Raw, conf, get_if_hwaddr, sendp, sniff,
+        ARP,
+        EAPOL,
+        ICMP,
+        IP,
+        LLC,
+        SNAP,
+        Dot11,
+        Dot11Auth,
+        Dot11CCMP,
+        Dot11Deauth,
+        Dot11QoS,
+        RadioTap,
+        Raw,
+        conf,
+        get_if_hwaddr,
+        sendp,
+        sniff,
     )
     from scapy.contrib.wpa_eapol import WPA_key
     HAS_SCAPY = True

@@ -14,8 +14,8 @@ e microfones de cabine.
 Alcance: proximidade BLE (10-30m). Requer adaptador BLE.
 """
 
-import subprocess
 import shutil
+import subprocess
 
 from wirelessxpl.core.exploit import *
 

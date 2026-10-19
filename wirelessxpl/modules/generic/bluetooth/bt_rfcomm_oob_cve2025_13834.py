@@ -11,14 +11,13 @@ CVSS: 7.5–8.1 (Alto) | Afeta: Linux kernel < 6.12, BlueZ < 5.77
 
 from __future__ import annotations
 
-import json
 import socket
 import struct
 import time
 from pathlib import Path
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
-from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptMAC, OptString
+from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptMAC
 from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 
@@ -243,7 +242,7 @@ class BtRfcommOobCve202513834(Exploit):
     def _entropy(data: bytes) -> float:
         if not data:
             return 0.0
-        import math  # noqa: PLC0415
+        import math
         counts = [0] * 256
         for b in data:
             counts[b] += 1

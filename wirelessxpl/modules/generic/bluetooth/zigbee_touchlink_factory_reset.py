@@ -1,13 +1,11 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _ZIGBEE_TOUCHLINK_CHANNEL = 11  # Canal de descoberta primário Touchlink
 _TOUCHLINK_CHANNELS = [11, 15, 20, 25]  # Canais obrigatórios Touchlink

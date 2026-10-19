@@ -16,10 +16,9 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 from __future__ import annotations
 
 import socket
-import struct
 import time
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List
 
 
 @dataclass

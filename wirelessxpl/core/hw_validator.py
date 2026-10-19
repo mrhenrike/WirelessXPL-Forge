@@ -39,7 +39,7 @@ import shutil
 import subprocess
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Callable, Dict, List, Optional, Sequence
+from typing import Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

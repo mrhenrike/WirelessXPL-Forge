@@ -25,8 +25,8 @@ import time
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,9 @@ try:
     from scapy.all import (  # type: ignore[import-untyped]
         BOOTP,
         DHCP,
-        Ether,
         IP,
         UDP,
+        Ether,
         get_if_hwaddr,
         sendp,
         sniff,

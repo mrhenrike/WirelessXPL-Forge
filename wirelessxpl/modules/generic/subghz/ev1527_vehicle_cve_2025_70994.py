@@ -18,17 +18,22 @@ HW_REQ: CC1101 OR HackRF One + 433 MHz antenna.
 from __future__ import annotations
 
 import logging
-import os
-import subprocess
 from pathlib import Path
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.protocols.subghz.ook_encoder import EV1527Encoder
-from wirelessxpl.protocols.subghz.sub_file_parser import SubGHzSignal, generate, parse
+from wirelessxpl.protocols.subghz.sub_file_parser import parse
 
 logger = logging.getLogger(__name__)
 

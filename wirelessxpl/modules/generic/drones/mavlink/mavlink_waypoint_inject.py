@@ -12,11 +12,20 @@ import logging
 import socket
 import struct
 import time
-from typing import List, Optional, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptFloat, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptFloat,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
@@ -176,7 +185,7 @@ class Exploit(Exploit):
             time.sleep(0.3)
             sock.sendto(wp_frame, (target_ip, target_port))
             print_info("Sent MISSION_ITEM_INT")
-            print_success(f"Waypoint injection complete. Drone mission overwritten.")
+            print_success("Waypoint injection complete. Drone mission overwritten.")
         except Exception as exc:
             print_error(f"Send error: {exc}")
         finally:

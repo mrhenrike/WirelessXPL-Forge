@@ -189,14 +189,14 @@ PROTOCOL_MAP = {
 }
 
 __all__ = [
-    "SubGHzConfig",
-    "OOKEncoder",
-    "EV1527Encoder",
-    "PrincetonEncoder",
-    "CAMEEncoder",
-    "NICEEncoder",
-    "HoltekEncoder",
-    "ChamberlainEncoder",
-    "AnsonicEncoder",
     "PROTOCOL_MAP",
+    "AnsonicEncoder",
+    "CAMEEncoder",
+    "ChamberlainEncoder",
+    "EV1527Encoder",
+    "HoltekEncoder",
+    "NICEEncoder",
+    "OOKEncoder",
+    "PrincetonEncoder",
+    "SubGHzConfig",
 ]

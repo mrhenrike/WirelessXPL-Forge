@@ -15,11 +15,20 @@ import logging
 import socket
 import struct
 import time
-from typing import List, Optional
+from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptFloat, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -27,14 +36,18 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        IP, VRRP,
-        sendp, send, conf, Ether,
+        IP,
+        VRRP,
+        Ether,
+        conf,
+        send,
+        sendp,
     )
     HAS_SCAPY_VRRP = True
     HAS_SCAPY = True
 except ImportError:
     try:
-        from scapy.all import IP, Raw, send, conf, Ether
+        from scapy.all import IP, Ether, Raw, conf, send
         HAS_SCAPY = True
         HAS_SCAPY_VRRP = False
     except ImportError:

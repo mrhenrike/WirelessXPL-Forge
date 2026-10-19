@@ -19,9 +19,8 @@ import time
 from typing import List, Optional, Sequence, Tuple
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 
 logger = logging.getLogger(__name__)
 

@@ -4,6 +4,29 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 
 ---
 
+## [2.2.0] - 2026-10-19
+
+### Added
+- **xpl-core integration:** shells shim (`wirelessxpl/core/shells/`) re-exporting from xpl-core canonical package
+- **IoT shell mixin:** `shell_mixin.py` with wireless/embedded-specific payloads (busybox_nc, mkfifo, socat, telnet_reverse)
+- **PEP 561:** `py.typed` marker for downstream type checking
+- **mypy config:** `check_untyped_defs`, `ignore_missing_imports` for 20 external modules (scapy, bleak, dbus, etc.)
+- **ruff linting:** target-version py39, line-length 120; select E/W/F/I/B/SIM/RUF; per-file-ignores for exploit modules
+- **Test suite expansion:** 86 to 199 tests covering config, pool, phase_gateway, hw_profiler, bt_crypto, shells shim
+- **CI/CD:** GitHub Actions `ci.yml` (ruff, mypy, pytest matrix py3.9-3.14), `publish.yml` (trusted publisher PyPI)
+- `.github/workflows/` tracked in git (removed .gitignore exclusion)
+
+### Changed
+- Auto-fixed 897 ruff issues across 444 files (import sorting, f-strings, unused imports)
+- Fixed duplicate glossary key (`pixie_dust` renamed to `pixie_dust_wps`)
+- Removed unused `BleakError` import in `btle_device.py`
+- Hardened `.gitignore` with sensitive-file patterns
+
+### Dependencies
+- `xpl-core>=0.1.0` (new: provides shared shell infrastructure)
+
+---
+
 ## [2.1.2] - 2026-10-06
 
 ### Changed

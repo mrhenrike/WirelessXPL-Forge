@@ -25,7 +25,7 @@ import signal
 import sqlite3
 import subprocess
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab

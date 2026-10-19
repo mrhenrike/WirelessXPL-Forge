@@ -11,16 +11,13 @@ or similar).
 Version: 1.0.0
 """
 
-import os
 import struct
 import time
-import threading
+from typing import Optional
+
 import serial
-import re
-from typing import Optional, List, Tuple
 
 from wirelessxpl.core.exploit import *
-
 
 _ZIGBEE_FC_BEACON = 0x0000
 _ZIGBEE_FC_DATA = 0x0001
