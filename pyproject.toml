@@ -8,7 +8,7 @@ name = "wirelessxpl"
 version = "2.2.0"
 description = "WirelessXPL-Forge: modular wireless security research framework for Wi-Fi, BLE, Zigbee, RFID and ESP32 lab workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
-license = { text = "BSD-3-Clause" }
+license = { text = "XSRL-1.0" }
 authors = [
     { name = "André Henrique (@mrhenrike) | União Geek", email = "suporte@uniaogeek.com.br" },
 ]
@@ -32,7 +32,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: POSIX",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS",
