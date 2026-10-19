@@ -9,18 +9,31 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Set
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        EAPOL, Dot11, Dot11Deauth, RadioTap, Raw, sendp, sniff,
+        EAPOL,
+        Dot11,
+        Dot11Deauth,
+        RadioTap,
+        Raw,
+        sendp,
+        sniff,
     )
     try:
         from scapy.contrib.wpa_eapol import WPA_key

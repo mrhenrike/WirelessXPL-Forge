@@ -37,7 +37,6 @@ Usage from any module:
 """
 from __future__ import annotations
 
-import ipaddress
 import logging
 import os
 import re
@@ -367,8 +366,10 @@ class WXFConfig:
 
     def print_banner(self) -> None:
         """Print startup config summary."""
+        import shutil as _sh
+        import subprocess as _sp
+
         from wirelessxpl.core.exploit.printer import print_info, print_success, print_warning
-        import subprocess as _sp, shutil as _sh
 
         print_info("=" * 70)
         print_info("  WXF Global Configuration")
@@ -389,7 +390,7 @@ class WXFConfig:
                 if gpu_lines:
                     print_info(f"  GPU          │ \033[92m{gpu_lines[0]}\033[0m  (hashcat -D 2 --force)")
                 else:
-                    print_info(f"  GPU          │ \033[93mSó CPU disponível\033[0m  (hashcat -D 1)")
+                    print_info("  GPU          │ \033[93mSó CPU disponível\033[0m  (hashcat -D 1)")
             except Exception:
                 pass
         print_info("")

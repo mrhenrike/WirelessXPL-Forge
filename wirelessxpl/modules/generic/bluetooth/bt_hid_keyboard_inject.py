@@ -24,11 +24,10 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 from __future__ import annotations
 
-import binascii
 import logging
 import subprocess
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -295,9 +294,10 @@ class BTHIDKeyboardInject:
 # WXF Exploit entry point
 # ---------------------------------------------------------------------------
 
-from wirelessxpl.core.exploit import Exploit as _BaseExploit, OptString, OptBool  # noqa: E402
-from wirelessxpl.core.os_guard import OSRequirement, requires_os  # noqa: E402
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab  # noqa: E402
+from wirelessxpl.core.exploit import Exploit as _BaseExploit
+from wirelessxpl.core.exploit import OptBool, OptString
+from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 
 @requires_os(OSRequirement.LINUX_ONLY)

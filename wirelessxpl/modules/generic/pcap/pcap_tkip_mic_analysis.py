@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 import os
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
@@ -63,8 +63,11 @@ class _BSSIDStats:
     """Accumulates per-BSSID statistics for TKIP analysis."""
 
     __slots__ = (
-        "ssid", "tkip_detected", "qos_frame_count",
-        "mic_failure_deauths", "data_frame_count",
+        "data_frame_count",
+        "mic_failure_deauths",
+        "qos_frame_count",
+        "ssid",
+        "tkip_detected",
     )
 
     def __init__(self) -> None:

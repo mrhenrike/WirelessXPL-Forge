@@ -16,13 +16,12 @@ from __future__ import annotations
 import csv
 import json
 import logging
-import math
 import threading
 import time
 import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
@@ -37,7 +36,7 @@ logger = logging.getLogger(__name__)
 class _GpsPosition:
     """Current GPS fix container."""
 
-    __slots__ = ("lat", "lon", "alt", "speed", "track", "ts", "fix")
+    __slots__ = ("alt", "fix", "lat", "lon", "speed", "track", "ts")
 
     def __init__(self) -> None:
         self.lat: Optional[float] = None
@@ -179,14 +178,13 @@ class _NmeaBackend:
             pass
 
     def _read_file(self) -> None:
-        with suppress(Exception):
-            with open(self._source, "r", errors="ignore") as fh:
-                for line in fh:
-                    if not self._running:
-                        break
-                    line = line.strip()
-                    if line.startswith("$GPGGA") or line.startswith("$GNGGA"):
-                        self._parse_gga(line)
+        with suppress(Exception), open(self._source, "r", errors="ignore") as fh:
+            for line in fh:
+                if not self._running:
+                    break
+                line = line.strip()
+                if line.startswith("$GPGGA") or line.startswith("$GNGGA"):
+                    self._parse_gga(line)
 
     def _read_serial(self) -> None:
         while self._running:

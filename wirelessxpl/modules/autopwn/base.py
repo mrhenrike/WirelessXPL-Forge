@@ -2,8 +2,12 @@
 # authorized use only
 """
 from __future__ import annotations
-import importlib, inspect, time
+
+import importlib
+import inspect
+import time
 from dataclasses import dataclass, field
+
 
 @dataclass
 class AutoPwnReport:
@@ -46,7 +50,7 @@ class SegmentAutoPwn:
                     report.modules_run += 1
                     if status == "vulnerable": report.modules_vulnerable += 1
                     if self.verbose: print(f"  {'[+]' if status=='vulnerable' else '[-]'} {rec.path.split('.')[-1]:<50} {status}")
-                except Exception as e:
+                except Exception:
                     report.results.append((rec.path, target, "error")); report.modules_run += 1
         report.elapsed_s = time.time() - t0
         if self.verbose: print(report.summary())

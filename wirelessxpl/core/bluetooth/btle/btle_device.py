@@ -64,7 +64,7 @@ class Device:
 
     async def _async_enumerate_services(self) -> list:
         try:
-            from bleak import BleakClient, BleakError  # type: ignore[import-untyped]
+            from bleak import BleakClient  # type: ignore[import-untyped]
         except ImportError:
             print_error("bleak not installed: pip install bleak")
             return []

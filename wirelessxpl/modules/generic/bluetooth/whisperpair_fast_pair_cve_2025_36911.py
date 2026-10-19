@@ -29,14 +29,19 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import struct
-import time
-import uuid as _uuid_mod
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -63,7 +68,7 @@ _INJECTED_ACCOUNT_KEY = b"\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\xAE\x
 
 try:
     import bleak
-    from bleak import BleakScanner, BleakClient
+    from bleak import BleakClient, BleakScanner
     from bleak.exc import BleakError
     HAS_BLEAK = True
 except ImportError:

@@ -12,19 +12,25 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
-    from scapy.all import (
-        Dot11, Dot11Deauth, RadioTap, sendp, conf
-    )
+    from scapy.all import Dot11, Dot11Deauth, RadioTap, conf, sendp
     HAS_SCAPY = True
 except ImportError:
     HAS_SCAPY = False

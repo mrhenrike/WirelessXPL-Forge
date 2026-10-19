@@ -13,11 +13,9 @@ from __future__ import annotations
 
 import json
 import shutil
-import struct
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptString
@@ -194,7 +192,7 @@ class ZigbeeReplayCve202127289(Exploit):
         delay_ms = int(self.FRAME_DELAY.value)
 
         print(f"[*] Zigbee Replay: {capture} × {repeat} no canal {channel}")
-        print(f"    Frame counter bypass: ignorado pelo dispositivo CVE-2021-27289")
+        print("    Frame counter bypass: ignorado pelo dispositivo CVE-2021-27289")
 
         frames = self._load_frames(capture)
         if not frames:
@@ -241,7 +239,7 @@ class ZigbeeReplayCve202127289(Exploit):
         """Carrega frames raw de pcap via scapy."""
         frames: list[bytes] = []
         try:
-            from scapy.all import rdpcap  # noqa: PLC0415
+            from scapy.all import rdpcap
             pkts = rdpcap(pcap_path)
             for pkt in pkts:
                 raw = bytes(pkt)
@@ -255,7 +253,7 @@ class ZigbeeReplayCve202127289(Exploit):
 
     def _count_frames(self, pcap_path: str) -> int:
         try:
-            from scapy.all import rdpcap  # noqa: PLC0415
+            from scapy.all import rdpcap
             return len(rdpcap(pcap_path))
         except Exception:
             return 0

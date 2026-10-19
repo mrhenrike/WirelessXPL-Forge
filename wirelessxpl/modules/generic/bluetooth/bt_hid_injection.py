@@ -25,13 +25,11 @@ from __future__ import annotations
 
 import enum
 import logging
-import os
 import shutil
 import struct
 import subprocess
 import threading
 import time
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
@@ -40,6 +38,7 @@ from wirelessxpl.core.os_guard import OSRequirement, requires_os
 logger = logging.getLogger(__name__)
 
 import socket as _bt_socket
+
 # Native L2CAP socket — replaces pybluez (deprecated)
 _AF_BLUETOOTH = 31
 _BTPROTO_L2CAP = 0

@@ -1,7 +1,6 @@
 # Author: André Henrique (LinkedIn/X: @mrhenrike)
 import socket
 import struct
-import time
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.http.http_client import HTTPClient

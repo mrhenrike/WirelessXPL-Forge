@@ -57,7 +57,6 @@ from wirelessxpl.core.exploit import (
     OptBool,
     OptIP,
     OptPort,
-    OptString,
     mute,
     print_error,
     print_info,

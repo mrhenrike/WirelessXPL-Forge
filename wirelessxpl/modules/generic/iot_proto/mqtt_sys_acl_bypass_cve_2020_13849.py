@@ -11,7 +11,6 @@ conectados e mensagens retidas potencialmente sensíveis.
 import socket
 import struct
 import time
-import threading
 from collections import defaultdict
 
 from wirelessxpl.core.exploit import *

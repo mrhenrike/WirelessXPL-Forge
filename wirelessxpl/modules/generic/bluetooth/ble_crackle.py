@@ -28,7 +28,7 @@ import math
 import struct
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -46,7 +46,7 @@ except ImportError:
         HAS_CRYPTO = False
 
 try:
-    from scapy.all import rdpcap, raw, PcapReader
+    from scapy.all import PcapReader, raw, rdpcap
     HAS_SCAPY = True
 except ImportError:
     HAS_SCAPY = False

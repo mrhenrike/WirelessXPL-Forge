@@ -32,7 +32,6 @@ import logging
 import os
 import shutil
 import subprocess
-from pathlib import Path
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *

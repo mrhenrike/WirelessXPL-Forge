@@ -17,16 +17,22 @@ HW_REQ: HackRF One + Faraday cage / RF shielded enclosure.
 from __future__ import annotations
 
 import logging
-import os
 import random
 import subprocess
-import time
 from pathlib import Path
-from typing import List
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)

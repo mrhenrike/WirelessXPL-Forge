@@ -16,9 +16,9 @@ import os
 import threading
 import time
 from concurrent.futures import (
-    ThreadPoolExecutor,
-    ProcessPoolExecutor,
     Future,
+    ProcessPoolExecutor,
+    ThreadPoolExecutor,
     as_completed,
 )
 from enum import Enum

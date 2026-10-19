@@ -13,11 +13,10 @@ from __future__ import annotations
 import logging
 import os
 import platform
-import re
 import shutil
 import subprocess
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +111,7 @@ class HWProfiler:
                     elif line.startswith("CPU(s):"):
                         profile.cpu_threads = int(line.split(":", 1)[1].strip())
                     elif line.startswith("Core(s) per socket:"):
-                        cores_per = int(line.split(":", 1)[1].strip())
+                        _cores_per = int(line.split(":", 1)[1].strip())
                     elif "CPU max MHz" in line or "CPU MHz" in line:
                         try:
                             profile.cpu_freq_mhz = int(float(line.split(":", 1)[1].strip()))

@@ -16,9 +16,7 @@ from __future__ import annotations
 
 import socket
 import time
-from dataclasses import dataclass, field
-from typing import Optional, List
-import math
+from typing import List, Optional
 
 
 def nmea_checksum(sentence: str) -> str:

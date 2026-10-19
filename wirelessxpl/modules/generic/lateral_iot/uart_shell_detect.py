@@ -1,13 +1,11 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import subprocess
+import glob
 import os
 import time
-import glob
 
 from wirelessxpl.core.exploit import *
-
 
 _COMMON_BAUDS = [9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600]
 _COMMON_UART_PATHS = [

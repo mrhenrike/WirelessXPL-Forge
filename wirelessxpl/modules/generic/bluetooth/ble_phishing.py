@@ -19,8 +19,6 @@ import shutil
 import struct
 import subprocess
 import time
-from pathlib import Path
-from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os

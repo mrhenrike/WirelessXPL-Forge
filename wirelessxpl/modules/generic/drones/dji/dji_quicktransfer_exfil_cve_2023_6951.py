@@ -12,16 +12,21 @@ CVSS: High -- unauthenticated access to drone media content.
 from __future__ import annotations
 
 import logging
-import os
 import socket
-import time
 from pathlib import Path
-from typing import List, Optional
-from urllib.parse import urljoin
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)

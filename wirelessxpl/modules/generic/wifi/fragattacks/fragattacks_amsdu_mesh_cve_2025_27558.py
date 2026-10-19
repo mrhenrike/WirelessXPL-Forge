@@ -27,14 +27,22 @@ References:
 from __future__ import annotations
 
 import logging
-import os
 import struct
 import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -74,8 +82,15 @@ def _build_mesh_amsdu_bypass_frame(
     """
     try:
         from scapy.all import (
-            Dot11, Dot11QoS, Dot11Addr4, Raw, RadioTap, sendp, Ether,
-            ARP, wrpcap,
+            ARP,
+            Dot11,
+            Dot11Addr4,
+            Dot11QoS,
+            Ether,
+            RadioTap,
+            Raw,
+            sendp,
+            wrpcap,
         )
     except ImportError:
         return None
@@ -266,7 +281,7 @@ class Exploit(Exploit):
             return
 
         try:
-            from scapy.all import sendp, Raw, RadioTap
+            from scapy.all import RadioTap, Raw, sendp
         except ImportError:
             print_error("scapy not available. pip install scapy")
             return

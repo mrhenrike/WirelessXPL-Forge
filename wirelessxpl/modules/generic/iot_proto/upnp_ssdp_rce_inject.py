@@ -18,7 +18,6 @@ from urllib.parse import urlparse
 
 from wirelessxpl.core.exploit import *
 
-
 _SSDP_MCAST = "239.255.255.250"
 _SSDP_PORT = 1900
 _WAN_STYPES = (

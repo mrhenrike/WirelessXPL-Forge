@@ -23,7 +23,6 @@ import os
 import re
 import shutil
 import subprocess
-import time
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *

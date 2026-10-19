@@ -12,11 +12,11 @@ import os
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import (
     SCAPY_AVAILABLE,
-    load_packets,
+    Dot11Beacon,
     extract_access_points,
     extract_eapol_handshakes,
+    load_packets,
     save_handshake_pcap,
-    Dot11Beacon,
 )
 
 
