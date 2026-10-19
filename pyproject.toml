@@ -198,7 +198,8 @@ Changelog = "https://github.com/mrhenrike/WirelessXPL-Forge/releases"
 "Source Code" = "https://github.com/mrhenrike/WirelessXPL-Forge"
 
 [project.scripts]
-wxf = "wirelessxpl.__main__:main"
+wxf        = "wirelessxpl.__main__:main"
+wirelessxpl = "wirelessxpl.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
