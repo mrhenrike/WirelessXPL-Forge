@@ -11,22 +11,38 @@ PREREQ HW: WiFi adapter in monitor mode + packet injection.
 from __future__ import annotations
 
 import logging
-import time
-from typing import Dict, List, Optional
+from typing import Dict
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptString,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        ARP, ICMP, IP, UDP,
-        Dot11, Dot11Auth, Dot11Deauth, Dot11QoS, Dot11CCMP,
-        RadioTap, Raw, Ether,
-        sendp, sniff, conf,
+        ARP,
+        ICMP,
+        IP,
+        UDP,
+        Dot11,
+        Dot11Auth,
+        Dot11CCMP,
+        Dot11Deauth,
+        Dot11QoS,
+        Ether,
+        RadioTap,
+        Raw,
+        conf,
+        sendp,
+        sniff,
     )
     HAS_SCAPY = True
 except ImportError:
@@ -187,10 +203,10 @@ class Exploit(Exploit):
             seq += 1
             if sent:
                 results[cve_id] = "PROBE-SENT (capture traffic to confirm)"
-                print_info(f"  Probe sent. Capture traffic to confirm vulnerability.")
+                print_info("  Probe sent. Capture traffic to confirm vulnerability.")
             else:
                 results[cve_id] = "PROBE-FAILED"
-                print_error(f"  Probe failed. Check interface and permissions.")
+                print_error("  Probe failed. Check interface and permissions.")
 
         print_status("\nScan Summary:")
         for cve, status in results.items():

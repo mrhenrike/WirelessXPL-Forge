@@ -9,8 +9,8 @@ modules available for immediate use.
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from wirelessxpl.core.exploit import *
 from wirelessxpl.core.cve.cve_db import CVEDatabase
+from wirelessxpl.core.exploit import *
 
 
 class Exploit(Exploit):

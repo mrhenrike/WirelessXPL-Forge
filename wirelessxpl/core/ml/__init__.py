@@ -24,10 +24,10 @@ from wirelessxpl.core.ml.portal_optimizer import PortalOptimizer, PortalRecommen
 from wirelessxpl.core.ml.wps_pin_predictor import PINPrediction, WPSPINPredictor
 
 __all__ = (
-    "AdvisorContext",
-    "AnomalyDetector",
     "APFingerprint",
     "APFingerprinter",
+    "AdvisorContext",
+    "AnomalyDetector",
     "AttackAdvisor",
     "ChannelOptimizer",
     "ChannelPlan",

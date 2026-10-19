@@ -24,7 +24,6 @@ Version: 1.0.0
 from __future__ import annotations
 
 import csv
-import io
 import json
 import logging
 import os
@@ -32,7 +31,7 @@ import re
 import sqlite3
 import time
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from wirelessxpl.core.exploit import *
 

@@ -33,9 +33,8 @@ import logging
 import os
 import struct
 import subprocess
-import threading
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -44,9 +43,26 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        ARP, DHCP, EAPOL, ICMP, IP, LLC, SNAP, UDP,
-        Dot11, Dot11CCMP, Dot11Deauth, Dot11Elt, Dot11QoS,
-        Ether, RadioTap, Raw, conf, sendp, sniff, wrpcap,
+        ARP,
+        DHCP,
+        EAPOL,
+        ICMP,
+        IP,
+        LLC,
+        SNAP,
+        UDP,
+        Dot11,
+        Dot11CCMP,
+        Dot11Deauth,
+        Dot11Elt,
+        Dot11QoS,
+        Ether,
+        RadioTap,
+        Raw,
+        conf,
+        sendp,
+        sniff,
+        wrpcap,
     )
     HAS_SCAPY = True
 except ImportError:

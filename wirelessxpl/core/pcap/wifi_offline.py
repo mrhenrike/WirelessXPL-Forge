@@ -9,27 +9,25 @@ Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-
 
 from __future__ import annotations
 
-import hashlib
-import hmac
 import logging
 import struct
-from dataclasses import dataclass, field
 from collections import defaultdict
+from dataclasses import dataclass, field
 from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger("wirelessxpl.pcap.wifi_offline")
 
 try:
-    from scapy.all import (
+    from scapy.all import (  # noqa: F401
+        EAP,
+        EAPOL,
+        IP,
         Dot11,
+        Dot11Auth,
         Dot11Beacon,
+        Dot11Elt,
         Dot11ProbeResp,
         Dot11WEP,
-        Dot11Elt,
-        Dot11Auth,
-        EAPOL,
-        EAP,
-        IP,
         Raw,
         rdpcap,
     )

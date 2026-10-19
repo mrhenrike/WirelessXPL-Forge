@@ -18,13 +18,10 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
-import hashlib
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _TC_LINK_KEY = bytes.fromhex("5A6967426565416C6C69616E63653039")
 

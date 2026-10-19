@@ -4,10 +4,8 @@
 import socket
 import struct
 import time
-import threading
 
 from wirelessxpl.core.exploit import *
-
 
 _MDNS_MCAST_ADDR = "224.0.0.251"
 _MDNS_PORT = 5353

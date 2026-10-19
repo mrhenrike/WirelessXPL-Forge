@@ -19,7 +19,6 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-from typing import List
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -61,7 +60,6 @@ class Exploit(Exploit):
     def check(self) -> str:
         """Verify wireless interface is in monitor mode and ready."""
         import shutil
-        import subprocess
         iface = getattr(self, "iface", None) or getattr(self, "interface", None) or "wlan0"
         if shutil.which("iwconfig"):
             try:
@@ -89,14 +87,20 @@ class Exploit(Exploit):
         require_authorised_lab()
         try:
             from scapy.all import (
-                sniff, sendp, wrpcap,
-                RadioTap, Dot11, Dot11Deauth, Dot11Beacon, Dot11Elt, EAPOL,
+                EAPOL,
+                Dot11,
+                Dot11Beacon,
+                Dot11Deauth,
+                Dot11Elt,
+                RadioTap,
+                sendp,
+                sniff,
+                wrpcap,
             )
         except ImportError:
             print_error("Scapy required: pip install scapy")
             return
 
-        import subprocess
         iface     = str(self.interface).strip()
         target_b  = str(self.target_bssid).strip().lower() or None
         out       = Path(str(self.output_dir)); out.mkdir(parents=True, exist_ok=True)

@@ -27,7 +27,7 @@ import struct
 import subprocess
 import threading
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -36,9 +36,24 @@ logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        Dot11, Dot11Auth, Dot11Beacon, Dot11Deauth, Dot11Disas, Dot11Elt,
-        Dot11ProbeReq, Dot11ProbeResp, Dot11AssoReq, Dot11AssoResp,
-        Dot11QoS, LLC, SNAP, RadioTap, conf, get_if_hwaddr, sendp, sniff,
+        LLC,
+        SNAP,
+        Dot11,
+        Dot11AssoReq,
+        Dot11AssoResp,
+        Dot11Auth,
+        Dot11Beacon,
+        Dot11Deauth,
+        Dot11Disas,
+        Dot11Elt,
+        Dot11ProbeReq,
+        Dot11ProbeResp,
+        Dot11QoS,
+        RadioTap,
+        conf,
+        get_if_hwaddr,
+        sendp,
+        sniff,
     )
     HAS_SCAPY = True
 except ImportError:
@@ -60,7 +75,7 @@ def _find_ie(packet, ie_id: int) -> Optional[Dot11Elt]:
     """Find an Information Element by ID in a Dot11 frame."""
     elt = packet.payload
     while isinstance(elt, Dot11Elt):
-        if elt.ID == ie_id:
+        if ie_id == elt.ID:
             return elt
         elt = elt.payload
     return None
@@ -221,7 +236,6 @@ class Exploit(Exploit):
     def check(self) -> str:
         """Verify wireless interface is in monitor mode and ready."""
         import shutil
-        import subprocess
         iface = getattr(self, "iface", None) or getattr(self, "interface", None) or "wlan0"
         if shutil.which("iwconfig"):
             try:

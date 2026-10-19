@@ -11,11 +11,9 @@ Constrói PDUs ATT manualmente via struct.pack sobre canal L2CAP ATT (CID 0x0004
 """
 
 import struct
-import os
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _ATT_OP_MTU_REQ = 0x02
 _ATT_OP_READ_BY_GROUP_REQ = 0x10

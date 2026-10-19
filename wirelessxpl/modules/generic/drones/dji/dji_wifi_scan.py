@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import logging
 import re
-import subprocess
-from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success,
+    Exploit,
+    OptString,
+    multi,
+    mute,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)
@@ -104,7 +107,6 @@ class Exploit(Exploit):
         print_status("Passive WiFi scan")
 
         import platform
-        import sys
 
         if platform.system().lower() == "windows":
             from wirelessxpl.modules.generic.drones.drone_scanner import _scan_windows_netsh

@@ -7,7 +7,6 @@ Compatible with Flipper Zero SubGhz application and Bruce ESP32 firmware.
 """
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
@@ -169,7 +168,7 @@ def from_timing(
 
 __all__ = [
     "SubGHzSignal",
-    "parse",
-    "generate",
     "from_timing",
+    "generate",
+    "parse",
 ]

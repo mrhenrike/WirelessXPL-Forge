@@ -34,8 +34,8 @@ import time
 from typing import Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +330,7 @@ class MonitorModeManager:
         iface = self._monitor_iface or self._interface
 
         try:
-            from scapy.all import Dot11, Dot11ProbeReq, Dot11Elt, RadioTap, sendp  # type: ignore[import-untyped]
+            from scapy.all import Dot11, Dot11Elt, Dot11ProbeReq, RadioTap, sendp  # type: ignore[import-untyped]
         except ImportError:
             logger.warning("Scapy not available; cannot verify injection capability")
             return False

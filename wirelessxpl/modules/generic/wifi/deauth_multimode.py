@@ -26,11 +26,9 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab, warn_pmf_ios
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
@@ -177,7 +175,6 @@ class Exploit(Exploit):
 
     def _run_targeted_deauth_with_capture(self) -> None:
         """Deauth targetado por cliente + airodump simultaneo para captura de handshake."""
-        import threading
 
         _tmp_base = Path(".tmp")
         _tmp_base.mkdir(parents=True, exist_ok=True)
@@ -262,7 +259,7 @@ class Exploit(Exploit):
     def _run_scapy_deauth(self) -> None:
         """Run deauth using Scapy directly (no external tools needed)."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp
+            from scapy.all import Dot11, Dot11Deauth, RadioTap, sendp
         except ImportError:
             print_error("Scapy not available for direct deauth.")
             return

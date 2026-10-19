@@ -16,7 +16,6 @@ Usage from WXF prompt:
 """
 from __future__ import annotations
 
-import re
 from typing import Dict, List, Optional, Tuple
 
 # ---------------------------------------------------------------------------
@@ -817,10 +816,10 @@ GLOSSARY: Dict[str, Tuple[str, str, str, str, str]] = {
         "WiGLE: base de dados pública de wardriving geolocalizado. "
         "WXF wardrive_logger.py e wardriving_deauth_loop.py.",
     ),
-    "pixie_dust": (
+    "pixie_dust_wps": (
         "Pixie Dust Attack (WPS)",
         "attack",
-        "Já descrito acima em 'wps'. Consulte também: wps.",
+        "Ja descrito acima em 'wps'. Consulte tambem: wps.",
         "",
         "",
     ),

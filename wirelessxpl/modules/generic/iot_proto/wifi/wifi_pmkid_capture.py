@@ -18,14 +18,12 @@ References:
 Version: 1.0.0
 """
 
-import struct
-import os
-import hmac
 import hashlib
-import time
+import hmac
+import os
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _DOT11_TYPE_MGMT = 0x00
 _DOT11_TYPE_DATA = 0x08

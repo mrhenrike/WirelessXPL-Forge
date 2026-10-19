@@ -1,13 +1,12 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
+import os
 import socket
 import struct
-import os
 import time
 
 from wirelessxpl.core.exploit import *
-
 
 _COAP_VER = 1
 _TYPE_NON = 1
@@ -176,7 +175,7 @@ class Exploit(Exploit):
                 print_warning("ALTO fator de amplificação (>= 10x) — risco elevado de DoS reflexivo")
             elif avg_amp >= 3:
                 print_warning("Fator de amplificação MODERADO (>= 3x)")
-        
+
         if not self.measure_only:
             print_status("Enviando {} pacotes de amplificação (delay={:.3f}s)...".format(
                 self.flood_count, float(self.flood_delay)))

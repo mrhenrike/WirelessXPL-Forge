@@ -4,8 +4,8 @@
 import socket
 import ssl
 import struct
-import time
 import threading
+import time
 from collections import defaultdict
 
 from wirelessxpl.core.exploit import *

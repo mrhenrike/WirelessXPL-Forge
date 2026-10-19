@@ -43,8 +43,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -830,7 +837,7 @@ def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
         List of dicts: {index, essid, bssid, encryption, handshakes, has_pmkid, has_hs}
     """
     try:
-        from scapy.all import rdpcap, Dot11, Dot11Beacon, Dot11Elt, EAPOL
+        from scapy.all import EAPOL, Dot11, Dot11Beacon, Dot11Elt, rdpcap
     except ImportError:
         # Fallback to aircrack-ng parsing (may fail with TUI)
         return _detect_essids_aircrack(pcap_path)

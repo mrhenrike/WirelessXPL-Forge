@@ -18,11 +18,8 @@ Version: 1.0.0
 """
 
 import struct
-import os
-import time
 
 from wirelessxpl.core.exploit import *
-
 
 _ATT_CID = 0x0004
 _ATT_OP_ERROR = 0x01

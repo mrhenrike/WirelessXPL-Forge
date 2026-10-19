@@ -13,8 +13,8 @@ import time
 from typing import Any, Optional
 
 from xpl_core.shells import (
-    SessionManager,
     ReverseListener,
+    SessionManager,
     generate_payload,
 )
 

@@ -12,11 +12,9 @@ Requer: SDR (USRP, HackRF) com antena 5.9 GHz ou adaptador 802.11p.
 from __future__ import annotations
 
 import json
-import os
 import shutil
 import struct
 import subprocess
-import time
 from pathlib import Path
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol

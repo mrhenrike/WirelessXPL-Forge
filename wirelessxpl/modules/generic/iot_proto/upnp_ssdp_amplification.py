@@ -11,7 +11,6 @@ Referências: US-CERT Alert TA14-017A.
 """
 
 import socket
-import struct
 import time
 
 from wirelessxpl.core.exploit import *
