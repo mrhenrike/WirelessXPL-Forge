@@ -19,12 +19,10 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _MHDR_UNCONFIRMED_UP = 0x40
 _MHDR_CONFIRMED_UP = 0x80
@@ -44,7 +42,8 @@ _US915_FREQS_UP = [902300000 + i * 200000 for i in range(64)]
 def _compute_mic_placeholder(key, msg):
     """Placeholder MIC computation (requires AES-CMAC in production)."""
     try:
-        import hmac, hashlib
+        import hashlib
+        import hmac
         return hmac.new(key, msg, hashlib.sha256).digest()[:4]
     except Exception:
         return b"\x00\x00\x00\x00"

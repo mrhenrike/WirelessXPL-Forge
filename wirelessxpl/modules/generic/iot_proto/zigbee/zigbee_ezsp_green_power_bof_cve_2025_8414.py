@@ -31,13 +31,21 @@ from __future__ import annotations
 
 import logging
 import socket
-import struct
 import time
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 
 logger = logging.getLogger(__name__)
@@ -275,7 +283,7 @@ class Exploit(Exploit):
                 print_info("mDNS scan: no Zigbee services discovered")
 
             # Quick port scan on common Zigbee hub addresses
-            print_info(f"Checking common Zigbee hub addresses in /24 range...")
+            print_info("Checking common Zigbee hub addresses in /24 range...")
             try:
                 import ipaddress
                 base_ip = target or "192.168.1.1"

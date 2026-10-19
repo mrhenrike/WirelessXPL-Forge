@@ -39,9 +39,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
-
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 try:
     from wirelessxpl.core.ml.handshake_scorer import HandshakeScorer
@@ -203,7 +202,7 @@ class Exploit(Exploit):
             count: Number of deauth frames to send per call.
         """
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp
+            from scapy.all import Dot11, Dot11Deauth, RadioTap, sendp
         except ImportError:
             logger.warning("Scapy unavailable for native deauth; falling back to aireplay-ng.")
             self._send_deauth_aireplay(count)
@@ -260,7 +259,7 @@ class Exploit(Exploit):
             True if a complete 4-way handshake was written.
         """
         try:
-            from scapy.all import sniff, EAPOL, Dot11, wrpcap
+            from scapy.all import EAPOL, Dot11, sniff, wrpcap
         except ImportError:
             print_error("Scapy not installed. Install with: pip install scapy")
             return False

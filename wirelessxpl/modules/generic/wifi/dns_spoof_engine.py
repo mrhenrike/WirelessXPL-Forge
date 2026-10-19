@@ -41,6 +41,8 @@ try:
         send,
         sniff,
         sr1,
+    )
+    from scapy.all import (
         conf as scapy_conf,
     )
     HAS_SCAPY = True

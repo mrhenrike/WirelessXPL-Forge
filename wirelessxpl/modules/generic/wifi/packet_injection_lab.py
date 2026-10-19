@@ -23,7 +23,7 @@ import binascii
 import logging
 import os
 import time
-from typing import Any, Optional
+from typing import Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -43,6 +43,8 @@ try:
         RadioTap,
         rdpcap,
         sendp,
+    )
+    from scapy.all import (
         conf as scapy_conf,
     )
     HAS_SCAPY = True

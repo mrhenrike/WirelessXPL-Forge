@@ -17,7 +17,6 @@ from __future__ import annotations
 import logging
 import time
 from pathlib import Path
-from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -57,7 +56,7 @@ class Exploit(Exploit):
     def _replay_from_pcap(self) -> int:
         """Replay frames from a PCAP file with optional filtering."""
         try:
-            from scapy.all import rdpcap, sendp, Dot11, Dot11Beacon, EAPOL
+            from scapy.all import EAPOL, Dot11, Dot11Beacon, rdpcap, sendp
         except ImportError:
             print_error("Scapy is required for frame replay.")
             return 0
@@ -102,7 +101,7 @@ class Exploit(Exploit):
     def _replay_eapol(self) -> int:
         """Craft and replay EAPOL frames to force re-authentication."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Auth, EAPOL, sendp
+            from scapy.all import EAPOL, Dot11, Dot11Auth, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required.")
             return 0
@@ -130,7 +129,7 @@ class Exploit(Exploit):
     def _replay_beacons(self) -> int:
         """Generate and replay beacon frames with target SSID."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Beacon, Dot11Elt, sendp
+            from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap, sendp
         except ImportError:
             print_error("Scapy is required.")
             return 0

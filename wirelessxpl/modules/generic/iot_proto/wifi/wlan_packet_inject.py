@@ -11,15 +11,14 @@ Version: 1.0.0
 """
 
 import os
-import struct
-import socket
-import time
-import subprocess
 import re
-from typing import Optional, Tuple
+import socket
+import struct
+import subprocess
+import time
+from typing import Optional
 
 from wirelessxpl.core.exploit import *
-
 
 _RADIOTAP_HEADER = bytes([
     0x00, 0x00,  # version, pad

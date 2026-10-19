@@ -17,7 +17,7 @@ import re
 import subprocess
 import sys
 import urllib.parse
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 

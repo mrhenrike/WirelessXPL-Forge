@@ -1,38 +1,37 @@
 import atexit
-import itertools
-import pkgutil
-import os
-from pathlib import Path
-import sys
 import getopt
+import itertools
+import os
+import pkgutil
 import signal
+import sys
 import traceback
 from collections import Counter
+from pathlib import Path
 
 # Adaptation credits: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-
 from wirelessxpl.core.exploit.exceptions import WirelessXPLException
+from wirelessxpl.core.exploit.exploit import GLOBAL_OPTS
+from wirelessxpl.core.exploit.printer import (
+    PrinterThread,
+    pprint_dict_in_order,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_table,
+    printer_queue,
+)
 from wirelessxpl.core.exploit.utils import (
-    index_modules,
-    pythonize_path,
-    humanize_path,
-    import_exploit,
-    stop_after,
-    module_required,
     MODULES_DIR,
     WORDLISTS_DIR,
+    humanize_path,
+    import_exploit,
+    index_modules,
+    module_required,
+    pythonize_path,
+    stop_after,
 )
-from wirelessxpl.core.exploit.printer import (
-    print_info,
-    print_success,
-    print_error,
-    print_status,
-    print_table,
-    pprint_dict_in_order,
-    PrinterThread,
-    printer_queue
-)
-from wirelessxpl.core.exploit.exploit import GLOBAL_OPTS
 
 try:
     import readline
@@ -156,11 +155,11 @@ class BaseInterpreter:
 
     def start(self):
         """ WirelessXPL main entry point. Starting interpreter loop. """
-        
+
         if not sys.stdin.isatty():
             print_info("stdin is not a TTY. Ensure `stdin_open` and `tty` are set")
             sys.exit(1)
-        
+
         try:
             from embedxpl.core.banner import show_banner
             show_banner("wirelessxpl", version="v5.0.0")
@@ -171,7 +170,7 @@ class BaseInterpreter:
         print_warning("Unauthorized use is illegal. Operator assumes full responsibility.")
         print_warning("simulate=True enforced. Use 'set simulate false' to execute for real.")
         printer_queue.join()
-        
+
         while True:
             try:
                 command, args, kwargs = self.parse_line(input(self.prompt))
@@ -269,7 +268,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
     def __init__(self):
         super(WirelessXPLInterpreter, self).__init__()
         PrinterThread().start()
-        
+
         self.current_module = None
         self.raw_prompt_template = None
         self.module_prompt_template = None
@@ -742,9 +741,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
             glossary --list              → compact table
             glossary --category wifi     → filter by category
         """
-        from wirelessxpl.core.glossary import (
-            search_term, format_entry, format_compact_list, glossary_help, GLOSSARY
-        )
+        from wirelessxpl.core.glossary import format_compact_list, format_entry, glossary_help, search_term
         args_list = list(args)
         if not args_list:
             print_info(format_compact_list())

@@ -6,7 +6,6 @@ offline key recovery using aircrack-ng (FMS/PTW/KoreK statistical attacks).
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-import os
 import shutil
 import subprocess
 

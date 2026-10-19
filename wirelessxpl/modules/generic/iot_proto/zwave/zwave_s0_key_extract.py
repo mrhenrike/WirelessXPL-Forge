@@ -20,11 +20,10 @@ References:
 Version: 1.0.0
 """
 
-import struct
 import os
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _ZWAVE_S0_TEMP_KEY = b"\x00" * 16
 

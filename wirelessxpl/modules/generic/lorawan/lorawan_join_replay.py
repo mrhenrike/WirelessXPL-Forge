@@ -1,12 +1,10 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _MHDR_JOIN_REQUEST = 0x00
 _MHDR_JOIN_ACCEPT = 0x20

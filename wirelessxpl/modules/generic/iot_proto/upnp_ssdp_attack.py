@@ -1,14 +1,12 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import socket
-import struct
 import re
+import socket
 import time
 import urllib.request
 
 from wirelessxpl.core.exploit import *
-
 
 _SSDP_MCAST_ADDR = "239.255.255.250"
 _SSDP_PORT = 1900

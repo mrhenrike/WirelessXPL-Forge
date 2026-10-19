@@ -15,14 +15,11 @@ Ataque em 4 fases:
 Requer dongle Zigbee (CC2531, nRF52840) com suporte TX/RX em modo promíscuo.
 """
 
-import struct
 import os
-import time
-from typing import Optional
+import struct
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
-
 
 _CHANNEL_MIN = 11
 _CHANNEL_MAX = 26

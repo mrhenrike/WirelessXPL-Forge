@@ -12,9 +12,7 @@ from __future__ import annotations
 
 import compileall
 import logging
-import sys
 from pathlib import Path
-
 
 LOGGER = logging.getLogger("compile_first_party")
 

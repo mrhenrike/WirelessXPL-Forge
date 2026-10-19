@@ -14,8 +14,14 @@ from __future__ import annotations
 import logging
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptString,
-    mute, multi, print_info, print_status, print_success,
+    Exploit,
+    OptBool,
+    OptString,
+    multi,
+    mute,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)

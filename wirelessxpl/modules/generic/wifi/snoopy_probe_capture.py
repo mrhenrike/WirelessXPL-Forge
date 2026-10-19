@@ -97,7 +97,9 @@ class Exploit(Exploit):
             print_status("  - Build movement history from probe request timestamps")
             return
 
-        import subprocess, json, shutil
+        import json
+        import shutil
+        import subprocess
         from datetime import datetime
 
         output = Path(self.output_dir)

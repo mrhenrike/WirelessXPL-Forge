@@ -31,11 +31,9 @@ Version: 1.2.0
 from __future__ import annotations
 
 import logging
-import os
 import random
 import struct
-import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from wirelessxpl.core.exploit import *
 
@@ -52,7 +50,7 @@ except ImportError:
         HAS_CRYPTO = False
 
 try:
-    from scapy.all import rdpcap, wrpcap, raw
+    from scapy.all import raw, rdpcap, wrpcap
     HAS_SCAPY = True
 except ImportError:
     HAS_SCAPY = False
@@ -419,7 +417,6 @@ class Exploit(Exploit):
 
     def check(self) -> str:
         """Verify basic prerequisites for this exploit module."""
-        import shutil
         target = getattr(self, "target", None)
         if not target:
             return "Set target option before running"

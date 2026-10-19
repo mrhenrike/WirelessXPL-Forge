@@ -1,12 +1,10 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import struct
 import os
-import time
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _MHDR_UNCONFIRMED_UP = 0x40
 _FCTRL_ADR_BIT = 0x80

@@ -31,8 +31,6 @@ from __future__ import annotations
 
 import logging
 import os
-import struct
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
@@ -41,7 +39,8 @@ from wirelessxpl.core.os_guard import OSRequirement, requires_os
 logger = logging.getLogger(__name__)
 
 try:
-    from scapy.all import rdpcap, raw as scapy_raw  # type: ignore[import-untyped]
+    from scapy.all import raw as scapy_raw
+    from scapy.all import rdpcap  # type: ignore[import-untyped]
     HAS_SCAPY = True
 except ImportError:
     HAS_SCAPY = False

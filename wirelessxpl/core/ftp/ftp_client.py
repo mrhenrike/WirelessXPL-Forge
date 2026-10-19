@@ -1,12 +1,9 @@
 import ftplib
 import io
 
-from wirelessxpl.core.exploit.exploit import Exploit
-from wirelessxpl.core.exploit.exploit import Protocol
+from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool
-from wirelessxpl.core.exploit.printer import print_error
-from wirelessxpl.core.exploit.printer import print_success
-
+from wirelessxpl.core.exploit.printer import print_error, print_success
 
 FTP_TIMEOUT = 8.0
 

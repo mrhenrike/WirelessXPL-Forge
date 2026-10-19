@@ -29,11 +29,9 @@ Version: 1.1.0
 
 from __future__ import annotations
 
-import itertools
 import logging
-import struct
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -42,7 +40,11 @@ logger = logging.getLogger(__name__)
 
 try:
     from wirelessxpl.core.bt_crypto import (
-        e1, e3, Kc_to_Kc_prime, kdf, AR_KEY_LEN,
+        AR_KEY_LEN,
+        Kc_to_Kc_prime,
+        e1,
+        e3,
+        kdf,
     )
     HAS_CRYPTO = True
 except ImportError:

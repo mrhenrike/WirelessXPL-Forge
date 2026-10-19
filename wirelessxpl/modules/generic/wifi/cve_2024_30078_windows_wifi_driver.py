@@ -11,8 +11,6 @@ CVSS: 8.8 (Alto) | Afeta: Windows 10/11, Windows Server 2016-2022 sem patch
 
 from __future__ import annotations
 
-import json
-import struct
 from pathlib import Path
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
@@ -174,7 +172,7 @@ class Cve202430078WindowsWifiDriver(Exploit):
         """Envia frame de probe para verificar se alvo é potencialmente vulnerável."""
         print(f"[*] Check: verificando vulnerabilidade em {target_mac} via {iface} ...")
         try:
-            from scapy.all import Dot11, Dot11Elt, RadioTap, sendp  # noqa: PLC0415
+            from scapy.all import Dot11, Dot11Elt, RadioTap, sendp
             # Frame probe request básico para verificar presença do alvo
             frame = (
                 RadioTap()

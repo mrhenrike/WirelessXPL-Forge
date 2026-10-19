@@ -17,15 +17,28 @@ import struct
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptString,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
 )
 
 logger = logging.getLogger(__name__)
 
 try:
     from scapy.all import (
-        ARP, IP, UDP, Dot11, Dot11QoS, RadioTap, Raw, sendp,
+        ARP,
+        IP,
+        UDP,
+        Dot11,
+        Dot11QoS,
+        RadioTap,
+        Raw,
+        sendp,
     )
     HAS_SCAPY = True
 except ImportError:
@@ -157,7 +170,7 @@ class Exploit(Exploit):
             print_error("Frame build failed")
             return
 
-        from scapy.all import sendp, Raw, RadioTap
+        from scapy.all import RadioTap, Raw, sendp
         try:
             sendp(RadioTap() / Raw(frame_bytes[len(bytes(RadioTap())):]),
                   iface=iface, count=5, inter=0.1, verbose=False)

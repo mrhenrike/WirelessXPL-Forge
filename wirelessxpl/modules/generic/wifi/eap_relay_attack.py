@@ -23,8 +23,8 @@ import subprocess
 from typing import List, Optional
 
 from wirelessxpl.core.exploit import *
-from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
+from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +159,7 @@ class Exploit(Exploit):
         if eaphammer and not bool(self.dry_run):
             print_info("")
             print_info("eaphammer detected - would you like to run it?")
-            print_info(f"  set mode eaphammer_harvest; run")
+            print_info("  set mode eaphammer_harvest; run")
 
     def _eaphammer_harvest(self) -> None:
         """Use eaphammer for EAP credential harvesting."""

@@ -31,8 +31,17 @@ import struct
 from typing import Optional
 
 from wirelessxpl.core.exploit import (
-    Exploit, OptBool, OptInteger, OptString,
-    mute, multi, print_error, print_info, print_status, print_success, print_warning,
+    Exploit,
+    OptBool,
+    OptInteger,
+    OptString,
+    multi,
+    mute,
+    print_error,
+    print_info,
+    print_status,
+    print_success,
+    print_warning,
 )
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
@@ -118,7 +127,7 @@ def _build_get_version() -> bytes:
 
 try:
     import bleak
-    from bleak import BleakScanner, BleakClient
+    from bleak import BleakClient, BleakScanner
     from bleak.exc import BleakError
     HAS_BLEAK = True
 except ImportError:

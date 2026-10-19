@@ -1,13 +1,11 @@
 # Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
-import struct
 import os
-import time
 import socket
+import struct
 
 from wirelessxpl.core.exploit import *
-
 
 _CAN_MTU = 16
 _ISOTP_MAX = 4095
@@ -114,7 +112,7 @@ class Exploit(Exploit):
             sock = socket.socket(AF_CAN, SOCK_RAW, CAN_RAW)
             sock.bind((str(self.interface),))
             return sock
-        except (OSError, AttributeError) as exc:
+        except (OSError, AttributeError):
             return None
 
     def _simulate_can_enum(self):

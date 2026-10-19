@@ -2,14 +2,14 @@
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from .wifi_ids import WirelessIDS, WIDSAlert, AlertType, WIDSThresholds
 from .esp8266_wids_bridge import ESP8266WIDSBridge, decode_payload
+from .wifi_ids import AlertType, WIDSAlert, WIDSThresholds, WirelessIDS
 
 __all__ = [
-    "WirelessIDS",
-    "WIDSAlert",
     "AlertType",
-    "WIDSThresholds",
     "ESP8266WIDSBridge",
+    "WIDSAlert",
+    "WIDSThresholds",
+    "WirelessIDS",
     "decode_payload",
 ]
