@@ -5,11 +5,9 @@
 from __future__ import annotations
 
 import csv
-import json
 from json import JSONDecoder
 from pathlib import Path
 from typing import Dict, Iterable, List
-
 
 KEYWORDS = (
     "snmp",

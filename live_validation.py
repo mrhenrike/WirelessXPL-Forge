@@ -12,13 +12,10 @@ from __future__ import annotations
 
 import asyncio
 import datetime
-import json
-import os
 import platform
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 REPORT_DIR = Path(__file__).parent / "docs"
@@ -218,7 +215,7 @@ def run_test(fn_name: str, description: str) -> tuple[str, str]:
 
 def _test_phase_gateway() -> str:
     sys.path.insert(0, str(Path(__file__).parent))
-    from wirelessxpl.core.phase_gateway import PhaseGateway, quick_gate  # noqa: PLC0415
+    from wirelessxpl.core.phase_gateway import PhaseGateway
     gw = PhaseGateway("Test", silent=True)
     gw.phase("Sempre passa", lambda: True)
     assert gw.run(), "gate deveria passar"
@@ -229,14 +226,14 @@ def _test_phase_gateway() -> str:
 
 
 def _test_hw_validator() -> str:
-    from wirelessxpl.core.hw_validator import HWValidator, Requirement  # noqa: PLC0415
+    from wirelessxpl.core.hw_validator import HWValidator, Requirement
     v = HWValidator()
     r = v.check(Requirement.SCAPY)
     return f"Scapy: {'OK' if r.satisfied else 'AUSENTE'}"
 
 
 def _test_polyglot() -> str:
-    from wirelessxpl.core.polyglot_orchestrator import PolyglotOrchestrator  # noqa: PLC0415
+    from wirelessxpl.core.polyglot_orchestrator import PolyglotOrchestrator
     orch = PolyglotOrchestrator()
     report = orch.runtime_report()
     available = [lang for lang, ok in report.items() if ok]
@@ -244,7 +241,7 @@ def _test_polyglot() -> str:
 
 
 def _test_scapy_probe() -> str:
-    from scapy.all import Dot11, Dot11Elt, Dot11ProbeReq, RadioTap  # noqa: PLC0415
+    from scapy.all import Dot11, Dot11Elt, Dot11ProbeReq, RadioTap
     frame = (
         RadioTap()
         / Dot11(type=0, subtype=4, addr1="ff:ff:ff:ff:ff:ff",
@@ -272,14 +269,14 @@ def _test_module_index() -> str:
 
 
 def _test_hw_wifi() -> str:
-    from wirelessxpl.core.hw_validator import HWValidator, Requirement  # noqa: PLC0415
+    from wirelessxpl.core.hw_validator import HWValidator, Requirement
     v = HWValidator()
     r = v.check(Requirement.WIFI_ADAPTER)
     return f"WiFi adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'} — {r.detail}"
 
 
 def _test_hw_bt() -> str:
-    from wirelessxpl.core.hw_validator import HWValidator, Requirement  # noqa: PLC0415
+    from wirelessxpl.core.hw_validator import HWValidator, Requirement
     v = HWValidator()
     r = v.check(Requirement.BLUETOOTH_ADAPTER)
     return f"BT adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'} — {r.detail}"
@@ -292,7 +289,7 @@ def _test_aircrack() -> str:
 
 
 def _test_beacon_build() -> str:
-    from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap  # noqa: PLC0415
+    from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap
     frame = (
         RadioTap()
         / Dot11(type=0, subtype=8,
@@ -386,7 +383,7 @@ def generate_report(hw: dict, wifi_nets: list[dict], ble_devs: list[dict], test_
     else:
         report_md += "*Nenhum dispositivo BLE detectado no período de scan.*\n"
 
-    report_md += f"""
+    report_md += """
 ---
 
 ## Resultados dos Testes

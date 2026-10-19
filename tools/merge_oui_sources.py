@@ -10,7 +10,6 @@ import urllib.request
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-
 IEEE_OUI = "https://standards-oui.ieee.org/oui/oui.txt"
 WIRESHARK_MANUF = "https://www.wireshark.org/download/automated/data/manuf"
 NMAP_MAC_PREFIXES = "https://raw.githubusercontent.com/nmap/nmap/master/nmap-mac-prefixes"

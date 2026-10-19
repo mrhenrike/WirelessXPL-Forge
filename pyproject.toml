@@ -295,6 +295,10 @@ ignore = [
 "wirelessxpl/modules/**" = ["F401", "F524", "F601", "F821", "F841", "F842", "E402", "E722", "E731", "I001"]
 "wirelessxpl/libs/**" = ["F821"]
 "wirelessxpl/interpreter.py" = ["F821"]
+"tests/**" = ["E402"]
+"tools/**" = ["E402", "E712"]
+"live_validation.py" = ["W291"]
+"wxf.py" = ["E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["wirelessxpl"]
