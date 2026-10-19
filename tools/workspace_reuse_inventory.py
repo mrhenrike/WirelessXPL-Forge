@@ -4,14 +4,12 @@
 from __future__ import annotations
 
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-
 import csv
 import json
 import logging
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
-
 
 LOGGER = logging.getLogger("workspace_reuse_inventory")
 

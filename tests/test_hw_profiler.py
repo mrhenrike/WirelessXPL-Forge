@@ -10,7 +10,6 @@ sys.path.insert(0, str(ROOT))
 
 from wirelessxpl.core.hw_profiler import GPUDevice, HWProfile, HWProfiler
 
-
 # ---------------------------------------------------------------------------
 # GPUDevice
 # ---------------------------------------------------------------------------

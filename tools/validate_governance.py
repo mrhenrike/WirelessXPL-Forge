@@ -4,11 +4,9 @@
 from __future__ import annotations
 
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-
 import logging
 from pathlib import Path
 from typing import List
-
 
 LOGGER = logging.getLogger("validate_governance")
 
