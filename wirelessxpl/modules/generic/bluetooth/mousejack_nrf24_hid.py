@@ -140,7 +140,7 @@ class Exploit(BaseExploit):
         with the nRF24LU1+ chip.
         """
         try:
-            import usb.core  # noqa: F401 - pyusb
+            import usb.core
             dev = usb.core.find(idVendor=0x1915, idProduct=0x7777)
             return dev
         except (ImportError, Exception):

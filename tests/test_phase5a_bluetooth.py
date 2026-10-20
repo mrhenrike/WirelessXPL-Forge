@@ -156,8 +156,7 @@ class TestZephyrL2capOverflow:
             assert exploit._open_hci_socket() is None
 
     def test_open_l2cap_returns_none_on_error(self, exploit) -> None:
-        with patch("socket.socket") as mock_cls:
-            mock_cls.return_value.bind.side_effect = OSError("no device")
+        with patch("socket.socket", side_effect=OSError("no device")):
             assert exploit._open_l2cap_socket() is None
 
     def test_check_returns_false_on_socket_error(self, exploit) -> None:
@@ -240,9 +239,10 @@ class TestLinuxRFCOMMMCCOOB:
         assert exploit._MCC_RPN == 0x09
 
     def test_build_rfcomm_mcc_frame(self, exploit) -> None:
-        frame = exploit._build_rfcomm_mcc_frame(exploit._MCC_TEST, b"\xFF" * 300)
+        exploit.mcc_length_inflate = 512
+        frame = exploit._build_rfcomm_mcc_frame(exploit._MCC_TEST)
         assert isinstance(frame, bytes)
-        assert len(frame) > 300
+        assert len(frame) > 16
 
     def test_compute_fcs(self, exploit) -> None:
         fcs = exploit._compute_fcs(b"\x03\xEF")
@@ -596,7 +596,7 @@ class TestMouseJackNRF24HID:
         return instance
 
     def test_nrf24_channels(self, exploit) -> None:
-        assert exploit._NRF24_CHANNELS == list(range(2, 84))
+        assert list(range(2, 84)) == exploit._NRF24_CHANNELS
 
     def test_hid_modifier_none(self, exploit) -> None:
         assert exploit._HID_MODIFIER_NONE == 0x00
