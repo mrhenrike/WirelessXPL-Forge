@@ -107,7 +107,7 @@ def _parse_imsi_captures(capture_dir: str) -> list[dict[str, str]]:
                     cursor.execute("SELECT * FROM imsi")
                     cols = [desc[0] for desc in cursor.description]
                     for row in cursor.fetchall():
-                        records.append(dict(zip(cols, [str(v) for v in row])))
+                        records.append(dict(zip(cols, [str(v) for v in row], strict=False)))
                 conn.close()
             except (sqlite3.Error, OSError) as exc:
                 logger.warning("Failed to read %s: %s", fpath, exc)

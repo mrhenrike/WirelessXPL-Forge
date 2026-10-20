@@ -94,7 +94,7 @@ class ChannelOptimizer:
             try:
                 X = np.asarray([r[1] for r in rows], dtype=np.float64)
                 raw = self._model.predict(X)
-                for (cid, _), p in zip(rows, raw):
+                for (cid, _), p in zip(rows, raw, strict=False):
                     preds[cid] = float(max(0.0, min(1.0, p)))
                 return preds
             except Exception as exc:  # pylint: disable=broad-except
