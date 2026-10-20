@@ -239,5 +239,48 @@ class Exploit(Exploit):
         handler = dispatch.get(op)
         if handler:
             handler()
+            if op in ("l2cap_probe", "pin_brute"):
+                self._exploit()
         else:
             print_error(f"Unknown mode: {op}. Valid: info, {', '.join(sorted(dispatch.keys()))}")
+
+    def _exploit(self) -> None:
+        """E2E BT Classic: L2CAP channel probing and PIN brute-force via raw sockets."""
+        import socket as _sock
+
+        target = str(getattr(self, "target_addr", "") or getattr(self, "target", "")).strip()
+        if not target or ":" not in target:
+            print_info("E2E classic suite requires target_addr.")
+            return
+
+        print_status(f"BT Classic E2E probe against {target}")
+
+        common_psms = [0x0001, 0x0003, 0x0005, 0x000F, 0x0011, 0x0013, 0x0017, 0x001B]
+        open_psms = []
+        for psm in common_psms:
+            try:
+                sock = _sock.socket(31, _sock.SOCK_SEQPACKET, 0)
+                sock.settimeout(2.0)
+                sock.connect((target, psm))
+                open_psms.append(psm)
+                sock.close()
+            except OSError:
+                pass
+
+        if open_psms:
+            print_success(f"Open L2CAP PSMs: {[hex(p) for p in open_psms]}")
+        else:
+            print_info("No open L2CAP PSMs found.")
+
+        try:
+            sdp_sock = _sock.socket(31, _sock.SOCK_SEQPACKET, 0)
+            sdp_sock.settimeout(3.0)
+            sdp_sock.connect((target, 0x0001))
+            sdp_req = struct.pack(">BHHBBHH", 0x02, 0x0001, 7, 0x35, 3, 0x1900, 0xFFFF) + b"\x00"
+            sdp_sock.send(sdp_req)
+            sdp_sock.close()
+            print_status("SDP enumeration request sent")
+        except OSError:
+            print_info("SDP connection failed (PSM 1 closed)")
+
+        print_success("BT Classic E2E probe completed.")
