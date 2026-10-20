@@ -212,11 +212,12 @@ wirelessxpl = [
 ]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
 check_untyped_defs = true
+warn_unreachable = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 no_implicit_reexport = true
