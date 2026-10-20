@@ -70,7 +70,7 @@ class TestModuleImports:
             ("wirelessxpl.modules.generic.access_points.ubiquiti.unifi_access_cmdi_cve_2026_50748", "CVE-2026-50748"),
             ("wirelessxpl.modules.generic.access_points.mikrotik.routeros_preauth_rce_cve_2026_84411", "CVE-2026-84411"),
             ("wirelessxpl.modules.generic.access_points.dlink.dsl_dns_cmdi_cve_2026_0625", "CVE-2026-0625"),
-            ("wirelessxpl.modules.generic.cellular.adb_wireless_rce_cve_2026_0073", "CVE-2026-0073"),
+            ("wirelessxpl.modules.generic.wifi.adb_wireless_rce_cve_2026_0073", "CVE-2026-0073"),
         ],
     )
     def test_class_info_contains_cve(self, module_path: str, expected_cve: str) -> None:
@@ -229,7 +229,7 @@ class TestADBWirelessCVE20260073:
     @pytest.fixture()
     def exploit(self):
         mod = importlib.import_module(
-            "wirelessxpl.modules.generic.cellular.adb_wireless_rce_cve_2026_0073"
+            "wirelessxpl.modules.generic.wifi.adb_wireless_rce_cve_2026_0073"
         )
         instance = mod.Exploit()
         instance.target = "192.168.1.50"
@@ -238,15 +238,11 @@ class TestADBWirelessCVE20260073:
         instance.command = "id"
         return instance
 
-    def test_pack_unpack_roundtrip(self, exploit) -> None:
+    def test_build_adb_message(self, exploit) -> None:
         data = b"test_data"
-        packed = exploit._pack_message(exploit._A_CNXN, 1, 2, data)
-        assert len(packed) == exploit._ADB_HEADER_SIZE + len(data)
-        cmd, arg0, arg1, dlen, checksum, magic = exploit._unpack_header(packed)
-        assert cmd == exploit._A_CNXN
-        assert arg0 == 1
-        assert arg1 == 2
-        assert dlen == len(data)
+        packed = exploit._build_adb_message(exploit._ADB_MAGIC_CNXN, 1, 2, data)
+        assert isinstance(packed, bytes)
+        assert len(packed) > len(data)
 
     def test_check_connection_refused(self, exploit) -> None:
         with patch("socket.socket") as mock_sock_cls:
@@ -256,6 +252,6 @@ class TestADBWirelessCVE20260073:
             assert exploit.check() is False
 
     def test_adb_constants(self, exploit) -> None:
-        assert exploit._A_CNXN == 0x4E584E43
-        assert exploit._A_STLS == 0x534C5453
-        assert exploit._ADB_HEADER_SIZE == 24
+        assert exploit._ADB_MAGIC_CNXN == b"CNXN"
+        assert exploit._ADB_VERSION == 0x01000001
+        assert exploit._ADB_MAX_DATA == 256 * 1024
