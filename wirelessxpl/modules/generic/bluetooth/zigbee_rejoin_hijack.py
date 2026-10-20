@@ -17,6 +17,7 @@ Requer dongle Zigbee (CC2531, nRF52840) com suporte TX/RX em modo promíscuo.
 
 import os
 import struct
+import time
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
