@@ -1,4 +1,4 @@
-"""Tests for wirelessxpl.core.bt_crypto — SAFER+ Bluetooth crypto primitives."""
+"""Tests for wirelessxpl.core.bt_crypto - SAFER+ Bluetooth crypto primitives."""
 
 import sys
 from pathlib import Path

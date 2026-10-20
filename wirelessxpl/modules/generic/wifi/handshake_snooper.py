@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Automated handshake snooper — capture + verify WPA handshakes.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Automated handshake snooper - capture + verify WPA handshakes.
 
 Orchestrates the full handshake capture workflow:
   1. Put interface in monitor mode
@@ -11,14 +11,14 @@ Orchestrates the full handshake capture workflow:
   6. Save for offline cracking
 
 Capture methods:
-  - Native (default): Scapy sniff() filtering EAPOL (ether_type=0x888e), detects
+ - Native (default): Scapy sniff() filtering EAPOL (ether_type=0x888e), detects
     M1/M2/M3/M4 frames per (bssid, client) pair, writes .pcapng via wrpcap()
     compatible with aircrack-ng and hashcat.
-  - Airodump (optional): airodump-ng subprocess (use_airodump=True).
+ - Airodump (optional): airodump-ng subprocess (use_airodump=True).
 
 Deauth methods:
-  - Native (default): Scapy Dot11Deauth frames (native_deauth=True).
-  - aireplay: aireplay-ng --deauth (native_deauth=False, aircrack-ng suite).
+ - Native (default): Scapy Dot11Deauth frames (native_deauth=True).
+ - aireplay: aireplay-ng --deauth (native_deauth=False, aircrack-ng suite).
 
 Verification: aircrack-ng only. Cowpatty and pyrit dependencies removed.
 

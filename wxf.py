@@ -20,7 +20,7 @@ if sys.version_info < (3, 8):
 import os
 
 if os.name == "posix" and os.geteuid() != 0:
-    print("\033[93m[!] Not running as root — RF/monitor/BLE modules may be unavailable.\033[0m")
+    print("\033[93m[!] Not running as root  - RF/monitor/BLE modules may be unavailable.\033[0m")
     print("\033[93m    Recommended: sudo python3 wxf.py\033[0m\n")
 
 log_handler = logging.handlers.RotatingFileHandler(filename="wirelessxpl.log", maxBytes=500000)

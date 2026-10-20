@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Dual-band evil twin — simultaneous 2.4 GHz + 5 GHz rogue AP.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Dual-band evil twin - simultaneous 2.4 GHz + 5 GHz rogue AP.
 
 Addresses Fluxion issue #1004: ability to deauth on 5 GHz while running
 evil twin on 2.4 GHz (or vice versa). Requires two Wi-Fi interfaces.
@@ -193,7 +193,7 @@ class Exploit(Exploit):
                 logger.debug("ML channel optimization failed: %s", exc)
 
         if self.dry_run:
-            print_info("DRY RUN — Dual-Band Evil Twin")
+            print_info("DRY RUN - Dual-Band Evil Twin")
             print_info(f"Rogue AP: {self.target_ssid} on {self.rogue_interface} (band {self.rogue_band})")
             print_info("Deauth: {} on {} (band {})".format(
                 self.target_bssid, self.deauth_interface,

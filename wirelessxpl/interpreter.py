@@ -9,7 +9,7 @@ import traceback
 from collections import Counter
 from pathlib import Path
 
-# Adaptation credits: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Adaptation credits: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 from wirelessxpl.core.exploit.exceptions import WirelessXPLException
 from wirelessxpl.core.exploit.exploit import GLOBAL_OPTS
 from wirelessxpl.core.exploit.printer import (
@@ -302,7 +302,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
  Codename   : I Knew You Were Trouble
  Version    : 3.5.2
- Maintained : André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+ Maintained : André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
  Lineage    : RouterXPL-Forge → wireless split; upstream threat9/routersploit
 
  Modules: {generic_count}  (wireless-only scope)
@@ -732,7 +732,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_info("\n", self.module_help)
 
     def command_glossary(self, *args, **kwargs):
-        """WXF Glossary — wireless security terms, acronyms and attack techniques.
+        """WXF Glossary - wireless security terms, acronyms and attack techniques.
 
         Usage:
             glossary                     → list all terms

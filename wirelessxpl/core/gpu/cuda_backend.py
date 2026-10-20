@@ -1,8 +1,8 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Backend NVIDIA CUDA via PyTorch para WirelessXPL-Forge.
 
 Usa apenas ``torch.Tensor`` no dispositivo CUDA. Builds PyTorch ROCm (HIP)
-não são tratados aqui — use ``ROCmBackend`` em ``backend.py``.
+não são tratados aqui - use ``ROCmBackend`` em ``backend.py``.
 
 Version: 1.0.0
 """

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Byte-compile first-party WirelessXPL Python only.
 
 Vendored trees under ``wirelessxpl/resources/`` (PoC mirrors, MIBs, etc.) are **not**

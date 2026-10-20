@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 """mDNS Amplification via ANY Queries.
 
@@ -230,6 +230,6 @@ class Exploit(Exploit):
             est = total * avg
             print_info(f"Flood: {sent} pacotes, {total} bytes, ~{est:.0f} bytes refletidos estimados")
         else:
-            print_info("Modo measure-only — defina measure_only=false para flood test")
+            print_info("Modo measure-only - defina measure_only=false para flood test")
 
         print_info("Mitigação: bloquear UDP 5353 externo, rate-limit mDNS responses")

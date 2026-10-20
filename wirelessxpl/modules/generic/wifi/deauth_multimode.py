@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Multi-mode deauthentication attack module.
 
 Supports multiple deauth strategies in a single module:
-  - targeted     Single client from specific AP
-  - broadcast    All clients of a specific AP
-  - multi_ap     Multiple APs simultaneously
-  - channel_hop  Deauth across channels (mdk4 style)
-  - pmf_aware    PMF/802.11w detection + SAE downgrade hint
+ - targeted     Single client from specific AP
+ - broadcast    All clients of a specific AP
+ - multi_ap     Multiple APs simultaneously
+ - channel_hop  Deauth across channels (mdk4 style)
+ - pmf_aware    PMF/802.11w detection + SAE downgrade hint
 
 Backends (controlled via ``backend`` option):
-  - native (default)  Scapy Dot11Deauth frames - no external tools required
-  - aireplay          aireplay-ng (aircrack-ng suite)
-  - mdk4              mdk4 deauth mode
+ - native (default)  Scapy Dot11Deauth frames - no external tools required
+ - aireplay          aireplay-ng (aircrack-ng suite)
+ - mdk4              mdk4 deauth mode
 
 All operations require an authorized lab environment with monitor-mode interface.
 
@@ -63,7 +63,7 @@ class Exploit(Exploit):
     backend = OptString("native", "Backend tool: native (Scapy) | aireplay | mdk4")
     count = OptInteger(0, "Number of deauth frames (0 = continuous)")
     delay = OptInteger(0, "Delay between bursts in ms")
-    channel = OptString("", "Channel(s) — comma-separated for multi/hop modes")
+    channel = OptString("", "Channel(s) - comma-separated for multi/hop modes")
     duration = OptInteger(30, "Duration in seconds (0 = until Ctrl+C)")
     capture_handshake = OptBool(True, "Attempt handshake capture during deauth")
     dry_run = OptBool(False, "Print command without executing")

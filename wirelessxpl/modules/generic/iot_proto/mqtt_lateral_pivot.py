@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import re
@@ -10,7 +10,7 @@ from wirelessxpl.core.exploit import *
 
 
 class Exploit(Exploit):
-    """MQTT Broker Pivot — Relay para dispositivos IoT internos.
+    """MQTT Broker Pivot - Relay para dispositivos IoT internos.
 
     Usa um broker MQTT comprometido ou mal configurado para alcançar
     dispositivos IoT internos inacessíveis diretamente. Subscreve '#',
@@ -19,7 +19,7 @@ class Exploit(Exploit):
     """
 
     __info__ = {
-        "name": "MQTT Broker Pivot — Internal IoT Device Relay",
+        "name": "MQTT Broker Pivot - Internal IoT Device Relay",
         "description": (
             "Usa broker MQTT aberto ou comprometido para enumerar dispositivos IoT "
             "internos via subscrição wildcard, identificar IPs RFC-1918 em tópicos "

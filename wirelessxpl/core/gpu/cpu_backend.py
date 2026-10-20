@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Backend de computação somente CPU (NumPy) para WirelessXPL-Forge.
 
 Sempre disponível; adequado a análise offline de PCAP, wordlists e

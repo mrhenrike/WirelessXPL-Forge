@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """BLE phishing and spoofing attack module.
 
 Implements BLE-based social engineering and attack techniques:
-  - ble_spam          Flood BLE advertisements (Apple AirDrop/AirTag spoof, Samsung, etc.)
-  - name_spoof        Advertise with crafted device names to lure pairing
-  - pair_mitm         BLE MITM during pairing (requires btlejuice/gattacker)
-  - beacon_hijack     Clone existing BLE beacon UUIDs (iBeacon/Eddystone)
-  - notification_spam Send crafted BLE notification payloads
+ - ble_spam          Flood BLE advertisements (Apple AirDrop/AirTag spoof, Samsung, etc.)
+ - name_spoof        Advertise with crafted device names to lure pairing
+ - pair_mitm         BLE MITM during pairing (requires btlejuice/gattacker)
+ - beacon_hijack     Clone existing BLE beacon UUIDs (iBeacon/Eddystone)
+ - notification_spam Send crafted BLE notification payloads
 
 Version: 1.0.0
 """
@@ -247,7 +247,7 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info(f"DRY RUN — {self.mode} on {self.interface} ({self.spoof_type})")
+            print_info(f"DRY RUN - {self.mode} on {self.interface} ({self.spoof_type})")
             return
 
         for tool in ("hcitool", "hciconfig"):

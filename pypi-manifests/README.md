@@ -1,10 +1,10 @@
 # WirelessXPL-Forge
 
-> **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows — designed for authorised penetration testing, research, and education.
+> **Modular wireless security research framework** for 802.11 (WPA2/WPA3/WPE/EAPOL), Bluetooth Classic, BLE, Zigbee, RFID and ESP32 lab workflows  - designed for authorised penetration testing, research, and education.
 
 **Version:** 2.0.3 | **License:** BSD-3-Clause | **Python:** 3.8 - 3.13
 
-**Language:** **English (en-US)** — default · **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md)
+**Language:** **English (en-US)**
 
 <p align="center">
   <a href="https://github.com/mrhenrike/WirelessXPL-Forge/actions"><img src="https://img.shields.io/github/actions/workflow/status/mrhenrike/WirelessXPL-Forge/compat-matrix.yml?branch=master&label=CI&logo=github" alt="CI"></a>
@@ -25,7 +25,7 @@
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
 cd WirelessXPL-Forge
 python3 -m pip install -r requirements.txt
-cp pyproject.toml.example pyproject.toml   # opcional — editable install
+cp pyproject.toml.example pyproject.toml   # opcional  - editable install
 pip install -e ".[wifi]"
 python wxf.py
 ```
@@ -102,7 +102,7 @@ The Python package and its declared dependencies install from the repo clone. Th
 
 | Tool | Role |
 |------|------|
-| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng` — PCAP / wifi_lab workflows |
+| **aircrack-ng suite** | `aircrack-ng`, `airodump-ng`, `aireplay-ng`  - PCAP / wifi_lab workflows |
 | **hcxtools / hcxdumptool** | PMKID capture and hash conversion for hashcat |
 | **hashcat** | WPA2/WPA3 offline cracking (modes 22000/22001) |
 | **tshark** *(optional)* | BLE / 802.11 dissection when Scapy layers are thin |
@@ -113,7 +113,7 @@ The Python package and its declared dependencies install from the repo clone. Th
 | **airgeddon** *(optional)* | Menu-driven attacks via **bridge** |
 | **btlejack** *(optional)* | BLE sniff/jam/hijack via **bridge** |
 | **opendrop / owl** *(optional)* | AWDL/AirDrop lab via **bridge** |
-| **Bruce ESP32 firmware** *(optional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware) — device image; export PCAP to `generic/pcap/*` |
+| **Bruce ESP32 firmware** *(optional)* | [BruceDevices/firmware](https://github.com/BruceDevices/firmware)  - device image; export PCAP to `generic/pcap/*` |
 | **pyserial** *(optional)* | Serial to Bruce (`pip install -e ".[serial]"` with local `pyproject.toml`) |
 
 Run `use generic/external/wireless_tool_prereq_audit` after install to verify your PATH.
@@ -126,7 +126,7 @@ Run `use generic/external/wireless_tool_prereq_audit` after install to verify yo
 git clone https://github.com/mrhenrike/WirelessXPL-Forge.git
 cd WirelessXPL-Forge
 pip install -r requirements.txt
-cp pyproject.toml.example pyproject.toml   # local only — not on GitHub
+cp pyproject.toml.example pyproject.toml   # local only  - not on GitHub
 pip install -e ".[wifi]"
 python wxf.py
 ```
@@ -171,7 +171,7 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 
 | Module | Description |
 |--------|-------------|
-| `fragattacks` | FragAttacks (CVE-2020-26140+) — frame injection + 802.11ax detection |
+| `fragattacks` | FragAttacks (CVE-2020-26140+)  - frame injection + 802.11ax detection |
 | `handshake_snooper` | PMKID-first + deauth handshake capture pipeline |
 | `wpa3_attack_suite` | Dragonblood SAE flood, CSA+harvest, Double SSID, downgrade |
 | `auth_flood` | Auth/EAPOL flood, amok mode, mesh flood (mdk4 backend) |
@@ -182,7 +182,7 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `adaptive_harvest` | Score-driven channel/PMKID adaptive harvesting |
 | `wardriving_deauth_loop` | Automated wardriving scan/deauth/capture cycles |
 | `wireless_ids` | Lightweight IDS: BSSID baseline + rogue AP detection |
-| `awdl_attack` | AWDL/AirDrop (opendrop + owl) — discover, send, DoS |
+| `awdl_attack` | AWDL/AirDrop (opendrop + owl)  - discover, send, DoS |
 | `momo_integrated_attack` | KARMA + PMKID-first + downgrade orchestration |
 | `research_ecosystem_status` | Status of all research submodule integrations |
 | `gps_wardriving_ndjson` | GPS NMEA → NDJSON wardriving log |
@@ -208,65 +208,65 @@ python wxf.py -m generic/wifi_lab/handshake_snooper \
 | `blueborne_attack` | BlueBorne L2CAP overflow (kernel offset profiles) |
 | `ble_btlejack` | BTLEJack BLE sniff/jam/hijack |
 | `ble_crackle` | BLE Legacy Pairing key recovery |
-| `knob_native_cve_2019_9506` | **CVE-2019-9506** — BT BR/EDR key entropy downgrade para 1 byte |
+| `knob_native_cve_2019_9506` | **CVE-2019-9506**  - BT BR/EDR key entropy downgrade para 1 byte |
 | `zigbee_touchlink_factory_reset` | Zigbee ZLL Touchlink Factory Reset sem autenticação (Hue, TRADFRI) |
-| `zigbee_network_key_extract` | **novo v1.7.0** — Extração de Network Key Zigbee via decrypt de Transport Key com TC Link Key pública |
-| `zigbee_rejoin_hijack` | **novo v1.7.0** — Zigbee Rejoin Hijack: beacon spoof → desassociação → captura Transport Key |
-| `ble_gatt_enum_unauth` | **novo v1.7.0** — BLE GATT enumeration sem autenticação (serviços, características, writable handles) |
-| `ble_spoofing_impersonation` | **novo v1.7.0** — BLE device cloning via advertising data replay (nome, UUIDs, manufacturer data) |
+| `zigbee_network_key_extract` | **novo v1.7.0**  - Extração de Network Key Zigbee via decrypt de Transport Key com TC Link Key pública |
+| `zigbee_rejoin_hijack` | **novo v1.7.0**  - Zigbee Rejoin Hijack: beacon spoof → desassociação → captura Transport Key |
+| `ble_gatt_enum_unauth` | **novo v1.7.0**  - BLE GATT enumeration sem autenticação (serviços, características, writable handles) |
+| `ble_spoofing_impersonation` | **novo v1.7.0**  - BLE device cloning via advertising data replay (nome, UUIDs, manufacturer data) |
 
-### IoT Protocols (generic/iot_proto) — *novo v1.3.0+*
-
-| Module | Description |
-|--------|-------------|
-| `mqtt_broker_enum_inject` | MQTT — acesso anônimo, enumeração de tópicos e injeção de payload |
-| `mqtt_lateral_pivot` | MQTT — pivot via broker para alcançar dispositivos IoT internos |
-| `mqtt_broker_dos` | **novo v1.7.0** — **CVE-2017-7651** DoS por CONNECT/DISCONNECT cycling com LWT oversized |
-| `mqtt_sys_acl_bypass_cve_2020_13849` | **novo v1.7.0** — **CVE-2020-13849** Mosquitto ACL bypass via $SYS/# subscription |
-| `coap_resource_enum` | CoAP — discovery `.well-known/core` + fator de amplificação UDP |
-| `coap_block_overflow` | **novo v1.7.0** — **CVE-2019-9750** CoAP Block2 option heap overflow em stacks embarcados |
-| `upnp_ssdp_attack` | UPnP/SSDP — descoberta de dispositivos + **CVE-2020-12695** CallStranger SSRF |
-| `upnp_ssdp_rce_inject` | **novo v1.7.0** — **CVE-2013-0229** SOAP action injection + AddPortMapping sem auth |
-| `upnp_ssdp_amplification` | **novo v1.7.0** — SSDP amplification/reflection 20-50x via spoofed M-SEARCH |
-| `mdns_poisoning` | mDNS — enumeração passiva de serviços + envenenamento de respostas |
-| `mdns_amplification` | **novo v1.7.0** — mDNS amplification 5-30x via QTYPE=ANY queries (Bonjour/Avahi) |
-| `dds_rtps_attack` | DDS/RTPS — enumeração de participantes ROS2/automotivo (unauthenticated R/W) |
-| `tftp_firmware_attack` | TFTP — download/upload de firmware sem autenticação em dispositivos embarcados |
-
-### LoRaWAN (generic/lorawan) — *novo v1.3.0*
+### IoT Protocols (generic/iot_proto)  - *novo v1.3.0+*
 
 | Module | Description |
 |--------|-------------|
-| `lorawan_adr_bitflip_cve_2022_39274` | **CVE-2022-39274** — ADR bit-flip para degradação de sinal/DoS em end-devices |
-| `lorawan_join_replay` | Join Accept Replay — session hijack por falta de replay protection (LoRaWAN 1.0.x) |
+| `mqtt_broker_enum_inject` | MQTT  - acesso anônimo, enumeração de tópicos e injeção de payload |
+| `mqtt_lateral_pivot` | MQTT  - pivot via broker para alcançar dispositivos IoT internos |
+| `mqtt_broker_dos` | **novo v1.7.0**  - **CVE-2017-7651** DoS por CONNECT/DISCONNECT cycling com LWT oversized |
+| `mqtt_sys_acl_bypass_cve_2020_13849` | **novo v1.7.0**  - **CVE-2020-13849** Mosquitto ACL bypass via $SYS/# subscription |
+| `coap_resource_enum` | CoAP  - discovery `.well-known/core` + fator de amplificação UDP |
+| `coap_block_overflow` | **novo v1.7.0**  - **CVE-2019-9750** CoAP Block2 option heap overflow em stacks embarcados |
+| `upnp_ssdp_attack` | UPnP/SSDP  - descoberta de dispositivos + **CVE-2020-12695** CallStranger SSRF |
+| `upnp_ssdp_rce_inject` | **novo v1.7.0**  - **CVE-2013-0229** SOAP action injection + AddPortMapping sem auth |
+| `upnp_ssdp_amplification` | **novo v1.7.0**  - SSDP amplification/reflection 20-50x via spoofed M-SEARCH |
+| `mdns_poisoning` | mDNS  - enumeração passiva de serviços + envenenamento de respostas |
+| `mdns_amplification` | **novo v1.7.0**  - mDNS amplification 5-30x via QTYPE=ANY queries (Bonjour/Avahi) |
+| `dds_rtps_attack` | DDS/RTPS  - enumeração de participantes ROS2/automotivo (unauthenticated R/W) |
+| `tftp_firmware_attack` | TFTP  - download/upload de firmware sem autenticação em dispositivos embarcados |
 
-### Automotive / CAN bus (generic/automotive) — *novo v1.3.0+*
+### LoRaWAN (generic/lorawan)  - *novo v1.3.0*
 
 | Module | Description |
 |--------|-------------|
-| `can_bus_attack` | CAN bus — enumeração ECU via OBD-II, fuzzing de IDs, UDS ECU reset, frame replay |
-| `mercedes_mbux_bt_rce_cve_2023_37462` | **novo v1.7.0** — **CVE-2023-37462** Mercedes MBUX NTG6 Bluetooth RCE (scan, info, probe) |
+| `lorawan_adr_bitflip_cve_2022_39274` | **CVE-2022-39274**  - ADR bit-flip para degradação de sinal/DoS em end-devices |
+| `lorawan_join_replay` | Join Accept Replay  - session hijack por falta de replay protection (LoRaWAN 1.0.x) |
 
-### Z-Wave (generic/zwave) — *novo v1.7.0*
+### Automotive / CAN bus (generic/automotive)  - *novo v1.3.0+*
 
 | Module | Description |
 |--------|-------------|
-| `zwave_s0_key_extract` | **CVE-2019** — Z-Wave S0 pairing sniff: temp key all-zeros → network key extraction |
+| `can_bus_attack` | CAN bus  - enumeração ECU via OBD-II, fuzzing de IDs, UDS ECU reset, frame replay |
+| `mercedes_mbux_bt_rce_cve_2023_37462` | **novo v1.7.0**  - **CVE-2023-37462** Mercedes MBUX NTG6 Bluetooth RCE (scan, info, probe) |
+
+### Z-Wave (generic/zwave)  - *novo v1.7.0*
+
+| Module | Description |
+|--------|-------------|
+| `zwave_s0_key_extract` | **CVE-2019**  - Z-Wave S0 pairing sniff: temp key all-zeros → network key extraction |
 | `zwave_replay_attack` | Z-Wave command replay sem S2 (door_unlock, switch, thermostat) via SDR |
 
-### Wearables BLE (generic/wearables) — *novo v1.7.0*
+### Wearables BLE (generic/wearables)  - *novo v1.7.0*
 
 | Module | Description |
 |--------|-------------|
 | `xiaomi_miband_ble_breakmi` | Xiaomi Mi Band 3-7: advertising clone, auth key replay, biometric exfil (passos, HR, bateria) |
 
-### IoT Lateral Movement (generic/lateral_iot) — *novo v1.3.0*
+### IoT Lateral Movement (generic/lateral_iot)  - *novo v1.3.0*
 
 | Module | Description |
 |--------|-------------|
-| `arp_spoof_iot_pivot` | ARP Spoofing — MitM entre dispositivos IoT e gateway para interceptação |
-| `uart_shell_detect` | UART — detecção de console serial embarcado (multi-baud: 9600→921600) |
-| `fake_dhcp_server` | Rogue DHCP — servidor desonesto para redirecionar tráfego IoT (gateway/DNS control) |
+| `arp_spoof_iot_pivot` | ARP Spoofing  - MitM entre dispositivos IoT e gateway para interceptação |
+| `uart_shell_detect` | UART  - detecção de console serial embarcado (multi-baud: 9600→921600) |
+| `fake_dhcp_server` | Rogue DHCP  - servidor desonesto para redirecionar tráfego IoT (gateway/DNS control) |
 
 ### Wi-Fi Lab - SweynTooth BLE (generic/bluetooth/sweyntooth) - NEW v1.8.0
 
@@ -588,7 +588,7 @@ wxf (BruceSerialBridge) > run
 
 Full syntax reference, module usage samples, and configuration guides:
 
-- **[GitHub Wiki](https://github.com/mrhenrike/WirelessXPL-Forge/wiki)** — complete documentation
+- **[GitHub Wiki](https://github.com/mrhenrike/WirelessXPL-Forge/wiki)**  - complete documentation
   - [Quick Start](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/Quick-Start)
   - [CLI Reference](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/CLI-Reference)
   - [Sub-GHz Attacks](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/SubGHz-Attacks)
@@ -596,8 +596,8 @@ Full syntax reference, module usage samples, and configuration guides:
   - [FragAttacks](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/FragAttacks)
   - [KRACK](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/KRACK)
   - [Evidence & Forensics](https://github.com/mrhenrike/WirelessXPL-Forge/wiki/Evidence-Forensics)
-- **[docs/FULL_CATALOG.md](docs/FULL_CATALOG.md)** — complete module catalog
-- **[docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md)** — device coverage matrix
+- **[docs/FULL_CATALOG.md](docs/FULL_CATALOG.md)**  - complete module catalog
+- **[docs/COVERAGE_MATRIX.md](docs/COVERAGE_MATRIX.md)**  - device coverage matrix
 
 ---
 
@@ -610,7 +610,7 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) and [Security Policy](SECU
 
 ## License
 
-BSD 3-Clause License — see [LICENSE](LICENSE) for details.
+BSD 3-Clause License  - see [LICENSE](LICENSE) for details.
 
 **WirelessXPL-Forge is intended for authorised security research and education only.**  
 Use against systems you do not own or have explicit written permission to test is illegal.

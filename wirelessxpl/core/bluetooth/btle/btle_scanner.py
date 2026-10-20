@@ -44,7 +44,7 @@ class BTLEScanner:
 
 
 class ScanDelegate:
-    """Compatibility shim — no-op in the bleak-based implementation."""
+    """Compatibility shim - no-op in the bleak-based implementation."""
 
     def __init__(self, options=None) -> None:
         self.options = options

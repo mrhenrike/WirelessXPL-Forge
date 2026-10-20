@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """Fingerprinting de APs 802.11 com TF-IDF e similaridade de cosseno acelerada."""
 
 
@@ -122,7 +122,7 @@ def _token_similarity_fallback(query: str, corpus: Sequence[str]) -> np.ndarray:
     rows = []
     for c in corpus:
         cv = vec(c)
-        # alinha por união simples — fallback grosseiro
+        # alinha por união simples - fallback grosseiro
         m = max(len(qv), len(cv), 1)
         qv2 = np.pad(qv, (0, m - len(qv)))
         cv2 = np.pad(cv, (0, m - len(cv)))

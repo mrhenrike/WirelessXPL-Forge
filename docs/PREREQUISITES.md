@@ -2,7 +2,7 @@
 
 **Author:** Andre Henrique ([@mrhenrike](https://github.com/mrhenrike)) | **Uniao Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
 
-**Languages:** English (en-US) / Portugues (pt-BR)
+**Language:** English (en-US)
 
 This document lists all hardware and software prerequisites for WirelessXPL-Forge modules. Most modules provide an `info` mode that works without any extra dependencies, allowing you to explore capabilities before investing in hardware.
 
@@ -47,16 +47,16 @@ Esta secao define quais dependencias externas sao aceitas e quais foram internal
 
 **Cracking**:
 - hashcat: GPU cracking WPA/WPA2/WPA3 (modo -m 22000)
-  - NOTA: hashcat em GPU moderno (RTX 3090) atinge 500k-1M PMKs/s
-  - Substitui pyrit (Python 2, abandonado) e cowpatty (abandonado)
-  - Use: hashcat --session wxf-session --restore para auditorias repetidas
+ - NOTA: hashcat em GPU moderno (RTX 3090) atinge 500k-1M PMKs/s
+ - Substitui pyrit (Python 2, abandonado) e cowpatty (abandonado)
+ - Use: hashcat --session wxf-session --restore para auditorias repetidas
 
 **AP/Network daemon**:
 - hostapd: daemon de ponto de acesso (sem equivalente Python para kernel WiFi driver)
 
 **WPS scanner**:
 - wash: scanner WPS (parte do reaver-suite, aceito como excecao)
-  - Nao tem equivalente Python com mesma eficiencia de scan passivo
+ - Nao tem equivalente Python com mesma eficiencia de scan passivo
 
 ### Dependencias REMOVIDAS (substituidas por codigo nativo)
 
@@ -72,7 +72,7 @@ As seguintes ferramentas foram internalizadas como codigo Python/Scapy nativo no
 - hostapd-mana/hostapd-wpe: substituido por hostapd padrao + config dinamica Python
 - cowpatty: substituido por aircrack-ng (aceito) + hashcat (aceito)
 - pyrit: substituido por hashcat (melhor performance, ativo, Python 3 compativel)
-  - NOTA TECNICA: pyrit tem vantagem apenas em auditorias repetidas do mesmo ESSID
+ - NOTA TECNICA: pyrit tem vantagem apenas em auditorias repetidas do mesmo ESSID
     com wordlist >10GB. Para esse caso especifico, use pyrit manualmente fora do WXF.
 
 ### Instalacao rapida (Kali Linux / Debian)
@@ -268,14 +268,14 @@ Passive reception (RTL-SDR receive-only) may be legal in some jurisdictions for 
 
 ---
 
-## Novos Módulos — Requisitos de Hardware e Software (mai/2026)
+## Novos Módulos - Requisitos de Hardware e Software (mai/2026)
 
 ### Core (todos os novos módulos)
 
 | Componente | Instalação |
 |---|---|
-| `wirelessxpl/core/phase_gateway.py` | nativo — sem dependências externas |
-| `wirelessxpl/core/hw_validator.py` | nativo — sem dependências externas |
+| `wirelessxpl/core/phase_gateway.py` | nativo - sem dependências externas |
+| `wirelessxpl/core/hw_validator.py` | nativo - sem dependências externas |
 | `wirelessxpl/core/polyglot_orchestrator.py` | gcc, rustc, go, ruby, node no PATH |
 
 ### Z-Wave (`zwave/zwave_attack_suite.py`)
@@ -375,7 +375,7 @@ Passive reception (RTL-SDR receive-only) may be legal in some jurisdictions for 
 
 | Requisito | Tipo | Instalação |
 |---|---|---|
-| 2x adaptadores WiFi monitor mode | Hardware | — |
+| 2x adaptadores WiFi monitor mode | Hardware | - |
 | `airsnitch` | Python | `git clone https://github.com/vanhoefm/airsnitch /opt/airsnitch` |
 
 ### WIFIAIR-C2 Beacon C2 Channel

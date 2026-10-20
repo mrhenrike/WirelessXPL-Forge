@@ -1,5 +1,5 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""WirelessXPL-Forge — Wireless security research framework."""
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""WirelessXPL-Forge - Wireless security research framework."""
 
 __version__ = "2.2.0"
 __author__ = "André Henrique (@mrhenrike) | União Geek"

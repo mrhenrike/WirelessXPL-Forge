@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Generate external intelligence integration status for test matrix."""
 
 from __future__ import annotations

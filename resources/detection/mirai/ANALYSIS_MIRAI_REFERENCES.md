@@ -238,7 +238,7 @@ Problemas documentados pelo autor:
 #### Cenários onde Python seria útil:
 
 ✅ **USE Python para:**
-- CnC web interface (GUI + analytics) — **Go atual já faz isso, mas Django seria mais moderno**
+- CnC web interface (GUI + analytics)  - **Go atual já faz isso, mas Django seria mais moderno**
 - Ferramentas de suporte (scanners, validators, log parsers)
 - Servidor de recepcao de resultados (scanListen)
 - Prototipagem rápida de ataque vectors
@@ -434,4 +434,4 @@ Todos os bots implementam:
 
 ---
 
-**Author:** André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+**Author:** André Henrique (@mrhenrike) | União Geek  - https://github.com/Uniao-Geek

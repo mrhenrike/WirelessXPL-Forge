@@ -1,4 +1,4 @@
-"""Tests for wirelessxpl.core.config — WXFConfig, parse_timing, interface helpers."""
+"""Tests for wirelessxpl.core.config - WXFConfig, parse_timing, interface helpers."""
 
 import sys
 from pathlib import Path

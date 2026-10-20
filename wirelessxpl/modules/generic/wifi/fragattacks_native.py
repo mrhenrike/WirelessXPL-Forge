@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Native FragAttacks — 802.11 fragmentation and aggregation vulnerabilities.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Native FragAttacks - 802.11 fragmentation and aggregation vulnerabilities.
 
 Implements the core attack primitives from the FragAttacks research
 (CVE-2020-24586 through CVE-2020-26146):
 
-  - fragment_cache_poison    Inject rogue fragments into victim's cache
-  - mixed_key_attack         Send fragments encrypted with different keys
-  - amsdu_injection          A-MSDU frame injection via subframe crafting
-  - eapol_plaintext_inject   Inject plaintext frames via EAPOL/A-MSDU
-  - broadcast_fragment_cache Broadcast fragment cache poisoning
-  - pn_reuse_test            Test for PN/IV reuse after rekeying
-  - udp_plaintext_inject     Inject UDP plaintext payload via fragmentation
+ - fragment_cache_poison    Inject rogue fragments into victim's cache
+ - mixed_key_attack         Send fragments encrypted with different keys
+ - amsdu_injection          A-MSDU frame injection via subframe crafting
+ - eapol_plaintext_inject   Inject plaintext frames via EAPOL/A-MSDU
+ - broadcast_fragment_cache Broadcast fragment cache poisoning
+ - pn_reuse_test            Test for PN/IV reuse after rekeying
+ - udp_plaintext_inject     Inject UDP plaintext payload via fragmentation
 
 Each attack crafts specific 802.11 frames using scapy. The module provides
 both individual primitives and combined test sequences.
 
 Improvements incorporated from upstream vanhoefm/fragattacks:
-  - Pre-test delay option (PR #44)
-  - UDP plaintext injection mode (issue #56)
-  - 802.11ax compatibility notes (issue #55)
+ - Pre-test delay option (PR #44)
+ - UDP plaintext injection mode (issue #56)
+ - 802.11ax compatibility notes (issue #55)
 
 Requires: Monitor mode interface with frame injection capability.
 Dependencies: scapy, pycryptodome (for CCMP encryption).
@@ -179,7 +179,7 @@ def build_eapol_amsdu_injection(src: str, dst: str, bssid: str,
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Native 802.11 FragAttacks — fragmentation/aggregation vulnerabilities."""
+    """Native 802.11 FragAttacks - fragmentation/aggregation vulnerabilities."""
 
     __info__ = {
         "name": "FragAttacks (CVE-2020-24586..26146)",

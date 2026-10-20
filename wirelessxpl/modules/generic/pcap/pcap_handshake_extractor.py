@@ -4,7 +4,7 @@ Scans a PCAP/PCAPNG capture for EAPOL 4-way handshake sequences and
 exports usable handshakes to standalone PCAP files for offline cracking
 with aircrack-ng, hashcat or similar tools.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 import os
@@ -100,7 +100,7 @@ class Exploit(Exploit):
                 ][:5]
 
                 save_handshake_pcap(hs, out_path, include_beacons=relevant_beacons)
-                print_success(f"  -> Exported: {out_path}")
+                print_success(f" -> Exported: {out_path}")
                 exported += 1
 
         print_status("")

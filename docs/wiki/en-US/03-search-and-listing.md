@@ -1,6 +1,6 @@
 # Search and listing
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/03-busca-e-listagem.md](../pt-BR/03-busca-e-listagem.md)
+**Language:** English (en-US)
 
 ## `search`
 

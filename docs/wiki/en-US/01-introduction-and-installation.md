@@ -1,18 +1,18 @@
 # Introduction, scope, and installation
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/01-introducao-e-instalacao.md](../pt-BR/01-introducao-e-instalacao.md)
+**Language:** English (en-US)
 
 ## What WirelessXPL-Forge is
 
 A **modular Python framework** for **authorised** wireless security research: **802.11**, **Bluetooth / BLE**, **Zigbee**, **RFID**, **PCAP pipelines**, **ESP32 / Bruce** serial workflows, and bridges to common offensive wireless tools.
 
-**Full attack-surface map (MikrotikAPI-BF style — device-class gallery in [wiki hub README](../README.md)):**
+**Full attack-surface map (MikrotikAPI-BF style - device-class gallery in [wiki hub README](../README.md)):**
 
-![WirelessXPL — full attack surface & coverage](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png)
+![WirelessXPL - full attack surface & coverage](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png)
 
 **Example (SOHO router device-class map, shared lab vocabulary with RouterXPL-Forge):**
 
-![SOHO router — attack surface & tool coverage](../../img/architecture/rxf_arch_router_soho.png)
+![SOHO router - attack surface & tool coverage](../../img/architecture/rxf_arch_router_soho.png)
 
 ## Legal and ethical use
 
@@ -20,11 +20,11 @@ A **modular Python framework** for **authorised** wireless security research: **
 
 ## Requirements
 
-- **Python 3.8–3.13**
+- **Python 3.8-3.13**
 - Core dependencies: `pip install -r requirements.txt` from a source checkout
 - Optional editable install: copy `pyproject.toml.example` → `pyproject.toml` (local file, not on GitHub), then `pip install -e ".[wifi]"` etc.
 - **Python 3.13+:** `telnetlib3` replaces removed stdlib `telnetlib`
-- **PCAP modules** need **Scapy**; live capture on Windows may need Npcap — offline `.pcap` analysis often works with Python only
+- **PCAP modules** need **Scapy**; live capture on Windows may need Npcap - offline `.pcap` analysis often works with Python only
 
 ## Install from source (recommended)
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Selective client jammer — deauth specific clients from an AP.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Selective client jammer - deauth specific clients from an AP.
 
 Addresses Fluxion issue #329: jam specific clients instead of broadcast
 deauthentication. Allows targeting individual MAC addresses or lists,
 useful for surgical evil twin attacks that only lure specific devices.
 
 Modes:
-  - whitelist   Deauth everyone EXCEPT listed clients
-  - blacklist   Deauth ONLY listed clients
-  - auto_new    Auto-deauth new clients joining the target AP
+ - whitelist   Deauth everyone EXCEPT listed clients
+ - blacklist   Deauth ONLY listed clients
+ - auto_new    Auto-deauth new clients joining the target AP
 
 Version: 1.0.0
 """
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Selective client jammer — surgical deauth per client."""
+    """Selective client jammer - surgical deauth per client."""
 
     __info__ = {
         "name": "Selective Jammer",
@@ -150,14 +150,14 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN — Selective Jammer")
+            print_info("DRY RUN - Selective Jammer")
             print_info(f"Target AP: {self.target_bssid} ch {self.target_channel}")
             print_info(f"Mode: {self.mode} | Clients: {len(macs)}")
             for m in macs[:10]:
                 print_info(f"  {m}")
             return
 
-        print_status(f"Selective jammer — {self.mode} mode")
+        print_status(f"Selective jammer - {self.mode} mode")
         print_info(f"Target AP: {self.target_bssid} | Clients: {len(macs)}")
 
         start = time.time()

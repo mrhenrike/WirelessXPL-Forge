@@ -1,6 +1,6 @@
 # WirelessXPL-Forge wiki (en-US)
 
-**Language:** English (United States) — **default** for this repository. **Português (pt-BR):** [../pt-BR/README.md](../pt-BR/README.md)
+**Language:** English (en-US)
 
 **Maintainer:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| [União Geek](https://github.com/Uniao-Geek)
 
@@ -8,9 +8,9 @@ Official usage documentation. Read on GitHub or copy into the **GitHub Wiki** (s
 
 ## Architecture diagrams (device classes + WXF map)
 
-PNG gallery (MikrotikAPI-BF–style). Mermaid sources: [../../diagrams/architecture/README.md](../../diagrams/architecture/README.md).
+PNG gallery (MikrotikAPI-BF-style). Mermaid sources: [../../diagrams/architecture/README.md](../../diagrams/architecture/README.md).
 
-| WirelessXPL — full attack surface |
+| WirelessXPL  - full attack surface |
 |:---:|
 | ![WXF](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
@@ -57,4 +57,4 @@ python tools/gen_wiki_module_index.py
 
 ---
 
-> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrique)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrique)) \| **União Geek**  - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)

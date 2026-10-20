@@ -1,6 +1,6 @@
 # Troubleshooting
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/11-troubleshooting.md](../pt-BR/11-troubleshooting.md)
+**Language:** English (en-US)
 
 ## `ModuleNotFoundError: wirelessxpl`
 

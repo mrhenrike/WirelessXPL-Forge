@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Wireless Hardware Validator — verifica pré-requisitos de hardware e bibliotecas.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Wireless Hardware Validator - verifica pré-requisitos de hardware e bibliotecas.
 
 Cada módulo de ataque wireless pode exigir hardware ou bibliotecas específicas.
 Este módulo fornece verificações estruturadas para:
 
-  - Adaptadores Wi-Fi com suporte a monitor mode e packet injection
-  - Dongles Bluetooth (hci*, CSR, nRF52, Ubertooth, etc.)
-  - SDR (HackRF, RTL-SDR, USRP, LimeSDR, PlutoSDR)
-  - Hardware Z-Wave (ZWave.me, UZB, Sigma Designs)
-  - Leitores NFC/RFID (Proxmark, ACR122U, PN532)
-  - Hardware especializado (Proxmark3, YARD Stick One, etc.)
-  - Bibliotecas Python necessárias
-  - Ferramentas de sistema (aircrack-ng, hcxtools, etc.)
+ - Adaptadores Wi-Fi com suporte a monitor mode e packet injection
+ - Dongles Bluetooth (hci*, CSR, nRF52, Ubertooth, etc.)
+ - SDR (HackRF, RTL-SDR, USRP, LimeSDR, PlutoSDR)
+ - Hardware Z-Wave (ZWave.me, UZB, Sigma Designs)
+ - Leitores NFC/RFID (Proxmark, ACR122U, PN532)
+ - Hardware especializado (Proxmark3, YARD Stick One, etc.)
+ - Bibliotecas Python necessárias
+ - Ferramentas de sistema (aircrack-ng, hcxtools, etc.)
 
 Uso típico:
 
@@ -173,7 +173,7 @@ class ValidationReport:
     def print_missing(self) -> None:
         """Imprime apenas os requisitos ausentes."""
         for result in self.missing:
-            print(f"  [!] REQUISITO AUSENTE — {result.requirement.name}: {result.detail}")
+            print(f"  [!] REQUISITO AUSENTE - {result.requirement.name}: {result.detail}")
             if result.install_hint:
                 print(f"       Como instalar: {result.install_hint}")
 

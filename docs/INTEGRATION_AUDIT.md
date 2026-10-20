@@ -1,4 +1,4 @@
-# WirelessXPL-Forge — Integration Audit
+# WirelessXPL-Forge - Integration Audit
 
 **Author:** André Henrique (@mrhenrike) | União Geek
 
@@ -19,9 +19,9 @@ Audit of all wireless-relevant code across `submodules/IoT/`, `submodules/IoT/wi
 
 ---
 
-## Audit — what exists vs. what can be added
+## Audit - what exists vs. what can be added
 
-### 1. `submodules/IoT/wireless-research/` — 27 repos
+### 1. `submodules/IoT/wireless-research/` - 27 repos
 
 | Repo | Language | Status | Incorporation strategy | New module |
 |------|----------|--------|------------------------|------------|
@@ -53,7 +53,7 @@ Audit of all wireless-relevant code across `submodules/IoT/`, `submodules/IoT/wi
 | `WirelessPen` | Python | **GAP** | Port Wi-Fi pentest framework recon/enum | `wirelesspen_recon.py` |
 | `wifi-attaking-tool-easy-to-use` | Python | Already covered | Merge MxAI scan patterns | merge |
 
-### 2. Direct `submodules/IoT/` repos — wireless tools
+### 2. Direct `submodules/IoT/` repos - wireless tools
 
 | Repo | Language | Already bridged? | Gap? | New module |
 |------|----------|-----------------|------|------------|
@@ -64,7 +64,7 @@ Audit of all wireless-relevant code across `submodules/IoT/`, `submodules/IoT/wi
 | **bettercap** | Go | YES (`bettercap_bridge.py`) | - | - |
 | **fluxion** | Bash | YES (`fluxion_bridge.py`) | - | - |
 | **mdk4** | C | YES (`mdk4_bridge.py` in external + wifi_lab) | - | - |
-| **reaver** | C | YES (`reaver_bridge.py` — includes wash + pixiewps) | - | - |
+| **reaver** | C | YES (`reaver_bridge.py` - includes wash + pixiewps) | - | - |
 | **hcxtools** | C | YES (`hcx_toolchain_bridge.py`) | Separate live capture | `hcxdumptool_live_bridge.py` |
 | **oneshot** | Python | YES (`oneshot_bridge.py`) | - | - |
 | **wifipumpkin3** | Python | YES (`wifipumpkin3_bridge.py`) | - | - |
@@ -117,8 +117,8 @@ Audit of all wireless-relevant code across `submodules/IoT/`, `submodules/IoT/wi
 | **P1 - High** | `hcxdumptool_live_bridge.py` | PMKID live capture | Heavily used in WPA2/WPA3 audits |
 | **P1 - High** | `bully_bridge.py` | WPS brute (C) | Alternative to reaver, often faster |
 | **P1 - High** | `hostapd_wpe_bridge.py` | WPE / EAP harvest | Enterprise Wi-Fi capture |
-| **P1 - High** | `killerbee_zigbee_bridge.py` | Zigbee / 802.15.4 | Python lib — native integration |
-| **P1 - High** | `sniffair_passive_recon.py` | Passive recon + EAP | Python — native integration |
+| **P1 - High** | `killerbee_zigbee_bridge.py` | Zigbee / 802.15.4 | Python lib - native integration |
+| **P1 - High** | `sniffair_passive_recon.py` | Passive recon + EAP | Python - native integration |
 | **P1 - High** | `wpa3_sae_flood_native.py` | WPA3 SAE DoS | Native Scapy |
 | **P2 - Medium** | `knob_attack_bridge.py` | BT KNOB | Python PoC |
 | **P2 - Medium** | `bias_attack_bridge.py` | BT BIAS | Python/C |
@@ -150,4 +150,4 @@ Audit of all wireless-relevant code across `submodules/IoT/`, `submodules/IoT/wi
 
 ---
 
-*Generated: 2026-04-24 — André Henrique (@mrhenrike) | União Geek*
+*Generated: 2026-04-24 - André Henrique (@mrhenrike) | União Geek*

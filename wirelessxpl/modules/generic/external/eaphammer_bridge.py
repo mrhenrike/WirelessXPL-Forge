@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Bridge subprocess para EAPHammer (GPL-3.0) — evil twin WPA-Enterprise, PMKID e EAP spray.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Bridge subprocess para EAPHammer (GPL-3.0) - evil twin WPA-Enterprise, PMKID e EAP spray.
 
 EAPHammer é invocado apenas como processo externo; nenhum código GPL é importado.
 Expõe, via linha de comando: colheita de credenciais (--creds), métodos EAP (via fases
@@ -10,11 +10,11 @@ certificados (--cert-wizard), OWE transition, PMF (802.11w) e seleção de banda
 ``--hw-mode`` e canal.
 
 Improvements from upstream s0lst1c3/eaphammer issues/PRs:
-  - Python 3.12 support (PR #221)
-  - hcxdumptool syntax changes (issue #208, #212)
-  - 6GHz band support (hw-mode ax, channel > 177)
-  - Credential logging to file (issue #226)
-  - ESSID escaping for special characters (airgeddon #655)
+ - Python 3.12 support (PR #221)
+ - hcxdumptool syntax changes (issue #208, #212)
+ - 6GHz band support (hw-mode ax, channel > 177)
+ - Credential logging to file (issue #226)
+ - ESSID escaping for special characters (airgeddon #655)
 
 License: GPL-3.0 (subprocess only, no code import)
 Version: 1.2.0
@@ -405,7 +405,7 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN — comando:")
+            print_info("DRY RUN - comando:")
             print_status(cmd_str)
             print_info(f"Modo: {self._attack_mode()}  auth: {self.auth}  band: {self.band}")
             if self.band == "dual":

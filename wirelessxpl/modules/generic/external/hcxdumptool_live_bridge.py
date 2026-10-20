@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""hcxdumptool — live PMKID and EAPOL handshake capture bridge.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""hcxdumptool - live PMKID and EAPOL handshake capture bridge.
 
 Separate from hcx_toolchain_bridge.py (which covers the hcxtools post-processing
 chain). This module focuses exclusively on **live capture** via hcxdumptool:
 
-  - Captures PMKID directly from association frames (no handshake needed).
-  - Captures 4-way EAPOL handshakes in pcapng format.
-  - Supports target-specific capture via --filterlist_ap.
-  - Output pcapng compatible with hcxpcapngtool -> hashcat (mode 22000/22001).
+ - Captures PMKID directly from association frames (no handshake needed).
+ - Captures 4-way EAPOL handshakes in pcapng format.
+ - Supports target-specific capture via --filterlist_ap.
+ - Output pcapng compatible with hcxpcapngtool -> hashcat (mode 22000/22001).
 
 Incorporated from:
-  - submodules/IoT/hcxdumptool (ZerBea, GPL-3.0, invoked as subprocess)
+ - submodules/IoT/hcxdumptool (ZerBea, GPL-3.0, invoked as subprocess)
 
 Version: 1.0.0
 """
@@ -156,7 +156,7 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status(f"hcxdumptool: captura PMKID/EAPOL em {out_file}")

@@ -25,6 +25,21 @@ All notable changes to WirelessXPL-Forge are documented in this file.
 ### Dependencies
 - `xpl-core>=0.1.0` (new: provides shared shell infrastructure)
 
+### Added (Gap Closure, Phases 1-8)
+- **Gap closure (Phases 1-8):** 533 modules across 41 domains, 211 CVEs covered, 2094 test cases
+- **Phase 4, WiFi driver CVEs:** mac80211 MLO UAF (CVE-2026-64574), Linux WiFi OOB (CVE-2026-80722), Intel iwlwifi family (5 CVEs), MediaTek filogic/mt76 (6 CVEs)
+- **Phase 4, Access point vendor CVEs:** TP-Link (3 CVEs), Netgear (6 CVEs), ASUS (1 CVE), Cudy (1 CVE), Aruba (4 CVEs), Fortinet (1 CVE), Apple CoreAudio (1 CVE), Cisco (3 CVEs), D-Link (5 CVEs), MikroTik (1 CVE)
+- **Phase 5, Bluetooth/BLE expansion:** BrakTooth, SweynTooth, WhisperPair, BLE GATT enum, BLE spoofing
+- **Phase 6, WPS/Physical/TEMPEST/SATCOM/PMR/Li-Fi/Qi:** WPS PBC hijack, WPS NFC token clone, WPS USB extraction, Block Ack DoS, TEMPEST (5 modules), SATCOM (7 modules), PMR/TETRA (5 modules), Li-Fi (3 modules), Qi/VoltSchemer (6 modules)
+- **Phase 7, Integration modules:** GNU Radio SDR integration, ML signal classifier, remote sensor node
+- **Phase 8, SuperExploit E2E upgrades:** BT core, cellular/drone, WiFi/proto, SweynTooth/AP, tier-3 test suites
+- **New domains:** tempest, satcom, pmr, lifi, qi, physical, integration, vehicular_radar, maritime, v2x, uwb, tpms, rf, matter, dect, wearables, evil_twin, evidence_vault, session_manager, wardrive, wordlist, automotive, lateral_iot, wids, cve
+
+### Fixed
+- Removed invalid `OptPort(0, "N/A")` from 26 non-TCP modules (BLE, Zigbee, Z-Wave, LoRaWAN, CAN) that caused instantiation failure
+- Fixed missing `print_error`/`print_success` import in `bt_hid_keyboard_inject.py` `_exploit()` method
+- **requires-python:** elevated to >=3.12 (was >=3.9)
+
 ---
 
 ## [2.1.2] - 2026-10-06

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Authentication flood attack module.
 
 Exhausts AP resources by sending mass fake authentication requests.
 Can force AP into degraded state or trigger association table overflow.
 
 Attack modes:
-  - auth_flood     Random MAC auth requests via mdk4
-  - amok_mode      Aggressive deauth + auth flood (mdk4 amok)
-  - mesh_flood     802.11s mesh flood/disruption mode via mdk4
-  - eapol_start    Flood EAPOL-Start frames (enterprise DoS)
-  - cts_nav        CTS frame flood to reserve channel time
+ - auth_flood     Random MAC auth requests via mdk4
+ - amok_mode      Aggressive deauth + auth flood (mdk4 amok)
+ - mesh_flood     802.11s mesh flood/disruption mode via mdk4
+ - eapol_start    Flood EAPOL-Start frames (enterprise DoS)
+ - cts_nav        CTS frame flood to reserve channel time
 
 Version: 1.1.0
 """

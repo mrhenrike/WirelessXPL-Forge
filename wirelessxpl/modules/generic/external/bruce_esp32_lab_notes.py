@@ -1,10 +1,10 @@
-"""Bruce/ESP32 Marauder firmware — lab integration notes (no flashing).
+"""Bruce/ESP32 Marauder firmware - lab integration notes (no flashing).
 
 Bruce and ESP32 Marauder run on ESP32-class hardware for Wi‑Fi attacks,
 wardriving-style recon, BLE scans and packet tooling. This module prints
 authoritative links and a safe workflow; it does **not** bundle or flash firmware.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 
@@ -51,7 +51,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         print_status(
-            "Bruce/Marauder are third-party firmwares — comply with license and local radio laws."
+            "Bruce/Marauder are third-party firmwares - comply with license and local radio laws."
         )
         print_info("Bruce upstream: https://github.com/BruceDevices/firmware")
         print_info("Marauder upstream: https://github.com/justcallmekoko/ESP32Marauder")
@@ -61,13 +61,13 @@ class Exploit(Exploit):
         print_info("Bruce PCAP paths commonly used: /BrucePCAP/*.pcap and /BrucePCAP/handshakes/")
         print_info("Marauder common lab tasks: AP scan, probe sniff, deauth, beacon spam, BLE scan")
         print_info("Recommended WXF mapping:")
-        print_info("  - Bruce sniffer PCAP -> generic/pcap/pcap_handshake_extractor")
-        print_info("  - Bruce handshake PCAP -> generic/pcap/pcap_eapol_survey")
-        print_info("  - WPA3 frames -> generic/pcap/pcap_dragonblood")
-        print_info("  - Wardriving exports -> generic/wifi/gps_wardriving_ndjson")
+        print_info(" - Bruce sniffer PCAP -> generic/pcap/pcap_handshake_extractor")
+        print_info(" - Bruce handshake PCAP -> generic/pcap/pcap_eapol_survey")
+        print_info(" - WPA3 frames -> generic/pcap/pcap_dragonblood")
+        print_info(" - Wardriving exports -> generic/wifi/gps_wardriving_ndjson")
         print_info("Bruce upstream catalogs generated in WXF resources/catalogs:")
-        print_info("  - brucedevices_firmware_issues_prs.json (full list)")
-        print_info("  - brucedevices_firmware_useful_map.json (filtered useful set)")
+        print_info(" - brucedevices_firmware_issues_prs.json (full list)")
+        print_info(" - brucedevices_firmware_useful_map.json (filtered useful set)")
         print_info("Suggested lab loop: capture on hardware → export PCAP/PCAPNG → "
                    "`use generic/pcap/pcap_handshake_extractor` / `pcap_eapol_survey` / "
                    "`pcap_dragonblood` → hashcat or aircrack-ng on workstation.")

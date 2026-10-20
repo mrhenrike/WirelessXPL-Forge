@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import socket
@@ -12,7 +12,7 @@ from wirelessxpl.core.exploit import *
 
 
 class Exploit(Exploit):
-    """MQTT Broker — Acesso anônimo, enumeração de tópicos e injeção de payload.
+    """MQTT Broker - Acesso anônimo, enumeração de tópicos e injeção de payload.
 
     Detecta brokers MQTT aceitando conexões anônimas, subscreve ao wildcard
     '#' para enumerar todos os tópicos publicados, classifica-os em
@@ -300,7 +300,7 @@ class Exploit(Exploit):
             if control_topics:
                 print_warning(f"{len(control_topics)} tópico(s) de controle/atuador identificado(s):")
                 for ct in control_topics:
-                    print_warning(f"  -> {ct}")
+                    print_warning(f" -> {ct}")
 
             inject_topic = str(self.inject_topic).strip()
             inject_payload = str(self.inject_payload).strip()

@@ -7,7 +7,7 @@ and mapping to WirelessXPL-Forge exploit modules when available.
 Also supports live enrichment from local JSON catalogs and the existing
 module tree's __info__ metadata.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 
@@ -58,7 +58,7 @@ class CVEEntry:
 
 
 # =====================================================================
-# Embedded CVE catalog — curated for in-scope devices
+# Embedded CVE catalog - curated for in-scope devices
 # =====================================================================
 
 _EMBEDDED_CVES: list[dict[str, Any]] = [
@@ -117,13 +117,13 @@ _EMBEDDED_CVES: list[dict[str, Any]] = [
     {"cve_id": "CVE-2019-9494", "vendor": "generic", "product": "wpa3", "affected_versions": "WPA3-SAE implementations", "description": "SAE side-channel timing attack (Dragonblood)", "cvss_score": 5.9, "access_vector": "ADJACENT"},
     {"cve_id": "CVE-2019-9496", "vendor": "generic", "product": "wpa3", "affected_versions": "WPA3-Transition mode", "description": "SAE transition mode downgrade to WPA2", "cvss_score": 7.5, "access_vector": "ADJACENT"},
     {"cve_id": "CVE-2017-9417", "vendor": "broadcom", "product": "bcm43xx_wifi", "affected_versions": "BCM43xx fullmac Wi-Fi chipsets (firmware line used by Nexus 5/6 and similar)", "description": "Broadpwn: Broadcom Wi-Fi firmware RCE via malformed over-the-air frame processing", "cvss_score": 8.8, "access_vector": "ADJACENT"},
-    # --- WPA2 / Wi-Fi protocol (802.11 layer — lab / adjacent) ---
-    {"cve_id": "CVE-2017-13077", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "STA/AP stacks using 4-way handshake", "description": "KRACK — key reinstallation in Wi-Fi 4-way handshake (PTK/GTK)", "cvss_score": 7.5, "access_vector": "ADJACENT"},
-    {"cve_id": "CVE-2017-13078", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "Same class as KRACK", "description": "KRACK — GTK reinstallation", "cvss_score": 7.5, "access_vector": "ADJACENT"},
-    {"cve_id": "CVE-2020-24588", "vendor": "generic", "product": "80211_aggregate", "affected_versions": "Wi-Fi devices accepting mixed encrypted/plain fragments", "description": "FragAttacks — aggregation attack against WPA2/WPA3", "cvss_score": 5.3, "access_vector": "ADJACENT"},
-    {"cve_id": "CVE-2020-24586", "vendor": "generic", "product": "80211_fragmentation", "affected_versions": "Fragmentation-capable Wi-Fi stacks", "description": "FragAttacks — mixed key attack / fragment cache confusion", "cvss_score": 5.3, "access_vector": "ADJACENT"},
+    # --- WPA2 / Wi-Fi protocol (802.11 layer - lab / adjacent) ---
+    {"cve_id": "CVE-2017-13077", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "STA/AP stacks using 4-way handshake", "description": "KRACK - key reinstallation in Wi-Fi 4-way handshake (PTK/GTK)", "cvss_score": 7.5, "access_vector": "ADJACENT"},
+    {"cve_id": "CVE-2017-13078", "vendor": "generic", "product": "wpa2_handshake", "affected_versions": "Same class as KRACK", "description": "KRACK - GTK reinstallation", "cvss_score": 7.5, "access_vector": "ADJACENT"},
+    {"cve_id": "CVE-2020-24588", "vendor": "generic", "product": "80211_aggregate", "affected_versions": "Wi-Fi devices accepting mixed encrypted/plain fragments", "description": "FragAttacks - aggregation attack against WPA2/WPA3", "cvss_score": 5.3, "access_vector": "ADJACENT"},
+    {"cve_id": "CVE-2020-24586", "vendor": "generic", "product": "80211_fragmentation", "affected_versions": "Fragmentation-capable Wi-Fi stacks", "description": "FragAttacks - mixed key attack / fragment cache confusion", "cvss_score": 5.3, "access_vector": "ADJACENT"},
     # --- Multi-vendor ---
-    {"cve_id": "CVE-2014-9222", "vendor": "multi", "product": "rom0", "affected_versions": "Allegro RomPager < 4.34", "description": "Misfortune Cookie — RCE via HTTP cookie overflow in embedded devices", "cvss_score": 9.8, "access_vector": "REMOTE"},
+    {"cve_id": "CVE-2014-9222", "vendor": "multi", "product": "rom0", "affected_versions": "Allegro RomPager < 4.34", "description": "Misfortune Cookie - RCE via HTTP cookie overflow in embedded devices", "cvss_score": 9.8, "access_vector": "REMOTE"},
     # --- Physical-only examples (not remotely exploitable) ---
     {"cve_id": "CVE-2020-27301", "vendor": "cisco", "product": "jabber", "affected_versions": "Jabber for Windows", "description": "DLL hijacking (requires local access)", "cvss_score": 7.8, "access_vector": "LOCAL"},
     {"cve_id": "CVE-2018-0150", "vendor": "cisco", "product": "ios_xe", "affected_versions": "IOS XE with hardcoded credentials", "description": "Hardcoded root credentials (console/physical access)", "cvss_score": 9.8, "access_vector": "PHYSICAL"},
@@ -187,7 +187,7 @@ def _load_poc_intel_cve_hints(repo_root: Path) -> list[CVEEntry]:
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("embedded_third_party_poc_intel.json unreadable: %s", exc)
         return []
-    # Bulk indices (tg12, ExploitDB mirrors) stay in JSON for tooling — not loaded into lookup RAM.
+    # Bulk indices (tg12, ExploitDB mirrors) stay in JSON for tooling - not loaded into lookup RAM.
     skip_slugs = frozenset(
         {
             "tg12__PoC_CVEs",

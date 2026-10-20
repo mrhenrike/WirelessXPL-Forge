@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import socket
@@ -149,11 +149,11 @@ class Exploit(Exploit):
         gateway_mac_str = self._get_mac_for_ip(str(self.gateway_ip))
 
         if not target_mac_str:
-            print_warning(f"MAC do alvo {self.target} não resolvido — usando broadcast")
+            print_warning(f"MAC do alvo {self.target} não resolvido - usando broadcast")
             target_mac_str = "ff:ff:ff:ff:ff:ff"
 
         if not gateway_mac_str:
-            print_warning(f"MAC do gateway {self.gateway_ip} não resolvido — usando broadcast")
+            print_warning(f"MAC do gateway {self.gateway_ip} não resolvido - usando broadcast")
             gateway_mac_str = "ff:ff:ff:ff:ff:ff"
 
         print_info(f"MAC alvo: {target_mac_str}")

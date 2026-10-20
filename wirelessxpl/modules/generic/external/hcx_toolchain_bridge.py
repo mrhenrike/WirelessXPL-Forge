@@ -1,16 +1,16 @@
 """Run ZerBea hcxtools helpers against a capture (optional conversion to hashcat formats).
 
-Requires ``hcxpcapngtool`` / ``hcxpcaptool`` on PATH — installed from Linux distro packages
+Requires ``hcxpcapngtool`` / ``hcxpcaptool`` on PATH - installed from Linux distro packages
 or https://github.com/ZerBea/hcxtools
 
 Improvements from upstream ZerBea/hcxtools issues:
-  - Support for new hcxpcapngtool hash output options (issue #338)
-  - WPA3 hash format (22001) detection (airgeddon issue #679)
-  - hcxhashtool import for deprecated formats (issue #325, #326)
-  - Buffer overflow fix awareness (issue #365)
-  - PCAP quality scoring option (issue #344)
+ - Support for new hcxpcapngtool hash output options (issue #338)
+ - WPA3 hash format (22001) detection (airgeddon issue #679)
+ - hcxhashtool import for deprecated formats (issue #325, #326)
+ - Buffer overflow fix awareness (issue #365)
+ - PCAP quality scoring option (issue #344)
 
-Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 Version: 1.1.0
 """
 

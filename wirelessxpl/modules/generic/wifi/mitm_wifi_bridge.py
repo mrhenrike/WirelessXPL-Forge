@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Man-in-the-Middle Wi-Fi bridge module.
 
 Sets up a transparent MITM position using a rogue AP + NAT bridge or
@@ -7,11 +7,11 @@ ARP spoofing on existing network. Supports SSL stripping, DNS spoofing,
 and credential sniffing.
 
 Attack modes:
-  - ap_bridge       Rogue AP with NAT to upstream (transparent proxy)
-  - arp_spoof       ARP cache poisoning on existing network
-  - dns_spoof       DNS spoofing via dnsmasq/dnschef
-  - ghost_combo     ARP + DNS spoofing combo (Ghost-Phisher style)
-  - ssl_strip       HTTP downgrade via sslstrip2 or bettercap
+ - ap_bridge       Rogue AP with NAT to upstream (transparent proxy)
+ - arp_spoof       ARP cache poisoning on existing network
+ - dns_spoof       DNS spoofing via dnsmasq/dnschef
+ - ghost_combo     ARP + DNS spoofing combo (Ghost-Phisher style)
+ - ssl_strip       HTTP downgrade via sslstrip2 or bettercap
 
 Version: 1.1.0
 """
@@ -153,7 +153,7 @@ class Exploit(Exploit):
         log_dir.mkdir(parents=True, exist_ok=True)
 
         if self.dry_run:
-            print_info(f"DRY RUN — MITM {self.mode} mode via {self.backend}")
+            print_info(f"DRY RUN - MITM {self.mode} mode via {self.backend}")
             if self.mode == "ap_bridge":
                 for cmd in self._setup_nat():
                     print_status(" ".join(cmd))

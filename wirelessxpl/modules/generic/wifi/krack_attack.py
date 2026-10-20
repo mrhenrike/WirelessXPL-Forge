@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Native KRACK — Key Reinstallation Attacks on WPA2 (CVE-2017-13077..13088).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Native KRACK - Key Reinstallation Attacks on WPA2 (CVE-2017-13077..13088).
 
 Implements detection and exploitation of key reinstallation vulnerabilities
 in the WPA2 4-way handshake and group key handshake:
 
-  - 4way_replay        Replay Message 3 to trigger PTK reinstallation
-  - group_replay       Replay Group Key Message 1 to reset group PN
-  - ft_test            Test FT (Fast Transition) reassociation key reuse
-  - broadcast_replay   Replay broadcast frames to test group key replay
-  - monitor            Passive monitoring for key reinstallation indicators
-  - deauth_trigger     Send deauth to force re-handshake, then capture
+ - 4way_replay        Replay Message 3 to trigger PTK reinstallation
+ - group_replay       Replay Group Key Message 1 to reset group PN
+ - ft_test            Test FT (Fast Transition) reassociation key reuse
+ - broadcast_replay   Replay broadcast frames to test group key replay
+ - monitor            Passive monitoring for key reinstallation indicators
+ - deauth_trigger     Send deauth to force re-handshake, then capture
 
 The attack forces nonce/counter reuse in CCMP, enabling frame decryption
 and potential injection.
 
 Improvements incorporated from upstream vanhoefm/krackattacks-scripts:
-  - FT handshake vulnerability test (issue #84)
-  - GTK init logic fix (issue #100)
-  - Deauth-triggered handshake capture for reliable msg3 collection
-  - pycryptodome 3.19+ compatibility (PR #102)
+ - FT handshake vulnerability test (issue #84)
+ - GTK init logic fix (issue #100)
+ - Deauth-triggered handshake capture for reliable msg3 collection
+ - pycryptodome 3.19+ compatibility (PR #102)
 
 Requires: Monitor mode interface with injection, modified hostapd
 (for Message 3 replay in AP mode). Passive tests work with any adapter.
@@ -183,7 +183,7 @@ def _is_group_msg1(pkt) -> bool:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Native KRACK — WPA2 key reinstallation attack."""
+    """Native KRACK - WPA2 key reinstallation attack."""
 
     __info__ = {
         "name": "KRACK Attack (CVE-2017-13077..13088)",
@@ -413,7 +413,7 @@ class Exploit(Exploit):
         stats = self._iv_tracker.get_stats()
         for mac, s in stats.items():
             if s["reuses"] > 0:
-                print_success("  {} — {} PN reuses detected (FT vulnerable)".format(
+                print_success("  {} - {} PN reuses detected (FT vulnerable)".format(
                     mac, s["reuses"]))
 
     def _deauth_trigger(self) -> None:

@@ -1,8 +1,8 @@
-# Architecture diagrams — WirelessXPL-Forge
+# Architecture diagrams  - WirelessXPL-Forge
 
-**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek**  - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
 
-**Languages:** Diagram labels are **English (en-US)** by default (aligned with tool output). **Português (pt-BR):** [README.pt-BR.md](README.pt-BR.md).
+**Language:** Diagram labels are in **English (en-US)** (aligned with tool output).
 
 Diagrams follow the same visual language as **MikrotikAPI-BF** (`mikrotik_full_attack_surface.png`): central core, **access vectors** as spokes, **✓ / ✗ / ◐** for coverage, optional CVE callouts. **Colours:** green = mandatory core, orange = vectors, yellow = optional, blue = targets (see `07-wirelessxpl-full-attack-surface.mmd`).
 
@@ -10,7 +10,7 @@ Diagrams follow the same visual language as **MikrotikAPI-BF** (`mikrotik_full_a
 
 | File | Category |
 |------|----------|
-| [07-wirelessxpl-full-attack-surface.mmd](07-wirelessxpl-full-attack-surface.mmd) | **WXF full map** — Wi‑Fi, BLE, Zigbee, PCAP, bridges, targets |
+| [07-wirelessxpl-full-attack-surface.mmd](07-wirelessxpl-full-attack-surface.mmd) | **WXF full map**  - Wi‑Fi, BLE, Zigbee, PCAP, bridges, targets |
 | [01-router-soho.mmd](01-router-soho.mmd) | SOHO / home gateway (Linux / RTOS firmware) |
 | [02-switch-l2-l3.mmd](02-switch-l2-l3.mmd) | Managed L2/L3 switch |
 | [03-ngfw-utm.mmd](03-ngfw-utm.mmd) | NGFW / UTM / enterprise firewall appliance |
@@ -32,7 +32,7 @@ Diagrams follow the same visual language as **MikrotikAPI-BF** (`mikrotik_full_a
 
 ### Gallery (embedded)
 
-| WirelessXPL — full attack surface |
+| WirelessXPL  - full attack surface |
 |:---:|
 | ![WirelessXPL full attack surface](../../img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png) |
 
@@ -55,12 +55,3 @@ With [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli):
 ```bash
 npx @mermaid-js/mermaid-cli -i docs/diagrams/architecture/07-wirelessxpl-full-attack-surface.mmd -o docs/img/architecture/rxf_arch_wirelessxpl_full_attack_surface.png -b white -w 1600
 ```
-
-## Português (pt-BR)
-
-- **✓ Coberto:** módulos existentes em `wirelessxpl/modules/` para aquele vetor (ex.: `creds`, `exploits`, `generic` PCAP/CVE).
-- **✗ Parcial / não focado:** depende de modelo; usar `generic/cve/cve_lookup`, `scanners/autopwn` e pesquisa por *vendor*.
-
----
-
-> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrique)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)

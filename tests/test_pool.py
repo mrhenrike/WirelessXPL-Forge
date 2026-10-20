@@ -1,4 +1,4 @@
-"""Tests for wirelessxpl.core.pool — SmartPool, PoolStrategy."""
+"""Tests for wirelessxpl.core.pool - SmartPool, PoolStrategy."""
 
 import sys
 import threading

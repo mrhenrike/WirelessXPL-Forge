@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Polyglot Orchestrator — executa exploits e ferramentas em qualquer linguagem.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Polyglot Orchestrator - executa exploits e ferramentas em qualquer linguagem.
 
 Compila e executa código em C, C++, Rust, Go, Ruby, Java, Perl, Lua e outros runtimes
 que não podem ser incorporados diretamente em Python. Fornece:
 
-  - Detecção automática de compiladores/interpretadores no PATH
-  - Compilação on-demand com cache (recompila apenas se o fonte mudou)
-  - Execução com timeout, captura de saída e tratamento de erros
-  - Suporte a argumentos dinâmicos, variáveis de ambiente e stdin
-  - Relatório de pré-requisitos ausentes para guiar o usuário
+ - Detecção automática de compiladores/interpretadores no PATH
+ - Compilação on-demand com cache (recompila apenas se o fonte mudou)
+ - Execução com timeout, captura de saída e tratamento de erros
+ - Suporte a argumentos dinâmicos, variáveis de ambiente e stdin
+ - Relatório de pré-requisitos ausentes para guiar o usuário
 
 Uso típico dentro de um módulo:
 
@@ -283,7 +283,7 @@ class PolyglotOrchestrator:
     def print_runtime_report(self) -> None:
         """Imprime o relatório de runtimes no console."""
         report = self.runtime_report()
-        print("  PolyglotOrchestrator — Status de Runtimes:")
+        print("  PolyglotOrchestrator - Status de Runtimes:")
         for lang_name, available in sorted(report.items()):
             status = "[+]" if available else "[-]"
             print(f"    {status} {lang_name}")

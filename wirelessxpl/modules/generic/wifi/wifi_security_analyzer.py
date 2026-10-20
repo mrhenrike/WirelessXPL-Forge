@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Wi-Fi security analyzer — passive scan and security assessment (native Scapy).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Wi-Fi security analyzer - passive scan and security assessment (native Scapy).
 
 Scans nearby Wi-Fi networks (beacon / probe response frames), parses RSN/WPA
 information elements, and produces a per-BSSID security assessment covering:
@@ -8,9 +8,9 @@ information elements, and produces a per-BSSID security assessment covering:
   WPA3-SAE-Transition / WPA3-OWE / open / hidden SSID / WPS.
 
 Incorporated / ported from:
-  - submodules/IoT/wireless-research/Wifi_Security_Analyzer
-  - submodules/IoT/WiFiBroot (RSN/cipher parsing concept)
-  - submodules/IoT/waidps (passive IDS scan)
+ - submodules/IoT/wireless-research/Wifi_Security_Analyzer
+ - submodules/IoT/WiFiBroot (RSN/cipher parsing concept)
+ - submodules/IoT/waidps (passive IDS scan)
 
 Version: 1.0.0
 """
@@ -147,7 +147,7 @@ def _classify_security(
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Wi-Fi security analyzer — passive scan and BSS security classification."""
+    """Wi-Fi security analyzer - passive scan and BSS security classification."""
 
     __info__ = {
         "name": "Wi-Fi Security Analyzer (native)",
@@ -277,7 +277,7 @@ class Exploit(Exploit):
 
         if self.verbose:
             wps_tag = " [WPS]" if wps_ie else ""
-            print_status("{} — {} — {}{}".format(bssid, entry["ssid"], security, wps_tag))
+            print_status("{} - {} - {}{}".format(bssid, entry["ssid"], security, wps_tag))
 
 
     def check(self) -> str:
@@ -323,7 +323,7 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info(
-                "DRY RUN — Wi-Fi Security Analyzer: iface={}, canal={}, "
+                "DRY RUN - Wi-Fi Security Analyzer: iface={}, canal={}, "
                 "tempo={}s, filtro='{}'".format(iface, channel or "hop", scan_time, sec_filter or "todos")
             )
             return
@@ -402,10 +402,10 @@ class Exploit(Exploit):
         if risky:
             print_error(f"\nRedes com configuração insegura ou legada ({len(risky)})")
             for bssid, entry in risky:
-                print_error("  {} — {} — {}".format(bssid, entry["ssid"], entry["security"]))
+                print_error("  {} - {} - {}".format(bssid, entry["ssid"], entry["security"]))
 
         wps_aps = [(b, e) for b, e in bss_list if e["wps"]]
         if wps_aps:
-            print_info(f"\nAPs com WPS ativo ({len(wps_aps)}) — vulneráveis a Pixie Dust / PIN bruteforce")
+            print_info(f"\nAPs com WPS ativo ({len(wps_aps)}) - vulneráveis a Pixie Dust / PIN bruteforce")
 
         print_success("\nAnálise concluída.")

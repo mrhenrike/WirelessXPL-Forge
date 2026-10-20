@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WXF Module Validator — tests all wifi_lab modules load correctly.
+"""WXF Module Validator  - tests all wifi_lab modules load correctly.
 Author: André Henrique (@mrhenrike) | União Geek
 """
 import os
@@ -51,7 +51,7 @@ ok_count = 0
 fail_count = 0
 
 print("=" * 90)
-print("  WXF MODULE VALIDATION — Wi-Fi Lab + Bridges")
+print("  WXF MODULE VALIDATION  - Wi-Fi Lab + Bridges")
 print("=" * 90)
 
 for section_name, module_list in [("NATIVE MODULES", MODULES), ("BRIDGE MODULES", BRIDGES)]:

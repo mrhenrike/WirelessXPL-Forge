@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """Priorização de PINs WPS com algoritmos determinísticos e camada ML opcional."""
 
 

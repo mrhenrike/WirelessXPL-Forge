@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Otimização de templates de portal cativo com bandit Thompson sampling."""
 
 

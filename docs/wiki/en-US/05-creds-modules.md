@@ -1,6 +1,6 @@
 # `creds` modules
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/05-modulos-creds.md](../pt-BR/05-modulos-creds.md)
+**Language:** English (en-US)
 
 Credential modules test authentication against network services (SSH, Telnet, FTP/SFTP, HTTP, SNMP, …).
 
@@ -24,18 +24,18 @@ run
 | `stop_on_success` | Stop after first success |
 | `verbosity` | Print attempts |
 
-Always run `show options` — names vary (`rhost` on some older bases).
+Always run `show options` - names vary (`rhost` on some older bases).
 
 ## Generic vs vendor
 
-- `creds/generic/*` — broadly applicable bruteforce/default tests.
-- `creds/routers/<vendor>/*` — vendor-focused lists.
+- `creds/generic/*` - broadly applicable bruteforce/default tests.
+- `creds/routers/<vendor>/*` - vendor-focused lists.
 
 ## SNMP / HTTP
 
 - `creds/generic/http_basic_digest_default` / `http_basic_digest_bruteforce`
-- `creds/generic/http_multi_auth_default` — multiple auth modes including form
-- `creds/generic/http_web_form_bruteforce` — web login dictionary attack with Hydra-style success/failure rules (`show options`)
+- `creds/generic/http_multi_auth_default` - multiple auth modes including form
+- `creds/generic/http_web_form_bruteforce` - web login dictionary attack with Hydra-style success/failure rules (`show options`)
 
 See full paths in [../ANEXO-INDICE-MODULOS.md](../ANEXO-INDICE-MODULOS.md).
 

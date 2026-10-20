@@ -13,8 +13,8 @@ Observed vulnerable devices: iOS, Android, Linux, Windows (older pairing).
 
 Based on: hi_my_name_is_keyboard / CVE-2023-45866 (Bluetooth HID Spoofing)
 References:
-  - CVE-2023-45866: Bluetooth HID Spoofing on iOS/Android/Linux
-  - https://github.com/skysafe/reblog/tree/main/cve-2023-45866
+ - CVE-2023-45866: Bluetooth HID Spoofing on iOS/Android/Linux
+ - https://github.com/skysafe/reblog/tree/main/cve-2023-45866
 
 PREREQ HW: Bluetooth adapter supporting raw HCI access (USB BT adapter preferred)
            Linux host with bluez >= 5.0
@@ -328,7 +328,7 @@ class Exploit(_BaseExploit):
         import shutil
         tools = [t for t in ("hciconfig", "hcitool", "bluetoothctl") if not shutil.which(t)]
         if tools:
-            return f"Missing tools: {', '.join(tools)} — install bluez"
+            return f"Missing tools: {', '.join(tools)} - install bluez"
         return "Prerequisites OK (bluez tools found)"
 
     def run(self) -> None:

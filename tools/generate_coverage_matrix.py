@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 import ast
 import json
 import logging
@@ -916,7 +916,7 @@ def _build_markdown(records: List[ModuleRecord], matrix: Dict[Tuple[str, str], C
         lines.append(f"- Attack classes: {', '.join(sorted(entry.attack_classes)) if entry.attack_classes else 'none'}")
         lines.append("- Module paths:")
         for module_path in entry.module_paths:
-            lines.append(f"  - `{module_path}`")
+            lines.append(f" - `{module_path}`")
         lines.append("")
 
     return "\n".join(lines)
@@ -969,7 +969,7 @@ def _build_plain_text(records: List[ModuleRecord], matrix: Dict[Tuple[str, str],
         lines.append(f"  Attacks: {', '.join(sorted(entry.attack_classes)) if entry.attack_classes else 'none'}")
         lines.append("  Module paths:")
         for module_path in entry.module_paths:
-            lines.append(f"    - {module_path}")
+            lines.append(f" - {module_path}")
         lines.append("")
 
     return "\n".join(lines)

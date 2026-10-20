@@ -1,6 +1,6 @@
 # Catalogs and `tools/`
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/10-catalogos-e-ferramentas.md](../pt-BR/10-catalogos-e-ferramentas.md)
+**Language:** English (en-US)
 
 ## `wirelessxpl/resources/catalogs/`
 

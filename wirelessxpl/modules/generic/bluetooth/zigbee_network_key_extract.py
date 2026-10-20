@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 """Zigbee Network Key Extraction from Insecure Join Handshake.
 
@@ -165,7 +165,7 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status(f"Zigbee Network Key Extraction — canal {self.channel}")
+        print_status(f"Zigbee Network Key Extraction - canal {self.channel}")
         if not self._validate_channel():
             return
         tc_key = self._parse_tc_link_key()
@@ -176,7 +176,7 @@ class Exploit(Exploit):
         print_info("Interface: {}".format(self.interface or "(não configurada)"))
 
         if not self.interface.strip():
-            print_warning("Sem interface de rádio — executando demonstração com frame sintético")
+            print_warning("Sem interface de rádio - executando demonstração com frame sintético")
 
         print_status("Gerando Transport Key frame sintético...")
         demo = self._demo_transport_key_decrypt(tc_key)

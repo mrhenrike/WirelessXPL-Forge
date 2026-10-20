@@ -13,10 +13,10 @@ Assesses Bluetooth OBEX push exposure:
 3. Tests if file accept prompts can be bypassed (legacy UX)
 """
 # ============================================================
-# AUTHORIZED USE ONLY — See docs/malware-research/DISCLAIMER.md
+# AUTHORIZED USE ONLY - See docs/malware-research/DISCLAIMER.md
 # Use only against systems you own or have WRITTEN authorization
 # to test. Operator assumes full legal responsibility for use.
-# simulate=True by default — set False only for authorized tests.
+# simulate=True by default - set False only for authorized tests.
 # ============================================================
 
 
@@ -34,13 +34,13 @@ class Exploit(Exploit):
         "name":        "Lasco Bluetooth OBEX Push Exposure Assessment",
         "description": (
             "Discovers Bluetooth devices and assesses OBEX Object Push Profile "
-            "exposure — the propagation vector used by SymbOS.Lasco (2005), "
+            "exposure - the propagation vector used by SymbOS.Lasco (2005), "
             "the first Bluetooth worm. "
             "Lasco spread by sending SIS installer files via OBEX to all "
             "discoverable devices within Bluetooth range. "
             "Modern devices require explicit user acceptance, but legacy "
             "devices and some IoT devices auto-accept OBEX pushes. "
-            "Read-only — no files are pushed."
+            "Read-only - no files are pushed."
         ),
         "authors":     ("Andre Henrique (@mrhenrike) | Uniao Geek",),
         "references":  (
@@ -62,7 +62,7 @@ class Exploit(Exploit):
         import shutil
         for tool in ["bluetoothctl", "hcitool", "btscanner"]:
             if shutil.which(tool):
-                return f"{tool} available — Bluetooth assessment ready"
+                return f"{tool} available - Bluetooth assessment ready"
         return "No Bluetooth tools found (bluetoothctl/hcitool required)"
 
     def run(self) -> None:
@@ -138,16 +138,16 @@ class Exploit(Exploit):
                             print_status("       This device can receive files via Bluetooth without pairing")
                             print_status("       Lasco-style propagation would target this device")
                 elif "OBEX File Transfer" in result.stdout:
-                    print_status("  OBEX File Transfer found — newer variant")
+                    print_status("  OBEX File Transfer found - newer variant")
                 else:
                     print_success(f"  OBEX push not exposed on {addr}")
             except Exception as e:
                 print_status(f"  SDP browse failed for {addr}: {e}")
 
         print_status("\n  Recommendation:")
-        print_status("  - Disable Bluetooth discoverability when not needed")
-        print_status("  - Disable OBEX push profile on IoT devices")
-        print_status("  - Update Bluetooth stack to enforce pairing before OBEX")
+        print_status(" - Disable Bluetooth discoverability when not needed")
+        print_status(" - Disable OBEX push profile on IoT devices")
+        print_status(" - Update Bluetooth stack to enforce pairing before OBEX")
 
         self._exploit()
 

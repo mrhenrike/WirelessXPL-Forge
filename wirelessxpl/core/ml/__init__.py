@@ -4,7 +4,7 @@ Componentes opcionais: quando ``scikit-learn``, ``joblib`` ou ``torch`` não
 estão instalados, cada módulo degrada para heurísticas ou CPU pura sem
 falhar na importação.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 from wirelessxpl.core.ml.advisor import (

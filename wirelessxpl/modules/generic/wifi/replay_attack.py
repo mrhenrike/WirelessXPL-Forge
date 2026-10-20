@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Wi-Fi frame replay attack module.
 
 Replays captured 802.11 frames for various attack purposes:
-  - eapol_replay     Replay EAPOL frames to force re-authentication
-  - beacon_replay    Replay beacon frames (SSID spoofing / confusion)
-  - auth_replay      Replay authentication frames
-  - probe_replay     Replay probe responses to lure clients
-  - pcap_replay      Replay arbitrary frames from a PCAP file
+ - eapol_replay     Replay EAPOL frames to force re-authentication
+ - beacon_replay    Replay beacon frames (SSID spoofing / confusion)
+ - auth_replay      Replay authentication frames
+ - probe_replay     Replay probe responses to lure clients
+ - pcap_replay      Replay arbitrary frames from a PCAP file
 
 Version: 1.0.0
 """
@@ -191,7 +191,7 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info(f"DRY RUN — {self.mode} on {self.interface}")
+            print_info(f"DRY RUN - {self.mode} on {self.interface}")
             return
 
         print_status(f"Starting {self.mode} on {self.interface}...")

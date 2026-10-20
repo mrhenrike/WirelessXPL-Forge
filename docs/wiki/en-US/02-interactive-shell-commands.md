@@ -1,6 +1,6 @@
-# Interactive shell — core commands
+# Interactive shell - core commands
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/02-shell-interativo-comandos.md](../pt-BR/02-shell-interativo-comandos.md)
+**Language:** English (en-US)
 
 The default prompt is configurable via `WXF_RAW_PROMPT` and `WXF_MODULE_PROMPT` in `wirelessxpl/interpreter.py`.
 

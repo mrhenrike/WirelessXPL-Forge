@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Advanced beacon flood and AP confusion attack module.
 
 Floods the spectrum with fake beacon frames, optionally cloning real APs
@@ -7,11 +7,11 @@ or generating randomized SSIDs. Can overwhelm wireless scanners and confuse
 clients into connecting to attacker-controlled APs.
 
 Attack modes:
-  - random_flood      Generate random SSIDs with varying encryption
-  - clone_all         Clone all visible APs (beacon capture + replay)
-  - targeted_clone    Clone specific AP with variations
-  - ssid_list         Broadcast SSIDs from a wordlist file
-  - channel_flood     Flood specific channels with beacons
+ - random_flood      Generate random SSIDs with varying encryption
+ - clone_all         Clone all visible APs (beacon capture + replay)
+ - targeted_clone    Clone specific AP with variations
+ - ssid_list         Broadcast SSIDs from a wordlist file
+ - channel_flood     Flood specific channels with beacons
 
 Backends: scapy (native), mdk3, mdk4.
 
@@ -211,7 +211,7 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info(f"DRY RUN — {self.mode} via {self.backend} on {self.interface}")
+            print_info(f"DRY RUN - {self.mode} via {self.backend} on {self.interface}")
             return
 
         print_status(f"Beacon flood: {self.mode} mode via {self.backend} on ch {self.channel}")

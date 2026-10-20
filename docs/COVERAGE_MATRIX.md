@@ -18,16 +18,16 @@
 
 ## Global Capability Summary
 
-- Module tree (wirelessxpl/modules): updated (EmbedXPL-Forge absorption — 2026-05-12)
+- Module tree (wirelessxpl/modules): updated (EmbedXPL-Forge absorption - 2026-05-12)
 - Total modules indexed: 146 (+28 absorvidos do EmbedXPL-Forge em 2 sessões)
 - Distinct vendor/product entries: 146
 - Distinct CVEs mapped in modules: 47 (+7 novos: CVE-2019-15126, CVE-2013-0229, CVE-2020-13849, CVE-2017-7651, CVE-2019-9750, CVE-2023-37462, CVE-2019-9506)
 - Attack classes identified: auth_bypass, dos_or_crash, info_disclosure, lateral_movement, firmware_manipulation, protocol_abuse, key_extraction, replay_attack, spoofing, amplification_ddos
 
 ### Module Type Counts
-- generic: 146 (+28 novos via EmbedXPL-Forge absorption — 2 sessões)
+- generic: 146 (+28 novos via EmbedXPL-Forge absorption - 2 sessões)
 
-### Novos Módulos Absorvidos do EmbedXPL-Forge — Sessão 2 (2026-05-12)
+### Novos Módulos Absorvidos do EmbedXPL-Forge - Sessão 2 (2026-05-12)
 
 | Categoria | Módulo | Protocolo | CVE/Técnica |
 |---|---|---|---|
@@ -37,14 +37,14 @@
 | generic/bluetooth | `ble_spoofing_impersonation` | BLE (LL Advertising) | Advertising data replay → device identity cloning |
 | generic/zwave | `zwave_s0_key_extract` | Z-Wave RF | S0 all-zero temp key → network key trivial decryption |
 | generic/zwave | `zwave_replay_attack` | Z-Wave RF | No-S2 command replay → door unlock/switch/alarm |
-| generic/wifi_lab | `wifi_kr00k_cve_2019_15126` | Wi-Fi 802.11 (Broadcom) | CVE-2019-15126 — zero-TK CCMP decryption |
-| generic/iot_proto | `coap_block_overflow` | CoAP (UDP 5683) | CVE-2019-9750 — Block2 option heap overflow |
-| generic/iot_proto | `mqtt_broker_dos` | MQTT (TCP 1883) | CVE-2017-7651 — CONNECT/DISCONNECT cycling DoS |
-| generic/iot_proto | `mqtt_sys_acl_bypass_cve_2020_13849` | MQTT (TCP 1883) | CVE-2020-13849 — Mosquitto $SYS ACL bypass |
-| generic/iot_proto | `upnp_ssdp_rce_inject` | UPnP/SSDP | CVE-2013-0229 — SOAP injection + AddPortMapping |
+| generic/wifi_lab | `wifi_kr00k_cve_2019_15126` | Wi-Fi 802.11 (Broadcom) | CVE-2019-15126 - zero-TK CCMP decryption |
+| generic/iot_proto | `coap_block_overflow` | CoAP (UDP 5683) | CVE-2019-9750 - Block2 option heap overflow |
+| generic/iot_proto | `mqtt_broker_dos` | MQTT (TCP 1883) | CVE-2017-7651 - CONNECT/DISCONNECT cycling DoS |
+| generic/iot_proto | `mqtt_sys_acl_bypass_cve_2020_13849` | MQTT (TCP 1883) | CVE-2020-13849 - Mosquitto $SYS ACL bypass |
+| generic/iot_proto | `upnp_ssdp_rce_inject` | UPnP/SSDP | CVE-2013-0229 - SOAP injection + AddPortMapping |
 | generic/iot_proto | `upnp_ssdp_amplification` | SSDP (UDP 1900) | 20-50x amplification DDoS via spoofed M-SEARCH |
 | generic/iot_proto | `mdns_amplification` | mDNS (UDP 5353) | 5-30x amplification via QTYPE=ANY queries |
-| generic/automotive | `mercedes_mbux_bt_rce_cve_2023_37462` | BT BR/EDR | CVE-2023-37462 — MBUX NTG6 BT stack RCE |
+| generic/automotive | `mercedes_mbux_bt_rce_cve_2023_37462` | BT BR/EDR | CVE-2023-37462 - MBUX NTG6 BT stack RCE |
 | generic/wearables | `xiaomi_miband_ble_breakmi` | BLE (GATT) | Auth key replay + biometric data exfiltration |
 
 ### Novos Módulos Absorvidos do EmbedXPL-Forge (2026-05-12)
@@ -59,12 +59,12 @@
 | generic/iot_proto | `dds_rtps_attack` | DDS/RTPS (UDP 7400) | Unauthenticated participant R/W (ROS2) |
 | generic/iot_proto | `tftp_firmware_attack` | TFTP (UDP 69) | Unauthenticated firmware download/upload |
 | generic/lorawan | `lorawan_adr_bitflip_cve_2022_39274` | LoRaWAN (RF) | CVE-2022-39274 ADR bit-flip DoS |
-| generic/lorawan | `lorawan_join_replay` | LoRaWAN (RF) | Join Accept replay — session hijack |
+| generic/lorawan | `lorawan_join_replay` | LoRaWAN (RF) | Join Accept replay - session hijack |
 | generic/automotive | `can_bus_attack` | CAN bus (SocketCAN) | ECU fuzzing, OBD-II enum, UDS reset |
 | generic/lateral_iot | `arp_spoof_iot_pivot` | ARP (L2) | MitM entre IoT e gateway |
 | generic/lateral_iot | `uart_shell_detect` | UART (serial) | Console embarcado multi-baud detection |
-| generic/lateral_iot | `fake_dhcp_server` | DHCP (UDP 67/68) | Rogue DHCP — gateway/DNS poisoning |
-| generic/bluetooth | `knob_native_cve_2019_9506` | BT BR/EDR (LMP) | CVE-2019-9506 — key entropy downgrade |
+| generic/lateral_iot | `fake_dhcp_server` | DHCP (UDP 67/68) | Rogue DHCP - gateway/DNS poisoning |
+| generic/bluetooth | `knob_native_cve_2019_9506` | BT BR/EDR (LMP) | CVE-2019-9506 - key entropy downgrade |
 | generic/bluetooth | `zigbee_touchlink_factory_reset` | Zigbee ZLL | Touchlink Factory Reset sem autenticação |
 
 ## Protocol Coverage (Inferred)
@@ -978,14 +978,14 @@
 | devttys0-delink | DeLink firmware decryption library | firmware-tool | dlink-firmware-decryption | high | planned-adapter | tracked | https://github.com/devttys0/delink |
 | threat9-main | THREAT9 official site | vendor-context | project-context | reference | reference | tracked | https://threat9.com/ |
 | routerpwn-site | RouterPWN (SOHO router exploits, generators, advisories) | exploit-index | router-soho | high | queued_for_curation | tracked | https://routerpwn.com/ |
-| routerpwn-wayback | RouterPWN — Internet Archive (Wayback) catch-all | exploit-index-archive | router-soho | high | queued_for_curation | tracked | https://web.archive.org/web/*/http://routerpwn.com/ |
+| routerpwn-wayback | RouterPWN - Internet Archive (Wayback) catch-all | exploit-index-archive | router-soho | high | queued_for_curation | tracked | https://web.archive.org/web/*/http://routerpwn.com/ |
 | routerpwn-github-mirror | hkm/routerpwn.com (static mirror / offline bundle) | source-mirror | router-soho | high | embedded-in-forge | tracked | https://github.com/hkm/routerpwn.com |
-| exploit-db-hardware-search | Exploit-DB — hardware / router vendor search | exploit-index | router-switch-fw | conditional | reference | tracked | https://www.exploit-db.com/ |
+| exploit-db-hardware-search | Exploit-DB - hardware / router vendor search | exploit-index | router-switch-fw | conditional | reference | tracked | https://www.exploit-db.com/ |
 | intelbras-vuln-checker-gist | Community Intelbras router vuln checklist (gist) | research-index | router-br | conditional | queued_for_curation | tracked | https://gist.github.com/MrCl0wnLab/2c325380cff786e0e1556c1fc8306098 |
-| metasploit-framework-github | Metasploit Framework (Rapid7) — upstream source | exploit-framework | orchestration-bridge | high | adapter-module | tracked | https://github.com/rapid7/metasploit-framework |
-| exploitdb-gitlab | Exploit-DB (OffSec) — upstream reference | exploit-database | research-cli | high | embedded-in-forge | tracked | https://gitlab.com/exploit-database/exploitdb |
-| mikrotikapi-bf-github | MikrotikAPI-BF — RouterOS toolkit (author) | vendor-toolkit | mikrotik-routeros | high | adapter-module | tracked | https://github.com/mrhenrike/MikrotikAPI-BF |
-| bitbucket-router-research | Bitbucket search — router / firmware / exploit keywords | discovery-hint | router-soho | low | reference | tracked | https://bitbucket.org/search?q=router |
+| metasploit-framework-github | Metasploit Framework (Rapid7) - upstream source | exploit-framework | orchestration-bridge | high | adapter-module | tracked | https://github.com/rapid7/metasploit-framework |
+| exploitdb-gitlab | Exploit-DB (OffSec) - upstream reference | exploit-database | research-cli | high | embedded-in-forge | tracked | https://gitlab.com/exploit-database/exploitdb |
+| mikrotikapi-bf-github | MikrotikAPI-BF - RouterOS toolkit (author) | vendor-toolkit | mikrotik-routeros | high | adapter-module | tracked | https://github.com/mrhenrike/MikrotikAPI-BF |
+| bitbucket-router-research | Bitbucket search - router / firmware / exploit keywords | discovery-hint | router-soho | low | reference | tracked | https://bitbucket.org/search?q=router |
 | local-poc-0vercl0k-zenith | 0vercl0k__zenith (clone local PoC) | local-git-submodule | edge_network_poc | high | embedded-local-mirror | tracked | https://github.com/0vercl0k/zenith.git |
 | local-poc-0xedh-mistrastar-mips-exploit | 0xedh__mistrastar-mips-exploit (clone local PoC) | local-git-submodule | iot_embedded_poc | conditional | embedded-local-mirror | tracked | https://github.com/0xedh/mistrastar-mips-exploit.git |
 | local-poc-0xyassine-poc-seeker | 0xyassine__poc-seeker (clone local PoC) | local-git-submodule | edge_network_poc | high | embedded-local-mirror | tracked | https://github.com/0xyassine/poc-seeker.git |
@@ -1246,7 +1246,7 @@
 - CVEs: CVE-2020-10135
 - Attack classes: auth_bypass
 - Module paths:
-  - `modules/generic/bluetooth/bias_attack_bridge.py`
+ - `modules/generic/bluetooth/bias_attack_bridge.py`
 
 ### bluetooth / ble_bluffs_native
 
@@ -1254,7 +1254,7 @@
 - CVEs: CVE-2023-24023
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/ble_bluffs_native.py`
+ - `modules/generic/bluetooth/ble_bluffs_native.py`
 
 ### bluetooth / ble_btlejack
 
@@ -1262,7 +1262,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/ble_btlejack.py`
+ - `modules/generic/bluetooth/ble_btlejack.py`
 
 ### bluetooth / ble_crackle
 
@@ -1270,7 +1270,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/ble_crackle.py`
+ - `modules/generic/bluetooth/ble_crackle.py`
 
 ### bluetooth / ble_extra_attacks
 
@@ -1278,7 +1278,7 @@
 - CVEs: CVE-2020-15802, CVE-2020-9770
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/ble_extra_attacks.py`
+ - `modules/generic/bluetooth/ble_extra_attacks.py`
 
 ### bluetooth / ble_phishing
 
@@ -1286,7 +1286,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/ble_phishing.py`
+ - `modules/generic/bluetooth/ble_phishing.py`
 
 ### bluetooth / ble_sweyntooth_bridge
 
@@ -1294,7 +1294,7 @@
 - CVEs: CVE-2019-16336, CVE-2019-17071, CVE-2019-17516, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-17521, CVE-2019-9506
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/bluetooth/ble_sweyntooth_bridge.py`
+ - `modules/generic/bluetooth/ble_sweyntooth_bridge.py`
 
 ### bluetooth / blueborne_attack
 
@@ -1302,7 +1302,7 @@
 - CVEs: CVE-2017-0781, CVE-2017-0785, CVE-2017-1000251
 - Attack classes: info_disclosure
 - Module paths:
-  - `modules/generic/bluetooth/blueborne_attack.py`
+ - `modules/generic/bluetooth/blueborne_attack.py`
 
 ### bluetooth / braktooth_bridge
 
@@ -1310,7 +1310,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/braktooth_bridge.py`
+ - `modules/generic/bluetooth/braktooth_bridge.py`
 
 ### bluetooth / bt_baseband_attack
 
@@ -1318,7 +1318,7 @@
 - CVEs: CVE-2019-16336, CVE-2019-17060, CVE-2019-17061, CVE-2019-17517, CVE-2019-17518, CVE-2019-17519, CVE-2019-17520, CVE-2019-19194, CVE-2019-19195, CVE-2019-19196, CVE-2021-28139
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/bt_baseband_attack.py`
+ - `modules/generic/bluetooth/bt_baseband_attack.py`
 
 ### bluetooth / bt_classic_suite
 
@@ -1326,7 +1326,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/bt_classic_suite.py`
+ - `modules/generic/bluetooth/bt_classic_suite.py`
 
 ### bluetooth / bt_hid_injection
 
@@ -1334,7 +1334,7 @@
 - CVEs: CVE-2023-45866, CVE-2024-23717
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/bt_hid_injection.py`
+ - `modules/generic/bluetooth/bt_hid_injection.py`
 
 ### bluetooth / bt_session_attack
 
@@ -1342,7 +1342,7 @@
 - CVEs: CVE-2019-9506, CVE-2020-10135, CVE-2023-24023
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/bt_session_attack.py`
+ - `modules/generic/bluetooth/bt_session_attack.py`
 
 ### bluetooth / btle_enumerate
 
@@ -1350,7 +1350,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/btle_enumerate.py`
+ - `modules/generic/bluetooth/btle_enumerate.py`
 
 ### bluetooth / btle_scan
 
@@ -1358,7 +1358,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/btle_scan.py`
+ - `modules/generic/bluetooth/btle_scan.py`
 
 ### bluetooth / btle_write
 
@@ -1366,7 +1366,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/btle_write.py`
+ - `modules/generic/bluetooth/btle_write.py`
 
 ### bluetooth / killerbee_zigbee_bridge
 
@@ -1374,7 +1374,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/bluetooth/killerbee_zigbee_bridge.py`
+ - `modules/generic/bluetooth/killerbee_zigbee_bridge.py`
 
 ### bluetooth / knob_attack_bridge
 
@@ -1382,7 +1382,7 @@
 - CVEs: CVE-2019-9506
 - Attack classes: none
 - Module paths:
-  - `modules/generic/bluetooth/knob_attack_bridge.py`
+ - `modules/generic/bluetooth/knob_attack_bridge.py`
 
 ### cve / cve_lookup
 
@@ -1390,7 +1390,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/cve/cve_lookup.py`
+ - `modules/generic/cve/cve_lookup.py`
 
 ### cve / zigbee_attack
 
@@ -1398,7 +1398,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/cve/zigbee_attack.py`
+ - `modules/generic/cve/zigbee_attack.py`
 
 ### external / aircrack_full_bridge
 
@@ -1406,7 +1406,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/aircrack_full_bridge.py`
+ - `modules/generic/external/aircrack_full_bridge.py`
 
 ### external / airgeddon_bridge
 
@@ -1414,7 +1414,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/airgeddon_bridge.py`
+ - `modules/generic/external/airgeddon_bridge.py`
 
 ### external / bettercap_bridge
 
@@ -1422,7 +1422,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/external/bettercap_bridge.py`
+ - `modules/generic/external/bettercap_bridge.py`
 
 ### external / bruce_esp32_lab_notes
 
@@ -1430,7 +1430,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/bruce_esp32_lab_notes.py`
+ - `modules/generic/external/bruce_esp32_lab_notes.py`
 
 ### external / bruce_serial_bridge
 
@@ -1438,7 +1438,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/bruce_serial_bridge.py`
+ - `modules/generic/external/bruce_serial_bridge.py`
 
 ### external / bruce_upstream_tracker
 
@@ -1446,7 +1446,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/bruce_upstream_tracker.py`
+ - `modules/generic/external/bruce_upstream_tracker.py`
 
 ### external / bully_bridge
 
@@ -1454,7 +1454,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/bully_bridge.py`
+ - `modules/generic/external/bully_bridge.py`
 
 ### external / eaphammer_bridge
 
@@ -1462,7 +1462,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/eaphammer_bridge.py`
+ - `modules/generic/external/eaphammer_bridge.py`
 
 ### external / fluxion_bridge
 
@@ -1470,7 +1470,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/fluxion_bridge.py`
+ - `modules/generic/external/fluxion_bridge.py`
 
 ### external / hashcatch_bridge
 
@@ -1478,7 +1478,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/hashcatch_bridge.py`
+ - `modules/generic/external/hashcatch_bridge.py`
 
 ### external / hcx_toolchain_bridge
 
@@ -1486,7 +1486,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/hcx_toolchain_bridge.py`
+ - `modules/generic/external/hcx_toolchain_bridge.py`
 
 ### external / hcxdumptool_live_bridge
 
@@ -1494,7 +1494,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/hcxdumptool_live_bridge.py`
+ - `modules/generic/external/hcxdumptool_live_bridge.py`
 
 ### external / hostapd_wpe_bridge
 
@@ -1502,7 +1502,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/hostapd_wpe_bridge.py`
+ - `modules/generic/external/hostapd_wpe_bridge.py`
 
 ### external / kismet_bridge
 
@@ -1510,7 +1510,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/kismet_bridge.py`
+ - `modules/generic/external/kismet_bridge.py`
 
 ### external / mdk4_bridge
 
@@ -1518,7 +1518,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/external/mdk4_bridge.py`
+ - `modules/generic/external/mdk4_bridge.py`
 
 ### external / oneshot_bridge
 
@@ -1526,7 +1526,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/oneshot_bridge.py`
+ - `modules/generic/external/oneshot_bridge.py`
 
 ### external / ot_protocol_bridge
 
@@ -1534,7 +1534,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/external/ot_protocol_bridge.py`
+ - `modules/generic/external/ot_protocol_bridge.py`
 
 ### external / proxmark_rfid_bridge
 
@@ -1542,7 +1542,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/proxmark_rfid_bridge.py`
+ - `modules/generic/external/proxmark_rfid_bridge.py`
 
 ### external / pwnagotchi_bridge
 
@@ -1550,7 +1550,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/pwnagotchi_bridge.py`
+ - `modules/generic/external/pwnagotchi_bridge.py`
 
 ### external / reaver_bridge
 
@@ -1558,7 +1558,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/reaver_bridge.py`
+ - `modules/generic/external/reaver_bridge.py`
 
 ### external / rogue_bridge
 
@@ -1566,7 +1566,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/external/rogue_bridge.py`
+ - `modules/generic/external/rogue_bridge.py`
 
 ### external / router_firmware_bridge
 
@@ -1574,7 +1574,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/router_firmware_bridge.py`
+ - `modules/generic/external/router_firmware_bridge.py`
 
 ### external / sigfox_lorawan_bridge
 
@@ -1582,7 +1582,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/external/sigfox_lorawan_bridge.py`
+ - `modules/generic/external/sigfox_lorawan_bridge.py`
 
 ### external / sniffair_passive_recon
 
@@ -1590,7 +1590,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/sniffair_passive_recon.py`
+ - `modules/generic/external/sniffair_passive_recon.py`
 
 ### external / social_recon_bridge
 
@@ -1598,7 +1598,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/social_recon_bridge.py`
+ - `modules/generic/external/social_recon_bridge.py`
 
 ### external / wifiphisher_bridge
 
@@ -1606,7 +1606,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/wifiphisher_bridge.py`
+ - `modules/generic/external/wifiphisher_bridge.py`
 
 ### external / wifipumpkin3_bridge
 
@@ -1614,7 +1614,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/wifipumpkin3_bridge.py`
+ - `modules/generic/external/wifipumpkin3_bridge.py`
 
 ### external / wifite2_bridge
 
@@ -1622,7 +1622,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/wifite2_bridge.py`
+ - `modules/generic/external/wifite2_bridge.py`
 
 ### external / wireless_tool_prereq_audit
 
@@ -1630,7 +1630,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/wireless_tool_prereq_audit.py`
+ - `modules/generic/external/wireless_tool_prereq_audit.py`
 
 ### external / wirespy_bridge
 
@@ -1638,7 +1638,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/external/wirespy_bridge.py`
+ - `modules/generic/external/wirespy_bridge.py`
 
 ### pcap / pcap_ap_station_mapper
 
@@ -1646,7 +1646,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_ap_station_mapper.py`
+ - `modules/generic/pcap/pcap_ap_station_mapper.py`
 
 ### pcap / pcap_ble_advertising_survey
 
@@ -1654,7 +1654,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_ble_advertising_survey.py`
+ - `modules/generic/pcap/pcap_ble_advertising_survey.py`
 
 ### pcap / pcap_credential_sniffer
 
@@ -1662,7 +1662,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_credential_sniffer.py`
+ - `modules/generic/pcap/pcap_credential_sniffer.py`
 
 ### pcap / pcap_dragonblood
 
@@ -1670,7 +1670,7 @@
 - CVEs: CVE-2019-9494, CVE-2019-9496
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_dragonblood.py`
+ - `modules/generic/pcap/pcap_dragonblood.py`
 
 ### pcap / pcap_eapol_survey
 
@@ -1678,7 +1678,7 @@
 - CVEs: CVE-2017-13077
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_eapol_survey.py`
+ - `modules/generic/pcap/pcap_eapol_survey.py`
 
 ### pcap / pcap_handshake_extractor
 
@@ -1686,7 +1686,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_handshake_extractor.py`
+ - `modules/generic/pcap/pcap_handshake_extractor.py`
 
 ### pcap / pcap_offline_wpa_crack
 
@@ -1694,7 +1694,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_offline_wpa_crack.py`
+ - `modules/generic/pcap/pcap_offline_wpa_crack.py`
 
 ### pcap / pcap_pmkid_attack
 
@@ -1702,7 +1702,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_pmkid_attack.py`
+ - `modules/generic/pcap/pcap_pmkid_attack.py`
 
 ### pcap / pcap_sql_workspace
 
@@ -1710,7 +1710,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_sql_workspace.py`
+ - `modules/generic/pcap/pcap_sql_workspace.py`
 
 ### pcap / pcap_tkip_downgrade
 
@@ -1718,7 +1718,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_tkip_downgrade.py`
+ - `modules/generic/pcap/pcap_tkip_downgrade.py`
 
 ### pcap / pcap_wep_crack
 
@@ -1726,7 +1726,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_wep_crack.py`
+ - `modules/generic/pcap/pcap_wep_crack.py`
 
 ### pcap / pcap_wpe_harvest
 
@@ -1734,7 +1734,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/pcap/pcap_wpe_harvest.py`
+ - `modules/generic/pcap/pcap_wpe_harvest.py`
 
 ### wifi_lab / _disclaimer
 
@@ -1742,7 +1742,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/_disclaimer.py`
+ - `modules/generic/wifi_lab/_disclaimer.py`
 
 ### wifi_lab / _i18n_service
 
@@ -1750,7 +1750,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/_i18n_service.py`
+ - `modules/generic/wifi_lab/_i18n_service.py`
 
 ### wifi_lab / adaptive_harvest
 
@@ -1758,7 +1758,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/adaptive_harvest.py`
+ - `modules/generic/wifi_lab/adaptive_harvest.py`
 
 ### wifi_lab / aireplay_deauth_barrage
 
@@ -1766,7 +1766,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/aireplay_deauth_barrage.py`
+ - `modules/generic/wifi_lab/aireplay_deauth_barrage.py`
 
 ### wifi_lab / ap_less_client_attack
 
@@ -1774,7 +1774,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/ap_less_client_attack.py`
+ - `modules/generic/wifi_lab/ap_less_client_attack.py`
 
 ### wifi_lab / auth_flood
 
@@ -1782,7 +1782,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/auth_flood.py`
+ - `modules/generic/wifi_lab/auth_flood.py`
 
 ### wifi_lab / awdl_attack
 
@@ -1790,7 +1790,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/awdl_attack.py`
+ - `modules/generic/wifi_lab/awdl_attack.py`
 
 ### wifi_lab / beacon_flood_advanced
 
@@ -1798,7 +1798,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/beacon_flood_advanced.py`
+ - `modules/generic/wifi_lab/beacon_flood_advanced.py`
 
 ### wifi_lab / captive_portal_engine
 
@@ -1806,7 +1806,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/captive_portal_engine.py`
+ - `modules/generic/wifi_lab/captive_portal_engine.py`
 
 ### wifi_lab / captive_portal_modern_lab
 
@@ -1814,7 +1814,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/captive_portal_modern_lab.py`
+ - `modules/generic/wifi_lab/captive_portal_modern_lab.py`
 
 ### wifi_lab / connectivity_portal
 
@@ -1822,7 +1822,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/connectivity_portal.py`
+ - `modules/generic/wifi_lab/connectivity_portal.py`
 
 ### wifi_lab / csa_mc_mitm_attack
 
@@ -1830,7 +1830,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/csa_mc_mitm_attack.py`
+ - `modules/generic/wifi_lab/csa_mc_mitm_attack.py`
 
 ### wifi_lab / deauth_csa_suite
 
@@ -1838,7 +1838,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/wifi_lab/deauth_csa_suite.py`
+ - `modules/generic/wifi_lab/deauth_csa_suite.py`
 
 ### wifi_lab / deauth_multimode
 
@@ -1846,7 +1846,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/deauth_multimode.py`
+ - `modules/generic/wifi_lab/deauth_multimode.py`
 
 ### wifi_lab / dragonblood_suite
 
@@ -1854,7 +1854,7 @@
 - CVEs: CVE-2019-13377, CVE-2019-13456, CVE-2019-9494, CVE-2019-9495, CVE-2019-9496, CVE-2019-9497, CVE-2019-9498, CVE-2019-9499
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/wifi_lab/dragonblood_suite.py`
+ - `modules/generic/wifi_lab/dragonblood_suite.py`
 
 ### wifi_lab / dualband_evil_twin
 
@@ -1862,7 +1862,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/dualband_evil_twin.py`
+ - `modules/generic/wifi_lab/dualband_evil_twin.py`
 
 ### wifi_lab / eap_relay_attack
 
@@ -1870,7 +1870,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/eap_relay_attack.py`
+ - `modules/generic/wifi_lab/eap_relay_attack.py`
 
 ### wifi_lab / evil_qr_attack
 
@@ -1878,7 +1878,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/evil_qr_attack.py`
+ - `modules/generic/wifi_lab/evil_qr_attack.py`
 
 ### wifi_lab / evil_twin_advanced
 
@@ -1886,7 +1886,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/evil_twin_advanced.py`
+ - `modules/generic/wifi_lab/evil_twin_advanced.py`
 
 ### wifi_lab / evil_twin_hostapd_templates
 
@@ -1894,7 +1894,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/evil_twin_hostapd_templates.py`
+ - `modules/generic/wifi_lab/evil_twin_hostapd_templates.py`
 
 ### wifi_lab / evil_twin_workflow
 
@@ -1902,7 +1902,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/evil_twin_workflow.py`
+ - `modules/generic/wifi_lab/evil_twin_workflow.py`
 
 ### wifi_lab / evilginx_prereq_pointer
 
@@ -1910,7 +1910,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/evilginx_prereq_pointer.py`
+ - `modules/generic/wifi_lab/evilginx_prereq_pointer.py`
 
 ### wifi_lab / fragattacks
 
@@ -1918,7 +1918,7 @@
 - CVEs: CVE-2020-24586, CVE-2020-24587, CVE-2020-24588, CVE-2020-26144, CVE-2020-26146
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/fragattacks.py`
+ - `modules/generic/wifi_lab/fragattacks.py`
 
 ### wifi_lab / gps_wardriving_ndjson
 
@@ -1926,7 +1926,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/gps_wardriving_ndjson.py`
+ - `modules/generic/wifi_lab/gps_wardriving_ndjson.py`
 
 ### wifi_lab / handshake_snooper
 
@@ -1934,7 +1934,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/handshake_snooper.py`
+ - `modules/generic/wifi_lab/handshake_snooper.py`
 
 ### wifi_lab / hashcat_gpu_orchestrator
 
@@ -1942,7 +1942,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/hashcat_gpu_orchestrator.py`
+ - `modules/generic/wifi_lab/hashcat_gpu_orchestrator.py`
 
 ### wifi_lab / karma_mana_attack
 
@@ -1950,7 +1950,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/karma_mana_attack.py`
+ - `modules/generic/wifi_lab/karma_mana_attack.py`
 
 ### wifi_lab / kr00k_attack
 
@@ -1958,7 +1958,7 @@
 - CVEs: CVE-2019-15126
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/kr00k_attack.py`
+ - `modules/generic/wifi_lab/kr00k_attack.py`
 
 ### wifi_lab / krack_attack
 
@@ -1966,7 +1966,7 @@
 - CVEs: CVE-2017-13077
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/krack_attack.py`
+ - `modules/generic/wifi_lab/krack_attack.py`
 
 ### wifi_lab / mdk3_bridge
 
@@ -1974,7 +1974,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/mdk3_bridge.py`
+ - `modules/generic/wifi_lab/mdk3_bridge.py`
 
 ### wifi_lab / mdk4_bridge
 
@@ -1982,7 +1982,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/wifi_lab/mdk4_bridge.py`
+ - `modules/generic/wifi_lab/mdk4_bridge.py`
 
 ### wifi_lab / mfa_phishing_portal
 
@@ -1990,7 +1990,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/mfa_phishing_portal.py`
+ - `modules/generic/wifi_lab/mfa_phishing_portal.py`
 
 ### wifi_lab / mitm_wifi_bridge
 
@@ -1998,7 +1998,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/mitm_wifi_bridge.py`
+ - `modules/generic/wifi_lab/mitm_wifi_bridge.py`
 
 ### wifi_lab / momo_integrated_attack
 
@@ -2006,7 +2006,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/momo_integrated_attack.py`
+ - `modules/generic/wifi_lab/momo_integrated_attack.py`
 
 ### wifi_lab / pcap_rf_anomaly_ml
 
@@ -2014,7 +2014,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/pcap_rf_anomaly_ml.py`
+ - `modules/generic/wifi_lab/pcap_rf_anomaly_ml.py`
 
 ### wifi_lab / pcap_wpa_handshake_validate
 
@@ -2022,7 +2022,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/pcap_wpa_handshake_validate.py`
+ - `modules/generic/wifi_lab/pcap_wpa_handshake_validate.py`
 
 ### wifi_lab / pmk_precompute
 
@@ -2030,7 +2030,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/pmk_precompute.py`
+ - `modules/generic/wifi_lab/pmk_precompute.py`
 
 ### wifi_lab / pmkid_autopwn
 
@@ -2038,7 +2038,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/pmkid_autopwn.py`
+ - `modules/generic/wifi_lab/pmkid_autopwn.py`
 
 ### wifi_lab / replay_attack
 
@@ -2046,7 +2046,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/replay_attack.py`
+ - `modules/generic/wifi_lab/replay_attack.py`
 
 ### wifi_lab / research_ecosystem_status
 
@@ -2054,7 +2054,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/research_ecosystem_status.py`
+ - `modules/generic/wifi_lab/research_ecosystem_status.py`
 
 ### wifi_lab / responder_wifi
 
@@ -2062,7 +2062,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/responder_wifi.py`
+ - `modules/generic/wifi_lab/responder_wifi.py`
 
 ### wifi_lab / rogue_ap_hostapd_bridge
 
@@ -2070,7 +2070,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/rogue_ap_hostapd_bridge.py`
+ - `modules/generic/wifi_lab/rogue_ap_hostapd_bridge.py`
 
 ### wifi_lab / selective_jammer
 
@@ -2078,7 +2078,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/selective_jammer.py`
+ - `modules/generic/wifi_lab/selective_jammer.py`
 
 ### wifi_lab / ssid_confusion
 
@@ -2086,7 +2086,7 @@
 - CVEs: CVE-2023-52424
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/ssid_confusion.py`
+ - `modules/generic/wifi_lab/ssid_confusion.py`
 
 ### wifi_lab / transparent_proxy
 
@@ -2094,7 +2094,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/transparent_proxy.py`
+ - `modules/generic/wifi_lab/transparent_proxy.py`
 
 ### wifi_lab / wardriving_deauth_loop
 
@@ -2102,7 +2102,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wardriving_deauth_loop.py`
+ - `modules/generic/wifi_lab/wardriving_deauth_loop.py`
 
 ### wifi_lab / wep_attack_suite
 
@@ -2110,7 +2110,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wep_attack_suite.py`
+ - `modules/generic/wifi_lab/wep_attack_suite.py`
 
 ### wifi_lab / wifi_security_analyzer
 
@@ -2118,7 +2118,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wifi_security_analyzer.py`
+ - `modules/generic/wifi_lab/wifi_security_analyzer.py`
 
 ### wifi_lab / wifi_sniffer
 
@@ -2126,7 +2126,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wifi_sniffer.py`
+ - `modules/generic/wifi_lab/wifi_sniffer.py`
 
 ### wifi_lab / wireless_ids
 
@@ -2134,7 +2134,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wireless_ids.py`
+ - `modules/generic/wifi_lab/wireless_ids.py`
 
 ### wifi_lab / wordlist_orchestrator
 
@@ -2142,7 +2142,7 @@
 - CVEs: none
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/wifi_lab/wordlist_orchestrator.py`
+ - `modules/generic/wifi_lab/wordlist_orchestrator.py`
 
 ### wifi_lab / wpa3_attack_suite
 
@@ -2150,7 +2150,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wpa3_attack_suite.py`
+ - `modules/generic/wifi_lab/wpa3_attack_suite.py`
 
 ### wifi_lab / wpa3_sae_flood_native
 
@@ -2158,7 +2158,7 @@
 - CVEs: CVE-2019-9494
 - Attack classes: dos_or_crash
 - Module paths:
-  - `modules/generic/wifi_lab/wpa3_sae_flood_native.py`
+ - `modules/generic/wifi_lab/wpa3_sae_flood_native.py`
 
 ### wifi_lab / wpa_online_brute
 
@@ -2166,7 +2166,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wpa_online_brute.py`
+ - `modules/generic/wifi_lab/wpa_online_brute.py`
 
 ### wifi_lab / wps_multimode
 
@@ -2174,7 +2174,7 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wifi_lab/wps_multimode.py`
+ - `modules/generic/wifi_lab/wps_multimode.py`
 
 ### wordlist / wordlist_generator
 
@@ -2182,5 +2182,5 @@
 - CVEs: none
 - Attack classes: none
 - Module paths:
-  - `modules/generic/wordlist/wordlist_generator.py`
+ - `modules/generic/wordlist/wordlist_generator.py`
 

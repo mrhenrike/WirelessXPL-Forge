@@ -30,7 +30,7 @@ def test_exception_message() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.exploit.option — Option descriptors
+# wirelessxpl.core.exploit.option - Option descriptors
 # ---------------------------------------------------------------------------
 
 def test_option_base() -> None:
@@ -148,7 +148,7 @@ def test_optmac_invalid() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.exploit.utils — helper functions
+# wirelessxpl.core.exploit.utils - helper functions
 # ---------------------------------------------------------------------------
 
 def test_is_ipv4() -> None:
@@ -225,7 +225,7 @@ def test_module_path_disabled() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.config — timing parser
+# wirelessxpl.core.config - timing parser
 # ---------------------------------------------------------------------------
 
 def test_parse_timing_by_number() -> None:
@@ -267,7 +267,7 @@ def test_timing_by_name_map() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.config — IfaceInfo + WXFConfig (minimal)
+# wirelessxpl.core.config - IfaceInfo + WXFConfig (minimal)
 # ---------------------------------------------------------------------------
 
 def test_iface_info_dataclass() -> None:
@@ -292,7 +292,7 @@ def test_is_internal_pattern() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.glossary — search and format
+# wirelessxpl.core.glossary - search and format
 # ---------------------------------------------------------------------------
 
 def test_glossary_has_entries() -> None:
@@ -349,7 +349,7 @@ def test_normalize_term() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.bt_crypto — Bluetooth SAFER+ cryptographic primitives
+# wirelessxpl.core.bt_crypto - Bluetooth SAFER+ cryptographic primitives
 # ---------------------------------------------------------------------------
 
 def test_exp45_log45_inverse() -> None:
@@ -450,7 +450,7 @@ def test_kdf_full_chain() -> None:
 
 
 # ---------------------------------------------------------------------------
-# wirelessxpl.core.pool — importability
+# wirelessxpl.core.pool - importability
 # ---------------------------------------------------------------------------
 
 def test_pool_importable() -> None:

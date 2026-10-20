@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""BrAcketooth — BT Classic stack vulnerability bridge (multiple CVEs).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""BrAcketooth - BT Classic stack vulnerability bridge (multiple CVEs).
 
 BrAcketooth exposes 16+ vulnerabilities in BT Classic (BR/EDR) stacks from major
 vendors (Intel, Qualcomm, Zhuhai Jieli, Silicon Labs, Cypress/Infineon, Espressif,
 Infineon CYW920819). Vulnerabilities include:
 
-  - LMP deadlock / connection freeze
-  - Memory corruption via LMP PDUD overflow
-  - L2CAP segmentation abuse
-  - Feature page injection
-  - LMP invalid timing recovery
-  - Feature response flooding
-  - LLID deadlock
+ - LMP deadlock / connection freeze
+ - Memory corruption via LMP PDUD overflow
+ - L2CAP segmentation abuse
+ - Feature page injection
+ - LMP invalid timing recovery
+ - Feature response flooding
+ - LLID deadlock
 
 All attacks require a modified BT dongle/device running the BrAcketooth framework
 firmware (based on ESP-IDF for ESP32 or nRF-based targets).
 
 Incorporated from:
-  - submodules/IoT/braktooth (Matheus Eduardo Garbelini / SUTD)
+ - submodules/IoT/braktooth (Matheus Eduardo Garbelini / SUTD)
 
 Version: 1.0.0
 """
@@ -44,7 +44,7 @@ def _braktooth_root() -> Path:
 
 
 _ATTACK_MAP: dict[str, str] = {
-    "lmp_max_slot_overflow": "LMP max slot overflow — memory corruption",
+    "lmp_max_slot_overflow": "LMP max slot overflow - memory corruption",
     "lmp_pdud_invalid_crc": "Invalid CRC in LMP PDUD",
     "l2cap_segfault": "L2CAP segmentation fault",
     "feature_page_injection": "Feature page injection",
@@ -52,7 +52,7 @@ _ATTACK_MAP: dict[str, str] = {
     "feature_req_flood": "Feature request flooding (DoS)",
     "lm_ext_feat_resp_flood": "LM extended feature response flood",
     "llid_deadlock": "LLID deadlock",
-    "duplicated_iocap": "Duplicated IO Capability — memory corruption",
+    "duplicated_iocap": "Duplicated IO Capability - memory corruption",
     "invalid_feature_req": "Invalid LMP feature request",
     "multiple_scheduled_tasks": "Multiple scheduled tasks overflow",
     "paging_scan_timeout": "Paging scan timeout abuse",
@@ -73,7 +73,7 @@ class Exploit(Exploit):
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
-            "Matheus Eduardo Garbelini / SUTD (BrAcketooth — invoked as subprocess)",
+            "Matheus Eduardo Garbelini / SUTD (BrAcketooth - invoked as subprocess)",
         ),
         "references": (
             "https://github.com/Matheus-Garbelini/braktooth_esp32_bluetooth_classic_attacks",
@@ -92,7 +92,7 @@ class Exploit(Exploit):
 
     def _info_mode(self) -> None:
         root = _braktooth_root()
-        print_status("BrAcketooth — BT Classic Stack Vulnerabilities")
+        print_status("BrAcketooth - BT Classic Stack Vulnerabilities")
         print_info("Fabricantes afetados: Intel, Qualcomm, Jieli, Silicon Labs, Cypress, Espressif")
         print_info(
             "Hardware necessário: ESP32 DevKit ou dispositivo BT customizado com "
@@ -153,7 +153,7 @@ class Exploit(Exploit):
 
             cmd_str = " ".join(cmd)
             if self.dry_run:
-                print_info(f"DRY RUN [{i + 1}/{int(self.attack_repeat)}] — {cmd_str}")
+                print_info(f"DRY RUN [{i + 1}/{int(self.attack_repeat)}] - {cmd_str}")
                 continue
 
             print_status(f"[{i + 1}/{int(self.attack_repeat)}] BrAcketooth {attack_name}: alvo={victim}")

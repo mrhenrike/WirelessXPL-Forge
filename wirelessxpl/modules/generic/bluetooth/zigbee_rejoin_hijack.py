@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 """Zigbee Rejoin Hijack via Beacon Spoofing e Transport Key Capture.
 
@@ -87,7 +87,7 @@ class Exploit(Exploit):
         "description": (
             "Força dispositivo Zigbee end device a reingressar na rede via spoofing "
             "de beacons do coordenador PAN e envio de frames de desassociação. "
-            "Captura o handshake de rejoin para extrair a Transport Key — comprometendo "
+            "Captura o handshake de rejoin para extrair a Transport Key - comprometendo "
             "toda a rede Zigbee. Ataque em 4 fases: beacon spoof → desassociação → "
             "segundo burst → captura da Transport Key."
         ),
@@ -203,9 +203,9 @@ class Exploit(Exploit):
 
         print_info("")
         print_info("Mitigação:")
-        print_info("  - Usar Zigbee 3.0 Install Code para troca de chave segura")
-        print_info("  - Desabilitar rejoin sem autenticação (Trust Center policy)")
-        print_info("  - Monitorar canal RF para beacons inesperados do coordenador")
+        print_info(" - Usar Zigbee 3.0 Install Code para troca de chave segura")
+        print_info(" - Desabilitar rejoin sem autenticação (Trust Center policy)")
+        print_info(" - Monitorar canal RF para beacons inesperados do coordenador")
 
     def _exploit(self) -> None:
         """E2E exploit: inject IEEE 802.15.4 frames via raw serial to Zigbee dongle."""

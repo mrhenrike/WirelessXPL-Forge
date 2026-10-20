@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""KNOB — Key Negotiation of Bluetooth attack bridge (CVE-2019-9506).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""KNOB - Key Negotiation of Bluetooth attack bridge (CVE-2019-9506).
 
 KNOB (Key Negotiation Of Bluetooth) forces a 1-byte entropy key during BT BR/EDR
 link key negotiation, allowing brute-force of the session key in real-time.
@@ -16,12 +16,12 @@ Attack flow:
   4. Attacker brute-forces session key (256 values) in microseconds.
 
 This module bridges the knob-attack PoC repository:
-  - submodules/IoT/knob-attack (ICASI/Daniele Antonioli, Apache-2.0)
+ - submodules/IoT/knob-attack (ICASI/Daniele Antonioli, Apache-2.0)
 
 Modes:
-  - **info**: describe the attack and CVEs.
-  - **poc**: run the PoC Python script from the knob-attack submodule.
-  - **internalblue**: hint for InternalBlue-based LMP injection setup.
+ - **info**: describe the attack and CVEs.
+ - **poc**: run the PoC Python script from the knob-attack submodule.
+ - **internalblue**: hint for InternalBlue-based LMP injection setup.
 
 Version: 1.0.0
 """
@@ -48,13 +48,13 @@ def _knob_root() -> Path:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """KNOB BT key negotiation attack (CVE-2019-9506) — bridge."""
+    """KNOB BT key negotiation attack (CVE-2019-9506) - bridge."""
 
     __info__ = {
         "name": "KNOB BT Key Negotiation Attack Bridge",
         "description": (
-            "KNOB (CVE-2019-9506) — forces 1-byte entropy in BT BR/EDR key negotiation, "
-            "enabling real-time brute-force of the session key. Affects BT 1.0–5.1. "
+            "KNOB (CVE-2019-9506) - forces 1-byte entropy in BT BR/EDR key negotiation, "
+            "enabling real-time brute-force of the session key. Affects BT 1.0-5.1. "
             "Requires attacker-in-the-middle BT position and compatible hardware with "
             "LMP injection capability (e.g. InternalBlue-patched firmware)."
         ),
@@ -86,21 +86,21 @@ class Exploit(Exploit):
     _VALID_MODES = frozenset({"info", "poc", "internalblue"})
 
     def _info_mode(self) -> None:
-        print_status("KNOB — Key Negotiation of Bluetooth (CVE-2019-9506)")
-        print_info("Afeta: Bluetooth BR/EDR (Classic) versões 1.0–5.1.")
+        print_status("KNOB - Key Negotiation of Bluetooth (CVE-2019-9506)")
+        print_info("Afeta: Bluetooth BR/EDR (Classic) versões 1.0-5.1.")
         print_info("Impacto: força entropia de 1 byte, permitindo brute-force em ~256 tentativas.")
         print_info("Patches: todos os SoC BT modernos (2019+) incluem correção.")
         print_info(
             "\nRequisitos para exploração:\n"
-            "  - Posição MITM no link BT (firmware LMP patched)\n"
-            "  - InternalBlue (https://github.com/seemoo-lab/internalblue)\n"
-            "  - Hardware compatível: Nexus 5, BCM4339/4358 chipsets\n"
-            "  - Dois dispositivos vítima em processo de pairing (BR/EDR)"
+            " - Posição MITM no link BT (firmware LMP patched)\n"
+            " - InternalBlue (https://github.com/seemoo-lab/internalblue)\n"
+            " - Hardware compatível: Nexus 5, BCM4339/4358 chipsets\n"
+            " - Dois dispositivos vítima em processo de pairing (BR/EDR)"
         )
         print_info(f"Submodule KNOB: {_knob_root()}")
 
     def _internalblue_hint(self) -> None:
-        print_status("KNOB via InternalBlue — setup hints")
+        print_status("KNOB via InternalBlue - setup hints")
         print_info(
             "1. Instale InternalBlue: pip install internalblue\n"
             "2. Flash firmware BT (Nexus 5 / BCM4339): internalblue patch install\n"
@@ -149,7 +149,7 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status(f"KNOB PoC: forçando entropia={int(self.forced_entropy)} byte(s)")

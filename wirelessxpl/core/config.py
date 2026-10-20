@@ -1,24 +1,24 @@
-"""WXF Global Configuration — singleton accessible from any module.
+"""WXF Global Configuration - singleton accessible from any module.
 
 Holds framework-wide defaults that apply to all modules unless overridden:
-  - destructive:   True  (full destructive/intrusive/disruptive mode)
-  - simulate:      False (never simulate — always execute for real)
-  - verbose:       True  (normal logging level)
-  - timing:        T3/normal (nmap-style T0-T5)
-  - reverse_host:  local machine IP (for reverse-shell payloads)
-  - reverse_port:  4444
-  - iface_mon:     first external USB WiFi interface in monitor mode
-  - iface_inj:     second external USB WiFi interface (for injection/AP)
-  - iface_extra:   remaining external interfaces
-  - lhost/lport:   same as reverse_host/reverse_port (metasploit naming)
+ - destructive:   True  (full destructive/intrusive/disruptive mode)
+ - simulate:      False (never simulate - always execute for real)
+ - verbose:       True  (normal logging level)
+ - timing:        T3/normal (nmap-style T0-T5)
+ - reverse_host:  local machine IP (for reverse-shell payloads)
+ - reverse_port:  4444
+ - iface_mon:     first external USB WiFi interface in monitor mode
+ - iface_inj:     second external USB WiFi interface (for injection/AP)
+ - iface_extra:   remaining external interfaces
+ - lhost/lport:   same as reverse_host/reverse_port (metasploit naming)
 
-Timing profiles (nmap-style, T0–T5):
-  T0 / paranoid   — 5 min between probes, max stealth
-  T1 / sneaky     — 15 s between probes, slow
-  T2 / polite     — 0.4 s between probes, low noise
-  T3 / normal     — default balanced (most modules use this)
-  T4 / aggressive — minimal delays, faster scans, more noise
-  T5 / insane     — no delays, maximum speed/aggression
+Timing profiles (nmap-style, T0-T5):
+  T0 / paranoid - 5 min between probes, max stealth
+  T1 / sneaky - 15 s between probes, slow
+  T2 / polite - 0.4 s between probes, low noise
+  T3 / normal - default balanced (most modules use this)
+  T4 / aggressive - minimal delays, faster scans, more noise
+  T5 / insane - no delays, maximum speed/aggression
 
 Interface selection rules (applied at startup and on refresh):
   1. Never select the interface providing the default route (internet)
@@ -226,7 +226,7 @@ class WXFConfig:
 
     # ── Behaviour ──────────────────────────────────────────────────────────
     destructive:     bool  = True   # always run in full destructive mode
-    simulate:        bool  = False  # never simulate — execute for real
+    simulate:        bool  = False  # never simulate - execute for real
     verbose:         bool  = True   # normal log verbosity
     dry_run:         bool  = False  # print commands but don't execute
 

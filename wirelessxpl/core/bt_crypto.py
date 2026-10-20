@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Bluetooth Classic cryptographic primitives (SAFER+ based).
 
 Pure Python 3 implementation of the Bluetooth BR/EDR key derivation and
 authentication functions from the BT Core Spec v5.x:
 
-  - H()            SAFER+ hash function (Ar rounds)
-  - e1()           Authentication: SRES + ACO from link key, AU_RAND, BTADD
-  - e3()           Encryption key Kc from link key, EN_RAND, COF
-  - Kc_to_Kc_prime()  Entropy reduction of Kc via GF(2^128) polynomials
-  - kdf()          Full Key Derivation: link key -> session key (Kc')
+ - H()            SAFER+ hash function (Ar rounds)
+ - e1()           Authentication: SRES + ACO from link key, AU_RAND, BTADD
+ - e3()           Encryption key Kc from link key, EN_RAND, COF
+ - Kc_to_Kc_prime()  Entropy reduction of Kc via GF(2^128) polynomials
+ - kdf()          Full Key Derivation: link key -> session key (Kc')
 
 Used by KNOB, BIAS, and BLUFFS attack modules for session key
 computation, verification, and entropy analysis.

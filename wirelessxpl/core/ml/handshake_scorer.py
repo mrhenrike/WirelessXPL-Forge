@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Pontuação de qualidade de handshakes WPA e detecção de anomalias em features."""
 
 
@@ -55,13 +55,13 @@ class HandshakeScore:
     """Resultado agregado da análise de um handshake WPA."""
 
     quality: float
-    """Pontuação geral 0–100 (maior = melhor para pós-processamento/crack)."""
+    """Pontuação geral 0-100 (maior = melhor para pós-processamento/crack)."""
 
     completeness: float
-    """Grau de completude do four-way handshake (0–1)."""
+    """Grau de completude do four-way handshake (0-1)."""
 
     crack_probability: float
-    """Probabilidade estimada de sucesso de quebra (0–1)."""
+    """Probabilidade estimada de sucesso de quebra (0-1)."""
 
     anomaly_score: float
     """Score de anomalia (quanto maior, mais típico / menos anômalo em IF)."""
@@ -199,7 +199,7 @@ class HandshakeScorer:
         """Calcula ``HandshakeScore`` a partir de features agregadas de PCAP/EAPOL.
 
         Args:
-            pcap_features: Dicionário com contagens EAPOL, presença M1–M4,
+            pcap_features: Dicionário com contagens EAPOL, presença M1-M4,
                 consistência de replay counter, unicidade de nonces, RSSI e
                 duração da captura.
 

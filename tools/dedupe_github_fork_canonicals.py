@@ -3,7 +3,7 @@
 """Group GitHub catalog entries by upstream (parent) repository and suggest canonical URLs.
 
 Uses ``gh api repos/{owner}/{repo}`` to read ``fork`` and ``parent.full_name``. Repos that share
-the same canonical root (parent if fork, else self) can be deduplicated for clones — typically
+the same canonical root (parent if fork, else self) can be deduplicated for clones - typically
 keep the upstream or the fork with ``user_seed`` / highest star count.
 
 Does not rewrite third_party_router_exploit_repos.json by default; emits a JSON report.
@@ -121,7 +121,7 @@ def main() -> int:
         sorted_m = sorted(
             members,
             key=lambda m: (
-                -(m.get("stargazers_count") or 0),
+ -(m.get("stargazers_count") or 0),
                 1 if m.get("fork") else 0,
                 str(m.get("clone_url")),
             ),

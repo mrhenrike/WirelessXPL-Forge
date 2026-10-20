@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Native BT Baseband/LMP attack orchestrator — BrakTooth + SweynTooth.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Native BT Baseband/LMP attack orchestrator - BrakTooth + SweynTooth.
 
 Orchestrates hardware-based Bluetooth Classic and BLE baseband attacks:
 
   BrakTooth (CVE-2021-28139 and others):
-    - LMP feature response flood (crash)
-    - LMP AU_RAND length overflow
-    - LMP invalid timing accuracy
-    - L2CAP truncated command
-    - Duplicated IOCAP
-    - Various LMP/baseband-level fuzzing
+ - LMP feature response flood (crash)
+ - LMP AU_RAND length overflow
+ - LMP invalid timing accuracy
+ - L2CAP truncated command
+ - Duplicated IOCAP
+ - Various LMP/baseband-level fuzzing
 
   SweynTooth (CVE-2019-16336 and others):
-    - Link Layer Length Overflow
-    - LLCP Length Overflow (Zero LTK)
-    - Link Layer LLID Deadlock
-    - Truncated L2CAP
-    - Silent Length Overflow
-    - Public Key Crash
-    - Invalid Connection Request
-    - Invalid L2CAP Fragment
-    - Key Size Overflow
-    - Zero LTK Installation
+ - Link Layer Length Overflow
+ - LLCP Length Overflow (Zero LTK)
+ - Link Layer LLID Deadlock
+ - Truncated L2CAP
+ - Silent Length Overflow
+ - Public Key Crash
+ - Invalid Connection Request
+ - Invalid L2CAP Fragment
+ - Key Size Overflow
+ - Zero LTK Installation
 
 These attacks require specialized hardware:
-  - BrakTooth: ESP32-WROVER-KIT with custom firmware
-  - SweynTooth: nRF52840 dongle with custom firmware
+ - BrakTooth: ESP32-WROVER-KIT with custom firmware
+ - SweynTooth: nRF52840 dongle with custom firmware
 
 This module provides:
   1. Target assessment and vulnerability profiling
@@ -149,7 +149,7 @@ SWEYNTOOTH_ATTACKS = {
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """BT Baseband attack orchestrator — BrakTooth + SweynTooth."""
+    """BT Baseband attack orchestrator - BrakTooth + SweynTooth."""
 
     __info__ = {
         "name": "BT Baseband Attacks (BrakTooth + SweynTooth)",

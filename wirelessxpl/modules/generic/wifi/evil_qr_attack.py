@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Evil QR code phishing attack module.
 
 Generates QR codes that redirect to captive portal phishing pages when
@@ -7,10 +7,10 @@ scanned. Targets WhatsApp Web, Discord, social logins, and custom URLs.
 Inspired by wifipumpkin3's EvilQR3 module.
 
 Modes:
-  - wifi_qr         QR code with embedded Wi-Fi credentials (auto-connect)
-  - portal_qr       QR code linking to captive portal phishing page
-  - session_qr      QR code for session hijacking (WhatsApp/Discord/Telegram)
-  - custom_qr       QR code with arbitrary URL
+ - wifi_qr         QR code with embedded Wi-Fi credentials (auto-connect)
+ - portal_qr       QR code linking to captive portal phishing page
+ - session_qr      QR code for session hijacking (WhatsApp/Discord/Telegram)
+ - custom_qr       QR code with arbitrary URL
 
 Version: 1.0.0
 """
@@ -154,7 +154,7 @@ class Exploit(Exploit):
             data = self.portal_url
 
         if self.dry_run:
-            print_info(f"DRY RUN — QR data: {data}")
+            print_info(f"DRY RUN - QR data: {data}")
             self._generate_ascii_qr(data)
             return
 
@@ -175,7 +175,7 @@ class Exploit(Exploit):
                 I18nPortalHandler.extra_vars = {}
 
                 server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
-                print_info("Captive portal (i18n) on port {} — locales: {}".format(
+                print_info("Captive portal (i18n) on port {} - locales: {}".format(
                     self.portal_port, ", ".join(SUPPORTED_LOCALES)))
                 try:
                     server.serve_forever()

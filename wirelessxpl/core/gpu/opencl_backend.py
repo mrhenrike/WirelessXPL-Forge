@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Backend OpenCL (PyOpenCL) para WirelessXPL-Forge.
 
 Detecta GPU via OpenCL; álgebra linear densa usa NumPy no host (padrão

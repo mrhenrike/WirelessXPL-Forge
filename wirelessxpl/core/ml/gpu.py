@@ -1,6 +1,6 @@
 """GPU detection and honest performance expectations for WirelessXPL workflows.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 

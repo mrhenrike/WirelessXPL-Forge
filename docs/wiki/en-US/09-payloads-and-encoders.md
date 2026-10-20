@@ -1,8 +1,8 @@
 # Payloads and encoders
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/09-payloads-e-encoders.md](../pt-BR/09-payloads-e-encoders.md)
+**Language:** English (en-US)
 
-## Payloads — `payloads/*`
+## Payloads - `payloads/*`
 
 Generate shellcode / one-liners: architectures (`armle`, `mipsbe`, `mipsle`, `x86`, `x64`) and `cmd/` interpreters (netcat, bash, python, …).
 
@@ -16,7 +16,7 @@ run
 
 Treat output as sensitive; AV/EDR may flag payloads.
 
-## Encoders — `encoders/<language>/*`
+## Encoders - `encoders/<language>/*`
 
 Transform representations: Base64, hex, URL, ROT13, … for `python`, `php`, `perl`.
 

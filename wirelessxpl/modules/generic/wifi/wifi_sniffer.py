@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Wi-Fi traffic sniffer with credential extraction.
 
 Captures and analyzes traffic from clients connected to rogue AP:
-  - HTTP form data and Basic Auth credentials
-  - FTP/POP3/IMAP/SMTP cleartext credentials
-  - DNS queries (domain tracking)
-  - Cookie extraction
-  - EAPOL frames (handshakes)
+ - HTTP form data and Basic Auth credentials
+ - FTP/POP3/IMAP/SMTP cleartext credentials
+ - DNS queries (domain tracking)
+ - Cookie extraction
+ - EAPOL frames (handshakes)
 
 Backends:
-  - scapy    Pure Python packet capture
-  - tcpdump  System packet capture (lighter)
-  - tshark   Wireshark CLI (rich dissection)
+ - scapy    Pure Python packet capture
+ - tcpdump  System packet capture (lighter)
+ - tshark   Wireshark CLI (rich dissection)
 
 Inspired by wifipumpkin3's Sniffkin3 module.
 
@@ -211,7 +211,7 @@ class Exploit(Exploit):
         require_authorised_lab()
 
         if self.dry_run:
-            print_info("DRY RUN — WiFi Sniffer")
+            print_info("DRY RUN - WiFi Sniffer")
             print_info(f"Backend: {self.backend} | Interface: {self.interface} | Output: {self.capture_file}")
             return
 

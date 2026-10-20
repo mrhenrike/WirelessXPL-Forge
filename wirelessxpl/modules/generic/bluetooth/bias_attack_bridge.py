@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""BIAS — Bluetooth Impersonation AttackS bridge (CVE-2020-10135).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""BIAS - Bluetooth Impersonation AttackS bridge (CVE-2020-10135).
 
 BIAS exploits weaknesses in the BT BR/EDR authentication procedure to allow
 device impersonation without knowing the long-term key (LTK). Two variants:
 
-  - **Legacy Authentication bypass**: Master role impersonation by downgrading
+ - **Legacy Authentication bypass**: Master role impersonation by downgrading
     to Legacy Authentication after Secure Connections pairing.
-  - **Role switch bypass**: Slave role impersonation via role switch mid-session.
+ - **Role switch bypass**: Slave role impersonation via role switch mid-session.
 
 CVSS: 8.1 (AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N)
 CVEs: CVE-2020-10135
 
 Incorporated from:
-  - submodules/IoT/bias-attack (Daniele Antonioli / USENIX 2020)
+ - submodules/IoT/bias-attack (Daniele Antonioli / USENIX 2020)
 
 Version: 1.0.0
 """
@@ -38,19 +38,19 @@ def _bias_root() -> Path:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """BIAS BT impersonation attack (CVE-2020-10135) — bridge."""
+    """BIAS BT impersonation attack (CVE-2020-10135) - bridge."""
 
     __info__ = {
         "name": "BIAS BT Impersonation Attack Bridge",
         "description": (
-            "BIAS (CVE-2020-10135) — impersonates a Bluetooth BR/EDR device without "
+            "BIAS (CVE-2020-10135) - impersonates a Bluetooth BR/EDR device without "
             "the long-term key by exploiting authentication bypass in Legacy and "
             "Secure Connections modes. Requires BT MITM position. "
             "Bridges the bias-attack PoC repository (subprocess)."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
-            "Daniele Antonioli (USENIX 2020 — bias-attack, invoked as subprocess)",
+            "Daniele Antonioli (USENIX 2020 - bias-attack, invoked as subprocess)",
         ),
         "references": (
             "https://github.com/francozappa/bias",
@@ -78,12 +78,12 @@ class Exploit(Exploit):
     }
 
     def _info_mode(self) -> None:
-        print_status("BIAS — Bluetooth Impersonation AttackS (CVE-2020-10135)")
+        print_status("BIAS - Bluetooth Impersonation AttackS (CVE-2020-10135)")
         print_info("Afeta: BT BR/EDR padrão (Core 5.0 e anteriores sem patches).")
         print_info(
             "Variantes:\n"
-            "  Legacy Auth bypass (la/) — impersonar master sem LTK usando Legacy Auth downgrade\n"
-            "  Slave Auth bypass (sa/)  — impersonar slave via role switch + bypass auth"
+            "  Legacy Auth bypass (la/) - impersonar master sem LTK usando Legacy Auth downgrade\n"
+            "  Slave Auth bypass (sa/) - impersonar slave via role switch + bypass auth"
         )
         print_info("Requisitos: firmware BT patched (InternalBlue/Nexus5/BCM4339), MITM posição.")
         print_info(f"Submodule BIAS: {_bias_root()}")
@@ -120,7 +120,7 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status("BIAS {} PoC: alvo={}".format(subdir.upper(), victim or "não definido"))

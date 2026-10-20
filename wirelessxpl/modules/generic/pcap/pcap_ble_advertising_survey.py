@@ -3,7 +3,7 @@
 Counts advertising events when Scapy exposes BTLE layers; otherwise reports limitation.
 Authorised RF capture / lab only.
 
-Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """
 
 
@@ -34,7 +34,7 @@ class Exploit(Exploit):
 
     __info__ = {
         "name": "PCAP BLE / HCI advertising survey",
-        "description": "Iterates packets counting Scapy BTLE/HCI layer names — useful for "
+        "description": "Iterates packets counting Scapy BTLE/HCI layer names - useful for "
                        "Ubertooth, nRF Sniffer, or BlueZ *hcidump* exports. Pair with live "
                        "`generic/bluetooth/btle_*` modules on Linux.",
         "authors": ("André Henrique (@mrhenrike)",),
@@ -64,7 +64,7 @@ class Exploit(Exploit):
         print_status(f"Scanned {scanned} packets")
         if not totals:
             print_error(
-                "No BTLE/HCI layers found — capture may be Wi‑Fi only, or use tshark "
+                "No BTLE/HCI layers found - capture may be Wi‑Fi only, or use tshark "
                 "(wireshark) BLE dissectors for this file format."
             )
             return

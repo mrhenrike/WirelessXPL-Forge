@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Emit ``soho_catalog_js_index.json`` from bundled ``includes/scripts.js``."""
 
 from __future__ import annotations

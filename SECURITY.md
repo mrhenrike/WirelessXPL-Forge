@@ -1,14 +1,14 @@
-# Security Policy — WirelessXPL-Forge
+# Security Policy - WirelessXPL-Forge
 
-**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
 
-**Language:** **English (en-US)** — default. **Português (pt-BR):** [SECURITY.pt-BR.md](SECURITY.pt-BR.md)
+**Language:** **English (en-US)**
 
 ## Supported scope
 
 - **In scope:** flaws in **WirelessXPL-Forge itself** (Python code, declared dependencies, `tools/` scripts) affecting the **operator** (RCE on the analyst machine, unsafe input handling, etc.).
 - **Out of scope:** “0-day” on third-party **devices** found while using the framework; report through vendor or their bug bounty.
-- **Functional scope:** **802.11 / WPA / WPA3 / EAPOL**, **Bluetooth LE**, **PCAP** analysis, wordlists, and bridges to host tooling — not the RouterXPL SOHO exploit tree.
+- **Functional scope:** **802.11 / WPA / WPA3 / EAPOL**, **Bluetooth LE**, **PCAP** analysis, wordlists, and bridges to host tooling - not the RouterXPL SOHO exploit tree.
 
 ## Reporting a vulnerability
 
@@ -16,11 +16,11 @@
 2. Or email **[suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)** with subject `WXF Security`.
 3. Do not file a public issue with a full exploit before triage.
 3. Include:
-   - Affected commit or tag
-   - Minimal reproduction steps
-   - Impact (confidentiality, integrity, availability)
-   - Suggested patch (optional)
-   - Logs without third-party secrets
+ - Affected commit or tag
+ - Minimal reproduction steps
+ - Impact (confidentiality, integrity, availability)
+ - Suggested patch (optional)
+ - Logs without third-party secrets
 
 ## Response targets (best effort)
 
@@ -41,7 +41,7 @@ We prefer **coordinated disclosure**: keep details private until a fix or agreed
 - Use only on assets you **own** or with **written authorization**.
 - Third-party production requires contract and clear rules of engagement.
 - Do not submit customer data, credentials, or dumps to this repository.
-- Modules may be destructive in lab environments — isolate test networks.
+- Modules may be destructive in lab environments - isolate test networks.
 
 ## Conduct
 
@@ -49,4 +49,4 @@ Harassment or abuse in project channels: see [CODE_OF_CONDUCT.md](CODE_OF_CONDUC
 
 ---
 
-> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)

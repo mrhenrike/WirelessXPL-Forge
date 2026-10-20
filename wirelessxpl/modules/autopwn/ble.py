@@ -1,4 +1,4 @@
-"""wirelessxpl AutoPwn — ble segment. # authorized use only"""
+"""wirelessxpl AutoPwn - ble segment. # authorized use only"""
 from .base import SegmentAutoPwn
 
 

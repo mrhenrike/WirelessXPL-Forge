@@ -1,6 +1,6 @@
 # HANDOFF -- WirelessXPL-Forge
 
-## [2026-06-24] — Política: pyproject.toml e PyPI somente local
+## [2026-06-24] - Política: pyproject.toml e PyPI somente local
 
 ### Estado ao encerrar
 - `pyproject.toml` removido do GitHub (`.gitignore`); template: `pyproject.toml.example`
@@ -11,7 +11,7 @@
 
 ---
 
-## [2026-06-24] — Crack engine v2: HashCater + Cap2Hash nativos
+## [2026-06-24] - Crack engine v2: HashCater + Cap2Hash nativos
 
 ### Estado ao encerrar
 - `handshake_crack_engine`: `attack_flow=both`, máscaras smart ISP-BR, proteção térmica GPU
@@ -24,13 +24,13 @@
 
 ---
 
-## [2026-06-23] — Limpeza de branding, contato e sync remoto (sem PCAPs)
+## [2026-06-23] - Limpeza de branding, contato e sync remoto (sem PCAPs)
 
 ### Estado ao encerrar
 - Contato unificado: **suporte@uniaogeek.com.br** em pyproject, README, SECURITY, CODE_OF_CONDUCT, CONTRIBUTORS e wiki
 - Removidas menções a SafeLabs, paths legados `/mnt` e `Projetos-SafeLabs` em HANDOFF, docs e código
 - Guia offline adicionado: `docs/GUIA-CRACK-PCAP-OFFLINE.md` (sem arquivos PCAP no repositório)
-- Commits remotos com `Co-authored-by: Cursor` e PCAPs sintéticos **não** incorporados — master sobrescrito
+- Commits remotos com `Co-authored-by: Cursor` e PCAPs sintéticos **não** incorporados - master sobrescrito
 - Versão bump: **2.0.2**
 
 ### Paths importantes
@@ -44,7 +44,7 @@
 
 ---
 
-## [2026-06-20 14:45] — Sessão de refatoração completa — estado final
+## [2026-06-20 14:45] - Sessão de refatoração completa - estado final
 
 ### Pendências resolvidas nesta sessão completa
 - [x] pybluez deprecated → substituído por bleak em todo o core BLE
@@ -244,12 +244,12 @@
 - Analisados 7 repositorios WiFi Arsenal (wifi-arsenal_1 a _7) em submodules/IoT/
 - Identificadas funcionalidades unicas nao existentes no WXF
 - Implementados 6 novos modulos em wirelessxpl/modules/generic/:
-  - evidence_vault/evidence_vault.py (reescrito): SQLite hash-chained audit ledger, ISO 27037 compativel
-  - wardrive/wardrive_logger.py (reescrito): GPS logger com gpsd/NMEA, export CSV/JSON/KML/GeoJSON
-  - wids/wifi_ids.py (reescrito): WIDS nativo Scapy, detecta 8 tipos de ataque, MQTT opcional
-  - evil_twin/portal_manager.py (NOVO): portal captivo stdlib, 8 templates HTML (ISPs BR + Google + Starbucks)
-  - wids/esp8266_wids_bridge.py (NOVO): bridge MQTT para ESP8266 WIDS hardware
-  - session_manager/session_manager.py (reescrito): persistencia SQLite multi-sessao completa
+ - evidence_vault/evidence_vault.py (reescrito): SQLite hash-chained audit ledger, ISO 27037 compativel
+ - wardrive/wardrive_logger.py (reescrito): GPS logger com gpsd/NMEA, export CSV/JSON/KML/GeoJSON
+ - wids/wifi_ids.py (reescrito): WIDS nativo Scapy, detecta 8 tipos de ataque, MQTT opcional
+ - evil_twin/portal_manager.py (NOVO): portal captivo stdlib, 8 templates HTML (ISPs BR + Google + Starbucks)
+ - wids/esp8266_wids_bridge.py (NOVO): bridge MQTT para ESP8266 WIDS hardware
+ - session_manager/session_manager.py (reescrito): persistencia SQLite multi-sessao completa
 - Todos os __init__.py atualizados com exports corretos
 - Sintaxe validada: python -m py_compile OK em todos os 6 arquivos
 - Commit: 92235aa "Add Evidence Vault, Wardrive Logger, WIDS, Portal Manager, Session Manager"
@@ -625,8 +625,8 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Refatorado in-place wep_attack_suite.py (v2.0.0): 7 substituicoes de aireplay-ng/airodump-ng por Scapy nativo
 - Refatorado in-place tkip_attack_suite.py (v2.0.0): michael_mic() nativo adicionado, Beck-Tews nativo como primario
 - Arquivos modificados:
-  - wirelessxpl/modules/generic/wifi/wep_attack_suite.py
-  - wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
+ - wirelessxpl/modules/generic/wifi/wep_attack_suite.py
+ - wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
 - Sem commits/push conforme instrucao
 
 ### Substituicoes realizadas em wep_attack_suite.py
@@ -668,7 +668,7 @@ un() em: is_spoof.py, 	raffic_enforcement_scanner.py, mcw_radar_attack.py
 - Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/wep_attack_suite.py
 - Linux: /home/mrhenrike/Documentos/Projetos/WirelessXPL-Forge/wirelessxpl/modules/generic/wifi/tkip_attack_suite.py
 
-## [2026-06-19 04:50] — Phase 0F: Refactor deauth/handshake modules to native Scapy
+## [2026-06-19 04:50] - Phase 0F: Refactor deauth/handshake modules to native Scapy
 
 ### Estado ao encerrar
 - Refatoracao de 3 modulos em wirelessxpl/modules/generic/wifi_lab/ concluida in-place
@@ -843,9 +843,9 @@ aireplay_deauth_barrage.py:
 
 ### Estado ao encerrar
 - Criados/reescritos 3 modulos no caminho wirelessxpl/modules/generic/wifi/:
-  - dns_dhcp_server.py - CaptiveDNSServer (dnslib), CaptiveDHCPServer (Scapy BOOTP), CaptiveNetwork, Exploit
-  - monitor_mode_manager.py - MonitorModeManager (iw/rfkill/channel hop/injection test), Exploit
-  - phishing_engine.py - Evil twin + captive portal nativo (scan_aps, hostapd clone, deauth, DNS/DHCP, HTTP portal, credential capture, handshake verify), Exploit
+ - dns_dhcp_server.py - CaptiveDNSServer (dnslib), CaptiveDHCPServer (Scapy BOOTP), CaptiveNetwork, Exploit
+ - monitor_mode_manager.py - MonitorModeManager (iw/rfkill/channel hop/injection test), Exploit
+ - phishing_engine.py - Evil twin + captive portal nativo (scan_aps, hostapd clone, deauth, DNS/DHCP, HTTP portal, credential capture, handshake verify), Exploit
 - Arquivos verificados: sintaxe Python OK (py_compile), zero lints
 - Nao foram feitos commits
 
@@ -874,9 +874,9 @@ aireplay_deauth_barrage.py:
 
 ### Estado ao encerrar
 - Sincronizados 3 modulos refatorados da Fase 0F de wifi_lab/ para wifi/
-  - handshake_snooper.py v2.0.0 (Scapy EAPOL nativo, sem cowpatty/pyrit)
-  - deauth_multimode.py v1.1.0 (backend nativo Scapy por padrao)
-  - aireplay_deauth_barrage.py v2.0.0 (Scapy como modo primario)
+ - handshake_snooper.py v2.0.0 (Scapy EAPOL nativo, sem cowpatty/pyrit)
+ - deauth_multimode.py v1.1.0 (backend nativo Scapy por padrao)
+ - aireplay_deauth_barrage.py v2.0.0 (Scapy como modo primario)
 - Imports ajustados de wifi_lab._disclaimer para wifi._disclaimer em todos os 3
 - Versao bump 1.7.0 -> 1.7.0.post1 em pyproject.toml e wirelessxpl/__init__.py
 - Commit: 920a097 - Sync refactored wifi modules + bump 1.7.0.post1 for PyPI
@@ -1213,30 +1213,30 @@ Copy-Item "d:\Projects\Labs\wifi-recon\scripts\*" "resources\recon-scripts\" -Re
 ```
 
 2. **Módulo snoopy_probe_capture.py:**
-   - Path: `wirelessxpl/modules/generic/wifi/snoopy_probe_capture.py`
-   - Técnica: monitor mode 802.11, probe request capture, SSID/MAC/GPS correlation
-   - TTP: T1040
+ - Path: `wirelessxpl/modules/generic/wifi/snoopy_probe_capture.py`
+ - Técnica: monitor mode 802.11, probe request capture, SSID/MAC/GPS correlation
+ - TTP: T1040
 
 3. **Módulo skygofree_geofence_c2.py:**
-   - Path: `wirelessxpl/modules/exploits/wifi_sensing/skygofree_geofence_c2.py`
-   - Técnica: SSID-triggered activation + evil twin coercion
-   - TTP: T1040, T1557
+ - Path: `wirelessxpl/modules/exploits/wifi_sensing/skygofree_geofence_c2.py`
+ - Técnica: SSID-triggered activation + evil twin coercion
+ - TTP: T1040, T1557
 
 4. **Módulo pegasus_ss7_enum.py:**
-   - Path: `wirelessxpl/modules/cellular/pegasus_ss7_enum.py`
-   - Técnica: SS7 location tracking surface assessment
-   - TTP: T1430
+ - Path: `wirelessxpl/modules/cellular/pegasus_ss7_enum.py`
+ - Técnica: SS7 location tracking surface assessment
+ - TTP: T1430
 
 5. **Módulo lasco_obex_push.py:**
-   - Path: `wirelessxpl/modules/generic/bluetooth/lasco_obex_push.py`
-   - Técnica: Bluetooth OBEX push sem confirmação do usuário
-   - TTP: T1650
+ - Path: `wirelessxpl/modules/generic/bluetooth/lasco_obex_push.py`
+ - Técnica: Bluetooth OBEX push sem confirmação do usuário
+ - TTP: T1650
 
 ### Pendências conhecidas
 - [ ] Copiar notmirai-lab YARA/Suricata → resources/detection/mirai/
 - [ ] Copiar wifi-recon scripts → resources/recon-scripts/
 - [ ] Implementar snoopy_probe_capture.py
-- [ ] Implementar skygofree_geofence_c2.py (gap crítico — SSID-triggered C2)
+- [ ] Implementar skygofree_geofence_c2.py (gap crítico - SSID-triggered C2)
 - [ ] Implementar pegasus_ss7_enum.py (SS7 assessment)
 - [ ] Implementar lasco_obex_push.py (Bluetooth OBEX)
 
@@ -1264,6 +1264,6 @@ Copy-Item "d:\Projects\Labs\wifi-recon\scripts\*" "resources\recon-scripts\" -Re
 - [ ] Portar WEP suite (ARP replay, ChopChop, Fake Auth, PTW)
 
 ### Referências
-- D:\Projects\Submodulos\knowledge\wifit3\ — wifit3 source
-- D:\Projects\Submodulos\knowledge\wifite2\ — wifite2 source
+- D:\Projects\Submodulos\knowledge\wifit3\ - wifit3 source
+- D:\Projects\Submodulos\knowledge\wifite2\ - wifite2 source
 - Seção 13D do plano: protocolos RF (Zigbee, Z-Wave, LoRaWAN já cobertos)

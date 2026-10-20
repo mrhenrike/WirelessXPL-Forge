@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""BLUFFS — BLE session key downgrade (native Python/Scapy).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""BLUFFS - BLE session key downgrade (native Python/Scapy).
 
 BLUFFS (Bluetooth Low Energy Forward and Future Secrecy) attacks (CVE-2023-24023)
 allow an attacker-in-the-middle to force predictable session keys by manipulating
 the feature negotiation in BLE pairing, breaking forward and future secrecy.
 
 This module implements:
-  - Educational description and PoC parameter injection for BLUFFS attacks
-  - Subprocess bridge to any available BLUFFS PoC script from the
+ - Educational description and PoC parameter injection for BLUFFS attacks
+ - Subprocess bridge to any available BLUFFS PoC script from the
     submodules/IoT/bluffs repository
-  - Native Scapy-based LMP/LLCP manipulation framing for research purposes
+ - Native Scapy-based LMP/LLCP manipulation framing for research purposes
 
 Incorporated from:
-  - submodules/IoT/bluffs (Daniele Antonioli research, CVE-2023-24023)
+ - submodules/IoT/bluffs (Daniele Antonioli research, CVE-2023-24023)
 
 Version: 1.0.0
 """
@@ -53,16 +53,16 @@ class Exploit(Exploit):
     """
 
     __info__ = {
-        "name": "BLUFFS — BLE Session Key Downgrade",
+        "name": "BLUFFS - BLE Session Key Downgrade",
         "description": (
-            "BLUFFS (CVE-2023-24023) — forces predictable BLE session keys by "
+            "BLUFFS (CVE-2023-24023) - forces predictable BLE session keys by "
             "manipulating LL_FEATURE_RSP/PAIRING_FEATURE_REQ to disable "
             "session key diversification. Breaks BLE forward and future secrecy. "
             "Requires attacker-in-the-middle BLE position."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
-            "Daniele Antonioli (CVE-2023-24023, bluffs — invoked as subprocess)",
+            "Daniele Antonioli (CVE-2023-24023, bluffs - invoked as subprocess)",
         ),
         "references": (
             "https://github.com/francozappa/bluffs",
@@ -98,7 +98,7 @@ class Exploit(Exploit):
 
     def _info_mode(self) -> None:
         """Print educational overview of BLUFFS attacks."""
-        print_status("BLUFFS — BLE Forward and Future Secrecy Attacks (CVE-2023-24023)")
+        print_status("BLUFFS - BLE Forward and Future Secrecy Attacks (CVE-2023-24023)")
         print_info(
             "BLUFFS exploits flaws in the BLE standard (Core 4.2-5.4) allowing "
             "downgrade of session key negotiation. An attacker-in-the-middle can "
@@ -106,11 +106,11 @@ class Exploit(Exploit):
         )
         print_info("\nVariants:")
         for k, v in self._VARIANTS.items():
-            print_info(f"  {k} — {v}")
+            print_info(f"  {k} - {v}")
         print_info("\nPrerequisites:")
-        print_info("  - BLE MITM position (proxy device, InternalBlue, or custom HW)")
-        print_info("  - Patched firmware on attacker BLE chip (for LMP injection)")
-        print_info("  - InternalBlue Python library (https://github.com/seemoo-lab/internalblue)")
+        print_info(" - BLE MITM position (proxy device, InternalBlue, or custom HW)")
+        print_info(" - Patched firmware on attacker BLE chip (for LMP injection)")
+        print_info(" - InternalBlue Python library (https://github.com/seemoo-lab/internalblue)")
         print_info(f"\nBluffs submodule path: {_bluffs_repo_root()}")
         print_info("CVE: CVE-2023-24023 | CVSS: 6.8 (AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N)")
 
@@ -157,7 +157,7 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status(f"Executando BLUFFS PoC: variante {int(self.attack_variant)}")
@@ -173,7 +173,7 @@ class Exploit(Exploit):
 
     def _framing_mode(self) -> None:
         """Native Scapy framing demonstration for BLE LMP feature injection."""
-        print_status("BLUFFS framing mode — Scapy BLE LMP feature manipulation")
+        print_status("BLUFFS framing mode - Scapy BLE LMP feature manipulation")
         print_info(
             "This mode shows how LL_FEATURE_RSP frames can be crafted to disable "
             "session key diversification. For live injection, a compatible HCI "

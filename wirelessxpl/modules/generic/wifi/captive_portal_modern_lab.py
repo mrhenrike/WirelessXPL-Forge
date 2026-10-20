@@ -3,7 +3,7 @@
 Serves a responsive HTML5/CSS3 page (no CDN), logs posted identifiers to disk.
 Pair with ``dnsmasq`` DHCP + DNS redirect (see ``evil_twin_workflow``).
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 
@@ -28,9 +28,9 @@ def _html_shell(title: str, inner: str) -> bytes:
   <title>{title}</title>
   <style>
     :root {{
-      --bg1:#0b1020; --bg2:#121a30; --card:rgba(255,255,255,.06);
-      --bd:rgba(255,255,255,.12); --txt:#e8edf7; --muted:#9aa7c3;
-      --acc:#5c9dff; --acc2:#3dd6c6; --err:#ff6b8a;
+ --bg1:#0b1020; --bg2:#121a30; --card:rgba(255,255,255,.06);
+ --bd:rgba(255,255,255,.12); --txt:#e8edf7; --muted:#9aa7c3;
+ --acc:#5c9dff; --acc2:#3dd6c6; --err:#ff6b8a;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -81,7 +81,7 @@ class Exploit(Exploit):
 
     __info__ = {
         "name": "Captive portal (modern lab UI)",
-        "description": "Bindable HTTP portal logging form posts — intended with dnsmasq address=/#/ "
+        "description": "Bindable HTTP portal logging form posts - intended with dnsmasq address=/#/ "
                        "on a dedicated evil-twin NIC. No TLS (use reverse proxy if needed).",
         "authors": ("André Henrique (@mrhenrike)",),
         "references": ("https://wiki.archlinux.org/title/Software_access_point",),
@@ -163,7 +163,7 @@ class Exploit(Exploit):
                     self._redirect_portal()
                     return
                 if path in ("/portal", "/login"):
-                    body = _html_shell(title + " — portal", inner_form)
+                    body = _html_shell(title + " - portal", inner_form)
                     self.send_response(200)
                     self.send_header("Content-Type", "text/html; charset=utf-8")
                     self.send_header("Content-Length", str(len(body)))
@@ -172,7 +172,7 @@ class Exploit(Exploit):
                     self.wfile.write(body)
                     return
                 if path == "/done":
-                    body = _html_shell(title + " — done", inner_done)
+                    body = _html_shell(title + " - done", inner_done)
                     self.send_response(200)
                     self.send_header("Content-Type", "text/html; charset=utf-8")
                     self.send_header("Content-Length", str(len(body)))

@@ -1,7 +1,7 @@
 ## Status
 **READY / IN DEVELOPMENT / HOLD**
 
-**Languages / Idiomas:** PR descriptions **English (en-US)** preferred; Portuguese acceptable if the change is pt-BR-only docs. Prefer **en-US + pt-BR** when editing user-facing docs. | PRs: texto preferencialmente em **inglês (en-US)**; português aceitável se for só documentação pt-BR. Documentação de utilizador: ideal **en-US e pt-BR**.
+**Language:** PR descriptions in **English (en-US)**.
 
 ## Description
 Explain the change and why. Link issues: `closes #`.
@@ -33,4 +33,4 @@ Reproducible steps and outcome.
 
 ---
 
-Governance: [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) · [CONTRIBUTING.md](../CONTRIBUTING.md) · [CONTRIBUTING.pt-BR.md](../CONTRIBUTING.pt-BR.md)
+Governance: [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) · [CONTRIBUTING.md](../CONTRIBUTING.md)

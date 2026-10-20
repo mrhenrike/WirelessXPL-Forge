@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""CVE-2021-27289 — Zigbee Frame Counter Replay Attack (Ksix/Generic).
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""CVE-2021-27289 - Zigbee Frame Counter Replay Attack (Ksix/Generic).
 
 Dispositivos Zigbee afetados ignoram o frame counter nas mensagens de rede,
 permitindo replay de qualquer comando capturado (ligar/desligar tomadas,
@@ -22,7 +22,7 @@ from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 
 __info__ = {
-    "name":        "CVE-2021-27289 — Zigbee Replay (Frame Counter Bypass)",
+    "name":        "CVE-2021-27289 - Zigbee Replay (Frame Counter Bypass)",
     "description": (
         "Replay de comandos Zigbee capturados contra dispositivos que ignoram "
         "o frame counter (Network Frame Counter não verificado). "
@@ -45,7 +45,7 @@ __info__ = {
 
 
 class ZigbeeReplayCve202127289(Exploit):
-    """CVE-2021-27289 — Zigbee Replay com integração KillerBee."""
+    """CVE-2021-27289 - Zigbee Replay com integração KillerBee."""
 
     target_protocol = Protocol.CUSTOM  # Zigbee
 
@@ -70,7 +70,7 @@ class ZigbeeReplayCve202127289(Exploit):
     )
     DEVICE = OptString(
         "DEVICE", "",
-        "Interface KillerBee (ex: /dev/ttyUSB0, /dev/ttyACM0) — vazio = autodetect",
+        "Interface KillerBee (ex: /dev/ttyUSB0, /dev/ttyACM0) - vazio = autodetect",
         required=False,
     )
     REPEAT = OptInteger(

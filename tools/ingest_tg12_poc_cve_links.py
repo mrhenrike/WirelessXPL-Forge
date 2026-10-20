@@ -4,7 +4,7 @@
 
 Parses **CVE-anchored blocks** from ``cve_links.txt`` so each URL can be scored against
 WirelessXPL ``cve_extended_catalog.json`` (vendor/product/description) and optionally against
-live GitHub metadata (**description**, **topics**, **name**) via ``gh api`` — not only the URL path.
+live GitHub metadata (**description**, **topics**, **name**) via ``gh api`` - not only the URL path.
 
 Author: André Henrique (@mrhenrike) | União Geek
 

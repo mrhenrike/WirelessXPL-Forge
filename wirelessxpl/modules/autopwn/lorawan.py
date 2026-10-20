@@ -1,4 +1,4 @@
-"""wirelessxpl AutoPwn — lorawan segment. # authorized use only"""
+"""wirelessxpl AutoPwn - lorawan segment. # authorized use only"""
 from .base import SegmentAutoPwn
 
 

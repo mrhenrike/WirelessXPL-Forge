@@ -4,7 +4,7 @@ Extracts WEP IVs, PMKID hashes, TKIP MIC parameters, SAE/Dragonfly
 commits (WPA3 Dragonblood) and EAP/PEAP/MSCHAPv2 identity+challenge
 pairs from PCAP/PCAPNG captures for offline processing.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 
@@ -583,7 +583,7 @@ def extract_sae_commits(packets: list[Any], ssid_map: dict[str, str] | None = No
 
 
 # =====================================================================
-# WPE — EAP/PEAP/MSCHAPv2 identity + challenge harvest
+# WPE - EAP/PEAP/MSCHAPv2 identity + challenge harvest
 # =====================================================================
 
 def extract_eap_identities(packets: list[Any], ssid_map: dict[str, str] | None = None) -> list[EAPIdentity]:
@@ -834,8 +834,8 @@ def survey_eapol_fourway_sessions(
     Does not crack keys; pairs well with ``aircrack-ng``/hashcat after ``pcap_handshake_extractor``.
 
     References:
-        • KRACK (CVE-2017-13077, CVE-2017-13078, …) — nonce/reinstall behaviour in handshakes.
-        • Dragonblood (CVE-2019-9494, CVE-2019-9496) — use ``pcap_dragonblood`` for WPA3-SAE.
+        • KRACK (CVE-2017-13077, CVE-2017-13078, …) - nonce/reinstall behaviour in handshakes.
+        • Dragonblood (CVE-2019-9494, CVE-2019-9496) - use ``pcap_dragonblood`` for WPA3-SAE.
 
     Args:
         packets: Scapy packets from a PCAP/PCAPNG.
@@ -901,16 +901,16 @@ def survey_eapol_fourway_sessions(
         anonce_list = anonces[(bssid, sta)]
         if len(anonce_list) != len({x.hex() for x in anonce_list}):
             hints.append(
-                "Repeated ANonce across EAPOL-Key frames — review for KRACK-style "
+                "Repeated ANonce across EAPOL-Key frames - review for KRACK-style "
                 "reinstall / nonce reuse (CVE-2017-13077 family)."
             )
         rc_list = replays[(bssid, sta)]
         if len(rc_list) >= 2 and any(rc_list[i] > rc_list[i + 1] for i in range(len(rc_list) - 1)):
-            hints.append("Replay counter decreased in sequence — unusual capture or reordering.")
+            hints.append("Replay counter decreased in sequence - unusual capture or reordering.")
         if msg_counts["msg3"] and not msg_counts["msg4"]:
-            hints.append("M3 seen without M4 — incomplete handshake (common in deauth-heavy captures).")
+            hints.append("M3 seen without M4 - incomplete handshake (common in deauth-heavy captures).")
         if msg_counts["msg1"] and msg_counts["msg2"] and not msg_counts["msg3"]:
-            hints.append("M1/M2 only — PTK may not complete; check capture duration / channel.")
+            hints.append("M1/M2 only - PTK may not complete; check capture duration / channel.")
 
         rows.append(
             EAPOLFourwaySurveyRow(

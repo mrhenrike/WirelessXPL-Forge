@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import os
@@ -213,9 +213,9 @@ class Exploit(Exploit):
             elif firmware_data[:4] in (b"\x27\x05\x19\x56", b"\x56\x19\x05\x27"):
                 print_info("Detectado: U-Boot image")
             else:
-                print_info("Formato desconhecido — use binwalk para análise")
+                print_info("Formato desconhecido - use binwalk para análise")
         else:
-            print_error("Falha no download — arquivo pode não existir ou acesso negado")
+            print_error("Falha no download - arquivo pode não existir ou acesso negado")
 
         if self.upload_file:
             upload_path = str(self.upload_file)
@@ -234,4 +234,4 @@ class Exploit(Exploit):
                 print_success(f"Upload concluído: {sent} bytes enviados para {self.target}")
                 print_warning("Dispositivo pode reiniciar com o novo firmware")
             else:
-                print_error("Upload falhou — servidor pode ter rejeitado WRQ")
+                print_error("Upload falhou - servidor pode ter rejeitado WRQ")

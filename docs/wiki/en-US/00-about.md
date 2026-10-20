@@ -12,7 +12,7 @@
 | **Short name** | WXF |
 | **Version** | 2.2.0 |
 | **License** | BSD-3-Clause |
-| **Python** | 3.8 – 3.13 |
+| **Python** | 3.8 - 3.13 |
 | **Platform** | Linux (preferred), macOS, WSL2 |
 | **Repository** | https://github.com/mrhenrike/WirelessXPL-Forge |
 | **Wiki** | https://github.com/mrhenrike/WirelessXPL-Forge/wiki |
@@ -22,9 +22,9 @@
 ## Taglines
 
 - *"One shell. Every wireless vector."*
-- *"From 802.11ax to BLE — authorised research, one module away."*
+- *"From 802.11ax to BLE - authorised research, one module away."*
 - *"Wireless security, modular by design."*
-- *"WPA, WPA3, BLE, Zigbee, ESP32 — in one framework."*
+- *"WPA, WPA3, BLE, Zigbee, ESP32 - in one framework."*
 
 ---
 
@@ -44,9 +44,9 @@ threat9/routersploit
 ## Design Philosophy
 
 - **Module-first**: every attack, analysis, or bridge is a self-contained Python class following the `BaseExploit` contract (`__info__`, options, `run()`, `check()`)
-- **No lock-in**: bridges invoke system tools (`aircrack-ng`, `mdk4`, `hcxdumptool`) as subprocesses — WXF orchestrates, not replaces
+- **No lock-in**: bridges invoke system tools (`aircrack-ng`, `mdk4`, `hcxdumptool`) as subprocesses - WXF orchestrates, not replaces
 - **Upstream-aware**: all incorporated community issues and PRs are tracked in `wirelessxpl/resources/catalogs/upstream_issues_prs.json` and the Bruce upstream map
-- **Research-grade**: modules include CVE references, protocol details, and lab notes — not just "run and pray"
+- **Research-grade**: modules include CVE references, protocol details, and lab notes - not just "run and pray"
 - **ESP32 native**: Bruce/Marauder serial flow engine makes handheld wardriving and menu automation first-class citizens
 
 ---
@@ -95,7 +95,7 @@ WirelessXPL-Forge/
 ## Maintainer
 
 **André Henrique** ([@mrhenrike](https://github.com/mrhenrike))  
-[União Geek](https://github.com/Uniao-Geek) — https://github.com/Uniao-Geek  
+[União Geek](https://github.com/Uniao-Geek) - https://github.com/Uniao-Geek  
 **Support:** [suporte@uniaogeek.com.br](mailto:suporte@uniaogeek.com.br)
 
 ---

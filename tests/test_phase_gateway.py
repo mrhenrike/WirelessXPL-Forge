@@ -1,4 +1,4 @@
-"""Tests for wirelessxpl.core.phase_gateway — PhaseGateway, quick_gate."""
+"""Tests for wirelessxpl.core.phase_gateway - PhaseGateway, quick_gate."""
 
 import sys
 from pathlib import Path

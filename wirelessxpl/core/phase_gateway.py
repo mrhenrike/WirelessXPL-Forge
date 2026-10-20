@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Phase Gateway — pipeline de verificação sequencial entre fases de ataque.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Phase Gateway - pipeline de verificação sequencial entre fases de ataque.
 
 Cada módulo de ataque com múltiplos pré-requisitos usa ``PhaseGateway`` para
 garantir que nenhuma fase avance enquanto a anterior não for satisfeita.
@@ -75,7 +75,7 @@ class GatewayReport:
         width = 60
         print()
         print("=" * width)
-        print(f"  Phase Gateway — {self.module_name}")
+        print(f"  Phase Gateway - {self.module_name}")
         print("=" * width)
         print(f"  {'Phase':<20} {'Status':<6}  {'ms':>6}  Detail")
         print("-" * width)
@@ -101,7 +101,7 @@ class PhaseGateway:
     """Executa uma sequência de fases onde cada uma deve passar antes da próxima.
 
     Args:
-        module_name: Nome do módulo ou ataque — aparece no cabeçalho do relatório.
+        module_name: Nome do módulo ou ataque - aparece no cabeçalho do relatório.
         stop_on_first_failure: Se True (padrão), interrompe ao encontrar a primeira
             fase que falhou. Se False, executa todas as fases e reporta todas as
             falhas.
@@ -138,7 +138,7 @@ class PhaseGateway:
             fix_hint: Dica de correção exibida quando a fase falha.
 
         Returns:
-            self — permite encadeamento fluente.
+            self - permite encadeamento fluente.
         """
         self._phases.append((name, check, fix_hint))
         return self

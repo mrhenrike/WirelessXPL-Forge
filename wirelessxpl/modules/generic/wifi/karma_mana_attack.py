@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """KARMA / MANA rogue AP attack module.
 
 Implements KARMA and MANA-style attacks where the rogue AP responds to any
@@ -7,10 +7,10 @@ probe request, impersonating the SSID the client is looking for. This forces
 automatic association on devices with remembered networks.
 
 Attack variants:
-  - karma_basic       Respond to all probe requests with matching SSID
-  - mana_loud         Flood beacons with SSIDs from captured probe requests
-  - karma_targeted    Respond only to probes for a specific SSID list
-  - mana_eap          KARMA + EAP/802.1X credential capture (hostapd-mana)
+ - karma_basic       Respond to all probe requests with matching SSID
+ - mana_loud         Flood beacons with SSIDs from captured probe requests
+ - karma_targeted    Respond only to probes for a specific SSID list
+ - mana_eap          KARMA + EAP/802.1X credential capture (hostapd-mana)
 
 Prerequisites: hostapd-mana or hostapd + dnsmasq + monitor-mode interface.
 
@@ -191,7 +191,7 @@ class Exploit(Exploit):
         hostapd_path, dnsmasq_path = self._generate_configs(tmp_dir)
 
         if self.dry_run:
-            print_info("DRY RUN — generated configs:")
+            print_info("DRY RUN - generated configs:")
             print_info(f"  hostapd: {hostapd_path}")
             print_info(f"  dnsmasq: {dnsmasq_path}")
             print_status(f"Would execute: sudo {hostapd_bin} {hostapd_path}")

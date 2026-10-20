@@ -5,7 +5,7 @@
 OpenAPI: ``https://labs.jamessawyer.co.uk/cves/api/openapi.json``
 
 Auth: header ``X-API-Key`` or ``Authorization: Bearer <token>`` (optional for some
-client IPs; free tier may require key — see site notice).
+client IPs; free tier may require key - see site notice).
 
 Outputs one JSON object per line (NDJSON) by default for streaming merge into intel pipelines.
 

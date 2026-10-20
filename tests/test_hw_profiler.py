@@ -1,4 +1,4 @@
-"""Tests for wirelessxpl.core.hw_profiler — GPUDevice, HWProfile, HWProfiler."""
+"""Tests for wirelessxpl.core.hw_profiler - GPUDevice, HWProfile, HWProfiler."""
 
 import sys
 from pathlib import Path

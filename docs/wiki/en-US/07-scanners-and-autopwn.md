@@ -1,6 +1,6 @@
 # Scanners and AutoPwn
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/07-scanners-e-autopwn.md](../pt-BR/07-scanners-e-autopwn.md)
+**Language:** English (en-US)
 
 ## `scanners/routers/router_scan`
 
@@ -14,14 +14,14 @@ run
 
 ## `scanners/autopwn`
 
-Parallel scan with credential and exploit checks; **timing templates** similar to Nmap `T0`–`T5`.
+Parallel scan with credential and exploit checks; **timing templates** similar to Nmap `T0`-`T5`.
 
 ### Key options
 
 | Option | Description |
 |--------|-------------|
 | `target` | IP |
-| `target_device_class` | `multi`, `router`, `switch`, `tap`, `fw`, `ngfw`, `isp_cpe` — see `wirelessxpl/resources/catalogs/module_target_scope.json` |
+| `target_device_class` | `multi`, `router`, `switch`, `tap`, `fw`, `ngfw`, `isp_cpe` - see `wirelessxpl/resources/catalogs/module_target_scope.json` |
 | `vendor` | Filter when supported |
 | `timing_template` | `t0`..`t5` or aliases `paranoid` … `insane` |
 | `check_exploits` / `check_creds` | Enable/disable classes of tests |
@@ -36,7 +36,7 @@ Parallel scan with credential and exploit checks; **timing templates** similar t
 |--------|-------------|
 | `ml_advisor` | Set `true` to enable; prints warnings. |
 | `ml_auto_timing` | With `ml_advisor true`, **overwrites** `timing_template` with the advisor suggestion. |
-| `ml_use_gpu` | If PyTorch+CUDA is installed (optional extra `pip install .[ml-gpu]`), runs timing logits on GPU — marginal benefit. HTTP/SSH checks remain I/O bound. |
+| `ml_use_gpu` | If PyTorch+CUDA is installed (optional extra `pip install .[ml-gpu]`), runs timing logits on GPU - marginal benefit. HTTP/SSH checks remain I/O bound. |
 
 For heavy crypto (e.g. WPA/PMKID), use external tools such as hashcat, not this advisor.
 

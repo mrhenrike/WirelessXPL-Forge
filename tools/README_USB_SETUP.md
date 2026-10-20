@@ -1,22 +1,22 @@
-# RT5370 USB WiFi — Guia Completo de Setup (VirtualBox + WSL2)
+# RT5370 USB WiFi - Guia Completo de Setup (VirtualBox + WSL2)
 
-## Causa Raiz do VERR_READ_ERROR — Diagnóstico Completo
+## Causa Raiz do VERR_READ_ERROR - Diagnóstico Completo
 
 ### O que estava causando o abort/VERR_READ_ERROR
 
 A cadeia de causas (todas identificadas e corrigidas):
 
 1. **USBPcap** instalado como `UpperFilter` na classe USB Hub (`{36FC9E60}`)
-   — interceptava o read do device descriptor causando `VERR_READ_ERROR (-111)`
+ - interceptava o read do device descriptor causando `VERR_READ_ERROR (-111)`
 
 2. **`IsForced: true`** no usbipd para o RT5370  
-   — capturava o dispositivo via `usbip.sys` antes do VirtualBox poder reivindicá-lo
+ - capturava o dispositivo via `usbip.sys` antes do VirtualBox poder reivindicá-lo
 
 3. **`vwifibus`** como UpperFilter no dispositivo RT5370 especificamente  
-   — Windows Virtual WiFi Bus impedindo captura limpa pelo VBoxUSBMon
+ - Windows Virtual WiFi Bus impedindo captura limpa pelo VBoxUSBMon
 
 4. **USB filter com `action=hold`** no VirtualBox  
-   — causava captura automática agressiva que conflitava com drivers existentes
+ - causava captura automática agressiva que conflitava com drivers existentes
 
 ### O que foi corrigido
 
@@ -77,8 +77,8 @@ bash /path/to/kali_setup_rt5370.sh
 ```powershell
 $vbox = "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
 & $vbox usbfilter add 0 --target "Kali-Linux-2025.1c" `
-    --name "Ralink RT5370 WiFi" `
-    --vendorid 148F --productid 5370
+ --name "Ralink RT5370 WiFi" `
+ --vendorid 148F --productid 5370
 ```
 
 ---
@@ -92,7 +92,7 @@ usbipd unbind --hardware-id 148F:5370
 
 ---
 
-## Opção 2: WSL2 (kernel customizado — sem reboot necessário)
+## Opção 2: WSL2 (kernel customizado - sem reboot necessário)
 
 O WSL2 já está configurado com o kernel `+` que tem `rt2800usb`:
 

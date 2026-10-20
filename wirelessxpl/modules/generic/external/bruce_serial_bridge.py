@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Bruce firmware serial bridge for operational lab workflows.
 
 This module sends serial CLI commands to a Bruce device and records output.
@@ -399,10 +399,10 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_status("DRY RUN — Bruce serial bridge")
+            print_status("DRY RUN - Bruce serial bridge")
             print_info(f"Port: {self.serial_port} @ {self.baudrate}")
             for cmd in commands:
-                print_info(f"  -> {cmd}")
+                print_info(f" -> {cmd}")
             if flow_steps:
                 print_info("Flow steps:")
                 for idx, step in enumerate(flow_steps, start=1):

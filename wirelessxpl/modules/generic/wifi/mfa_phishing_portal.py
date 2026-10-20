@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """MFA phishing captive portal module.
 
-Real-time MFA token capture via captive portal — inspired by wifipumpkin3's
+Real-time MFA token capture via captive portal - inspired by wifipumpkin3's
 Phishkin3 and evilginx2 methodology. Serves a portal that proxies to a
 real login page or presents a convincing clone, capturing both password
 and MFA token/push approval in real-time.
 
 Modes:
-  - local_clone     Serve local HTML clone with MFA field
-  - external_proxy  Reverse proxy to real login (evilginx-style)
-  - cloud_redirect  Redirect to cloud-hosted phishing page (Phishkin3-style)
+ - local_clone     Serve local HTML clone with MFA field
+ - external_proxy  Reverse proxy to real login (evilginx-style)
+ - cloud_redirect  Redirect to cloud-hosted phishing page (Phishkin3-style)
 
 Version: 2.0.0
 """
@@ -209,7 +209,7 @@ class Exploit(Exploit):
         require_authorised_lab()
 
         if self.dry_run:
-            print_info(f"DRY RUN — MFA phishing: {self.mode} mode")
+            print_info(f"DRY RUN - MFA phishing: {self.mode} mode")
             return
 
         if self.mode == "external_proxy":
@@ -231,7 +231,7 @@ class Exploit(Exploit):
         I18nPortalHandler.extra_vars = {}
 
         server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
-        print_status(f"MFA portal (i18n) on port {self.portal_port} — template: {self.template}")
+        print_status(f"MFA portal (i18n) on port {self.portal_port} - template: {self.template}")
         print_info("Auto-detect locales: {}".format(", ".join(SUPPORTED_LOCALES)))
         print_info("Connectivity detection: {}".format(
             "ON" if self.connectivity_detection else "OFF"))

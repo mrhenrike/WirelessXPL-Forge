@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Environment diagnostics for WirelessXPL-Forge runtime dependencies."""
 
 from __future__ import annotations
@@ -121,7 +121,7 @@ def main() -> int:
     print("\nPython dependency checks:")
     for name, ok, info in results:
         state = "OK" if ok else "FAIL"
-        print("  - {}: {} ({})".format(name, state, info))
+        print(" - {}: {} ({})".format(name, state, info))
 
     failures = [item for item in results if not item[1]]
     if failures:
@@ -132,7 +132,7 @@ def main() -> int:
     print("\nOptional tool checks:")
     for (name, desc), (_, ok, info) in zip(OPTIONAL_BINARIES, bin_results):
         state = "OK" if ok else "MISSING"
-        print("  - {} ({}): {} ({})".format(name, desc, state, info))
+        print(" - {} ({}): {} ({})".format(name, desc, state, info))
 
     missing_bins = [name for name, ok, _ in bin_results if not ok]
     if missing_bins:

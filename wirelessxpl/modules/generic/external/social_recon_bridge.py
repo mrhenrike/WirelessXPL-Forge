@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """Ponte OSINT para fluxo Wi‑Fi: busca social (RapidAPI), crawl de site (cewler) e perfil (cupp).
 
 Orquestra ferramentas externas via subprocess e chamada HTTP; grava artefatos em
@@ -128,7 +128,7 @@ class Exploit(Exploit):
         url = f"https://{host}{path}?{qs}"
 
         if self.dry_run:
-            print_info(f"DRY RUN — GET {url}")
+            print_info(f"DRY RUN - GET {url}")
             print_info("Header: X-RapidAPI-Key: <redacted>")
             print_info(f"Header: X-RapidAPI-Host: {host}")
             return
@@ -146,7 +146,7 @@ class Exploit(Exploit):
             with urllib.request.urlopen(req, timeout=60) as resp:
                 body = resp.read()
         except urllib.error.HTTPError as err:
-            print_error(f"HTTP {err.code} — {err.reason}")
+            print_error(f"HTTP {err.code} - {err.reason}")
             return
         except urllib.error.URLError as err:
             print_error(f"Falha de rede: {err.reason}")
@@ -186,7 +186,7 @@ class Exploit(Exploit):
             return
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
         print_status(f"cewler: {cmd_str}")
         try:
@@ -311,7 +311,7 @@ class Exploit(Exploit):
         stdin_txt = self._build_cupp_stdin(merged, name)
 
         if self.dry_run:
-            print_info("DRY RUN — echo '<perfil>' | {}".format(" ".join(cmd)))
+            print_info("DRY RUN - echo '<perfil>' | {}".format(" ".join(cmd)))
             print_info("stdin (preview): {}".format(stdin_txt[:500].replace("\n", " | ")))
             return
 
@@ -327,7 +327,7 @@ class Exploit(Exploit):
                 check=False,
             )
             if r.returncode != 0:
-                print_error(f"cupp exit {r.returncode} — confira cupp.cfg e caminho de saída do cupp.")
+                print_error(f"cupp exit {r.returncode} - confira cupp.cfg e caminho de saída do cupp.")
                 if r.stderr:
                     logger.debug("cupp stderr: %s", r.stderr[:2000])
             else:

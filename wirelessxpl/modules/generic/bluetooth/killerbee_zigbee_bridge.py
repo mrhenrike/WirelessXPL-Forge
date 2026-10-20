@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""KillerBee — Zigbee / IEEE 802.15.4 attack bridge.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""KillerBee - Zigbee / IEEE 802.15.4 attack bridge.
 
 Wraps the KillerBee Python framework (submodules/IoT/killerbee) as a WXF module.
 KillerBee is a Python library: it can be imported directly when the submodule is
 in PYTHONPATH, or invoked as CLI tools (zbdump, zbid, zbreplay, etc.).
 
 This module bridges:
-  - **zbid**: enumerate attached 802.15.4 sniffing hardware
-  - **zbdump**: capture Zigbee frames to PCAP
-  - **zbreplay**: replay captured frames
-  - **zbstumbler**: Zigbee network discovery
-  - **zbassocflood**: association request flood (DoS)
-  - **zbscapy**: interactive Scapy session for 802.15.4
+ - **zbid**: enumerate attached 802.15.4 sniffing hardware
+ - **zbdump**: capture Zigbee frames to PCAP
+ - **zbreplay**: replay captured frames
+ - **zbstumbler**: Zigbee network discovery
+ - **zbassocflood**: association request flood (DoS)
+ - **zbscapy**: interactive Scapy session for 802.15.4
 
 All operations are subprocess-based (killerbee CLI tools). The library can also
 be imported natively if installed: ``pip install killerbee``.
@@ -21,7 +21,7 @@ Supported hardware (requires physical device): RZUSB, TelosB, APIMOTE, FreakDuin
 BeehiveMonitor, CC253x dongle, Sewio (via killerbee drivers).
 
 Incorporated from:
-  - submodules/IoT/killerbee (Ryan Speers / Ricky Melgares / OpenSecurityResearch)
+ - submodules/IoT/killerbee (Ryan Speers / Ricky Melgares / OpenSecurityResearch)
 
 Version: 1.0.0
 """
@@ -61,7 +61,7 @@ def _which_kb(tool: str) -> str | None:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """KillerBee — Zigbee / IEEE 802.15.4 attack and capture bridge."""
+    """KillerBee - Zigbee / IEEE 802.15.4 attack and capture bridge."""
 
     __info__ = {
         "name": "KillerBee Zigbee Bridge",
@@ -74,7 +74,7 @@ class Exploit(Exploit):
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
             "Ryan Speers, Ricky Melgares, OpenSecurityResearch "
-            "(KillerBee — invoked as subprocess/library)",
+            "(KillerBee - invoked as subprocess/library)",
         ),
         "references": (
             "https://github.com/riverloopsec/killerbee",
@@ -196,7 +196,7 @@ class Exploit(Exploit):
             python_bin = shutil.which("python3") or "python3"
             cmd = [python_bin, tool] if tool.endswith(".py") else [tool]
             if self.dry_run:
-                print_info("DRY RUN — {}".format(" ".join(cmd)))
+                print_info("DRY RUN - {}".format(" ".join(cmd)))
                 return
             print_status("Iniciando zbscapy (sessão Scapy interativa para 802.15.4)…")
             try:
@@ -211,7 +211,7 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info(f"DRY RUN — {cmd_str}")
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status(f"Executando KillerBee {mode.upper()}: {cmd_str}")

@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 """Otimização de canal e janelas temporais para ataques wireless."""
 
 

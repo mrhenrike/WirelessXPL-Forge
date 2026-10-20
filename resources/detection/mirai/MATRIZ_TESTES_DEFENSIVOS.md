@@ -44,4 +44,4 @@ Veja `scripts/analysis/` para ferramentas de captura e parsing.
 - `.tmp/` para todos outputs temporários
 - Análise estática prioritária
 
-> Created by André Henrique (@mrhenrike) — União Geek
+> Created by André Henrique (@mrhenrike)  - União Geek

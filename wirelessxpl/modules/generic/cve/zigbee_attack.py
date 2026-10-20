@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Native Zigbee/IEEE 802.15.4 security analysis and attack module.
 
 Pure Python reimplementation of KillerBee's analysis capabilities:
-  - Protocol parsing: IEEE 802.15.4 MAC, ZigBee NWK, ZigBee APS
-  - AES-CCM* decryption for encrypted Zigbee traffic
-  - Network key extraction from plaintext APS Transport Key frames
-  - Beacon request/response crafting and parsing
-  - Association flood frame generation
-  - Zigbee network reconnaissance from PCAPs
-  - Frame replay preparation (for hardware-based injection)
-  - MMO hash (Matyas-Meyer-Oseas) for install code key derivation
-  - Signed RSSI conversion for CC2531 hardware
+ - Protocol parsing: IEEE 802.15.4 MAC, ZigBee NWK, ZigBee APS
+ - AES-CCM* decryption for encrypted Zigbee traffic
+ - Network key extraction from plaintext APS Transport Key frames
+ - Beacon request/response crafting and parsing
+ - Association flood frame generation
+ - Zigbee network reconnaissance from PCAPs
+ - Frame replay preparation (for hardware-based injection)
+ - MMO hash (Matyas-Meyer-Oseas) for install code key derivation
+ - Signed RSSI conversion for CC2531 hardware
 
 Radio operations (sniff, inject, jam) require KillerBee-compatible
 hardware (ApiMote, CC2531, RZ RAVEN). This module orchestrates that
 hardware when available, but all analysis is done natively.
 
 Improvements incorporated from upstream riverloopsec/killerbee:
-  - MMO hash + link key derivation from install code (PR #272)
-  - Fix RSSI signed conversion for CC2531 (PR #278, issue #277)
-  - APS CMD payload parsing for NWK key disclosure (PR #260)
-  - Python 3.10+ compatibility (PR #270, issue #258)
-  - pycryptodome migration (issue #273)
-  - Updated Sewio sniffer driver reference (PR #285)
+ - MMO hash + link key derivation from install code (PR #272)
+ - Fix RSSI signed conversion for CC2531 (PR #278, issue #277)
+ - APS CMD payload parsing for NWK key disclosure (PR #260)
+ - Python 3.10+ compatibility (PR #270, issue #258)
+ - pycryptodome migration (issue #273)
+ - Updated Sewio sniffer driver reference (PR #285)
 
 Version: 1.2.0
 """
@@ -343,7 +343,7 @@ class Exploit(Exploit):
                 info["frames"], info["encrypted"]))
             print_info("    Devices: {}".format(len(info["addresses"])))
             for addr in sorted(info["addresses"])[:10]:
-                print_info(f"      - {addr}")
+                print_info(f" - {addr}")
 
     def _extract_key(self) -> None:
         """Extract plaintext network key from PCAP."""

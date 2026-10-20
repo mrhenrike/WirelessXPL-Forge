@@ -1,8 +1,8 @@
-# Code of Conduct — WirelessXPL-Forge
+# Code of Conduct - WirelessXPL-Forge
 
-**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+**Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
 
-**Language:** **English (en-US)** — default. **Português (pt-BR):** [CODE_OF_CONDUCT.pt-BR.md](CODE_OF_CONDUCT.pt-BR.md)
+**Language:** **English (en-US)**
 
 ## Our pledge
 
@@ -55,4 +55,4 @@ Inspired by common open-source Code of Conduct practice; adapted to WirelessXPL-
 
 ---
 
-> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** — [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)
+> **Author:** André Henrique ([@mrhenrike](https://github.com/mrhenrike)) \| **União Geek** - [https://github.com/Uniao-Geek](https://github.com/Uniao-Geek)

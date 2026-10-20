@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Native Bluetooth HID Keystroke & Mouse Injection (CVE-2023-45866 / CVE-2024-23717).
 
 Unauthenticated HID injection via Bluetooth. Exploits SSP "Just Works"
@@ -12,11 +12,11 @@ Requires: Linux with BlueZ userspace tools (hciconfig/btmgmt), pybluez,
 pydbus, and optional bdaddr (for MAC spoofing).
 
 Improvements incorporated from upstream hi_my_name_is_keyboard:
-  - Mouse HID report support (issue #17)
-  - Handle spaces in Bluetooth name (PR #2)
-  - CVE-2024-23717 coverage (Android 14 variant, issue #20)
-  - Linux pairing fixes (issue #6)
-  - Broadcom adapter fallback handling (issue #8)
+ - Mouse HID report support (issue #17)
+ - Handle spaces in Bluetooth name (PR #2)
+ - CVE-2024-23717 coverage (Android 14 variant, issue #20)
+ - Linux pairing fixes (issue #6)
+ - Broadcom adapter fallback handling (issue #8)
 
 Version: 1.2.0
 """
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 import socket as _bt_socket
 
-# Native L2CAP socket — replaces pybluez (deprecated)
+# Native L2CAP socket - replaces pybluez (deprecated)
 _AF_BLUETOOTH = 31
 _BTPROTO_L2CAP = 0
 HAS_PYBLUEZ = True  # native socket always available
@@ -427,7 +427,7 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """Native BT HID keystroke & mouse injection — CVE-2023-45866 / CVE-2024-23717."""
+    """Native BT HID keystroke & mouse injection - CVE-2023-45866 / CVE-2024-23717."""
 
     __info__ = {
         "name": "BT HID Injection (CVE-2023-45866 / CVE-2024-23717)",
@@ -437,7 +437,7 @@ class Exploit(Exploit):
             "arbitrary keystrokes and mouse events. CVE-2024-23717 extends "
             "the attack to Android 14 (patched 2024-06). "
             "Targets Android, Linux, macOS, iOS, Windows. "
-            "Native implementation — no external PoC scripts required."
+            "Native implementation - no external PoC scripts required."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
@@ -470,7 +470,7 @@ class Exploit(Exploit):
     hci_device = OptString("hci0", "Local Bluetooth adapter")
     spoof_mac = OptString(
         "",
-        "MAC address to spoof (required for macOS/iOS — use Magic Keyboard MAC)",
+        "MAC address to spoof (required for macOS/iOS - use Magic Keyboard MAC)",
     )
     connect_timeout = OptFloat(10.0, "L2CAP connection timeout (seconds)")
     key_delay = OptFloat(0.02, "Delay between keystrokes (seconds)")

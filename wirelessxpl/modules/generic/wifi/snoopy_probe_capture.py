@@ -13,10 +13,10 @@ Captures IEEE 802.11 probe requests in monitor mode to:
 3. Export data for geolocation correlation (if GPS available)
 """
 # ============================================================
-# AUTHORIZED USE ONLY — See docs/malware-research/DISCLAIMER.md
+# AUTHORIZED USE ONLY - See docs/malware-research/DISCLAIMER.md
 # Use only against systems you own or have WRITTEN authorization
 # to test. Operator assumes full legal responsibility for use.
-# simulate=True by default — set False only for authorized tests.
+# simulate=True by default - set False only for authorized tests.
 # ============================================================
 
 
@@ -63,7 +63,7 @@ class Exploit(Exploit):
     def check(self) -> str:
         import shutil
         if self.simulate:
-            return "Simulate mode — no hardware required"
+            return "Simulate mode - no hardware required"
         if not shutil.which("tcpdump") and not shutil.which("tshark"):
             return "tcpdump or tshark required for probe capture"
         try:
@@ -72,8 +72,8 @@ class Exploit(Exploit):
                 ["iwconfig", str(self.interface)], stderr=subprocess.STDOUT
             ).decode("utf-8", "replace")
             if "Monitor" in out:
-                return f"{self.interface} in monitor mode — ready"
-            return f"{self.interface} NOT in monitor mode — run: airmon-ng start {self.interface.replace('mon', '')}"
+                return f"{self.interface} in monitor mode - ready"
+            return f"{self.interface} NOT in monitor mode - run: airmon-ng start {self.interface.replace('mon', '')}"
         except Exception as e:
             return f"Interface check failed: {e}"
 
@@ -84,16 +84,16 @@ class Exploit(Exploit):
                 f"for {self.duration}s (channels: {self.channels})"
             )
             print_status("  Would capture probe requests and extract:")
-            print_status("  - Source MAC → preferred SSID mapping")
-            print_status("  - Timestamp, RSSI, channel")
-            print_status("  - Vendor OUI lookup for device type")
+            print_status(" - Source MAC → preferred SSID mapping")
+            print_status(" - Timestamp, RSSI, channel")
+            print_status(" - Vendor OUI lookup for device type")
             if self.gps:
-                print_status("  - GPS coordinates correlation via gpsd")
+                print_status(" - GPS coordinates correlation via gpsd")
             print_status(f"  Output: {self.output_dir}/probes_{{timestamp}}.json")
             print_status("\n  Snoopy technique (Linux.Snoopy.A/B/C):")
-            print_status("  - Deploy on drone for aerial SSID/MAC collection")
-            print_status("  - Correlate MAC appearance time with GPS track")
-            print_status("  - Build movement history from probe request timestamps")
+            print_status(" - Deploy on drone for aerial SSID/MAC collection")
+            print_status(" - Correlate MAC appearance time with GPS track")
+            print_status(" - Build movement history from probe request timestamps")
             return
 
         import json

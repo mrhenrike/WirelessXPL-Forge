@@ -86,7 +86,7 @@ def _remove_gitdir_files(root: Path) -> int:
 
 
 def _robocopy_mirror(src: Path, dst: Path) -> int:
-    """Return robocopy exit code (0–7 = success on Windows)."""
+    """Return robocopy exit code (0-7 = success on Windows)."""
     dst.mkdir(parents=True, exist_ok=True)
     excludes = ["/xd", ".git", "__pycache__", ".pytest_cache", ".mypy_cache", ".tox", "/xf", ".git"]
     cmd = [

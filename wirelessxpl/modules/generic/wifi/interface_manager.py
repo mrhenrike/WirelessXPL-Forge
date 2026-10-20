@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""WXF Interface Manager — select, configure and protect wireless interfaces.
+"""WXF Interface Manager - select, configure and protect wireless interfaces.
 
 This module is the single control point for wireless interface lifecycle in WXF:
 
-  - Lists all available wireless interfaces with their current state, driver,
+ - Lists all available wireless interfaces with their current state, driver,
     supported bands, monitor/AP/injection capabilities, and whether they are
     currently providing the internet connection.
-  - Lets the user assign interfaces to WXF roles (monitor, inject, ap, managed).
-  - Warns explicitly when the selected interface carries the default route and
+ - Lets the user assign interfaces to WXF roles (monitor, inject, ap, managed).
+ - Warns explicitly when the selected interface carries the default route and
     explains the connectivity risk before proceeding.
-  - Integrates with NetworkManager: when an interface is assigned to monitor or
+ - Integrates with NetworkManager: when an interface is assigned to monitor or
     inject role, NM is instructed to stop managing it (per-interface, safe for
     multi-adapter setups). The internal internet-facing adapter is never touched.
-  - Optionally writes a persistent NM configuration file so the settings survive
+ - Optionally writes a persistent NM configuration file so the settings survive
     reboots and NM restarts.
-  - Releases all assigned interfaces on module exit, restoring NM management.
+ - Releases all assigned interfaces on module exit, restoring NM management.
 
 Modes:
-    list       - Show all interfaces and their status (default)
-    assign     - Assign one interface to a WXF role
-    release    - Release one interface back to OS control
+    list - Show all interfaces and their status (default)
+    assign - Assign one interface to a WXF role
+    release - Release one interface back to OS control
     release_all- Release all WXF-assigned interfaces
     persist_nm - Write persistent NM unmanaged config (requires root)
-    status     - Show current WXF interface assignments
+    status - Show current WXF interface assignments
 
 OS requirement: Linux only (iw, NetworkManager).
 Version: 1.0.0
@@ -165,7 +165,7 @@ class Exploit(Exploit):
         if not shutil.which("ip"):
             missing.append("ip")
         if missing:
-            return f"Missing tools: {', '.join(missing)} — install iw and iproute2"
+            return f"Missing tools: {', '.join(missing)} - install iw and iproute2"
         nm_ok = "nmcli available" if shutil.which("nmcli") else "nmcli NOT found (NM integration disabled)"
         return f"Prerequisites OK | {nm_ok}"
 
@@ -206,7 +206,7 @@ class Exploit(Exploit):
             )
 
     # ------------------------------------------------------------------
-    # select — numbered multi-select + set WXFConfig globals
+    # select - numbered multi-select + set WXFConfig globals
     # ------------------------------------------------------------------
 
     def _do_select(self, reg: InterfaceRegistry) -> None:
@@ -317,7 +317,7 @@ class Exploit(Exploit):
         external = [i for i in interfaces if not i.provides_internet and not i.name.startswith("wlp")]
         internal = [i for i in interfaces if i.provides_internet or i.name.startswith("wlp")]
 
-        print_status(f"Wireless interfaces — {len(external)} external USB | {len(internal)} internal/internet")
+        print_status(f"Wireless interfaces - {len(external)} external USB | {len(internal)} internal/internet")
         sep = "-" * 100
         print_info(sep)
         print_info(
@@ -347,7 +347,7 @@ class Exploit(Exploit):
             )
 
         if internal:
-            print_info(f"  {'-'*40}  [internal/internet — não usar para ataques]")
+            print_info(f"  {'-'*40}  [internal/internet - não usar para ataques]")
             for i in internal:
                 inet = _internet_tag(i)
                 print_info(f"       {i.name:<24} {i.current_mode:<10} {i.driver:<14}{inet}")
@@ -441,7 +441,7 @@ class Exploit(Exploit):
             if ok:
                 print_success("Persistent NM config written (survives reboots).")
             else:
-                print_warning("Could not write NM config — run as root for persistence.")
+                print_warning("Could not write NM config - run as root for persistence.")
 
     def _do_release(self, reg: InterfaceRegistry) -> None:
         iface = str(self.interface).strip()

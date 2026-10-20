@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrique) | União Geek - https://github.com/Uniao-Geek
 # Version: 1.0.0
 
 import logging
@@ -26,7 +26,7 @@ class Exploit(Exploit):
             "Orquestra ferramentas em submodules/IoT/third-party-router-poc: AESCrypt2 (C) "
             "para decrypt de config Huawei, HuaweiPasswordTool (C++) para formato de senha, "
             "hwfw-tool (Python 2) unpack/pack de firmware ONT/HG, e HWFW_GUI como referência "
-            "de edição. Apenas subprocessos — sem linkage com código externo. Version: 1.0.0"
+            "de edição. Apenas subprocessos - sem linkage com código externo. Version: 1.0.0"
         ),
         "authors": (
             "André Henrique (@mrhenrique) | União Geek",
@@ -262,7 +262,7 @@ class Exploit(Exploit):
 
         ref_gui = self._hwfw_gui_reference()
         if self.dry_run:
-            print_info("DRY RUN — comando planejado:")
+            print_info("DRY RUN - comando planejado:")
             print_status(" ".join(cmd))
             print_info(f"Referência HWFW_GUI: {ref_gui}")
             print_info(f"Pasta third-party-router-poc: {self._poc_root()}")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WirelessXPL-Forge — Live Validation Script
+WirelessXPL-Forge  - Live Validation Script
 Fase 6: Descoberta de hardware, scan WiFi + BLE, execução de módulos viaveis,
 e geração de VALIDATION_REPORT.md
 
@@ -45,12 +45,12 @@ errors: list[str] = []
 
 
 # ---------------------------------------------------------------------------
-# 6a — Hardware Discovery
+# 6a  - Hardware Discovery
 # ---------------------------------------------------------------------------
 
 def discover_hardware() -> dict:
     print("\n" + "="*65)
-    print("  FASE 6a — Descoberta de Hardware Local")
+    print("  FASE 6a  - Descoberta de Hardware Local")
     print("="*65)
 
     hw = {
@@ -90,7 +90,7 @@ def discover_hardware() -> dict:
         "mac": "detectado via usbipd",
         "monitor_mode": "requires Linux kernel with rt2800usb module",
         "injection": "requires Linux kernel with rt2800usb module",
-        "note": "WSL2 kernel 6.6.87.2 não inclui rt2800usb — módulo disponível em kernel+",
+        "note": "WSL2 kernel 6.6.87.2 não inclui rt2800usb  - módulo disponível em kernel+",
     })
 
     # Bluetooth
@@ -126,12 +126,12 @@ def discover_hardware() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 6b — WiFi Scan
+# 6b  - WiFi Scan
 # ---------------------------------------------------------------------------
 
 def scan_wifi() -> list[dict]:
     print("\n" + "="*65)
-    print("  FASE 6b — Scan WiFi (Windows netsh)")
+    print("  FASE 6b  - Scan WiFi (Windows netsh)")
     print("="*65)
     print(f"  {len(NEARBY_NETWORKS)} redes detectadas anteriormente:")
 
@@ -144,7 +144,7 @@ def scan_wifi() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# 6b — BLE Scan
+# 6b  - BLE Scan
 # ---------------------------------------------------------------------------
 
 async def scan_ble(duration: int = 15) -> list[dict]:
@@ -181,7 +181,7 @@ async def scan_ble(duration: int = 15) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# 6c — Execução de módulos viaveis
+# 6c  - Execução de módulos viaveis
 # ---------------------------------------------------------------------------
 
 TESTS = [
@@ -272,14 +272,14 @@ def _test_hw_wifi() -> str:
     from wirelessxpl.core.hw_validator import HWValidator, Requirement
     v = HWValidator()
     r = v.check(Requirement.WIFI_ADAPTER)
-    return f"WiFi adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'} — {r.detail}"
+    return f"WiFi adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'}  - {r.detail}"
 
 
 def _test_hw_bt() -> str:
     from wirelessxpl.core.hw_validator import HWValidator, Requirement
     v = HWValidator()
     r = v.check(Requirement.BLUETOOTH_ADAPTER)
-    return f"BT adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'} — {r.detail}"
+    return f"BT adapter: {'DETECTADO' if r.satisfied else 'NÃO DETECTADO'}  - {r.detail}"
 
 
 def _test_aircrack() -> str:
@@ -306,7 +306,7 @@ def _test_beacon_build() -> str:
 
 def run_all_tests() -> list[dict]:
     print("\n" + "="*65)
-    print("  FASE 6c — Execução de Módulos e Testes")
+    print("  FASE 6c  - Execução de Módulos e Testes")
     print("="*65)
 
     test_results = []
@@ -331,19 +331,19 @@ def run_all_tests() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# 6g — Geração do Relatório
+# 6g  - Geração do Relatório
 # ---------------------------------------------------------------------------
 
 def generate_report(hw: dict, wifi_nets: list[dict], ble_devs: list[dict], test_results: list[dict]) -> None:
     print("\n" + "="*65)
-    print("  FASE 6g — Gerando VALIDATION_REPORT.md")
+    print("  FASE 6g  - Gerando VALIDATION_REPORT.md")
     print("="*65)
 
     passed = [r for r in test_results if r["status"] == "PASS"]
     skipped = [r for r in test_results if r["status"] == "SKIP"]
     failed = [r for r in test_results if r["status"] == "FAIL"]
 
-    report_md = f"""# WirelessXPL-Forge — Validation Report
+    report_md = f"""# WirelessXPL-Forge  - Validation Report
 
 **Data:** {TIMESTAMP}  
 **Ambiente:** {hw['os']} {hw['os_version']}  
@@ -392,7 +392,7 @@ def generate_report(hw: dict, wifi_nets: list[dict], ble_devs: list[dict], test_
 |---|---|---|---|
 """
     for r in test_results:
-        icon = {"PASS": "✓", "FAIL": "✗", "SKIP": "—"}.get(r["status"], "?")
+        icon = {"PASS": "✓", "FAIL": "✗", "SKIP": "-"}.get(r["status"], "?")
         report_md += f"| `{r['test']}` | {r['description']} | {icon} {r['status']} | {r['detail'][:60]} |\n"
 
     report_md += f"""
@@ -416,12 +416,12 @@ suporte a `mac80211` e `rt2800usb`.
 
 ### Módulos Testados com Sucesso
 
-- `PhaseGateway` — pipeline de verificação funcional (pass/fail testados)
-- `HWValidator` — detecção de hardware (Scapy detectado, WiFi/BT detectado no Windows)
-- `PolyglotOrchestrator` — detecção de runtimes disponíveis
-- Construção de frames 802.11 (probe request, beacon) via Scapy — OK
-- Indexação de módulos do framework — OK
-- Scan BLE via bleak — executado
+- `PhaseGateway`  - pipeline de verificação funcional (pass/fail testados)
+- `HWValidator`  - detecção de hardware (Scapy detectado, WiFi/BT detectado no Windows)
+- `PolyglotOrchestrator`  - detecção de runtimes disponíveis
+- Construção de frames 802.11 (probe request, beacon) via Scapy  - OK
+- Indexação de módulos do framework  - OK
+- Scan BLE via bleak  - executado
 
 ### Módulos que Requerem Linux com Monitor Mode
 
@@ -466,7 +466,7 @@ suporte a `mac80211` e `rt2800usb`.
 
 async def main() -> None:
     print("\n" + "="*65)
-    print("  WirelessXPL-Forge — Live Validation (Fase 6)")
+    print("  WirelessXPL-Forge  - Live Validation (Fase 6)")
     print(f"  {TIMESTAMP}")
     print("="*65)
 

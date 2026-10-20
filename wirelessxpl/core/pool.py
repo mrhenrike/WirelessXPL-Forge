@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""SmartPool — adaptive thread/process pool for WirelessXPL-Forge.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""SmartPool - adaptive thread/process pool for WirelessXPL-Forge.
 
 Chooses between ThreadPoolExecutor (I/O-bound: scans, HTTP, subprocess)
 and ProcessPoolExecutor (CPU-bound: hash cracking, ML inference, wordlist
@@ -140,7 +140,7 @@ class SmartPool:
                 if on_error:
                     on_error(item, exc)
                 else:
-                    logger.debug("SmartPool item failed: %s — %s", item, exc)
+                    logger.debug("SmartPool item failed: %s - %s", item, exc)
 
         return results
 

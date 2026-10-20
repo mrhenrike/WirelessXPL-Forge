@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WirelessXPL-Forge — Campanha de Testes Massivos
+WirelessXPL-Forge - Campanha de Testes Massivos
 Modo: usuário interagindo como no Metasploit (use, set, run)
 Interface: wlx24050f3d5f0a (RT5370 via WSL2)
 """
@@ -87,7 +87,7 @@ def wxf(module, opts: dict, timeout: int = 60) -> str:
         LOG.flush()
         return output
     except subprocess.TimeoutExpired:
-        msg = f"[!] Timeout após {timeout}s — módulo: {module}"
+        msg = f"[!] Timeout após {timeout}s - módulo: {module}"
         print(f"\033[31m{msg}\033[0m")
         LOG.write(f"{msg}\n")
         return "TIMEOUT"
@@ -109,7 +109,7 @@ def record(module, target, status, detail=""):
 # ■ FASE 1: Tool Audit / Prerequisites
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 1 — Audit de Ferramentas e Pré-requisitos")
+banner("FASE 1 - Audit de Ferramentas e Pré-requisitos")
 
 out = wxf("generic/external/wireless_tool_prereq_audit", {
     "interface": IFACE,
@@ -118,10 +118,10 @@ out = wxf("generic/external/wireless_tool_prereq_audit", {
 }, timeout=30)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# ■ FASE 2: WiFi Security Analyzer — varredura de todas as redes
+# ■ FASE 2: WiFi Security Analyzer - varredura de todas as redes
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 2 — WiFi Security Analyzer (todas as redes)")
+banner("FASE 2 - WiFi Security Analyzer (todas as redes)")
 
 out = wxf("generic/wifi_lab/wifi_security_analyzer", {
     "interface":       IFACE,
@@ -135,7 +135,7 @@ out = wxf("generic/wifi_lab/wifi_security_analyzer", {
 # ■ FASE 3: Packet Injection Lab
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 3 — Packet Injection Test")
+banner("FASE 3 - Packet Injection Test")
 
 out = wxf("generic/wifi_lab/packet_injection_lab", {
     "interface":    IFACE,
@@ -145,10 +145,10 @@ out = wxf("generic/wifi_lab/packet_injection_lab", {
 record("packet_injection_lab", OWN_NET_2G, "PASS" if "inject" in out.lower() else "PARTIAL", out[:200])
 
 # ─────────────────────────────────────────────────────────────────────────────
-# ■ FASE 4: hcxdumptool bridge — PMKID de todas as redes
+# ■ FASE 4: hcxdumptool bridge - PMKID de todas as redes
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 4 — PMKID Live Capture (hcxdumptool bridge, 90s)")
+banner("FASE 4 - PMKID Live Capture (hcxdumptool bridge, 90s)")
 
 out = wxf("generic/external/hcxdumptool_live_bridge", {
     "interface":    IFACE,
@@ -162,7 +162,7 @@ record("hcxdumptool_live_bridge", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 5: PMKID Autopwn (rede própria)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 5 — PMKID Autopwn (UNIAOGEEK 2.4GHz)")
+banner("FASE 5 - PMKID Autopwn (UNIAOGEEK 2.4GHz)")
 
 out = wxf("generic/wifi_lab/pmkid_autopwn", {
     "interface":      IFACE,
@@ -177,7 +177,7 @@ record("pmkid_autopwn", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 6: Handshake Snooper + Deauth (rede própria 2.4 + 5GHz)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 6 — Handshake Snooper + Deauth (UNIAOGEEK)")
+banner("FASE 6 - Handshake Snooper + Deauth (UNIAOGEEK)")
 
 for net in [OWN_NET_2G, OWN_NET_5G]:
     out = wxf("generic/wifi_lab/handshake_snooper", {
@@ -195,10 +195,10 @@ for net in [OWN_NET_2G, OWN_NET_5G]:
     time.sleep(2)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# ■ FASE 7: Handshake Snooper — redes vizinhas (varredura rápida)
+# ■ FASE 7: Handshake Snooper - redes vizinhas (varredura rápida)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 7 — Handshake Collection (todas as redes vizinhas)")
+banner("FASE 7 - Handshake Collection (todas as redes vizinhas)")
 
 for net in NEIGHBOR_HIGH[:8]:
     print(f"\n\033[33m[TARGET]\033[0m {net['ssid']} ({net['bssid']}) ch:{net['ch']}")
@@ -218,10 +218,10 @@ for net in NEIGHBOR_HIGH[:8]:
     time.sleep(1)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# ■ FASE 8: WPS MultiMode — Pixie Dust em todos WPS ativos
+# ■ FASE 8: WPS MultiMode - Pixie Dust em todos WPS ativos
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 8 — WPS MultiMode (Pixie Dust + PIN)")
+banner("FASE 8 - WPS MultiMode (Pixie Dust + PIN)")
 
 all_wps_targets = [OWN_NET_2G] + [n for n in NEIGHBOR_HIGH if n.get("wps", "no") not in ("no", "")]
 
@@ -245,7 +245,7 @@ for net in all_wps_targets[:10]:
 # ■ FASE 9: Auth Flood (rede própria)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 9 — Auth Flood (UNIAOGEEK 2.4GHz)")
+banner("FASE 9 - Auth Flood (UNIAOGEEK 2.4GHz)")
 
 out = wxf("generic/wifi_lab/auth_flood", {
     "interface":    IFACE,
@@ -261,7 +261,7 @@ record("auth_flood", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 10: Beacon Flood
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 10 — Beacon Flood (SSIDs falsos)")
+banner("FASE 10 - Beacon Flood (SSIDs falsos)")
 
 out = wxf("generic/wifi_lab/beacon_flood_advanced", {
     "interface":    IFACE,
@@ -277,7 +277,7 @@ record("beacon_flood_advanced", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 11: Deauth Multimode (broadcast em todas as redes)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 11 — Deauth Multimode (broadcast por rede)")
+banner("FASE 11 - Deauth Multimode (broadcast por rede)")
 
 for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:5]:
     out = wxf("generic/wifi_lab/deauth_multimode", {
@@ -295,7 +295,7 @@ for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:5]:
 # ■ FASE 12: Deauth CSA Suite
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 12 — Deauth CSA Suite (Channel Switch Announcement)")
+banner("FASE 12 - Deauth CSA Suite (Channel Switch Announcement)")
 
 out = wxf("generic/wifi_lab/deauth_csa_suite", {
     "interface":    IFACE,
@@ -310,7 +310,7 @@ record("deauth_csa_suite", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 13: Conexão na rede aberta + Enumeração
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 13 — Conexão e Enumeração: #CLARO-WIFI (OPN)")
+banner("FASE 13 - Conexão e Enumeração: #CLARO-WIFI (OPN)")
 
 out = wxf("generic/wifi_lab/connectivity_portal", {
     "interface":    IFACE,
@@ -328,7 +328,7 @@ record("connectivity_portal", CLARO_WIFI, "CONNECTED" if connected else "PORTAL_
 # ■ FASE 14: KARMA/MANA Attack (clientes desassociados)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 14 — KARMA/MANA Attack (clientes órfãos)")
+banner("FASE 14 - KARMA/MANA Attack (clientes órfãos)")
 
 out = wxf("generic/wifi_lab/karma_mana_attack", {
     "interface":    IFACE,
@@ -342,7 +342,7 @@ record("karma_mana_attack", {"ssid": "BROADCAST", "bssid": "ff:ff:ff:ff:ff:ff"},
 # ■ FASE 15: Evil Twin Workflow (rede própria)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 15 — Evil Twin Workflow (UNIAOGEEK clone)")
+banner("FASE 15 - Evil Twin Workflow (UNIAOGEEK clone)")
 
 out = wxf("generic/wifi_lab/evil_twin_workflow", {
     "interface":    IFACE,
@@ -360,7 +360,7 @@ record("evil_twin_workflow", OWN_NET_2G, "CREDS_CAPTURED" if creds else "RUNNING
 # ■ FASE 16: FragAttacks (CVE-2020-26140)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 16 — FragAttacks CVE-2020-26140 (todas as redes)")
+banner("FASE 16 - FragAttacks CVE-2020-26140 (todas as redes)")
 
 for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:4]:
     out = wxf("generic/wifi_lab/fragattacks", {
@@ -378,7 +378,7 @@ for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:4]:
 # ■ FASE 17: KRACK Attack
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 17 — KRACK Attack (WPA2 4-way replay)")
+banner("FASE 17 - KRACK Attack (WPA2 4-way replay)")
 
 out = wxf("generic/wifi_lab/krack_attack", {
     "interface":    IFACE,
@@ -392,7 +392,7 @@ record("krack_attack", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 18: TKIP Attack Suite (redes com TKIP)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 18 — TKIP Attack Suite (redes com TKIP)")
+banner("FASE 18 - TKIP Attack Suite (redes com TKIP)")
 
 tkip_nets = [n for n in NEIGHBOR_HIGH if n.get("tkip")]
 for net in tkip_nets:
@@ -411,7 +411,7 @@ for net in tkip_nets:
 # ■ FASE 19: PCAP PMKID Attack (arquivo capturado)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 19 — PCAP PMKID Attack (hashes capturados anteriormente)")
+banner("FASE 19 - PCAP PMKID Attack (hashes capturados anteriormente)")
 
 out = wxf("generic/pcap/pcap_pmkid_attack", {
     "pcap_file":    "/tmp/pmkid_all.pcapng",
@@ -426,7 +426,7 @@ record("pcap_pmkid_attack", OWN_NET_2G, "CRACKED" if cracked else "HASHES_EXTRAC
 # ■ FASE 20: PCAP Handshake Extractor
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 20 — PCAP Handshake Extractor + Crack")
+banner("FASE 20 - PCAP Handshake Extractor + Crack")
 
 for cap_file in ["/tmp/hs_uniaogeek-01.cap", f"{OUTDIR}/pmkid_live.pcapng"]:
     if Path(cap_file).exists():
@@ -442,7 +442,7 @@ for cap_file in ["/tmp/hs_uniaogeek-01.cap", f"{OUTDIR}/pmkid_live.pcapng"]:
 # ■ FASE 21: WPA3 / SAE Flood
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 21 — WPA3 SAE Flood (se suportado)")
+banner("FASE 21 - WPA3 SAE Flood (se suportado)")
 
 out = wxf("generic/wifi_lab/wpa3_sae_flood_native", {
     "interface":    IFACE,
@@ -457,7 +457,7 @@ record("wpa3_sae_flood_native", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 22: KR00K Attack
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 22 — KR00K Attack (CVE-2019-15126)")
+banner("FASE 22 - KR00K Attack (CVE-2019-15126)")
 
 for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:3]:
     out = wxf("generic/wifi_lab/kr00k_attack", {
@@ -474,7 +474,7 @@ for net in [OWN_NET_2G] + NEIGHBOR_HIGH[:3]:
 # ■ FASE 23: AP-less Client Attack (clientes sem AP)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 23 — AP-less Client Attack (fake probe responses)")
+banner("FASE 23 - AP-less Client Attack (fake probe responses)")
 
 out = wxf("generic/wifi_lab/ap_less_client_attack", {
     "interface":    IFACE,
@@ -487,7 +487,7 @@ record("ap_less_client_attack", {"ssid": "BROADCAST", "bssid": "ff:ff:ff:ff:ff:f
 # ■ FASE 24: SSID Confusion Attack
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 24 — SSID Confusion Attack")
+banner("FASE 24 - SSID Confusion Attack")
 
 out = wxf("generic/wifi_lab/ssid_confusion", {
     "interface":    IFACE,
@@ -501,7 +501,7 @@ record("ssid_confusion", OWN_NET_2G, "DONE", out[:200])
 # ■ FASE 25: Wardriving Deauth Loop
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 25 — Wardriving Deauth Loop (todos os canais)")
+banner("FASE 25 - Wardriving Deauth Loop (todos os canais)")
 
 out = wxf("generic/wifi_lab/wardriving_deauth_loop", {
     "interface":    IFACE,
@@ -516,7 +516,7 @@ record("wardriving_deauth_loop", {"ssid": "ALL", "bssid": "ALL"}, "DONE", out[:2
 # ■ FASE 26: BLE Scan + Enumerate + Attacks
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 26 — BLE Scan + Enumerate")
+banner("FASE 26 - BLE Scan + Enumerate")
 
 out = wxf("generic/bluetooth/btle_scan", {
     "duration":     "20",
@@ -545,7 +545,7 @@ record("ble_extra_attacks", {"ssid": "BLE", "bssid": "ALL"}, "DONE", out3[:200])
 # ■ FASE 27: BLE Phishing (Apple/Samsung spoofing)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 27 — BLE Phishing (advertisement spoof)")
+banner("FASE 27 - BLE Phishing (advertisement spoof)")
 
 out = wxf("generic/bluetooth/ble_phishing", {
     "mode":         "apple_findmy",
@@ -558,7 +558,7 @@ record("ble_phishing", {"ssid": "BLE_PHISH", "bssid": "ALL"}, "DONE", out[:200])
 # ■ FASE 28: MoMo Integrated Attack (KARMA+PMKID+downgrade)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 28 — MoMo Integrated Attack")
+banner("FASE 28 - MoMo Integrated Attack")
 
 out = wxf("generic/wifi_lab/momo_integrated_attack", {
     "interface":    IFACE,
@@ -573,7 +573,7 @@ record("momo_integrated_attack", OWN_NET_2G, "DONE", out[:300])
 # ■ FASE 29: Adaptive Harvest (score-driven)
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("FASE 29 — Adaptive Harvest (score-driven PMKID)")
+banner("FASE 29 - Adaptive Harvest (score-driven PMKID)")
 
 out = wxf("generic/wifi_lab/adaptive_harvest", {
     "interface":    IFACE,
@@ -588,7 +588,7 @@ record("adaptive_harvest", {"ssid": "ALL", "bssid": "ALL"}, "DONE", out[:300])
 # ■ RELATÓRIO FINAL
 # ─────────────────────────────────────────────────────────────────────────────
 
-banner("RELATÓRIO FINAL — Resumo da Campanha")
+banner("RELATÓRIO FINAL - Resumo da Campanha")
 
 print(f"\n{'─'*65}")
 print(f"{'Módulo':<35} {'Alvo':<20} {'Status':<15}")

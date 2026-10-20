@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Transparent proxy module for traffic interception and injection.
 
 Routes client traffic through a transparent proxy for:
-  - HTTP content inspection and logging
-  - JavaScript injection into HTTP responses
-  - HTML injection (banners, redirects)
-  - Download spoofing (swap served files on the fly)
-  - Credential sniffing from unencrypted traffic
+ - HTTP content inspection and logging
+ - JavaScript injection into HTTP responses
+ - HTML injection (banners, redirects)
+ - Download spoofing (swap served files on the fly)
+ - Credential sniffing from unencrypted traffic
 
 Supports multiple backends:
-  - mitmproxy   Full-featured transparent proxy
-  - bettercap   Integrated proxy + ARP spoof
-  - builtin     Lightweight Python-based HTTP proxy
+ - mitmproxy   Full-featured transparent proxy
+ - bettercap   Integrated proxy + ARP spoof
+ - builtin     Lightweight Python-based HTTP proxy
 
 Inspired by wifipumpkin3's PumpkinProxy.
 
@@ -163,7 +163,7 @@ class Exploit(Exploit):
         require_authorised_lab()
 
         if self.dry_run:
-            print_info("DRY RUN — Transparent Proxy")
+            print_info("DRY RUN - Transparent Proxy")
             print_info(f"Backend: {self.backend} | Port: {self.proxy_port} | Interface: {self.interface}")
             return
 

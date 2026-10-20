@@ -3,7 +3,7 @@
 Provides structured extraction of 802.11 frames, EAPOL handshakes,
 cleartext credentials, and AP/station mapping from capture files.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""Bridge subprocess for wifipumpkin3 (Apache-2.0) — rogue AP attack framework.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""Bridge subprocess for wifipumpkin3 (Apache-2.0) - rogue AP attack framework.
 
 wifipumpkin3 is a powerful framework with capabilities beyond basic evil twin:
-  - Captive portal (captiveflask) with multiple themes
-  - Phishkin3: MFA phishing via external cloud URL
-  - EvilQR3: QR code phishing (WhatsApp, Discord, etc.)
-  - KARMA mode via hostapd-wpe
-  - Responder (LLMNR/NBT-NS poisoning)
-  - Sniffkin3 (traffic sniffer)
-  - PumpkinProxy (transparent proxy + injection)
-  - REST API for remote control
-  - Deauthentication module (Scapy-based)
+ - Captive portal (captiveflask) with multiple themes
+ - Phishkin3: MFA phishing via external cloud URL
+ - EvilQR3: QR code phishing (WhatsApp, Discord, etc.)
+ - KARMA mode via hostapd-wpe
+ - Responder (LLMNR/NBT-NS poisoning)
+ - Sniffkin3 (traffic sniffer)
+ - PumpkinProxy (transparent proxy + injection)
+ - REST API for remote control
+ - Deauthentication module (Scapy-based)
 
 Version: 1.1.0
 """
@@ -189,7 +189,7 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN — would execute:")
+            print_info("DRY RUN - would execute:")
             print_status(cmd_str)
             print_info("\nGenerated .pulp script:")
             for line in self._generate_pulp_script().split("\n"):

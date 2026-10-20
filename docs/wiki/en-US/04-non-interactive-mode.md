@@ -1,6 +1,6 @@
 # Non-interactive (batch) CLI
 
-**Language:** English (en-US). **pt-BR:** [../pt-BR/04-modo-nao-interativo.md](../pt-BR/04-modo-nao-interativo.md)
+**Language:** English (en-US)
 
 ## Syntax
 
@@ -28,7 +28,7 @@ wxf -h
 
 ## Pipelines
 
-Redirect output carefully — it may contain credentials or banners. There is no universal JSON mode.
+Redirect output carefully - it may contain credentials or banners. There is no universal JSON mode.
 
 ---
 

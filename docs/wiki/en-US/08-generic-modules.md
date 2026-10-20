@@ -1,4 +1,4 @@
-# 08 — Generic Modules
+# 08 - Generic Modules
 
 > Complete reference for all `generic/*` modules with full syntax, options and usage samples.
 
@@ -6,7 +6,7 @@
 
 ---
 
-## generic/wifi_lab — Wi-Fi Attack Lab
+## generic/wifi_lab - Wi-Fi Attack Lab
 
 ### handshake_snooper
 
@@ -28,7 +28,7 @@ run
 
 ### wpa3_attack_suite
 
-WPA3 Dragonblood suite — SAE flood, CSA, Double SSID clone, downgrade.
+WPA3 Dragonblood suite - SAE flood, CSA, Double SSID clone, downgrade.
 
 ```
 use generic/wifi_lab/wpa3_attack_suite
@@ -184,7 +184,7 @@ run
 
 ---
 
-## generic/pcap — PCAP Analysis
+## generic/pcap - PCAP Analysis
 
 ### pcap_sql_workspace
 
@@ -208,7 +208,7 @@ run
 
 ---
 
-## generic/bluetooth — Bluetooth / BLE
+## generic/bluetooth - Bluetooth / BLE
 
 ### ble_btlejack
 
@@ -251,7 +251,7 @@ run
 
 ---
 
-## generic/external — External Bridges
+## generic/external - External Bridges
 
 ### bruce_serial_bridge
 
@@ -341,7 +341,7 @@ run
 
 ---
 
-## New in v1.2.0 — integrated from submodule audit
+## New in v1.2.0 - integrated from submodule audit
 
 ### wpa3_sae_flood_native
 
@@ -520,7 +520,7 @@ run
 
 ### knob_attack_bridge
 
-KNOB (Key Negotiation Of Bluetooth) — forces 1-byte entropy in BT BR/EDR link key (CVE-2019-9506).
+KNOB (Key Negotiation Of Bluetooth) - forces 1-byte entropy in BT BR/EDR link key (CVE-2019-9506).
 
 ```
 use generic/bluetooth/knob_attack_bridge
@@ -541,7 +541,7 @@ run
 
 ### bias_attack_bridge
 
-BIAS (Bluetooth Impersonation AttackS) — impersonates BT BR/EDR device without LTK (CVE-2020-10135).
+BIAS (Bluetooth Impersonation AttackS) - impersonates BT BR/EDR device without LTK (CVE-2020-10135).
 
 ```
 use generic/bluetooth/bias_attack_bridge
@@ -560,7 +560,7 @@ run
 
 ### ble_bluffs_native
 
-BLUFFS — BLE session key downgrade breaking forward and future secrecy (CVE-2023-24023).
+BLUFFS - BLE session key downgrade breaking forward and future secrecy (CVE-2023-24023).
 
 ```
 use generic/bluetooth/ble_bluffs_native

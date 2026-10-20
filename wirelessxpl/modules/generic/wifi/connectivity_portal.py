@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Connectivity-aware captive portal with OS detection and i18n.
 
 Implements a captive portal HTTP server that:
@@ -148,7 +148,7 @@ class Exploit(Exploit):
                 logger.debug("ML portal optimization failed: %s", exc)
 
         if self.dry_run:
-            print_info("DRY RUN — Connectivity Portal (i18n)")
+            print_info("DRY RUN - Connectivity Portal (i18n)")
             print_info(f"Template: {self.template} ({tpl_dir})")
             print_info(f"Port: {self.portal_port} | IP: {self.portal_ip}")
             print_info("Locales: {}".format(", ".join(SUPPORTED_LOCALES)))

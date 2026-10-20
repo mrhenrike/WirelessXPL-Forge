@@ -171,7 +171,7 @@ class InterfaceRegistry:
         # iw dev reports "phy#4" but "iw phy" expects "phy4"
         phy_name = phy.replace("#", "")
         out = self._run(["iw", "phy", phy_name, "info"])
-        # iw phy info uses tabs+spaces before "* <mode>" — use simple substring
+        # iw phy info uses tabs+spaces before "* <mode>" - use simple substring
         caps = {
             "monitor": "* monitor" in out,
             "ap":      "* AP" in out,

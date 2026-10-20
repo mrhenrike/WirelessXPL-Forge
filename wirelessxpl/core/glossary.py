@@ -1,11 +1,11 @@
-"""WXF Glossary — Wireless Security Terms, Acronyms and Attack Techniques.
+"""WXF Glossary - Wireless Security Terms, Acronyms and Attack Techniques.
 
 Comprehensive reference for all acronyms, siglas, standards and concepts
 used in WiFi/Bluetooth/RF security. Each entry includes:
-  - Full name / expansão do acrônimo
-  - Description (PT-BR)
-  - Normal use / uso normal
-  - Attack relevance / uso em ataques
+ - Full name / expansão do acrônimo
+ - Description (PT-BR)
+ - Normal use / uso normal
+ - Attack relevance / uso em ataques
 
 Usage from WXF prompt:
     glossary                   → lists all terms (paginated)
@@ -41,16 +41,16 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
 
     # ── WiFi Standards & Protocols ─────────────────────────────────────────
     "802.11": (
-        "IEEE 802.11 — Wi-Fi Standard Family",
+        "IEEE 802.11 - Wi-Fi Standard Family",
         "standard",
         "Família de padrões IEEE que define comunicação sem fio (Wi-Fi). "
-        "Inclui variantes como .11a/b/g/n/ac/ax/be (Wi-Fi 1–7).",
+        "Inclui variantes como .11a/b/g/n/ac/ax/be (Wi-Fi 1-7).",
         "Define como dispositivos se comunicam em redes sem fio a 2.4GHz, 5GHz e 6GHz.",
         "Qualquer ataque Wi-Fi opera dentro deste framework. "
         "Conhecer o padrão é essencial para injeção de frames e bypass de segurança.",
     ),
     "802.11w": (
-        "IEEE 802.11w — Management Frame Protection (MFP/PMF)",
+        "IEEE 802.11w - Management Frame Protection (MFP/PMF)",
         "standard",
         "Extensão do padrão 802.11 que protege frames de gerenciamento (Auth, Deauth, "
         "AssocReq, Disassoc) com assinatura criptográfica. Mandatório no WPA3.",
@@ -59,7 +59,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Bypass: CSA injection (beacons não são protegidos), ou aguardar reconexão natural.",
     ),
     "ssid": (
-        "SSID — Service Set Identifier",
+        "SSID - Service Set Identifier",
         "wifi",
         "Nome da rede Wi-Fi transmitido em beacon frames. Pode ter até 32 bytes. "
         "Pode ser 'hidden' (não transmitido em beacons) mas aparece em probe responses.",
@@ -68,7 +68,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "SSID confusion attack (trocar SSID para confundir clientes), beacon flood (SSIDs aleatórios).",
     ),
     "bssid": (
-        "BSSID — Basic Service Set Identifier",
+        "BSSID - Basic Service Set Identifier",
         "wifi",
         "Endereço MAC do Access Point (rádio). Identifica unicamente um AP na rede. "
         "Em redes com múltiplos APs (ESS), cada AP tem um BSSID único.",
@@ -77,7 +77,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "BSSID-based PIN prediction: algoritmos vendor derivam WPS PIN do BSSID.",
     ),
     "essid": (
-        "ESSID — Extended Service Set Identifier",
+        "ESSID - Extended Service Set Identifier",
         "wifi",
         "Equivalente a SSID no contexto de redes com múltiplos APs (Extended Service Set). "
         "Na prática, SSID e ESSID são usados de forma intercambiável.",
@@ -85,7 +85,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Mesmo uso que SSID em ataques.",
     ),
     "rssi": (
-        "RSSI — Received Signal Strength Indicator",
+        "RSSI - Received Signal Strength Indicator",
         "wifi",
         "Medida da potência do sinal recebido, tipicamente em dBm (negativo). "
         "Ex: -30 dBm = sinal excelente, -90 dBm = sinal fraco.",
@@ -94,7 +94,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "de ataques de injeção. RSSI > -60 = alvo prioritário.",
     ),
     "ap": (
-        "AP — Access Point",
+        "AP - Access Point",
         "wifi",
         "Dispositivo que cria e gerencia uma rede Wi-Fi. Opera em modo infrastructure "
         "transmitindo beacons, gerenciando associações e encaminhando tráfego.",
@@ -102,7 +102,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Alvo em ataques: deauth, WPS, PMKID, evil twin, CSA injection.",
     ),
     "sta": (
-        "STA — Station",
+        "STA - Station",
         "wifi",
         "Qualquer dispositivo cliente Wi-Fi (laptop, smartphone, IoT). "
         "Se conecta a um AP em modo infrastructure.",
@@ -111,7 +111,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "evil twin (capturar credenciais), BT HID injection.",
     ),
     "bss": (
-        "BSS — Basic Service Set",
+        "BSS - Basic Service Set",
         "wifi",
         "Conjunto básico formado por um AP e as Stations associadas a ele. "
         "É a célula fundamental de uma rede Wi-Fi.",
@@ -119,7 +119,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Entender o BSS é fundamental para ataques de deauth e associação falsa.",
     ),
     "ess": (
-        "ESS — Extended Service Set",
+        "ESS - Extended Service Set",
         "wifi",
         "Conjunto de múltiplos BSSs (múltiplos APs) com o mesmo SSID, "
         "interconectados por uma rede backbone (geralmente Ethernet).",
@@ -127,7 +127,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Roaming attacks: forçar clientes a roamear entre APs falsos e legítimos.",
     ),
     "ibss": (
-        "IBSS — Independent Basic Service Set (Ad-hoc)",
+        "IBSS - Independent Basic Service Set (Ad-hoc)",
         "wifi",
         "Rede Wi-Fi peer-to-peer sem AP. Dispositivos se comunicam diretamente.",
         "Transferência de arquivos entre dois notebooks sem roteador.",
@@ -189,7 +189,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Mesmo uso que deauth em ataques. Também bloqueado por PMF.",
     ),
     "wpa": (
-        "WPA — Wi-Fi Protected Access",
+        "WPA - Wi-Fi Protected Access",
         "crypto",
         "Protocolo de segurança Wi-Fi criado em 2003 como substituto emergencial do WEP. "
         "Usa TKIP (Temporal Key Integrity Protocol). Considerado inseguro.",
@@ -198,7 +198,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Downgrade attack forçar WPA onde WPA2/3 deveria ser usado.",
     ),
     "wpa2": (
-        "WPA2 — Wi-Fi Protected Access 2 (IEEE 802.11i)",
+        "WPA2 - Wi-Fi Protected Access 2 (IEEE 802.11i)",
         "crypto",
         "Padrão de segurança Wi-Fi desde 2004. Usa AES-CCMP como cifra principal. "
         "PSK (Personal) ou Enterprise (802.1X/RADIUS). Ainda o mais usado mundialmente.",
@@ -208,7 +208,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Downgrade de WPA3 Transition Mode para WPA2.",
     ),
     "wpa3": (
-        "WPA3 — Wi-Fi Protected Access 3 (IEEE 802.11ax)",
+        "WPA3 - Wi-Fi Protected Access 3 (IEEE 802.11ax)",
         "crypto",
         "Padrão desde 2018. Usa SAE (Dragonfly) no lugar do PSK, resistente a offline cracking. "
         "Mandatory PMF. R3 (2022): Hash-to-Element, Transition Terminated Indication.",
@@ -218,7 +218,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "SAE flood: 500 SAE Commit frames sobrecarregam CPU do AP.",
     ),
     "wep": (
-        "WEP — Wired Equivalent Privacy",
+        "WEP - Wired Equivalent Privacy",
         "crypto",
         "Protocolo de segurança Wi-Fi obsoleto (1997). Usa RC4 com IVs de 24 bits. "
         "Completamente quebrado. NUNCA usar.",
@@ -228,7 +228,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Caffe-Latte: ataque a clientes WEP fora da rede.",
     ),
     "pmf": (
-        "PMF — Protected Management Frames (IEEE 802.11w)",
+        "PMF - Protected Management Frames (IEEE 802.11w)",
         "crypto",
         "Proteção criptográfica de frames de gerenciamento 802.11 usando MIC (HMAC-SHA1). "
         "MFPC=1 (capable), MFPR=1 (required). Mandatório no WPA3.",
@@ -237,7 +237,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "SA Query timeout: teórico, não prático. Ver CVE-2019-9494.",
     ),
     "ptk": (
-        "PTK — Pairwise Transient Key",
+        "PTK - Pairwise Transient Key",
         "crypto",
         "Chave derivada durante o 4-way handshake para criptografar tráfego unicast. "
         "Gerada de: PMK + ANonce + SNonce + BSSID + STA_MAC. "
@@ -247,7 +247,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "4-way capture: captura ANonce+SNonce+MIC → offline cracking da PSK.",
     ),
     "gtk": (
-        "GTK — Group Temporal Key",
+        "GTK - Group Temporal Key",
         "crypto",
         "Chave compartilhada entre AP e todos os clientes para tráfego broadcast/multicast. "
         "Distribuída no M3 do 4-way handshake ou no Group Key Handshake.",
@@ -256,7 +256,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Se GTK for recuperada, todos os broadcasts da rede ficam expostos.",
     ),
     "pmk": (
-        "PMK — Pairwise Master Key",
+        "PMK - Pairwise Master Key",
         "crypto",
         "Chave raiz derivada da PSK (ou RADIUS em Enterprise). "
         "WPA2-PSK: PMK = PBKDF2-SHA1(PSK, SSID, 4096 iterações, 32 bytes). "
@@ -266,7 +266,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "hashcat -m 22000: computa PBKDF2 para cada candidato de senha.",
     ),
     "pmkid": (
-        "PMKID — Pairwise Master Key Identifier",
+        "PMKID - Pairwise Master Key Identifier",
         "crypto",
         "Hash de 16 bytes: PMKID = HMAC-SHA1-128(PMK, 'PMK Name' || AP_MAC || STA_MAC). "
         "Enviado pelo AP no EAPOL-Key M1 (primeiro frame do 4-way handshake). "
@@ -287,7 +287,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "hashcat -m 22000. Precisa pelo menos M1+M2 na MESMA sessão (mesmo ANonce).",
     ),
     "eapol": (
-        "EAPOL — Extensible Authentication Protocol over LAN",
+        "EAPOL - Extensible Authentication Protocol over LAN",
         "protocol",
         "Encapsulamento do protocolo EAP sobre camada 2 (802.3 ou 802.11). "
         "Tipos: EAP-Request(1), EAP-Response(2), EAP-Success(3), EAP-Failure(4), "
@@ -298,7 +298,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "EAP timing attacks: variações de tempo revelam informações.",
     ),
     "eap": (
-        "EAP — Extensible Authentication Protocol",
+        "EAP - Extensible Authentication Protocol",
         "protocol",
         "Framework de autenticação usado em WPA-Enterprise (802.1X). "
         "Métodos: EAP-TLS, EAP-TTLS, EAP-PEAP, EAP-FAST, EAP-PWD, EAP-WSC (WPS).",
@@ -308,7 +308,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "EAP timing: PEAP inner password bruteforce.",
     ),
     "wps": (
-        "WPS — Wi-Fi Protected Setup (IEEE 802.11-2007)",
+        "WPS - Wi-Fi Protected Setup (IEEE 802.11-2007)",
         "protocol",
         "Protocolo para simplificar conexão de dispositivos. Métodos: PIN (8 dígitos), "
         "PBC (Push Button), NFC, USB. Padrão define mensagens M1-M8 (EAP-WSC).",
@@ -324,22 +324,22 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Ataque WPS offline descoberto por Dominique Bongard (2014). "
         "Explora PRNGs fracos (rand() com entropia limitada) em chips Ralink, Realtek, Broadcom. "
         "Captura uma troca M1-M3 → computar nonces offline → recuperar PIN em segundos.",
-        "Não há uso legítimo — é exclusivamente um ataque.",
+        "Não há uso legítimo - é exclusivamente um ataque.",
         "NetRise 2025: 80%+ dos dispositivos ainda vulneráveis. "
         "Firmware lançado em julho/2025 ainda usa PRNGs fracos. "
         "WXF mode=pixie_dust captura M2 e tenta recovery offline.",
     ),
     "eap_wsc": (
-        "EAP-WSC — EAP with Wi-Fi Simple Config (WPS)",
+        "EAP-WSC - EAP with Wi-Fi Simple Config (WPS)",
         "protocol",
         "Método EAP usado pelo WPS para transportar mensagens M1-M8. "
         "EAP expanded type 0xFE com vendor ID Wi-Fi Alliance (00:37:2A).",
-        "Protocolo interno do WPS — transporta a troca de chaves entre enrollee e registrar.",
+        "Protocolo interno do WPS - transporta a troca de chaves entre enrollee e registrar.",
         "Capturar M2 via EAP-WSC é necessário para Pixie Dust. "
         "EAPOL-Start após AssocReq com WPS IE (sem RSN IE) trigga EAP-WSC no AP.",
     ),
     "krack": (
-        "KRACK — Key Reinstallation Attack (CVE-2017-13077 a 13088)",
+        "KRACK - Key Reinstallation Attack (CVE-2017-13077 a 13088)",
         "attack",
         "Família de ataques descoberta por Mathy Vanhoef (2017). Explora o fato de que "
         "o protocolo 4-way handshake permite reinstalação de chaves com nonce zerado. "
@@ -350,7 +350,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Remediado com patches em 2017-2018. Detectar com krack_scanner.",
     ),
     "fragattacks": (
-        "FragAttacks — Fragmentation and Aggregation Attacks (CVE-2020-24586 a 26147)",
+        "FragAttacks - Fragmentation and Aggregation Attacks (CVE-2020-24586 a 26147)",
         "attack",
         "Família de 12 vulnerabilidades descobertas por Mathy Vanhoef (2020-2021). "
         "Afeta praticamente todos os dispositivos Wi-Fi lançados desde 1997. "
@@ -362,7 +362,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "CVE-2020-26143: aceitar broadcast A-MSDU em texto plano.",
     ),
     "dragonblood": (
-        "Dragonblood — WPA3 SAE Attacks (CVE-2019-9494 a 9499)",
+        "Dragonblood - WPA3 SAE Attacks (CVE-2019-9494 a 9499)",
         "attack",
         "Família de ataques contra WPA3 SAE (Dragonfly) por Mathy Vanhoef e Eyal Ronen (2019). "
         "Inclui timing side-channel, group downgrade, SAE commit flood DoS.",
@@ -373,18 +373,18 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Remediado em patches 2019-2020.",
     ),
     "sae": (
-        "SAE — Simultaneous Authentication of Equals (Dragonfly)",
+        "SAE - Simultaneous Authentication of Equals (Dragonfly)",
         "protocol",
         "Substituiu o PSK no WPA3. Protocolo de troca de chaves baseado em "
         "Diffie-Hellman sobre curva elíptica ou grupo finito. "
-        "Cada autenticação gera forward secrecy — captura offline não é possível.",
-        "Autenticação WPA3 Personal — mais segura que PSK.",
+        "Cada autenticação gera forward secrecy - captura offline não é possível.",
+        "Autenticação WPA3 Personal - mais segura que PSK.",
         "SAE Commit: primeiro frame (grupo + scalar + element). "
         "SAE Confirm: segundo frame com verificação. "
         "SAE flood: enviar centenas de SAE Commits → DoS no AP.",
     ),
     "owe": (
-        "OWE — Opportunistic Wireless Encryption (RFC 8110)",
+        "OWE - Opportunistic Wireless Encryption (RFC 8110)",
         "protocol",
         "Substitui redes Wi-Fi abertas (sem senha) com criptografia automática. "
         "Cada conexão tem chave única via ECDH sem autenticação de identidade.",
@@ -393,7 +393,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Ataque passivo: qualquer um no ar pode capturar tráfego não criptografado.",
     ),
     "radius": (
-        "RADIUS — Remote Authentication Dial-In User Service (RFC 2865)",
+        "RADIUS - Remote Authentication Dial-In User Service (RFC 2865)",
         "protocol",
         "Protocolo AAA (Authentication, Authorization, Accounting) usado em WPA-Enterprise. "
         "O AP atua como NAS (Network Access Server) → encaminha credenciais ao RADIUS.",
@@ -402,7 +402,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Certificate bypass: clientes que não validam certificado do servidor RADIUS.",
     ),
     "dot1x": (
-        "802.1X — Port-Based Network Access Control",
+        "802.1X - Port-Based Network Access Control",
         "protocol",
         "Padrão IEEE para controle de acesso em redes. Usado em WPA-Enterprise. "
         "Define supplicant (cliente), authenticator (AP/switch), authentication server (RADIUS).",
@@ -411,7 +411,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "EAP method downgrade: aceitar métodos fracos como EAP-MD5.",
     ),
     "csa": (
-        "CSA — Channel Switch Announcement (IE 37, IEEE 802.11-2020 §9.4.2.18)",
+        "CSA - Channel Switch Announcement (IE 37, IEEE 802.11-2020 §9.4.2.18)",
         "wifi",
         "Information Element em beacon/action frames que anuncia mudança de canal iminente. "
         "Campos: mode (1=stop TX), new_channel, channel_switch_count. "
@@ -422,25 +422,25 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Funciona mesmo com PMF Required. wikikit v0.6.0, Politician library.",
     ),
     "mfpc": (
-        "MFPC — Management Frame Protection Capable",
+        "MFPC - Management Frame Protection Capable",
         "wifi",
         "Bit 7 do campo RSN Capabilities no RSN IE do beacon. "
         "MFPC=1 significa o AP SUPORTA PMF mas não exige.",
         "AP anuncia suporte a PMF.",
-        "MFPC=1, MFPR=0: PMF opcional — deauth clássico ainda pode funcionar. "
-        "MFPC=1, MFPR=1: PMF obrigatório — deauth BLOQUEADO, usar CSA.",
+        "MFPC=1, MFPR=0: PMF opcional - deauth clássico ainda pode funcionar. "
+        "MFPC=1, MFPR=1: PMF obrigatório - deauth BLOQUEADO, usar CSA.",
     ),
     "mfpr": (
-        "MFPR — Management Frame Protection Required",
+        "MFPR - Management Frame Protection Required",
         "wifi",
         "Bit 6 do campo RSN Capabilities no RSN IE do beacon. "
-        "MFPR=1 significa PMF é OBRIGATÓRIO — todos os clientes devem usar PMF.",
+        "MFPR=1 significa PMF é OBRIGATÓRIO - todos os clientes devem usar PMF.",
         "AP exige que clientes usem PMF para conectar.",
         "MFPR=1: deauth/disassoc clássicos são silenciosamente descartados. "
         "Bypass: CSA injection, ou esperar reconexão natural.",
     ),
     "rsnie": (
-        "RSN IE — Robust Security Network Information Element (ID=48)",
+        "RSN IE - Robust Security Network Information Element (ID=48)",
         "wifi",
         "IE no beacon/AssocReq que define capacidades de segurança: "
         "group cipher, pairwise ciphers, AKM suites, RSN Capabilities (PMF bits).",
@@ -450,17 +450,17 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "AKM 0x000FAC02 = PSK, 0x000FAC08 = SAE.",
     ),
     "tkip": (
-        "TKIP — Temporal Key Integrity Protocol",
+        "TKIP - Temporal Key Integrity Protocol",
         "crypto",
         "Cifra usada no WPA (e opcionalmente WPA2). Baseada em RC4 com Michael MIC. "
-        "Considerada insegura — Beck-Tews attack (2008) quebra Michael MIC.",
+        "Considerada insegura - Beck-Tews attack (2008) quebra Michael MIC.",
         "Cifra legacy de WPA. WPA2 prefere AES-CCMP.",
         "Beck-Tews: recuperar bytes do keystream ARP via chop-chop. "
         "Michael MIC countermeasures: AP bloqueia rede por 60s após 2 erros de MIC. "
         "WXF: flood_engine_native.py implementa Michael MIC nativo.",
     ),
     "ccmp": (
-        "CCMP — Counter Mode with CBC-MAC Protocol",
+        "CCMP - Counter Mode with CBC-MAC Protocol",
         "crypto",
         "Cifra principal do WPA2/WPA3. Baseada em AES-128 em modo CCM. "
         "Provê confidencialidade + integridade + replay protection.",
@@ -469,7 +469,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "KRACK abusa do protocolo de gerenciamento de chaves, não do AES em si.",
     ),
     "gcmp": (
-        "GCMP — Galois/Counter Mode Protocol",
+        "GCMP - Galois/Counter Mode Protocol",
         "crypto",
         "Cifra alternativa no WPA3-Enterprise 192-bit. AES-256 em modo GCM. "
         "Mais eficiente que CCMP em hardware com instruções AES-NI.",
@@ -477,16 +477,16 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Sem vulnerabilidades práticas conhecidas.",
     ),
     "anonce": (
-        "ANonce — Authenticator Nonce",
+        "ANonce - Authenticator Nonce",
         "crypto",
         "Nonce aleatório de 32 bytes gerado pelo AP no M1 do 4-way handshake. "
         "Junto com SNonce, é usado para derivar a PTK.",
-        "Garante freshness da sessão — cada conexão tem ANonce único.",
+        "Garante freshness da sessão - cada conexão tem ANonce único.",
         "Para cracking offline: ANonce (do M1) + SNonce (do M2) + MIC (do M2) "
         "permite verificar candidatos de senha. ESSENCIAL no par M1+M2.",
     ),
     "snonce": (
-        "SNonce — Supplicant Nonce",
+        "SNonce - Supplicant Nonce",
         "crypto",
         "Nonce aleatório de 32 bytes gerado pelo cliente (STA) no M2 do 4-way handshake.",
         "Garante que o cliente contribui com entropia para a PTK.",
@@ -494,7 +494,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "captura M1+M2 da mesma sessão = cracking offline possível.",
     ),
     "mic": (
-        "MIC — Message Integrity Code",
+        "MIC - Message Integrity Code",
         "crypto",
         "Código de integridade nos frames M2, M3, M4 do 4-way handshake. "
         "Calculado com HMAC-SHA1 (WPA2) ou HMAC-SHA256 (WPA3) sobre o frame completo.",
@@ -505,7 +505,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
 
     # ── Bluetooth ──────────────────────────────────────────────────────────
     "ble": (
-        "BLE — Bluetooth Low Energy (Bluetooth 4.0+)",
+        "BLE - Bluetooth Low Energy (Bluetooth 4.0+)",
         "bt",
         "Versão de baixo consumo do Bluetooth (IEEE 802.15.1). Usa canais de 40 (3 advertising + 37 data). "
         "Frequência: 2.4GHz. Alcance: 10-100m. Advertising, GATT, ATT, L2CAP.",
@@ -516,7 +516,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "BLE phishing: spoofar nome de dispositivo Apple/Samsung para popups falsos.",
     ),
     "gatt": (
-        "GATT — Generic Attribute Profile (Bluetooth)",
+        "GATT - Generic Attribute Profile (Bluetooth)",
         "protocol",
         "Protocolo BLE que define como dispositivos expõem dados. "
         "Hierarquia: Services > Characteristics > Descriptors. "
@@ -527,7 +527,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Characteristic spoofing: modificar valores expostos.",
     ),
     "att": (
-        "ATT — Attribute Protocol (Bluetooth)",
+        "ATT - Attribute Protocol (Bluetooth)",
         "protocol",
         "Protocolo de baixo nível que o GATT usa para acessar atributos. "
         "Server/Client model. Handles são índices numéricos dos atributos.",
@@ -536,7 +536,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Handle enumeration: descobrir atributos não listados nos serviços.",
     ),
     "hci": (
-        "HCI — Host Controller Interface (Bluetooth)",
+        "HCI - Host Controller Interface (Bluetooth)",
         "bt",
         "Interface padronizada entre o host (OS) e o controller (chip BT). "
         "Permite comunicação com o chip BT via USB, UART, SDIO. "
@@ -546,7 +546,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "hci0/hci1: identificar qual adapter USB para ataques BT.",
     ),
     "l2cap": (
-        "L2CAP — Logical Link Control and Adaptation Protocol (Bluetooth)",
+        "L2CAP - Logical Link Control and Adaptation Protocol (Bluetooth)",
         "protocol",
         "Camada de transporte Bluetooth acima do baseband. "
         "Multiplexação, segmentação/reassembly de frames. PSM identifica serviço. "
@@ -556,7 +556,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "L2CAP nativo no Linux: socket(AF_BLUETOOTH=31, SOCK_SEQPACKET, BTPROTO_L2CAP=0).",
     ),
     "rfcomm": (
-        "RFCOMM — Radio Frequency Communication (Bluetooth)",
+        "RFCOMM - Radio Frequency Communication (Bluetooth)",
         "protocol",
         "Protocolo Bluetooth que emula portas seriais RS-232 via L2CAP. "
         "Usado por: Serial Port Profile, DUN, HSP, HFP.",
@@ -565,7 +565,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "KNOB attack afeta conexões RFCOMM/Classic BT.",
     ),
     "knob": (
-        "KNOB — Key Negotiation of Bluetooth (CVE-2019-9506)",
+        "KNOB - Key Negotiation of Bluetooth (CVE-2019-9506)",
         "attack",
         "Vulnerabilidade em Classic Bluetooth (BR/EDR) que permite forçar entropia de 1 byte "
         "na negociação da chave de sessão. Com 1 byte = 255 possibilidades = bruteforce trivial. "
@@ -575,7 +575,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Afeta todos os dispositivos Bluetooth antes dos patches de 2019.",
     ),
     "bluffs": (
-        "BLUFFS — Bluetooth Forward and Future Secrecy Attacks (CVE-2023-24023)",
+        "BLUFFS - Bluetooth Forward and Future Secrecy Attacks (CVE-2023-24023)",
         "attack",
         "Vulnerabilidades em Bluetooth 4.2-5.4 que permitem forçar session keys fracas "
         "e reutilizáveis, quebrando forward secrecy. Descobertas por Daniele Antonioli (2023).",
@@ -584,7 +584,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Afeta iOS, Android, Linux, Windows sem patches.",
     ),
     "sweyntooth": (
-        "SweynTooth — BLE Stack Vulnerabilities (CVE-2019-16336 a 17520)",
+        "SweynTooth - BLE Stack Vulnerabilities (CVE-2019-16336 a 17520)",
         "attack",
         "Família de 12 vulnerabilidades em BLE stacks embarcados "
         "(Cypress, NXP, Dialog, STMicro, Microchip, TI). "
@@ -605,17 +605,17 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
 
     # ── Radio Frequency ────────────────────────────────────────────────────
     "ism": (
-        "ISM — Industrial, Scientific and Medical Band",
+        "ISM - Industrial, Scientific and Medical Band",
         "rf",
         "Bandas de frequência liberadas para uso sem licença: "
         "433 MHz, 868/915 MHz (Sub-GHz IoT), 2.4 GHz, 5.8 GHz. "
         "Wi-Fi, Bluetooth, Zigbee, Z-Wave, LoRa usam ISM.",
         "Comunicação sem fio de curto alcance sem licença especial.",
         "Sub-GHz attacks: replay de controles remotos de garagem, carros. "
-        "KeeLoq: rolling code em 315/433 MHz — vulnerável a grabber attacks.",
+        "KeeLoq: rolling code em 315/433 MHz - vulnerável a grabber attacks.",
     ),
     "ook": (
-        "OOK — On-Off Keying",
+        "OOK - On-Off Keying",
         "rf",
         "Modulação digital mais simples: bit 1 = sinal transmitido, bit 0 = silêncio. "
         "Variante especial de ASK (Amplitude Shift Keying). Frequente em IoT/portões.",
@@ -624,10 +624,10 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF: ook_encoder.py, static_code_replay.py.",
     ),
     "keeloq": (
-        "KeeLoq — Rolling Code Algorithm",
+        "KeeLoq - Rolling Code Algorithm",
         "crypto",
         "Algoritmo de código rotativo usado em sistemas de segurança automotiva (1990s). "
-        "Cada pressionamento gera novo código — proteção contra simple replay. "
+        "Cada pressionamento gera novo código - proteção contra simple replay. "
         "Chip: Microchip HCS200/300, NTQ105.",
         "Travamento remoto de carros, portões de garagem modernos.",
         "Relay attack: amplificar sinal da chave real para abrir carro distante. "
@@ -635,10 +635,10 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "CVE-2025-70994 (ev1527): veículos usando EV1527 sem rolling code.",
     ),
     "rtlsdr": (
-        "RTL-SDR — Realtek Software Defined Radio",
+        "RTL-SDR - Realtek Software Defined Radio",
         "tool",
         "Adaptador USB barato (~$20) baseado no chip Realtek RTL2832U. "
-        "Recebe 25-1750 MHz. RX ONLY — não transmite. Resolução ~8 bits.",
+        "Recebe 25-1750 MHz. RX ONLY - não transmite. Resolução ~8 bits.",
         "Monitorar sinais de rádio: aviação, satélites, TPMS, meteosondas.",
         "TPMS decode: pressão/temperatura de pneus em 315/433 MHz. "
         "Passive surveillance: capturar sinais OOK, ASK de controles remotos. "
@@ -680,7 +680,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Ferramenta de cracking de hashes, suporte GPU (CUDA/OpenCL). "
         "Modo 22000: WPA-PBKDF2-PMKID+EAPOL. Modo 22001: WPA-PMKID. "
         "Suporta regras, máscaras, wordlists, Prince attack.",
-        "Cracking offline de senhas — WPA2, WPA3 transition, NTLM, MD5.",
+        "Cracking offline de senhas - WPA2, WPA3 transition, NTLM, MD5.",
         "GPU RTX 4060: ~3 MH/s em WPA2. Wordlist + rules: enorme cobertura. "
         "WXF handshake_crack_engine.py: hashcat_gpu | hashcat_cpu | hashcat_auto.",
     ),
@@ -691,7 +691,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Versão 7.x: suporta BPF filters. Alternativa nativa ao airodump-ng.",
         "Captura PMKID sem precisar de cliente conectado.",
         "WXF pmkid_autopwn.py: reimplementação nativa em Scapy (sem hcxdumptool). "
-        "Driver rt2800usb tem limitações com hcxdumptool — WXF usa Scapy como alternativa.",
+        "Driver rt2800usb tem limitações com hcxdumptool - WXF usa Scapy como alternativa.",
     ),
     "reaver": (
         "Reaver",
@@ -780,7 +780,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Injeção de código JavaScript malicioso em respostas HTTP em trânsito. "
         "O atacante modifica corpo HTML em tempo real ao proxy interceptar.",
         "Não há uso legítimo.",
-        "WXF arp_mitm_proxy.py injeta: <script>alert('WXF em execução — MITM ativo')</script>. "
+        "WXF arp_mitm_proxy.py injeta: <script>alert('WXF em execução - MITM ativo')</script>. "
         "Adiciona banner vermelho em todas as páginas HTTP interceptadas.",
     ),
     "deauth_attack": (
@@ -822,7 +822,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "",
     ),
     "mitm": (
-        "MITM — Man-in-the-Middle",
+        "MITM - Man-in-the-Middle",
         "attack",
         "Posição de ataque onde o adversário intercepta comunicação entre duas partes. "
         "Métodos para Wi-Fi: ARP poisoning, evil twin, DNS spoofing, SSL strip.",
@@ -832,7 +832,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF arp_mitm_proxy.py = MITM completo nativo.",
     ),
     "dos": (
-        "DoS — Denial of Service",
+        "DoS - Denial of Service",
         "attack",
         "Ataque que torna serviço/recurso indisponível. Em Wi-Fi: "
         "deauth flood, beacon flood, auth flood, SAE commit flood, WPS lockout.",
@@ -842,7 +842,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "SAE flood: 500 commit frames → CPU do AP a 100%.",
     ),
     "tpms": (
-        "TPMS — Tire Pressure Monitoring System",
+        "TPMS - Tire Pressure Monitoring System",
         "rf",
         "Sistema de monitoramento de pressão de pneus que transmite via Sub-GHz "
         "(315 MHz EUA, 433 MHz Europa). Cada sensor tem ID único de 32 bits.",
@@ -854,7 +854,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
 
     # ── IEEE & Standards ───────────────────────────────────────────────────
     "ieee": (
-        "IEEE — Institute of Electrical and Electronics Engineers",
+        "IEEE - Institute of Electrical and Electronics Engineers",
         "standard",
         "Organização que publica padrões técnicos globais. "
         "Padrões relevantes para Wi-Fi: 802.11 (Wi-Fi), 802.3 (Ethernet), "
@@ -865,16 +865,16 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "802.11i define 4-way handshake (base de todo WPA cracking).",
     ),
     "wfa": (
-        "WFA — Wi-Fi Alliance",
+        "WFA - Wi-Fi Alliance",
         "standard",
         "Consórcio industrial que certifica produtos Wi-Fi interoperáveis. "
         "Criou: WPA, WPA2, WPA3, WPS, WMM, Wi-Fi Direct, Wi-Fi 6/6E/7.",
         "Garante que dispositivos de diferentes fabricantes se comunicam.",
-        "WPS foi criado pela WFA — protocolo com falhas de design fundamentais. "
+        "WPS foi criado pela WFA - protocolo com falhas de design fundamentais. "
         "Certificação WFA não garante segurança de implementação.",
     ),
     "nist": (
-        "NIST — National Institute of Standards and Technology",
+        "NIST - National Institute of Standards and Technology",
         "standard",
         "Agência americana que publica padrões criptográficos (FIPS). "
         "AES (FIPS 197), SHA-256 (FIPS 180-4), PBKDF2 (SP 800-132).",
@@ -883,7 +883,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "GPU hashcat: 3M H/s ainda lento para senhas longas.",
     ),
     "cve": (
-        "CVE — Common Vulnerabilities and Exposures",
+        "CVE - Common Vulnerabilities and Exposures",
         "standard",
         "Sistema de identificação único de vulnerabilidades. "
         "Formato: CVE-ANO-NÚMERO. Mantido pelo MITRE com suporte do NVD/NIST.",
@@ -893,17 +893,17 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "CVE-2023-24023 (BLUFFS), CVE-2026-36612 (Mercusys WPS lockout).",
     ),
     "cvss": (
-        "CVSS — Common Vulnerability Scoring System",
+        "CVSS - Common Vulnerability Scoring System",
         "standard",
         "Sistema de pontuação 0-10 para severidade de vulnerabilidades. "
         "Base Score: AV (vetor), AC (complexidade), PR (privilégios), UI, C/I/A impact.",
         "Priorizar remediação de vulnerabilidades.",
         "CVE-2026-36612 CVSS: 6.4 (AV:A/AC:H). "
         "CVE-2019-9494 CVSS: 3.7 (local, timing). "
-        "CVSS alto não significa exploração fácil — contexto importa.",
+        "CVSS alto não significa exploração fácil - contexto importa.",
     ),
     "dh": (
-        "DH — Diffie-Hellman Key Exchange (RFC 3526)",
+        "DH - Diffie-Hellman Key Exchange (RFC 3526)",
         "crypto",
         "Protocolo de troca de chaves onde duas partes derivam segredo compartilhado "
         "sem transmitir a chave. WPS usa DH-1536 (grupo MODP). "
@@ -913,7 +913,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Equivalente a reaver --dh-small. WXF wps_engine_native.py static_pke=True.",
     ),
     "hmac": (
-        "HMAC — Hash-based Message Authentication Code",
+        "HMAC - Hash-based Message Authentication Code",
         "crypto",
         "MAC que usa uma função de hash criptográfica + chave secreta. "
         "HMAC-SHA1 usado em: WPS E-Hash, WPA2 MIC. HMAC-SHA256 em WPA3.",
@@ -922,7 +922,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WPA2 MIC: verificação do 4-way handshake para cracking offline.",
     ),
     "pbkdf2": (
-        "PBKDF2 — Password-Based Key Derivation Function 2 (RFC 2898)",
+        "PBKDF2 - Password-Based Key Derivation Function 2 (RFC 2898)",
         "crypto",
         "Função de derivação de chave que aplica HMAC-SHA1 iterativamente. "
         "WPA2 PMK: PBKDF2(PSK, SSID, 4096 iterações, 256 bits). "
@@ -933,7 +933,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Senha fraca ainda pode ser encontrada com wordlists.",
     ),
     "ipsec": (
-        "IPsec — Internet Protocol Security",
+        "IPsec - Internet Protocol Security",
         "protocol",
         "Suite de protocolos para segurança na camada IP. "
         "Modos: transport, tunnel (VPN). Protocolos: AH, ESP, IKE.",
@@ -952,7 +952,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "dnslib AllRedirectResolver: redireciona todos os queries para IP do atacante.",
     ),
     "pcap": (
-        "PCAP — Packet Capture",
+        "PCAP - Packet Capture",
         "tool",
         "Formato de arquivo para armazenar capturas de tráfego de rede. "
         "Extensões: .pcap (libpcap), .pcapng (próxima geração, mais metadados). "
@@ -962,7 +962,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF salva todos os handshakes em .pcapng para análise posterior.",
     ),
     "nmap": (
-        "Nmap — Network Mapper",
+        "Nmap - Network Mapper",
         "tool",
         "Scanner de rede mais popular. Detecção de hosts, portas, serviços, OS. "
         "Timing: T0 (paranoid/5min) a T5 (insane/0ms). "
@@ -972,7 +972,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF timing T3=normal(100ms), T4=aggressive(20ms), T5=insane(0ms).",
     ),
     "t0_t5": (
-        "T0-T5 — Nmap Timing Templates",
+        "T0-T5 - Nmap Timing Templates",
         "tool",
         "Perfis de velocidade/agressividade: "
         "T0/paranoid=5min delay, T1/sneaky=15s, T2/polite=400ms, "
@@ -983,7 +983,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF: todos os módulos respeitam timing global.",
     ),
     "rsn": (
-        "RSN — Robust Security Network",
+        "RSN - Robust Security Network",
         "wifi",
         "Nome da camada de segurança Wi-Fi introduzida no IEEE 802.11i. "
         "RSN IE (ID=48) no beacon anuncia: ciphers, AKM suites, PMF capabilities.",
@@ -992,7 +992,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "AssocReq para WPS NÃO deve ter RSN IE (evita AP enviar Deauth).",
     ),
     "akm": (
-        "AKM — Authentication and Key Management Suite",
+        "AKM - Authentication and Key Management Suite",
         "wifi",
         "Campo no RSN IE que define como autenticação e gerenciamento de chaves funciona. "
         "00-0F-AC:2 = PSK, 00-0F-AC:8 = SAE, 00-0F-AC:1 = 802.1X.",
@@ -1021,7 +1021,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Replay attacks em redes sem counter checks adequados.",
     ),
     "vrrp": (
-        "VRRP — Virtual Router Redundancy Protocol (RFC 5798)",
+        "VRRP - Virtual Router Redundancy Protocol (RFC 5798)",
         "protocol",
         "Protocolo que permite múltiplos roteadores compartilhar um IP virtual. "
         "O 'master' responde pelo IP. Prioridade determina quem é master.",
@@ -1030,7 +1030,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "WXF vrrp_takeover.py implementa este ataque.",
     ),
     "llmnr": (
-        "LLMNR — Link-Local Multicast Name Resolution",
+        "LLMNR - Link-Local Multicast Name Resolution",
         "protocol",
         "Resolução de nomes em redes locais sem DNS (Windows). "
         "Quando DNS falha, host faz broadcast perguntando 'quem é X?'. "
@@ -1040,7 +1040,7 @@ GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
         "Ferramenta: Responder.py. WXF responder_wifi.py implementa similar.",
     ),
     "nbns": (
-        "NBT-NS — NetBIOS Name Service",
+        "NBT-NS - NetBIOS Name Service",
         "protocol",
         "Protocolo legacy Windows para resolução de nomes NetBIOS via broadcast UDP 137. "
         "Similar ao LLMNR, sem autenticação.",
@@ -1075,7 +1075,7 @@ def format_entry(key: str, entry: tuple[str, str, str, str, str]) -> str:
     cat_color = _C.get(category, "\033[97m")
     lines = [
         f"{_BOLD}{cat_color}{'─' * 70}{_RST}",
-        f"{_BOLD}  {key.upper()}{_RST}  —  {cat_color}{full_name}{_RST}",
+        f"{_BOLD}  {key.upper()}{_RST} -  {cat_color}{full_name}{_RST}",
         f"  {_BOLD}Categoria:{_RST} {cat_color}{category.upper()}{_RST}",
         "",
         f"  {_BOLD}O que é:{_RST}",

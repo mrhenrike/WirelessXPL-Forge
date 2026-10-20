@@ -1,6 +1,6 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
-"""BreakMiBand — Xiaomi Mi Band BLE Exploitation Toolkit.
+"""BreakMiBand - Xiaomi Mi Band BLE Exploitation Toolkit.
 
 Toolkit BLE abrangente para Xiaomi Mi Band 3-7. Implementa impersonação de
 dispositivo via advertising cloning, pareamento forçado por replay de auth key,
@@ -152,7 +152,7 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("BreakMiBand — Xiaomi Mi Band BLE Toolkit")
+        print_status("BreakMiBand - Xiaomi Mi Band BLE Toolkit")
         print_info(f"Ação: {self.action} | Adaptador: {self.adapter}")
 
         if self.action == "scan" or not self.target.strip():
@@ -222,7 +222,7 @@ class Exploit(Exploit):
                 cmd = self._build_auth_key_cmd(key_bytes)
                 print_info(f"Comando de auth: {cmd.hex()}")
             else:
-                print_warning("Sem auth key — tentando leituras não autenticadas")
+                print_warning("Sem auth key - tentando leituras não autenticadas")
 
         elif self.action == "write_config":
             print_warning("Escrita de configuração requer sessão autenticada (auth_key)")

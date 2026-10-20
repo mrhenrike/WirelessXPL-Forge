@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import os
@@ -171,7 +171,7 @@ class Exploit(Exploit):
             print_table(headers, *rows)
             print_info(f"Fator médio de amplificação: {avg_amp:.1f}x ({results[0][0]:.0f}B req -> {avg_resp:.0f}B resp)")
             if avg_amp >= 10:
-                print_warning("ALTO fator de amplificação (>= 10x) — risco elevado de DoS reflexivo")
+                print_warning("ALTO fator de amplificação (>= 10x) - risco elevado de DoS reflexivo")
             elif avg_amp >= 3:
                 print_warning("Fator de amplificação MODERADO (>= 3x)")
 

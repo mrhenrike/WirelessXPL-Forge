@@ -1,14 +1,14 @@
 
 ---
 
-## Novos Módulos — Requisitos de Hardware e Software (mai/2026)
+## Novos Módulos - Requisitos de Hardware e Software (mai/2026)
 
 ### Core (todos os novos módulos)
 
 | Componente | Instalação |
 |---|---|
-| `wirelessxpl/core/phase_gateway.py` | nativo — sem dependências externas |
-| `wirelessxpl/core/hw_validator.py` | nativo — sem dependências externas |
+| `wirelessxpl/core/phase_gateway.py` | nativo - sem dependências externas |
+| `wirelessxpl/core/hw_validator.py` | nativo - sem dependências externas |
 | `wirelessxpl/core/polyglot_orchestrator.py` | gcc, rustc, go, ruby, node no PATH |
 
 ### Z-Wave (`zwave/zwave_attack_suite.py`)
@@ -108,7 +108,7 @@
 
 | Requisito | Tipo | Instalação |
 |---|---|---|
-| 2x adaptadores WiFi monitor mode | Hardware | — |
+| 2x adaptadores WiFi monitor mode | Hardware | - |
 | `airsnitch` | Python | `git clone https://github.com/vanhoefm/airsnitch /opt/airsnitch` |
 
 ### WIFIAIR-C2 Beacon C2 Channel

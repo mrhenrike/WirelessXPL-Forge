@@ -1,13 +1,13 @@
 """High-intensity deauthentication / disassociation bursts.
 
 Supports two execution modes:
-  - native (default): Scapy Dot11Deauth frames - no external tools required.
-  - aireplay: aireplay-ng subprocess (aircrack-ng suite).
+ - native (default): Scapy Dot11Deauth frames - no external tools required.
+ - aireplay: aireplay-ng subprocess (aircrack-ng suite).
 
 Both modes support multi-burst loops, optional parallel streams, and
 AP+client alternation. Neither mode defeats 802.11w mandatory PMF.
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 
 Version: 2.0.0
 """
@@ -31,7 +31,7 @@ _BURST_SUBPROCESS_TIMEOUT_S = 30
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """High-intensity deauth barrage — native Scapy or aireplay-ng backend."""
+    """High-intensity deauth barrage - native Scapy or aireplay-ng backend."""
 
     __info__ = {
         "name": "Deauth Barrage",
@@ -70,7 +70,7 @@ class Exploit(Exploit):
     timeout_s = OptInteger(300, "Max seconds total (0 = no limit)")
     extra_aireplay_args = OptString(
         "",
-        "Extra args appended before interface — aireplay mode only (advanced)",
+        "Extra args appended before interface - aireplay mode only (advanced)",
         advanced=True,
     )
 

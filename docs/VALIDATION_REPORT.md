@@ -1,7 +1,7 @@
-# WirelessXPL-Forge — Relatório de Validação Live
+# WirelessXPL-Forge - Relatório de Validação Live
 
-**Data:** 2026-05-03 18:30–18:55 UTC-3  
-**Operador:** André Henrique (@mrhenrike) — União Geek  
+**Data:** 2026-05-03 18:30-18:55 UTC-3  
+**Operador:** André Henrique (@mrhenrike) - União Geek  
 **Adaptador:** Ralink RT5370 USB (148f:5370) via usbipd → WSL2 (kernel 6.6.87.2-microsoft-standard-WSL2+)  
 **Interface:** `wlx24050f3d5f0a` | MAC: `24:05:0f:3d:5f:0a`  
 **Driver:** rt2800usb (carregado com sucesso no kernel + customizado)  
@@ -29,52 +29,52 @@
 | APs detectados (30s scan) | **60+** únicos |
 | Redes abertas (OPN) | **3** (#CLARO-WIFI) |
 | PMKIDs capturados | **3** (Denise 2, Denise, NET_2G060F46-IoT) |
-| Handshakes EAPOL completos | **1** (UNIAOGEEK — rede própria) |
+| Handshakes EAPOL completos | **1** (UNIAOGEEK - rede própria) |
 | APs com WPS habilitado | **50+** |
 | APs com WPS 1.0 (Pixie Dust) | **1** (1-708, 44:3B:32:B2:CF:81) |
 | APs com TKIP (vulnerável) | **10+** |
-| Conexão em rede aberta | **Sucesso** (#CLARO-WIFI — captive portal) |
+| Conexão em rede aberta | **Sucesso** (#CLARO-WIFI - captive portal) |
 
 ---
 
-## 3. APs Detectados — Classificação de Risco
+## 3. APs Detectados - Classificação de Risco
 
-### CRÍTICO — Redes Abertas (sem criptografia)
+### CRÍTICO - Redes Abertas (sem criptografia)
 
 | SSID | BSSID | Canal | Sinal | Observação |
 |---|---|---|---|---|
-| `#CLARO-WIFI` | `EA:20:E2:06:10:4C` | 1 | -64 dBm | **CONECTADO** — captive portal sem DHCP |
-| `#CLARO-WIFI` | `6E:11:BA:2C:45:63` | 9 | -66 dBm | Aberta — captive portal |
-| `#CLARO-WIFI` | `96:2C:B3:93:39:D7` | 11 | -79 dBm | Aberta — captive portal |
+| `#CLARO-WIFI` | `EA:20:E2:06:10:4C` | 1 | -64 dBm | **CONECTADO** - captive portal sem DHCP |
+| `#CLARO-WIFI` | `6E:11:BA:2C:45:63` | 9 | -66 dBm | Aberta - captive portal |
+| `#CLARO-WIFI` | `96:2C:B3:93:39:D7` | 11 | -79 dBm | Aberta - captive portal |
 
 **Impacto**: Qualquer dispositivo pode se associar sem credenciais. Tráfego não criptografado suscetível a MITM.
 
-### ALTO — WPA/WPA2 + TKIP (criptografia legada vulnerável)
+### ALTO - WPA/WPA2 + TKIP (criptografia legada vulnerável)
 
 | SSID | BSSID | Canal | Vulnerabilidade |
 |---|---|---|---|
-| `Denise` | `E8:20:E2:06:0F:4B` | 1 | WPA2+WPA CCMP+TKIP — TKIP MIC Attack |
-| `APTO905` | `4A:27:C5:FD:04:2C` | 2 | WPA2+WPA CCMP+TKIP — TKIP MIC Attack |
-| `InterPrime12267` | `58:D5:6E:AD:BE:EB` | 13 | WPA2 CCMP+TKIP — TKIP MIC Attack |
-| `VOE_AP1704` | `CC:29:BD:20:18:AB` | 3 | WPA2 CCMP+TKIP — TKIP MIC Attack |
-| `CLARO_2G83A13E` | `78:6A:1F:01:ED:8B` | 11 | WPA2+WPA CCMP+TKIP — WPS Locked |
+| `Denise` | `E8:20:E2:06:0F:4B` | 1 | WPA2+WPA CCMP+TKIP - TKIP MIC Attack |
+| `APTO905` | `4A:27:C5:FD:04:2C` | 2 | WPA2+WPA CCMP+TKIP - TKIP MIC Attack |
+| `InterPrime12267` | `58:D5:6E:AD:BE:EB` | 13 | WPA2 CCMP+TKIP - TKIP MIC Attack |
+| `VOE_AP1704` | `CC:29:BD:20:18:AB` | 3 | WPA2 CCMP+TKIP - TKIP MIC Attack |
+| `CLARO_2G83A13E` | `78:6A:1F:01:ED:8B` | 11 | WPA2+WPA CCMP+TKIP - WPS Locked |
 | `INTERNET _2Ghz` | `B8:E3:B1:6D:7A:A0` | 5 | WPA2+WPA CCMP+TKIP |
 | `Thays` | `94:2C:B3:93:38:D6` | 11 | WPA2+WPA CCMP+TKIP |
 | `LYDIA` | `7C:D9:A0:7C:FE:00` | 10 | WPA2+WPA CCMP+TKIP |
 | `TrOll_MaStEr_BLaStEr_2Ghz` | `F0:25:8E:EA:A1:38` | 10 | **-37 dBm!** WPA2+WPA CCMP+TKIP |
 | `Salão gourmet` | `A4:56:CC:E4:0B:16` | 11 | WPA2+WPA CCMP |
 
-### ALTO — WPS 1.0 (Pixie Dust)
+### ALTO - WPS 1.0 (Pixie Dust)
 
 | SSID | BSSID | Canal | WPS Version | Bloqueado |
 |---|---|---|---|---|
 | `1-708` | `44:3B:32:B2:CF:81` | 7 | **1.0** | Não |
 
-WPS 1.0 é vulnerável ao ataque Pixie Dust (CVE-2017-13086) — extração do PIN em segundos.
+WPS 1.0 é vulnerável ao ataque Pixie Dust (CVE-2017-13086) - extração do PIN em segundos.
 
-### MÉDIO — WPA2-Personal com WPS habilitado (50+ APs)
+### MÉDIO - WPA2-Personal com WPS habilitado (50+ APs)
 
-Todos os APs abaixo usam WPA2-CCMP-PSK com WPS 2.0 ativado sem bloqueio — vulneráveis a:
+Todos os APs abaixo usam WPA2-CCMP-PSK com WPS 2.0 ativado sem bloqueio - vulneráveis a:
 - PMKID offline cracking
 - WPS PIN brute force (reaver/bully)
 
@@ -99,16 +99,16 @@ Todos os APs abaixo usam WPA2-CCMP-PSK com WPS 2.0 ativado sem bloqueio — vuln
 ### Hashes formato hashcat -m 22000 (arquivo: `/tmp/pmkid_hashes.txt`)
 
 ```
-# UNIAOGEEK — EAPOL handshake completo (WPA*02) — PRÓPRIA REDE
+# UNIAOGEEK - EAPOL handshake completo (WPA*02) - PRÓPRIA REDE
 WPA*02*1e949295a285576cb2fd23f98e71ec1e*724e6b1acb90*9649b470c915*554e49414f4745454b*...
 
-# Denise 2 — PMKID (WPA*01)
+# Denise 2 - PMKID (WPA*01)
 WPA*01*d06e6e11988009fb7f15374d001a9ba0*78321b6546e4*d85dfb17cdc1*44656e6973652032***
 
-# Denise — PMKID (WPA*01)
+# Denise - PMKID (WPA*01)
 WPA*01*5a402b2e419317e119b540824af9964d*e820e2060f4b*d85dfb17cdc1*44656e697365***
 
-# NET_2G060F46-IoT — PMKID (WPA*01)
+# NET_2G060F46-IoT - PMKID (WPA*01)
 WPA*01*495ac3e4919f6d54ac9a77630154d5d2*ea20e206104e*d85dfb17cdc1*4e45545f32473036304634362d496f54***
 ```
 
@@ -121,7 +121,7 @@ WPA*01*495ac3e4919f6d54ac9a77630154d5d2*ea20e206104e*d85dfb17cdc1*4e45545f324730
 
 ## 5. Conexão na Rede Aberta
 
-### #CLARO-WIFI — Resultado
+### #CLARO-WIFI - Resultado
 
 ```
 Associação: SUCESSO (ea:20:e2:06:10:4c)
@@ -129,7 +129,7 @@ SSID: #CLARO-WIFI
 Freq: 2412.0 MHz (Canal 1)
 DHCP: FALHOU (captive portal bloqueia DHCP)
 IP atribuído: 169.254.98.83 (link-local apenas)
-Internet: NÃO — requer autenticação no portal Claro
+Internet: NÃO - requer autenticação no portal Claro
 ```
 
 **Análise**: A rede Claro WiFi Hotspot (#CLARO-WIFI) é uma rede pública da Claro Brasil que:
@@ -143,9 +143,9 @@ Internet: NÃO — requer autenticação no portal Claro
 
 | Teste | Alvo | Resultado |
 |---|---|---|
-| Pixie Dust (bully) | UNIAOGEEK (72:4e:6b:1a:cb:90) | **TIMEOUT** — AP não responde WPS M1 |
-| Pixie Dust (reaver) | UNIAOGEEK (72:4e:6b:1a:cb:90) | **TIMEOUT** — AP não responde |
-| WPS 1.0 scan | 1-708 (44:3B:32:B2:CF:81) | **WPS 1.0 detectado** — Pixie Dust candidato |
+| Pixie Dust (bully) | UNIAOGEEK (72:4e:6b:1a:cb:90) | **TIMEOUT** - AP não responde WPS M1 |
+| Pixie Dust (reaver) | UNIAOGEEK (72:4e:6b:1a:cb:90) | **TIMEOUT** - AP não responde |
+| WPS 1.0 scan | 1-708 (44:3B:32:B2:CF:81) | **WPS 1.0 detectado** - Pixie Dust candidato |
 
 ---
 
@@ -163,7 +163,7 @@ Status: FUNCIONAL (limitado por WSL via usbip overhead)
 
 | Alvo | BSSID | Resultado |
 |---|---|---|
-| UNIAOGEEK 2.4GHz | 72:4E:6B:1A:CB:90 | 5 deauth frames enviados — clientes reconectaram |
+| UNIAOGEEK 2.4GHz | 72:4E:6B:1A:CB:90 | 5 deauth frames enviados - clientes reconectaram |
 
 ---
 
@@ -182,10 +182,10 @@ Clientes buscando SSIDs não conectados (Probe Requests):
 
 ### Para redes próprias (UNIAOGEEK)
 
-1. **Desabilitar WPS** — mesmo WPS 2.0 tem riscos de PIN brute force
-2. **Habilitar PMF (Protected Management Frames)** — previne deauth attacks
-3. **Usar WPA3-SAE** em vez de WPA2-PSK — imune a PMKID offline attack
-4. **Senha forte** — não crackeada com wordlist básica (positivo)
+1. **Desabilitar WPS** - mesmo WPS 2.0 tem riscos de PIN brute force
+2. **Habilitar PMF (Protected Management Frames)** - previne deauth attacks
+3. **Usar WPA3-SAE** em vez de WPA2-PSK - imune a PMKID offline attack
+4. **Senha forte** - não crackeada com wordlist básica (positivo)
 
 ### Para redes vizinhas identificadas (documentação)
 
@@ -205,7 +205,7 @@ Clientes buscando SSIDs não conectados (Probe Requests):
 | hcxpcapngtool | 6.2.7 | OK |
 | aireplay-ng | aircrack-ng 1:1.7 | OK (36% injection) |
 | wash | 1.6.6 | OK |
-| reaver | — | OK (AP protegido) |
+| reaver | - | OK (AP protegido) |
 | bully | 1.4.00 | OK (AP protegido) |
 | hashcat | instalado | OK (0/4 palavras básicas) |
 | WirelessXPL-Forge | v1.2.0 | OK |
@@ -223,6 +223,6 @@ Clientes buscando SSIDs não conectados (Probe Requests):
 
 ---
 
-*Relatório gerado por WirelessXPL-Forge v1.2.0 — União Geek*  
+*Relatório gerado por WirelessXPL-Forge v1.2.0 - União Geek*  
 *Todos os testes realizados com autorização explícita (I_KNOW_SCOPE=true)*  
 *Redes vizinhas: apenas scan passivo e PMKID collection (sem autenticação forçada)*

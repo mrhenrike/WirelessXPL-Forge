@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import glob
@@ -24,7 +24,7 @@ _SHELL_INDICATORS = [
 
 
 class Exploit(Exploit):
-    """UART Shell Detection — Identificação de consoles embarcados via serial.
+    """UART Shell Detection - Identificação de consoles embarcados via serial.
 
     Detecta interfaces UART em dispositivos embarcados através de adaptadores
     USB-Serial (FTDI, CP2102, CH340). Tenta múltiplas taxas de baud para
@@ -36,7 +36,7 @@ class Exploit(Exploit):
     """
 
     __info__ = {
-        "name": "UART Shell Detection — Embedded Device Serial Console",
+        "name": "UART Shell Detection - Embedded Device Serial Console",
         "description": (
             "Detecta e interage com interfaces UART em dispositivos embarcados. "
             "Tenta múltiplas taxas de baud para encontrar consoles de depuração, "
@@ -117,7 +117,7 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Detecta dispositivos UART e sonda por shells ativos."""
-        print_status("UART Shell Detection — dispositivos embarcados")
+        print_status("UART Shell Detection - dispositivos embarcados")
 
         devices = self._find_uart_devices()
         if self.uart_device:
@@ -161,17 +161,17 @@ class Exploit(Exploit):
                             print_error(f"Erro ao enviar comando: {exc}")
                     break
                 else:
-                    print_info(f"  {device}: {baud} baud — sem shell ({len(output)} bytes)")
+                    print_info(f"  {device}: {baud} baud - sem shell ({len(output)} bytes)")
 
         if found_shells:
             print_success(f"{len(found_shells)} shell(s) UART encontrado(s)!")
             for sh in found_shells:
-                print_warning("  {} @ {} baud — acesso root provável".format(
+                print_warning("  {} @ {} baud - acesso root provável".format(
                     sh["device"], sh["baud"]))
         else:
             print_info("Nenhum shell UART ativo detectado com as bauds testadas")
             print_info("Dicas:")
-            print_info("  - Verifique pinos TX/RX/GND no PCB com multímetro")
-            print_info("  - Tente bauds menos comuns: 1200, 2400, 4800, 76800")
-            print_info("  - Use lógica 3.3V — não 5V (pode danificar o dispositivo)")
-            print_info("  - Ferramentas: minicom, screen, picocom, PuTTY")
+            print_info(" - Verifique pinos TX/RX/GND no PCB com multímetro")
+            print_info(" - Tente bauds menos comuns: 1200, 2400, 4800, 76800")
+            print_info(" - Use lógica 3.3V - não 5V (pode danificar o dispositivo)")
+            print_info(" - Ferramentas: minicom, screen, picocom, PuTTY")

@@ -1,10 +1,10 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge - Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 """SSDP Amplification/Reflection via Spoofed M-SEARCH Requests.
 
 Explora o protocolo UPnP SSDP para amplificação DDoS. M-SEARCH requests
 são pequenos (~100 bytes) mas dispositivos UPnP respondem com payloads XML
-grandes (~3000-5000 bytes) — fator 20-50x. Com spoofing UDP de IP de origem,
+grandes (~3000-5000 bytes) - fator 20-50x. Com spoofing UDP de IP de origem,
 o tráfego é refletido para a vítima.
 
 Referências: US-CERT Alert TA14-017A.
@@ -20,7 +20,7 @@ class Exploit(Exploit):
     """SSDP Amplification/Reflection Attack.
 
     Mede e demonstra amplificação DDoS via SSDP. Dispositivos UPnP respondem
-    a pequenos M-SEARCH com grandes respostas XML multipart — 20-50x amplificação.
+    a pequenos M-SEARCH com grandes respostas XML multipart - 20-50x amplificação.
     """
 
     __info__ = {
@@ -29,7 +29,7 @@ class Exploit(Exploit):
             "Mede e demonstra amplificação DDoS baseada em SSDP. Dispositivos UPnP "
             "respondem a M-SEARCH pequenos com respostas XML grandes (20-50x fator). "
             "Com spoofing de IP UDP, reflete tráfego volumétrico para vítimas arbitrárias. "
-            "Alerta US-CERT TA14-017A — afeta roteadores domésticos, smart TVs, NAS, IoT hubs."
+            "Alerta US-CERT TA14-017A - afeta roteadores domésticos, smart TVs, NAS, IoT hubs."
         ),
         "authors": ["Andre Henrique <@mrhenrike>"],
         "references": [
@@ -166,7 +166,7 @@ class Exploit(Exploit):
             print_info(f"Tamanho médio de resposta: {avg_resp:.0f} bytes")
             print_info(f"Amplificação média: {avg_amp:.1f}x | Pico: {max_amp:.1f}x")
             if avg_amp >= 20:
-                print_warning("CRÍTICO: fator >= 20x — alto risco de uso em DDoS reflexivo")
+                print_warning("CRÍTICO: fator >= 20x - alto risco de uso em DDoS reflexivo")
             elif avg_amp >= 5:
                 print_warning("ALTO: fator >= 5x")
 
@@ -177,6 +177,6 @@ class Exploit(Exploit):
             est_reflected = total_bytes * avg_a
             print_info(f"Flood: {sent} pacotes, {total_bytes} bytes enviados, ~{est_reflected:.0f} bytes refletidos estimados")
         else:
-            print_info("Modo measure-only — defina measure_only=false para flood test")
+            print_info("Modo measure-only - defina measure_only=false para flood test")
 
         print_info("Mitigação: desabilitar UPnP no roteador ou bloquear UDP 1900 no perímetro")

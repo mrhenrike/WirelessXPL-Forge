@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic metadata for generated docs (CI / cross-platform safe).
 
-Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """
 
 from __future__ import annotations

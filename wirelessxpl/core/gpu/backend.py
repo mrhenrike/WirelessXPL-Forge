@@ -1,4 +1,4 @@
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Classe abstrata ``ComputeBackend`` e seleção automática de backend.
 
 Backends cobrem casos de uso wireless: similaridade de fingerprints RF/PCAP,

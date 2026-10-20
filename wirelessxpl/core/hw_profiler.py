@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""System Hardware Profiler — CPU, RAM, and GPU discovery for WirelessXPL-Forge.
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
+"""System Hardware Profiler - CPU, RAM, and GPU discovery for WirelessXPL-Forge.
 
 Detects available compute resources on the host and provides a unified
 ``HWProfile`` for backend selection, module scheduling, and user reporting.

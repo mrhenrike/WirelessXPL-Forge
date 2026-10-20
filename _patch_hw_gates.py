@@ -255,7 +255,7 @@ def patch_file(info: dict) -> str:
         filepath.write_text(src, encoding="utf-8")
         return f"OK: {filepath.name}"
     else:
-        # Tenta sem whitespace exato — busca apenas a primeira linha do run
+        # Tenta sem whitespace exato  - busca apenas a primeira linha do run
         first_line = info["run_search"].split("\n")[0]
         if first_line in src:
             filepath.write_text(src, encoding="utf-8")  # Salva pelo menos os imports

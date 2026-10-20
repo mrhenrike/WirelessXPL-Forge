@@ -1,4 +1,4 @@
-"""wirelessxpl AutoPwn — wifi segment. # authorized use only"""
+"""wirelessxpl AutoPwn - wifi segment. # authorized use only"""
 from .base import SegmentAutoPwn
 
 
