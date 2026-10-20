@@ -102,7 +102,7 @@ class Exploit(BaseExploit):
                     if not data:
                         break
                     response += data
-                except (socket.timeout, OSError):
+                except (TimeoutError, OSError):
                     break
             sock.close()
             return response
