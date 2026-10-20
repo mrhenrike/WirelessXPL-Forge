@@ -52,7 +52,7 @@ def _parse_mac(mac_str):
 
 
 def _mac_to_str(mac_bytes):
-    return ":".join("{:02x}".format(b) for b in mac_bytes)
+    return ":".join(f"{b:02x}" for b in mac_bytes)
 
 
 def _compute_pmkid(pmk, mac_ap, mac_sta):
@@ -179,12 +179,12 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("PMKID capture targeting BSSID {}".format(self.target))
+        print_status(f"PMKID capture targeting BSSID {self.target}")
         print_info("SSID: {}, Channel: {}".format(self.ssid or "(unknown)", self.channel))
 
         bssid = _parse_mac(self.target)
         if bssid is None:
-            print_error("Invalid BSSID format: {}".format(self.target))
+            print_error(f"Invalid BSSID format: {self.target}")
             return
 
         sta_mac = self._generate_sta_mac()
@@ -192,19 +192,19 @@ class Exploit(Exploit):
             print_error("Invalid station MAC address")
             return
 
-        print_info("Station MAC: {}".format(_mac_to_str(sta_mac)))
+        print_info(f"Station MAC: {_mac_to_str(sta_mac)}")
 
         auth_frame = _build_dot11_auth_frame(bssid, sta_mac)
-        print_info("Auth frame: {} bytes, hex: {}".format(len(auth_frame), auth_frame[:32].hex()))
+        print_info(f"Auth frame: {len(auth_frame)} bytes, hex: {auth_frame[:32].hex()}")
 
         assoc_frame = _build_dot11_assoc_request(bssid, sta_mac, self.ssid or "target-ssid")
-        print_info("Assoc request: {} bytes, hex: {}".format(len(assoc_frame), assoc_frame[:32].hex()))
+        print_info(f"Assoc request: {len(assoc_frame)} bytes, hex: {assoc_frame[:32].hex()}")
 
         print_status("Generating demonstration PMKID scenario...")
         demo_pmk = os.urandom(32)
         demo_pmkid = _compute_pmkid(demo_pmk, bssid, sta_mac)
 
-        print_success("PMKID extracted (demonstration): {}".format(demo_pmkid.hex()))
+        print_success(f"PMKID extracted (demonstration): {demo_pmkid.hex()}")
 
         hashcat_line = "{}:{}:{}".format(
             demo_pmkid.hex(),
@@ -212,7 +212,7 @@ class Exploit(Exploit):
             _mac_to_str(sta_mac).replace(":", ""),
         )
         print_info("Hashcat format (mode 22000):")
-        print_info("  {}".format(hashcat_line))
+        print_info(f"  {hashcat_line}")
 
         headers = ("Field", "Value")
         rows = [
@@ -227,8 +227,6 @@ class Exploit(Exploit):
 
         print_warning("PMKID enables offline PSK brute-force without client deauth")
         print_info(
-            "To execute: set interface '{}' to monitor mode on channel {}, "
-            "inject auth/assoc frames, capture EAPOL M1".format(
-                self.interface, self.channel,
-            )
+            f"To execute: set interface '{self.interface}' to monitor mode on channel {self.channel}, "
+            "inject auth/assoc frames, capture EAPOL M1"
         )

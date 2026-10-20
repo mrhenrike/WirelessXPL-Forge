@@ -83,25 +83,25 @@ class Exploit(Exploit):
         remote_no_module = [e for e in results if e.is_remote and not e.is_exploitable_by_rxf]
         non_remote = [e for e in results if not e.is_remote]
 
-        print_status("--- CVE Results ({} total) ---".format(len(results)))
+        print_status(f"--- CVE Results ({len(results)} total) ---")
         print_status("")
 
         if remote_exploitable:
-            print_success("=== EXPLOITABLE by WirelessXPL-Forge ({}) ===".format(len(remote_exploitable)))
+            print_success(f"=== EXPLOITABLE by WirelessXPL-Forge ({len(remote_exploitable)}) ===")
             print_status("")
             for entry in remote_exploitable:
                 self._print_entry(entry, "EXPLOIT")
             print_status("")
 
         if remote_no_module:
-            print_status("=== REMOTE — no wxf module yet ({}) ===".format(len(remote_no_module)))
+            print_status(f"=== REMOTE — no wxf module yet ({len(remote_no_module)}) ===")
             print_status("")
             for entry in remote_no_module:
                 self._print_entry(entry, "REMOTE")
             print_status("")
 
         if non_remote and self.show_physical:
-            print_status("=== LOCAL/PHYSICAL access required ({}) ===".format(len(non_remote)))
+            print_status(f"=== LOCAL/PHYSICAL access required ({len(non_remote)}) ===")
             print_info("  (WirelessXPL-Forge cannot exploit these remotely)")
             print_status("")
             for entry in non_remote:
@@ -110,10 +110,10 @@ class Exploit(Exploit):
 
         # Summary
         print_status("--- Summary ---")
-        print_info("  Total CVEs matched:        {}".format(len(results)))
-        print_info("  Exploitable by wxf:        {}".format(len(remote_exploitable)))
-        print_info("  Remote (no module yet):    {}".format(len(remote_no_module)))
-        print_info("  Local/Physical only:       {}".format(len(non_remote)))
+        print_info(f"  Total CVEs matched:        {len(results)}")
+        print_info(f"  Exploitable by wxf:        {len(remote_exploitable)}")
+        print_info(f"  Remote (no module yet):    {len(remote_no_module)}")
+        print_info(f"  Local/Physical only:       {len(non_remote)}")
 
         if remote_exploitable:
             print_status("")
@@ -124,19 +124,18 @@ class Exploit(Exploit):
     def _print_entry(self, entry, tag: str) -> None:
         """Print a single CVE entry with formatting."""
         if tag == "EXPLOIT":
-            print_success("  {} | CVSS {:.1f} | {}".format(entry.cve_id, entry.cvss_score, entry.access_vector))
+            print_success(f"  {entry.cve_id} | CVSS {entry.cvss_score:.1f} | {entry.access_vector}")
         elif tag == "REMOTE":
-            print_info("  {} | CVSS {:.1f} | {}".format(entry.cve_id, entry.cvss_score, entry.access_vector))
+            print_info(f"  {entry.cve_id} | CVSS {entry.cvss_score:.1f} | {entry.access_vector}")
         else:
-            print_info("  {} | CVSS {:.1f} | {} (not remotely exploitable)".format(
-                entry.cve_id, entry.cvss_score, entry.access_vector))
+            print_info(f"  {entry.cve_id} | CVSS {entry.cvss_score:.1f} | {entry.access_vector} (not remotely exploitable)")
 
         print_info("    Product: {} / {} | Versions: {}".format(
             entry.vendor, entry.product, entry.affected_versions or "all"))
-        print_info("    {}".format(entry.description))
+        print_info(f"    {entry.description}")
 
         if entry.rxf_module:
-            print_success("    Module: {}".format(entry.rxf_module))
+            print_success(f"    Module: {entry.rxf_module}")
 
     @mute
     def check(self):

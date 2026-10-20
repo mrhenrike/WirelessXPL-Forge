@@ -78,7 +78,7 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_status("Dry-run OK for action '{}' on DB '{}'".format(action, db))
+            print_status(f"Dry-run OK for action '{action}' on DB '{db}'")
             return
 
         conn = sqlite3.connect(str(db))
@@ -86,7 +86,7 @@ class Exploit(Exploit):
             self._ensure_schema(conn)
 
             if action == "init":
-                print_success("Workspace initialized: {}".format(db))
+                print_success(f"Workspace initialized: {db}")
                 return
 
             if action == "import":
@@ -99,13 +99,13 @@ class Exploit(Exploit):
                     (str(pcap), str(self.label).strip() or None),
                 )
                 conn.commit()
-                print_success("Capture registered: {}".format(pcap))
+                print_success(f"Capture registered: {pcap}")
                 return
 
             rows = conn.execute(
                 "SELECT id, path, COALESCE(label, ''), created_at FROM captures ORDER BY id DESC"
             ).fetchall()
-            print_status("Registered captures: {}".format(len(rows)))
+            print_status(f"Registered captures: {len(rows)}")
             for row in rows[:50]:
                 print_info("  #{} | {} | {} | {}".format(row[0], row[2] or "-", row[3], row[1]))
         finally:

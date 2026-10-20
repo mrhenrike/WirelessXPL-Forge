@@ -138,7 +138,7 @@ class Exploit(Exploit):
         ]:
             try:
                 socket.inet_aton(field_val.strip())
-            except socket.error:
+            except OSError:
                 print_error(f"Invalid IP for {field_name}: {field_val!r}")
                 return False
         m = int(self.metric)

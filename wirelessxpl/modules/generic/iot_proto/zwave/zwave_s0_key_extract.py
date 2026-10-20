@@ -180,10 +180,10 @@ class Exploit(Exploit):
     def run(self):
         freq = self._get_frequency()
         print_status("Z-Wave S0 key extraction")
-        print_info("Region: {}, Frequency: {} Hz".format(self.region, freq))
+        print_info(f"Region: {self.region}, Frequency: {freq} Hz")
         print_info("SDR interface: {}".format(self.interface or "(not configured)"))
 
-        print_info("S0 temporary key (public): {}".format(_ZWAVE_S0_TEMP_KEY.hex()))
+        print_info(f"S0 temporary key (public): {_ZWAVE_S0_TEMP_KEY.hex()}")
         print_warning("S0 uses all-zero temp key for network key transport")
 
         print_status("Generating demonstration S0 key exchange...")

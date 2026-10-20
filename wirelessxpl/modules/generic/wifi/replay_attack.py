@@ -63,12 +63,12 @@ class Exploit(Exploit):
 
         pcap_path = Path(self.pcap_file)
         if not pcap_path.exists():
-            print_error("PCAP file not found: {}".format(self.pcap_file))
+            print_error(f"PCAP file not found: {self.pcap_file}")
             return 0
 
-        print_status("Loading frames from {}...".format(pcap_path.name))
+        print_status(f"Loading frames from {pcap_path.name}...")
         packets = rdpcap(str(pcap_path))
-        print_info("Loaded {} frames.".format(len(packets)))
+        print_info(f"Loaded {len(packets)} frames.")
 
         filtered = []
         for pkt in packets:
@@ -82,7 +82,7 @@ class Exploit(Exploit):
                 continue
             filtered.append(pkt)
 
-        print_info("Filtered to {} frames.".format(len(filtered)))
+        print_info(f"Filtered to {len(filtered)} frames.")
         if not filtered:
             print_error("No matching frames found.")
             return 0
@@ -148,7 +148,7 @@ class Exploit(Exploit):
         )
 
         count = self.count if self.count > 0 else 1000
-        print_status("Broadcasting {} beacon frames for SSID '{}'...".format(count, ssid))
+        print_status(f"Broadcasting {count} beacon frames for SSID '{ssid}'...")
         for i in range(count):
             sendp(beacon, iface=self.interface, verbose=False)
             if self.delay_ms:
@@ -192,10 +192,10 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN — {} on {}".format(self.mode, self.interface))
+            print_info(f"DRY RUN — {self.mode} on {self.interface}")
             return
 
-        print_status("Starting {} on {}...".format(self.mode, self.interface))
+        print_status(f"Starting {self.mode} on {self.interface}...")
 
         sent = 0
         try:
@@ -206,10 +206,10 @@ class Exploit(Exploit):
             elif self.mode == "beacon_replay":
                 sent = self._replay_beacons()
             elif self.mode in ("auth_replay", "probe_replay"):
-                print_info("Mode '{}' uses pcap_replay with filter. Set pcap_file and filter_type.".format(self.mode))
+                print_info(f"Mode '{self.mode}' uses pcap_replay with filter. Set pcap_file and filter_type.")
                 self.filter_type = self.mode.replace("_replay", "")
                 sent = self._replay_from_pcap()
         except KeyboardInterrupt:
             print_info("\nReplay interrupted by user.")
 
-        print_success("Replay complete. {} frames sent.".format(sent))
+        print_success(f"Replay complete. {sent} frames sent.")

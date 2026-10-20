@@ -53,7 +53,7 @@ class Exploit(Exploit):
     def _require_tool(self, name: str) -> bool:
         if shutil.which(name):
             return True
-        print_error("{} not found in PATH.".format(name))
+        print_error(f"{name} not found in PATH.")
         return False
 
 

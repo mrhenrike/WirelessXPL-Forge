@@ -54,7 +54,7 @@ def gpu_capability_summary() -> Tuple[bool, bool, List[str]]:
     smi_line = _nvidia_smi_query()
     nvidia_ok = smi_line is not None
     if nvidia_ok:
-        lines.append("Driver/GPU (nvidia-smi): {}".format(smi_line))
+        lines.append(f"Driver/GPU (nvidia-smi): {smi_line}")
     else:
         lines.append("nvidia-smi: não encontrado ou sem GPU NVIDIA visível neste host.")
 

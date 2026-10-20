@@ -130,7 +130,7 @@ class Exploit(Exploit):
             print_info("Drivers necessários: ftdi_sio, cp210x, ch341")
             return
 
-        print_success("{} dispositivo(s) serial encontrado(s)".format(len(devices)))
+        print_success(f"{len(devices)} dispositivo(s) serial encontrado(s)")
         self._list_devices_info(devices)
 
         bauds_to_test = [int(self.baud_rate)] if int(self.baud_rate) > 0 else _COMMON_BAUDS
@@ -138,15 +138,14 @@ class Exploit(Exploit):
         found_shells = []
 
         for device in devices:
-            print_status("Sondando {} com {} baud rate(s)...".format(device, len(bauds_to_test)))
+            print_status(f"Sondando {device} com {len(bauds_to_test)} baud rate(s)...")
             for baud in bauds_to_test:
                 success, output, indicator = self._probe_uart(device, baud)
                 if success is None:
                     print_error(output)
                     break
                 if success:
-                    print_success("[{}@{}] SHELL DETECTADO! Indicador: '{}'".format(
-                        device, baud, indicator))
+                    print_success(f"[{device}@{baud}] SHELL DETECTADO! Indicador: '{indicator}'")
                     print_success("Output capturado: {}".format(output[:200].replace("\n", " ")))
                     found_shells.append({"device": device, "baud": baud, "output": output})
 
@@ -158,17 +157,15 @@ class Exploit(Exploit):
                                 ser.write(cmd.encode())
                                 time.sleep(1)
                                 resp = ser.read(1024).decode("utf-8", errors="replace")
-                                print_success("Resposta a '{}': {}".format(
-                                    self.custom_command, resp[:200]))
+                                print_success(f"Resposta a '{self.custom_command}': {resp[:200]}")
                         except Exception as exc:
-                            print_error("Erro ao enviar comando: {}".format(exc))
+                            print_error(f"Erro ao enviar comando: {exc}")
                     break
                 else:
-                    print_info("  {}: {} baud — sem shell ({} bytes)".format(
-                        device, baud, len(output)))
+                    print_info(f"  {device}: {baud} baud — sem shell ({len(output)} bytes)")
 
         if found_shells:
-            print_success("{} shell(s) UART encontrado(s)!".format(len(found_shells)))
+            print_success(f"{len(found_shells)} shell(s) UART encontrado(s)!")
             for sh in found_shells:
                 print_warning("  {} @ {} baud — acesso root provável".format(
                     sh["device"], sh["baud"]))

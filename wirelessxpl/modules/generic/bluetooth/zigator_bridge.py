@@ -122,15 +122,15 @@ class Exploit(Exploit):
             os.makedirs(out_dir, exist_ok=True)
             return out_dir
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida {}: {}".format(out_dir, exc))
+            print_error(f"Falha ao criar diretorio de saida {out_dir}: {exc}")
             return None
 
     def _exec(self, cmd: List[str], label: str = "") -> None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300,
@@ -139,15 +139,15 @@ class Exploit(Exploit):
             for line in output.strip().splitlines():
                 print_info(line)
             if result.returncode == 0:
-                print_success("{} concluido (codigo 0).".format(label))
+                print_success(f"{label} concluido (codigo 0).")
             else:
-                print_error("{} saiu com codigo {}.".format(label, result.returncode))
+                print_error(f"{label} saiu com codigo {result.returncode}.")
         except subprocess.TimeoutExpired:
-            print_error("{} excedeu o timeout.".format(label))
+            print_error(f"{label} excedeu o timeout.")
         except FileNotFoundError:
-            print_error("Binario nao encontrado: {}".format(cmd[0]))
+            print_error(f"Binario nao encontrado: {cmd[0]}")
         except Exception as exc:
-            print_error("Erro ao executar {}: {}".format(label, exc))
+            print_error(f"Erro ao executar {label}: {exc}")
 
     def _info_mode(self) -> None:
         print_info("Zigator - Zigbee / IEEE 802.15.4 Security Analysis Tool")
@@ -167,7 +167,7 @@ class Exploit(Exploit):
     def _config_check(self) -> None:
         zigator_bin = _resolve_zigator(str(self.zigator_path).strip())
         if zigator_bin:
-            print_success("zigator encontrado: {}".format(zigator_bin))
+            print_success(f"zigator encontrado: {zigator_bin}")
         else:
             print_error(
                 "zigator nao encontrado no PATH. "
@@ -180,9 +180,9 @@ class Exploit(Exploit):
         hw = str(self.hardware_device).strip()
         if hw:
             if os.path.exists(hw):
-                print_success("Dispositivo encontrado: {}".format(hw))
+                print_success(f"Dispositivo encontrado: {hw}")
             else:
-                print_error("Dispositivo nao encontrado: {}".format(hw))
+                print_error(f"Dispositivo nao encontrado: {hw}")
         else:
             print_info("Nenhum hardware_device definido. Defina para verificar dispositivo.")
 
@@ -212,7 +212,7 @@ class Exploit(Exploit):
         pcap_out = str(self.output_pcap).strip()
         if not pcap_out:
             base = Path(pcap_in).stem
-            pcap_out = os.path.join(out_dir, "{}_decrypted.pcap".format(base))
+            pcap_out = os.path.join(out_dir, f"{base}_decrypted.pcap")
 
         cmd = [zigator_bin, "decrypt", "--nwkkey", key, "--input", pcap_in, "--output", pcap_out]
         self._exec(cmd, "Zigator decrypt")

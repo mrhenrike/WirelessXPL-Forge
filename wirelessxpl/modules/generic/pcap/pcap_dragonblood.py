@@ -58,9 +58,9 @@ class Exploit(Exploit):
 
         print_status("--- WPA3 Dragonblood Analysis ---")
         print_status("")
-        print_info("BSSID: {}".format(analysis.bssid))
+        print_info(f"BSSID: {analysis.bssid}")
         print_info("SSID:  {}".format(analysis.ssid if analysis.ssid else "<hidden>"))
-        print_info("SAE commits captured: {}".format(len(analysis.commits)))
+        print_info(f"SAE commits captured: {len(analysis.commits)}")
         print_status("")
 
         # Groups used
@@ -78,11 +78,11 @@ class Exploit(Exploit):
             26: "NIST P-224 (WEAK)",
         }
         for g in groups_seen:
-            name = group_names.get(g, "Group-{}".format(g))
+            name = group_names.get(g, f"Group-{g}")
             if g in (1, 2, 5, 22, 25, 26):
-                print_error("  Group {}: {} — WEAK/INSECURE".format(g, name))
+                print_error(f"  Group {g}: {name} — WEAK/INSECURE")
             else:
-                print_info("  Group {}: {}".format(g, name))
+                print_info(f"  Group {g}: {name}")
 
         print_status("")
 
@@ -91,7 +91,7 @@ class Exploit(Exploit):
         if indicators:
             print_status("--- Vulnerability Indicators ---")
             for vuln in indicators:
-                print_success("  [FOUND] {}".format(vuln))
+                print_success(f"  [FOUND] {vuln}")
         else:
             print_info("  No Dragonblood indicators detected in this capture.")
 
@@ -125,17 +125,17 @@ class Exploit(Exploit):
             std_dev = variance ** 0.5
 
             print_info("  Commit inter-arrival times (microseconds):")
-            print_info("    Count:    {}".format(len(deltas)))
-            print_info("    Min:      {:.0f} us".format(min_us))
-            print_info("    Max:      {:.0f} us".format(max_us))
-            print_info("    Average:  {:.0f} us".format(avg_us))
-            print_info("    Std Dev:  {:.0f} us".format(std_dev))
+            print_info(f"    Count:    {len(deltas)}")
+            print_info(f"    Min:      {min_us:.0f} us")
+            print_info(f"    Max:      {max_us:.0f} us")
+            print_info(f"    Average:  {avg_us:.0f} us")
+            print_info(f"    Std Dev:  {std_dev:.0f} us")
 
             if avg_us > 0:
                 cv = std_dev / avg_us
-                print_info("    CoV:      {:.3f}".format(cv))
+                print_info(f"    CoV:      {cv:.3f}")
                 if cv > 0.5:
-                    print_success("  [SUSPICIOUS] High timing variance (CoV={:.3f})".format(cv))
+                    print_success(f"  [SUSPICIOUS] High timing variance (CoV={cv:.3f})")
                     print_info("    This may indicate password-dependent computation time,")
                     print_info("    enabling Dragonblood timing side-channel attack.")
                     print_info("    With ~256 measurements, can recover password partitions.")
@@ -144,7 +144,7 @@ class Exploit(Exploit):
 
         print_status("")
         print_status("--- Summary ---")
-        print_info("  SAE commits: {}".format(len(analysis.commits)))
+        print_info(f"  SAE commits: {len(analysis.commits)}")
         print_info("  Vulnerabilities: {}".format(len(indicators) if indicators else "none detected"))
         if indicators:
             print_info("  Dragonblood paper: https://wpa3.mathyvanhoef.com/")

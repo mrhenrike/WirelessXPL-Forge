@@ -520,7 +520,7 @@ class Exploit(Exploit):
                     return
                 raw_path = os.path.join(out_dir, json_files[0])
                 print_status(f"Loading previous capture: {raw_path}")
-                with open(raw_path, "r") as fh:
+                with open(raw_path) as fh:
                     pairs = json.load(fh)
 
             if pairs is not None:

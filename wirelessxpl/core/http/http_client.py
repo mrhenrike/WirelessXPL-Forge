@@ -1,4 +1,3 @@
-import socket
 
 import requests
 import urllib3
@@ -37,7 +36,7 @@ class HTTPClient(Exploit):
         else:
             url = "http://"
 
-        url += "{}:{}{}".format(self.target, self.port, path)
+        url += f"{self.target}:{self.port}{path}"
 
         kwargs.setdefault("timeout", HTTP_TIMEOUT)
         kwargs.setdefault("verify", False)
@@ -47,11 +46,11 @@ class HTTPClient(Exploit):
             try:
                 return getattr(session, method.lower())(url, **kwargs)
             except (requests.exceptions.MissingSchema, requests.exceptions.InvalidSchema):
-                print_error("Invalid URL format: {}".format(url), verbose=self.verbosity)
+                print_error(f"Invalid URL format: {url}", verbose=self.verbosity)
                 break
-            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, socket.error) as err:
+            except (OSError, requests.exceptions.ConnectionError, requests.exceptions.Timeout) as err:
                 if attempt >= HTTP_RETRIES:
-                    print_error("Connection error: {}".format(url), err, verbose=self.verbosity)
+                    print_error(f"Connection error: {url}", err, verbose=self.verbosity)
             except requests.RequestException as error:
                 print_error(error, verbose=self.verbosity)
                 break
@@ -73,7 +72,7 @@ class HTTPClient(Exploit):
         else:
             url = "http://"
 
-        url += "{}:{}{}".format(self.target, self.port, path)
+        url += f"{self.target}:{self.port}{path}"
 
         return url
 

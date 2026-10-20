@@ -272,16 +272,16 @@ class Exploit(Exploit):
         try:
             parsed = json.loads(raw)
         except json.JSONDecodeError as err:
-            raise ValueError("Invalid flow_json (JSON decode): {}".format(err)) from err
+            raise ValueError(f"Invalid flow_json (JSON decode): {err}") from err
         if not isinstance(parsed, list):
             raise ValueError("flow_json must be a JSON list.")
         steps: List[Dict[str, Any]] = []
         for idx, item in enumerate(parsed):
             if not isinstance(item, dict):
-                raise ValueError("flow_json step {} must be object.".format(idx))
+                raise ValueError(f"flow_json step {idx} must be object.")
             cmd = str(item.get("command", "")).strip()
             if not cmd:
-                raise ValueError("flow_json step {} missing command.".format(idx))
+                raise ValueError(f"flow_json step {idx} missing command.")
             steps.append(
                 {
                     "command": cmd,
@@ -344,8 +344,8 @@ class Exploit(Exploit):
                 ok = False
                 for attempt in range(1, attempts + 1):
                     ser.write((cmd + "\n").encode("utf-8", errors="ignore"))
-                    log_lines.append("$[flow:{}:{}:{}] {}".format(idx, r + 1, attempt, cmd))
-                    print_status("Flow step {}.{} sent: {}".format(idx, r + 1, cmd))
+                    log_lines.append(f"$[flow:{idx}:{r + 1}:{attempt}] {cmd}")
+                    print_status(f"Flow step {idx}.{r + 1} sent: {cmd}")
                     if wait_ms > 0:
                         time.sleep(float(wait_ms) / 1000.0)
                     if base_delay > 0:
@@ -358,9 +358,7 @@ class Exploit(Exploit):
                         ok = True
                         break
                     print_error(
-                        "Expect miss on step {}.{} (attempt {}/{}): '{}'".format(
-                            idx, r + 1, attempt, attempts, expect
-                        )
+                        f"Expect miss on step {idx}.{r + 1} (attempt {attempt}/{attempts}): '{expect}'"
                     )
                 if not ok and self.fail_on_expect_miss:
                     print_error("Flow aborted due to fail_on_expect_miss=true")
@@ -403,9 +401,9 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_status("DRY RUN — Bruce serial bridge")
-            print_info("Port: {} @ {}".format(self.serial_port, self.baudrate))
+            print_info(f"Port: {self.serial_port} @ {self.baudrate}")
             for cmd in commands:
-                print_info("  -> {}".format(cmd))
+                print_info(f"  -> {cmd}")
             if flow_steps:
                 print_info("Flow steps:")
                 for idx, step in enumerate(flow_steps, start=1):
@@ -431,8 +429,8 @@ class Exploit(Exploit):
 
         log_lines: List[str] = []
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        log_lines.append("=== [{}] Bruce Serial Session ===".format(timestamp))
-        log_lines.append("PORT={} BAUD={}".format(port, int(self.baudrate)))
+        log_lines.append(f"=== [{timestamp}] Bruce Serial Session ===")
+        log_lines.append(f"PORT={port} BAUD={int(self.baudrate)}")
 
         try:
             with serial.Serial(port, int(self.baudrate), timeout=0.3) as ser:
@@ -440,11 +438,11 @@ class Exploit(Exploit):
                 for cmd in commands:
                     payload = cmd.strip() + "\n"
                     ser.write(payload.encode("utf-8", errors="ignore"))
-                    log_lines.append("$ {}".format(cmd))
-                    print_status("Sent: {}".format(cmd))
+                    log_lines.append(f"$ {cmd}")
+                    print_status(f"Sent: {cmd}")
 
                 if flow_steps:
-                    print_status("Executing advanced flow with {} steps...".format(len(flow_steps)))
+                    print_status(f"Executing advanced flow with {len(flow_steps)} steps...")
                     self._execute_flow(ser, flow_steps, log_lines)
 
                 end_time = time.time() + max(1, int(self.read_seconds))
@@ -458,8 +456,8 @@ class Exploit(Exploit):
                         log_lines.append(text)
         except Exception as err:
             logger.exception("Bruce serial session failed")
-            print_error("Serial bridge failed: {}".format(err))
-            log_lines.append("ERROR: {}".format(err))
+            print_error(f"Serial bridge failed: {err}")
+            log_lines.append(f"ERROR: {err}")
         finally:
             self._append_log(log_lines)
-            print_info("Session log appended to {}".format(self.output_log))
+            print_info(f"Session log appended to {self.output_log}")

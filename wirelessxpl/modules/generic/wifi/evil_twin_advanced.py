@@ -158,7 +158,7 @@ class Exploit(Exploit):
             p = Path(self.custom_template_dir)
             if p.is_dir() and (p / "index.html").exists():
                 return p
-            print_error("Custom template directory missing or lacks index.html: {}".format(p))
+            print_error(f"Custom template directory missing or lacks index.html: {p}")
             return None
 
         resources = Path(__file__).resolve().parents[3] / "resources" / "phishing_pages"
@@ -166,7 +166,7 @@ class Exploit(Exploit):
         if tpl_dir.is_dir() and (tpl_dir / "index.html").exists():
             return tpl_dir
 
-        print_error("Template '{}' not found at {}".format(self.template, tpl_dir))
+        print_error(f"Template '{self.template}' not found at {tpl_dir}")
         print_info("Available templates: {}".format(", ".join(self.BUILTIN_TEMPLATES.keys())))
         return None
 
@@ -253,18 +253,18 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("DRY RUN — Evil Twin config:")
-            print_info("  SSID: {}".format(ssid))
-            print_info("  Template: {} ({})".format(self.template, tpl_dir))
-            print_info("  hostapd: {}".format(hostapd_path))
-            print_info("  dnsmasq: {}".format(dnsmasq_path))
+            print_info(f"  SSID: {ssid}")
+            print_info(f"  Template: {self.template} ({tpl_dir})")
+            print_info(f"  hostapd: {hostapd_path}")
+            print_info(f"  dnsmasq: {dnsmasq_path}")
             return
 
         for prereq in ("hostapd", "dnsmasq"):
             if not shutil.which(prereq):
-                print_error("{} not found on PATH.".format(prereq))
+                print_error(f"{prereq} not found on PATH.")
                 return
 
-        print_status("Setting up Evil Twin: SSID='{}' Template='{}'".format(ssid, self.template))
+        print_status(f"Setting up Evil Twin: SSID='{ssid}' Template='{self.template}'")
         self._setup_interface()
 
         dnsmasq_proc = subprocess.Popen(
@@ -304,7 +304,7 @@ class Exploit(Exploit):
         cred_log = I18nPortalHandler.cred_log
         if cred_log.exists():
             count = sum(1 for _ in open(cred_log, encoding="utf-8"))
-            print_success("Captured {} credential entries → {}".format(count, cred_log))
+            print_success(f"Captured {count} credential entries → {cred_log}")
         else:
             print_info("No credentials captured.")
 

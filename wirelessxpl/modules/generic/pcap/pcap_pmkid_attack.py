@@ -73,15 +73,15 @@ class Exploit(Exploit):
         if not out_file:
             base = os.path.splitext(os.path.basename(self.pcap_file))[0]
             out_file = os.path.join(os.path.dirname(os.path.abspath(self.pcap_file)),
-                                    "{}_pmkid.22000".format(base))
+                                    f"{base}_pmkid.22000")
 
         with open(out_file, "w", encoding="utf-8") as f:
             for entry in pmkids:
                 f.write(entry.hashcat_line + "\n")
 
         print_status("")
-        print_success("Saved {} PMKID hash(es) to: {}".format(len(pmkids), out_file))
-        print_info("Crack with: hashcat -m 22000 {} <wordlist>".format(out_file))
+        print_success(f"Saved {len(pmkids)} PMKID hash(es) to: {out_file}")
+        print_info(f"Crack with: hashcat -m 22000 {out_file} <wordlist>")
 
         # Auto-crack
         if self.auto_crack and self.wordlist:
@@ -105,7 +105,7 @@ class Exploit(Exploit):
             except subprocess.TimeoutExpired:
                 print_error("hashcat timed out.")
             except Exception as exc:
-                print_error("hashcat failed: {}".format(exc))
+                print_error(f"hashcat failed: {exc}")
 
     @mute
     def check(self):

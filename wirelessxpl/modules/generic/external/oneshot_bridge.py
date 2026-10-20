@@ -104,7 +104,7 @@ class Exploit(Exploit):
 
         mode = str(self.mode).strip().lower()
         if mode not in self._MODES:
-            raise ValueError("mode deve ser pixie, bruteforce ou pbc (recebido: {}).".format(mode))
+            raise ValueError(f"mode deve ser pixie, bruteforce ou pbc (recebido: {mode}).")
 
         iface = str(self.interface).strip()
         if not iface:
@@ -170,11 +170,11 @@ class Exploit(Exploit):
         if self.dry_run:
             print_info("DRY RUN — comando OneShot:")
             print_status(cmd_str)
-            print_info("Modo: {} | WPSpin/vulnwsc são usados pelo próprio OneShot.".format(self.mode))
+            print_info(f"Modo: {self.mode} | WPSpin/vulnwsc são usados pelo próprio OneShot.")
             return
 
-        print_status("Iniciando OneShot (modo {})…".format(self.mode))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"Iniciando OneShot (modo {self.mode})…")
+        print_info(f"Comando: {cmd_str}")
         print_info("Exige root, wpa_supplicant e pixiewps no alvo. Ctrl+C para abortar.")
 
         env = os.environ.copy()
@@ -191,5 +191,5 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nOneShot interrompido pelo usuário.")
         except Exception as err:
-            print_error("Falha ao executar OneShot: {}".format(err))
+            print_error(f"Falha ao executar OneShot: {err}")
             logger.exception("oneshot subprocess")

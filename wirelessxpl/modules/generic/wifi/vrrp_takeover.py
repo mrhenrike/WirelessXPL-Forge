@@ -148,7 +148,7 @@ class Exploit(Exploit):
             return False
         try:
             socket.inet_aton(str(self.virtual_ip).strip())
-        except socket.error:
+        except OSError:
             print_error(f"Invalid virtual_ip: {self.virtual_ip!r}")
             return False
         return True

