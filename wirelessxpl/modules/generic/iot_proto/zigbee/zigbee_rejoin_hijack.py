@@ -258,7 +258,7 @@ class Exploit(Exploit):
         except (serial.SerialException, OSError):
             return False
 
-    def _read_packet(self, ser: serial.Serial, timeout: float = 1.0) -> Optional[bytes]:
+    def _read_packet(self, ser: serial.Serial, timeout: float = 1.0) -> bytes | None:
         """Read a single captured packet from the dongle."""
         old_timeout = ser.timeout
         ser.timeout = timeout
@@ -293,7 +293,7 @@ class Exploit(Exploit):
     # ------------------------------------------------------------------ #
 
     @staticmethod
-    def _extract_transport_key(packet: bytes) -> Optional[bytes]:
+    def _extract_transport_key(packet: bytes) -> bytes | None:
         """Attempt to extract an APS Transport Key from a raw packet.
 
         Searches for the APS command frame containing the transport key
@@ -353,7 +353,7 @@ class Exploit(Exploit):
             time.sleep(0.1)
         return sent
 
-    def _phase_capture(self, ser: serial.Serial, duration: int = 30) -> Optional[bytes]:
+    def _phase_capture(self, ser: serial.Serial, duration: int = 30) -> bytes | None:
         """Listen for rejoin handshake and extract the transport key."""
         deadline = time.monotonic() + duration
         packets_seen = 0

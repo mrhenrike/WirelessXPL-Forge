@@ -17,7 +17,6 @@ Requires: Python 3.7+, Scapy (mandatory for injection modes).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import binascii
 import logging
@@ -107,7 +106,7 @@ class Exploit(Exploit):
             return False
         return True
 
-    def _require_interface(self) -> Optional[str]:
+    def _require_interface(self) -> str | None:
         iface = str(self.interface).strip()
         if not iface:
             print_error("Set interface (monitor-mode required).")

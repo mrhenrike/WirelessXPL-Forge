@@ -18,7 +18,6 @@ CWE: CWE-295 (Improper Certificate Validation)
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import socket
@@ -55,7 +54,7 @@ class ADBTarget:
     banner: str = ""
     is_vulnerable: bool = False
     adb_version: int = 0
-    features: List[str] = field(default_factory=list)
+    features: list[str] = field(default_factory=list)
     scan_time: float = 0.0
 
 
@@ -73,7 +72,7 @@ def _build_adb_header(command: int, arg0: int, arg1: int, data: bytes = b"") -> 
     ) + data
 
 
-def _parse_adb_header(data: bytes) -> Optional[dict]:
+def _parse_adb_header(data: bytes) -> dict | None:
     if len(data) < ADB_HEADER_SIZE:
         return None
     cmd, arg0, arg1, data_len, checksum, magic = struct.unpack("<IIIIII", data[:ADB_HEADER_SIZE])
@@ -174,7 +173,7 @@ def scan_network(
     network: str,
     port: int = 5555,
     timeout: float = 3.0,
-) -> List[ADBTarget]:
+) -> list[ADBTarget]:
     """Scan a network range for ADB wireless debugging targets.
 
     Args:

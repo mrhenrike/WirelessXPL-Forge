@@ -16,7 +16,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -80,7 +79,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Exibir comando sem executar")
     i_know_scope = OptBool(False, "Confirmo que estou em laboratório autorizado")
 
-    def _filterlist_file(self, bssids: str) -> Optional[str]:
+    def _filterlist_file(self, bssids: str) -> str | None:
         """Write BSSID filter list to .tmp and return path."""
         macs = [m.strip().upper() for m in bssids.split(",") if m.strip()]
         if not macs:
@@ -96,9 +95,9 @@ class Exploit(Exploit):
             print_error(f"Não foi possível escrever filterlist: {exc}")
             return None
 
-    def _build_capture_cmd(self, bin_path: str, out_file: str) -> List[str]:
+    def _build_capture_cmd(self, bin_path: str, out_file: str) -> list[str]:
         """Build hcxdumptool capture command."""
-        cmd: List[str] = [bin_path, "-i", str(self.interface).strip(), "-o", out_file]
+        cmd: list[str] = [bin_path, "-i", str(self.interface).strip(), "-o", out_file]
 
         status = max(0, min(7, int(self.enable_status)))
         if self.rcascan:

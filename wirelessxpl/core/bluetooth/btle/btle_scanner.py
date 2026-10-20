@@ -1,8 +1,6 @@
 """BLE scanner backed by bleak (replaces bluepy Scanner)."""
-from __future__ import annotations
 
 import asyncio
-from typing import List, Optional
 
 from .btle_device import Device
 
@@ -10,15 +8,15 @@ from .btle_device import Device
 class BTLEScanner:
     """Discover nearby BLE devices using bleak BleakScanner."""
 
-    def __init__(self, mac: Optional[str] = None, iface: int = 0) -> None:
+    def __init__(self, mac: str | None = None, iface: int = 0) -> None:
         self.mac = mac.upper() if mac else None
         self.iface = iface
 
-    def scan(self, timeout: float = 10.0) -> List[Device]:
+    def scan(self, timeout: float = 10.0) -> list[Device]:
         """Synchronous scan; returns list of Device objects."""
         return asyncio.run(self._async_scan(timeout))
 
-    async def _async_scan(self, timeout: float) -> List[Device]:
+    async def _async_scan(self, timeout: float) -> list[Device]:
         # When running as root (sudo), bleak may be in the original user's
         # site-packages instead of root's. Check both home directories.
         import glob as _g
@@ -36,7 +34,7 @@ class BTLEScanner:
             return []
 
         results = await BleakScanner.discover(timeout=timeout, return_adv=True)
-        devices: List[Device] = []
+        devices: list[Device] = []
         for ble_dev, adv in results.values():
             if self.mac and ble_dev.address.upper() != self.mac:
                 continue

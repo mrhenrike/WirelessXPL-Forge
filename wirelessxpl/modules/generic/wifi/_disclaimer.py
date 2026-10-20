@@ -3,7 +3,6 @@
 Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 from wirelessxpl.core.exploit.printer import print_status
 

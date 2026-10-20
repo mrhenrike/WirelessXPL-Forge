@@ -8,12 +8,11 @@ mutação de payloads, cracking auxiliar e lotes de hashes. A ordem de
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import hashlib
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -64,7 +63,7 @@ class ComputeBackend(ABC):
             Array NumPy (N, M) com scores de similaridade.
         """
 
-    def hash_batch(self, data_list: List[bytes], algorithm: str = "md5") -> List[str]:
+    def hash_batch(self, data_list: list[bytes], algorithm: str = "md5") -> list[str]:
         """Calcula hash de um lote de blobs; implementação CPU padrão.
 
         Backends GPU podem sobrescrever com hashing paralelo.
@@ -136,7 +135,7 @@ class ROCmBackend(ComputeBackend):
 
 
 def auto_select_backend(
-    hw_profile: Optional[HWProfile] = None,
+    hw_profile: HWProfile | None = None,
     compute_mode: str = "auto",
 ) -> ComputeBackend:
     """Escolhe o melhor backend disponível (CUDA → ROCm → OpenCL → CPU).

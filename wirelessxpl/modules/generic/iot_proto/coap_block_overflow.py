@@ -119,7 +119,7 @@ class Exploit(Exploit):
             sock.sendto(pkt, (str(self.target), int(self.port)))
             data, _ = sock.recvfrom(4096)
             return data
-        except (socket.timeout, OSError):
+        except (TimeoutError, OSError):
             return None
         finally:
             sock.close()

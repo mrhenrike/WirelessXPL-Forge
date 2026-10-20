@@ -1,5 +1,4 @@
 """Gate-2 coverage tests for WirelessXPL-Forge core modules."""
-from __future__ import annotations
 
 import sys
 from pathlib import Path

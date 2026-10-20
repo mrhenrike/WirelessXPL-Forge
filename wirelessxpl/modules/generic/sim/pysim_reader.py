@@ -22,7 +22,6 @@ Modes:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -79,12 +78,12 @@ ADF_USIM = [0x7F, 0xFF]
 SW_OK = (0x90, 0x00)
 
 
-def _hex(data: List[int]) -> str:
+def _hex(data: list[int]) -> str:
     """Format byte list as hex string."""
     return " ".join(f"{b:02X}" for b in data)
 
 
-def _decode_bcd_imsi(data: List[int]) -> str:
+def _decode_bcd_imsi(data: list[int]) -> str:
     """Decode BCD-encoded IMSI from raw EF_IMSI bytes.
 
     First byte is the IMSI length. The second byte contains parity in
@@ -111,7 +110,7 @@ def _decode_bcd_imsi(data: List[int]) -> str:
     return imsi
 
 
-def _decode_bcd_iccid(data: List[int]) -> str:
+def _decode_bcd_iccid(data: list[int]) -> str:
     """Decode BCD-encoded ICCID with nibble-swap, strip trailing F."""
     iccid = ""
     for byte_val in data:
@@ -132,7 +131,7 @@ def _decode_bcd_iccid(data: List[int]) -> str:
     return iccid.rstrip("F").rstrip("f")
 
 
-def _decode_alpha_id(data: List[int]) -> str:
+def _decode_alpha_id(data: list[int]) -> str:
     """Decode GSM 7-bit or UCS-2 alpha identifier from ADN/MSISDN records."""
     if not data:
         return ""
@@ -154,7 +153,7 @@ def _decode_alpha_id(data: List[int]) -> str:
     return result
 
 
-def _decode_dialing_number(data: List[int]) -> str:
+def _decode_dialing_number(data: list[int]) -> str:
     """Decode BCD dialing number from ADN/MSISDN record."""
     number = ""
     for byte_val in data:
@@ -179,9 +178,9 @@ def _decode_dialing_number(data: List[int]) -> str:
     return number
 
 
-def _decode_atr_bytes(atr: List[int]) -> Dict[str, Any]:
+def _decode_atr_bytes(atr: list[int]) -> dict[str, Any]:
     """Parse ATR (Answer To Reset) according to ISO 7816-3."""
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "raw_hex": _hex(atr),
         "ts": "",
         "t0": "",
@@ -281,7 +280,7 @@ class Exploit(Exploit):
     # Infrastructure
     # ------------------------------------------------------------------
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out, exist_ok=True)
@@ -290,7 +289,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
-    def _get_connection(self) -> Optional[Any]:
+    def _get_connection(self) -> Any | None:
         """Establish PC/SC connection to the SIM card."""
         if not HAS_PYSCARD:
             print_error("pyscard nao instalado. pip install pyscard")
@@ -326,7 +325,7 @@ class Exploit(Exploit):
             print_error(f"Falha na conexao com o cartao: {exc}")
             return None
 
-    def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
+    def _send_apdu(self, conn: Any, apdu: list[int]) -> tuple[list[int], int, int]:
         """Transmit APDU and return (data, sw1, sw2)."""
         data, sw1, sw2 = conn.transmit(apdu)
         if sw1 == 0x61:
@@ -334,7 +333,7 @@ class Exploit(Exploit):
             data, sw1, sw2 = conn.transmit(get_resp)
         return data, sw1, sw2
 
-    def _select_file(self, conn: Any, fid: List[int]) -> Tuple[bool, List[int]]:
+    def _select_file(self, conn: Any, fid: list[int]) -> tuple[bool, list[int]]:
         """SELECT a file by FID. Returns (success, response_data)."""
         apdu = [0x00, 0xA4, 0x00, 0x00, 0x02] + fid
         data, sw1, sw2 = self._send_apdu(conn, apdu)
@@ -347,7 +346,7 @@ class Exploit(Exploit):
                 return True, data
         return False, []
 
-    def _read_binary(self, conn: Any, length: int = 0, offset: int = 0) -> Tuple[bool, List[int]]:
+    def _read_binary(self, conn: Any, length: int = 0, offset: int = 0) -> tuple[bool, list[int]]:
         """READ BINARY from the currently selected EF."""
         if length == 0:
             length = 0xFF
@@ -364,7 +363,7 @@ class Exploit(Exploit):
                 return True, data
         return False, []
 
-    def _read_record(self, conn: Any, record_num: int, length: int = 0) -> Tuple[bool, List[int]]:
+    def _read_record(self, conn: Any, record_num: int, length: int = 0) -> tuple[bool, list[int]]:
         """READ RECORD (absolute mode) from the currently selected EF."""
         if length == 0:
             length = 0xFF
@@ -467,7 +466,7 @@ class Exploit(Exploit):
             return ""
         return _decode_alpha_id(data[1:])
 
-    def _read_sst(self, conn: Any) -> List[int]:
+    def _read_sst(self, conn: Any) -> list[int]:
         ok, _ = self._select_file(conn, DF_GSM)
         if not ok:
             return []
@@ -479,7 +478,7 @@ class Exploit(Exploit):
             return []
         return data
 
-    def _read_sms_records(self, conn: Any) -> List[Dict[str, Any]]:
+    def _read_sms_records(self, conn: Any) -> list[dict[str, Any]]:
         ok, _ = self._select_file(conn, DF_TELECOM)
         if not ok:
             ok, _ = self._select_file(conn, DF_GSM)
@@ -507,7 +506,7 @@ class Exploit(Exploit):
             })
         return messages
 
-    def _read_phonebook(self, conn: Any) -> List[Dict[str, str]]:
+    def _read_phonebook(self, conn: Any) -> list[dict[str, str]]:
         ok, _ = self._select_file(conn, DF_TELECOM)
         if not ok:
             ok, _ = self._select_file(conn, DF_GSM)
@@ -579,8 +578,8 @@ class Exploit(Exploit):
         for m in sorted(self._VALID_MODES):
             print_info(f"  {m}")
 
-    def _mode_read_all(self, conn: Any) -> Dict[str, Any]:
-        result: Dict[str, Any] = {}
+    def _mode_read_all(self, conn: Any) -> dict[str, Any]:
+        result: dict[str, Any] = {}
         print_status("Lendo ICCID...")
         iccid = self._read_iccid(conn)
         if iccid:

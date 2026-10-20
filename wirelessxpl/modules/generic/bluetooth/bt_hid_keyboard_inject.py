@@ -22,7 +22,6 @@ PREREQ HW: Bluetooth adapter supporting raw HCI access (USB BT adapter preferred
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import logging
 import subprocess
@@ -40,7 +39,7 @@ HID_MODIFIER_LEFT_ALT = 0x04
 HID_MODIFIER_LEFT_GUI = 0x08
 
 # Basic keycode map for printable ASCII
-ASCII_TO_HID: Dict[str, tuple] = {
+ASCII_TO_HID: dict[str, tuple] = {
     "a": (0x04, HID_MODIFIER_NONE),
     "b": (0x05, HID_MODIFIER_NONE),
     "c": (0x06, HID_MODIFIER_NONE),
@@ -89,7 +88,7 @@ ASCII_TO_HID: Dict[str, tuple] = {
 }
 
 
-def text_to_hid_reports(text: str) -> List[bytes]:
+def text_to_hid_reports(text: str) -> list[bytes]:
     """Convert a string to a list of HID keyboard report bytes.
 
     Each character produces two reports: key down and key up.
@@ -173,7 +172,7 @@ class BTHIDKeyboardInject:
         self._ctrl_sock = None
         self._intr_sock = None
 
-    def _run_cmd(self, cmd: List[str]) -> str:
+    def _run_cmd(self, cmd: list[str]) -> str:
         """Run a system command and return output.
 
         Args:
@@ -224,7 +223,7 @@ class BTHIDKeyboardInject:
                 return False
         return True
 
-    def run(self) -> Dict:
+    def run(self) -> dict:
         """Execute the HID injection attack.
 
         Returns:

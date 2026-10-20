@@ -6,7 +6,6 @@ Does not ship hashcat — host prerequisite.
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import logging
 import re
@@ -33,7 +32,7 @@ def _hashcat_list_devices(binary: str) -> str:
     return (proc.stdout or "") + (proc.stderr or "")
 
 
-def _pick_first_gpu_device_id(listing: str) -> Optional[str]:
+def _pick_first_gpu_device_id(listing: str) -> str | None:
     """Heuristically pick first ``Backend Device ID #N`` that looks like a GPU."""
 
     # Example: "Backend Device ID #1" ... Type: GPU
@@ -144,7 +143,7 @@ class Exploit(Exploit):
             print_status("... (truncated)")
 
         dev = str(self.device_id).strip().lower()
-        chosen: Optional[str] = None
+        chosen: str | None = None
         if dev == "cpu":
             chosen = None
         elif dev:
@@ -157,7 +156,7 @@ class Exploit(Exploit):
                 print_status("No GPU id heuristically matched; hashcat default backends apply.")
 
         attack = int(self.attack_mode)
-        argv: List[str] = [hc]
+        argv: list[str] = [hc]
         if chosen:
             argv.extend(["-d", chosen])
         argv.extend(["-m", str(int(self.hash_mode))])

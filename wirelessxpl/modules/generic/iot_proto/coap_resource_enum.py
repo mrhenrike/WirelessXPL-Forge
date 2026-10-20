@@ -123,7 +123,7 @@ class Exploit(Exploit):
             sock.sendto(pkt, (str(self.target), int(self.port)))
             data, _ = sock.recvfrom(8192)
             return req_size, len(data), data
-        except (socket.timeout, OSError):
+        except (TimeoutError, OSError):
             return req_size, 0, b""
         finally:
             sock.close()

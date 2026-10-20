@@ -1,7 +1,6 @@
 """AutoPwn base engine for WirelessXPL-Forge.
 # authorized use only
 """
-from __future__ import annotations
 
 import importlib
 import inspect

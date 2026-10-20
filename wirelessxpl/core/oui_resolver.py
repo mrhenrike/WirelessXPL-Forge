@@ -9,17 +9,15 @@ Recode: full Python rewrite, no code copied.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import csv
 import logging
 import re
 from pathlib import Path
-from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-_OUI_DB: Dict[str, str] = {}
+_OUI_DB: dict[str, str] = {}
 _LOADED = False
 
 _MAC_RE = re.compile(r"^([0-9A-Fa-f]{2}[:\-]?){5}[0-9A-Fa-f]{2}$")
@@ -31,7 +29,7 @@ def _normalize_mac(mac: str) -> str:
     return re.sub(r"[:\-\.]", "", mac.upper())[:12]
 
 
-def _load_ieee_oui(path: Optional[str] = None) -> None:
+def _load_ieee_oui(path: str | None = None) -> None:
     global _OUI_DB, _LOADED
 
     if _LOADED:
@@ -60,7 +58,7 @@ def _load_ieee_oui(path: Optional[str] = None) -> None:
     _LOADED = True
 
 
-def resolve(mac: str, oui_path: Optional[str] = None) -> Optional[str]:
+def resolve(mac: str, oui_path: str | None = None) -> str | None:
     """Resolve a MAC address to its manufacturer/vendor name.
 
     Checks MA-S (36-bit), MA-M (28-bit), then OUI-24 (24-bit) prefixes.
@@ -87,7 +85,7 @@ def resolve(mac: str, oui_path: Optional[str] = None) -> Optional[str]:
     return None
 
 
-def resolve_batch(macs: list[str], oui_path: Optional[str] = None) -> Dict[str, Optional[str]]:
+def resolve_batch(macs: list[str], oui_path: str | None = None) -> dict[str, str | None]:
     """Resolve multiple MAC addresses to vendors.
 
     Args:

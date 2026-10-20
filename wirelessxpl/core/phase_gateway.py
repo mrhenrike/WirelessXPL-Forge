@@ -20,12 +20,11 @@ Uso típico:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -57,15 +56,15 @@ class GatewayReport:
     """Relatório de execução de todas as fases de um gateway."""
 
     module_name: str
-    results: List[PhaseResult] = field(default_factory=list)
-    aborted_at: Optional[str] = None
+    results: list[PhaseResult] = field(default_factory=list)
+    aborted_at: str | None = None
 
     @property
     def all_passed(self) -> bool:
         return all(r.passed for r in self.results)
 
     @property
-    def first_failure(self) -> Optional[PhaseResult]:
+    def first_failure(self) -> PhaseResult | None:
         for r in self.results:
             if not r.passed:
                 return r
@@ -118,7 +117,7 @@ class PhaseGateway:
         self.module_name = module_name
         self.stop_on_first_failure = stop_on_first_failure
         self.silent = silent
-        self._phases: List[tuple[str, Callable[[], bool], str]] = []
+        self._phases: list[tuple[str, Callable[[], bool], str]] = []
 
     # ------------------------------------------------------------------
     # API de construção
@@ -129,7 +128,7 @@ class PhaseGateway:
         name: str,
         check: Callable[[], bool],
         fix_hint: str = "",
-    ) -> "PhaseGateway":
+    ) -> 'PhaseGateway':
         """Adiciona uma fase ao pipeline.
 
         Args:

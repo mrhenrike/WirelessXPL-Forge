@@ -37,17 +37,14 @@ classifiers = [
     "Operating System :: MacOS",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Security",
     "Topic :: System :: Networking",
     "Topic :: Utilities",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 dependencies = [
     "requests>=2.32.4",
     "pycryptodome",
@@ -55,7 +52,7 @@ dependencies = [
     "dnslib>=0.9.24",
     "cryptography>=41.0",
     "setuptools",
-    "telnetlib3; python_version >= '3.13'",
+    "telnetlib3",
     "qrcode[pil]",
     "xpl-core>=0.1.0",
 ]
@@ -251,7 +248,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 120
 
 [tool.ruff.lint]

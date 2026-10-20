@@ -28,7 +28,6 @@ Improvements incorporated from upstream riverloopsec/killerbee:
 Version: 1.2.0
 """
 
-from __future__ import annotations
 
 import logging
 import random
@@ -166,7 +165,7 @@ def rand_zigbee_mac(length: int = 8) -> bytes:
     return oui + suffix
 
 
-def parse_802154_header(data: bytes) -> Dict[str, Any]:
+def parse_802154_header(data: bytes) -> dict[str, Any]:
     """Parse IEEE 802.15.4 MAC header."""
     if len(data) < 3:
         return {}
@@ -175,7 +174,7 @@ def parse_802154_header(data: bytes) -> Dict[str, Any]:
     seq = data[2]
     offset = 3
 
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "fcf": fcf,
         "type": fcf & DOT154_FCF_TYPE_MASK,
         "security": bool(fcf & DOT154_FCF_SEC_EN),
@@ -236,7 +235,7 @@ def build_association_request(pan_id: int, coord_addr: int,
     return frame + make_fcs(frame)
 
 
-def extract_network_key(pcap_data: List[bytes]) -> Optional[bytes]:
+def extract_network_key(pcap_data: list[bytes]) -> bytes | None:
     """Search for plaintext Zigbee network key in packet data.
 
     Looks for APS Transport Key command (cmd=0x05, key_type=0x01)
@@ -305,7 +304,7 @@ class Exploit(Exploit):
             print_error(f"Failed to read PCAP: {err}")
             return
 
-        networks: Dict[int, Dict] = {}
+        networks: dict[int, dict] = {}
         encrypted_count = 0
         total_frames = 0
 

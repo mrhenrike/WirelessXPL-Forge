@@ -100,7 +100,7 @@ class Exploit(BaseExploit):
             try:
                 response, _ = sock.recvfrom(4096)
                 return response
-            except socket.timeout:
+            except TimeoutError:
                 return b""
         finally:
             sock.close()
@@ -125,7 +125,7 @@ class Exploit(BaseExploit):
                 data, _ = sock.recvfrom(4096)
                 sock.close()
                 return len(data) > 0
-            except socket.timeout:
+            except TimeoutError:
                 sock.close()
                 # No response on a UDP service is ambiguous; treat as possibly present
                 # by attempting a port-reachability ICMP inference via a second probe

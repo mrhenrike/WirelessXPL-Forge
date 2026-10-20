@@ -16,7 +16,6 @@ Requires: aircrack-ng suite (aircrack-ng, airolib-ng) on PATH.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -30,17 +29,17 @@ from wirelessxpl.core.exploit import *
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     """Locate a binary on PATH using shutil.which."""
     return shutil.which(binary)
 
 
 def _run_cmd(
-    cmd: List[str],
+    cmd: list[str],
     dry_run: bool = False,
-    timeout: Optional[int] = None,
+    timeout: int | None = None,
     capture: bool = False,
-) -> Optional[subprocess.CompletedProcess]:
+) -> subprocess.CompletedProcess | None:
     """Execute a command with safety checks.
 
     Args:
@@ -108,7 +107,7 @@ class Exploit(Exploit):
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _check_binary(self, name: str) -> Optional[str]:
+    def _check_binary(self, name: str) -> str | None:
         """Verify that a binary is available on PATH."""
         path = _which(name)
         if not path:

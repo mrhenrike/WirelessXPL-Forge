@@ -16,7 +16,6 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import glob
 import json
@@ -35,7 +34,7 @@ __version__ = "1.0.0"
 _SEV_ORDER = {"informational": 0, "low": 1, "medium": 2, "high": 3, "critical": 4}
 
 
-def _yaml_load_simple(text: str) -> Dict[str, Any]:
+def _yaml_load_simple(text: str) -> dict[str, Any]:
     """Minimal YAML-subset parser for Sigma rules.
 
     Handles: scalar key:value, nested dicts (indented), lists (- item),
@@ -57,7 +56,7 @@ def _yaml_load_simple(text: str) -> Dict[str, Any]:
     except ImportError:
         pass
 
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
     try:
         _yaml_parse_block(text.splitlines(), result)
     except Exception as exc:
@@ -65,7 +64,7 @@ def _yaml_load_simple(text: str) -> Dict[str, Any]:
     return result
 
 
-def _yaml_parse_block(lines: List[str], container: Dict[str, Any], base_indent: int = 0) -> None:
+def _yaml_parse_block(lines: list[str], container: dict[str, Any], base_indent: int = 0) -> None:
     """Recursive block parser for YAML subset used by Sigma rules."""
     i = 0
     while i < len(lines):
@@ -116,7 +115,7 @@ def _yaml_parse_block(lines: List[str], container: Dict[str, Any], base_indent: 
                 first_content = next((l.strip() for l in child_lines if l.strip() and not l.strip().startswith("#")), "")
                 if first_content.startswith("- "):
                     # It's a list
-                    lst: List[Any] = []
+                    lst: list[Any] = []
                     for cl in child_lines:
                         cs = cl.strip()
                         if not cs or cs.startswith("#"):
@@ -126,7 +125,7 @@ def _yaml_parse_block(lines: List[str], container: Dict[str, Any], base_indent: 
                     container[key] = lst
                 else:
                     # It's a nested dict
-                    nested: Dict[str, Any] = {}
+                    nested: dict[str, Any] = {}
                     container[key] = nested
                     _yaml_parse_block(child_lines, nested, indent + 1)
 
@@ -156,7 +155,7 @@ def _coerce(value: str) -> Any:
     return value.strip("'\"")
 
 
-def load_sigma_rules(rules_dir: str) -> List[Dict[str, Any]]:
+def load_sigma_rules(rules_dir: str) -> list[dict[str, Any]]:
     """Load all Sigma rules from a directory tree.
 
     Args:
@@ -180,7 +179,7 @@ def load_sigma_rules(rules_dir: str) -> List[Dict[str, Any]]:
     return rules
 
 
-def _match_field(log_entry: Dict[str, Any], field: str, expected: Any) -> bool:
+def _match_field(log_entry: dict[str, Any], field: str, expected: Any) -> bool:
     """Check if log_entry[field] matches expected value(s).
 
     Supports:
@@ -216,7 +215,7 @@ def _match_scalar(actual: Any, expected: Any) -> bool:
     return actual_str == expected_str
 
 
-def _evaluate_selection(log_entry: Dict[str, Any], selection: Dict[str, Any]) -> bool:
+def _evaluate_selection(log_entry: dict[str, Any], selection: dict[str, Any]) -> bool:
     """Evaluate a single Sigma selection block against a log entry.
 
     All fields in the selection must match (AND logic within a selection).
@@ -229,7 +228,7 @@ def _evaluate_selection(log_entry: Dict[str, Any], selection: Dict[str, Any]) ->
     return True
 
 
-def _evaluate_detection(log_entry: Dict[str, Any], detection: Any) -> bool:
+def _evaluate_detection(log_entry: dict[str, Any], detection: Any) -> bool:
     """Evaluate the full Sigma detection section.
 
     Handles simple condition strings: 'selection', 'selection and filter',
@@ -300,9 +299,9 @@ def _evaluate_detection(log_entry: Dict[str, Any], detection: Any) -> bool:
 
 
 def match_rules(
-    rules: List[Dict[str, Any]],
-    log_entries: List[Dict[str, Any]],
-) -> List[Dict[str, Any]]:
+    rules: list[dict[str, Any]],
+    log_entries: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     """Run Sigma rules against log entries and return matches.
 
     Args:
@@ -329,7 +328,7 @@ def match_rules(
     return matches
 
 
-def parse_syslog_line(line: str) -> Optional[Dict[str, Any]]:
+def parse_syslog_line(line: str) -> dict[str, Any] | None:
     """Parse a basic syslog/firewall log line into a field dict.
 
     Handles common patterns:
@@ -344,7 +343,7 @@ def parse_syslog_line(line: str) -> Optional[Dict[str, Any]]:
     if not line:
         return None
 
-    entry: Dict[str, Any] = {"_raw": line}
+    entry: dict[str, Any] = {"_raw": line}
 
     # Extract key=value pairs
     for m in re.finditer(r'(\w[\w_-]*)=([^\s,;"]+)', line):
@@ -400,7 +399,7 @@ class Exploit(Exploit):
     max_lines = OptInteger(50_000, "Maximum log lines to read")
     dry_run = OptBool(False, "Load and count rules without matching")
 
-    def _find_sigma_rules_dir(self) -> Optional[Path]:
+    def _find_sigma_rules_dir(self) -> Path | None:
         """Auto-discover the Sigma network rules directory."""
         # Common locations relative to WXF package root
         wxf_root = Path(__file__).resolve().parents[5]
@@ -465,8 +464,8 @@ class Exploit(Exploit):
         # Read and parse log file
         log_path = Path(str(self.log_file).strip())
         max_l = int(self.max_lines)
-        entries: List[Dict[str, Any]] = []
-        raw_lines: List[str] = []
+        entries: list[dict[str, Any]] = []
+        raw_lines: list[str] = []
 
         with open(log_path, encoding="utf-8", errors="replace") as fh:
             for i, line in enumerate(fh):

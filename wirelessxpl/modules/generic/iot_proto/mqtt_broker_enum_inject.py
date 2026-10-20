@@ -170,7 +170,7 @@ class Exploit(Exploit):
         while time.monotonic() < deadline:
             try:
                 header_byte = sock.recv(1)
-            except (socket.timeout, OSError):
+            except (TimeoutError, OSError):
                 continue
             if not header_byte:
                 break
@@ -184,7 +184,7 @@ class Exploit(Exploit):
             while len(raw) < rem:
                 try:
                     chunk = sock.recv(rem - len(raw))
-                except (socket.timeout, OSError):
+                except (TimeoutError, OSError):
                     break
                 if not chunk:
                     break
@@ -323,7 +323,7 @@ class Exploit(Exploit):
 
         except PermissionError as exc:
             print_error(str(exc))
-        except (socket.timeout, OSError) as exc:
+        except (TimeoutError, OSError) as exc:
             print_error(f"Erro de conexão: {exc}")
         except ConnectionError as exc:
             print_error(f"Erro de protocolo: {exc}")

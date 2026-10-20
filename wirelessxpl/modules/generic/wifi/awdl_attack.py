@@ -8,7 +8,6 @@ device discovery, AirDrop interaction testing, and denial-style channel stress.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -51,7 +50,7 @@ class Exploit(Exploit):
     timeout = OptInteger(60, "Execution timeout in seconds (0 = no timeout)")
     dry_run = OptBool(False, "Print command without executing")
 
-    def _find_tool(self, *names: str) -> Optional[str]:
+    def _find_tool(self, *names: str) -> str | None:
         for name in names:
             found = shutil.which(name)
             if found:
@@ -63,7 +62,7 @@ class Exploit(Exploit):
                 return str(candidate)
         return None
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         action = str(self.action).strip().lower()
         if action not in ("discover", "send_test", "dos_test"):
             raise ValueError("action must be one of: discover | send_test | dos_test")

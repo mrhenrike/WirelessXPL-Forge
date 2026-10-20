@@ -12,7 +12,6 @@ References:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import socket
 import time
@@ -40,7 +39,7 @@ def build_gpgga(
     altitude_m: float = 0.0,
     satellites: int = 8,
     hdop: float = 1.2,
-    time_utc: Optional[str] = None,
+    time_utc: str | None = None,
 ) -> str:
     """Build a GGA (Global Positioning System Fix) NMEA sentence.
 
@@ -83,8 +82,8 @@ def build_gprmc(
     lon_dd: float,
     speed_knots: float = 0.0,
     course_deg: float = 0.0,
-    time_utc: Optional[str] = None,
-    date: Optional[str] = None,
+    time_utc: str | None = None,
+    date: str | None = None,
 ) -> str:
     """Build an RMC (Recommended Minimum) NMEA sentence.
 
@@ -218,7 +217,7 @@ class NMEASpoofAttack:
         self.fake_speed = fake_speed
         self.simulate = simulate
 
-    def build_sentences(self) -> List[str]:
+    def build_sentences(self) -> list[str]:
         """Build the set of NMEA sentences to inject.
 
         Returns:

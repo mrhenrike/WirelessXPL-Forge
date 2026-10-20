@@ -1,12 +1,12 @@
 # Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 """Otimização de canal e janelas temporais para ataques wireless."""
 
-from __future__ import annotations
 
 import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Mapping, Sequence, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -31,12 +31,12 @@ class ChannelPlan:
 
     recommended_channel: int
     evil_twin_channel: int
-    timing_windows: List[Tuple[float, float]]
+    timing_windows: list[tuple[float, float]]
     """Janelas em horas locais [0,24) como (início, fim) para picos de reconexão."""
 
     confidence: float
-    congestion_prediction: Dict[int, float]
-    details: Dict[str, Any] = field(default_factory=dict)
+    congestion_prediction: dict[int, float]
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 class ChannelOptimizer:
@@ -50,16 +50,16 @@ class ChannelOptimizer:
     def __init__(self, refit_every: int = 32) -> None:
         self._refit_every = max(4, refit_every)
         self._model: Any = None
-        self._obs_buffer: List[Tuple[np.ndarray, float]] = []
-        self._train_X: List[List[float]] = []
-        self._train_y: List[float] = []
+        self._obs_buffer: list[tuple[np.ndarray, float]] = []
+        self._train_X: list[list[float]] = []
+        self._train_y: list[float] = []
 
     @staticmethod
     def _row_from_channel_entry(
         ch: Mapping[str, Any],
         hour: float,
         dow: float,
-    ) -> Tuple[int, List[float]]:
+    ) -> tuple[int, list[float]]:
         cid = int(ch.get("channel", ch.get("id", 0)))
         util = float(ch.get("utilization", ch.get("busy_ratio", 0.3)))
         apc = float(ch.get("ap_count", ch.get("aps", 0)))
@@ -83,9 +83,9 @@ class ChannelOptimizer:
         channels: Sequence[Mapping[str, Any]],
         hour: float,
         dow: float,
-    ) -> Dict[int, float]:
-        preds: Dict[int, float] = {}
-        rows: List[Tuple[int, List[float]]] = []
+    ) -> dict[int, float]:
+        preds: dict[int, float] = {}
+        rows: list[tuple[int, list[float]]] = []
         for ch in channels:
             cid, feats = self._row_from_channel_entry(ch, hour, dow)
             rows.append((cid, feats))
@@ -105,7 +105,7 @@ class ChannelOptimizer:
             preds[cid] = float(max(0.0, min(1.0, 0.45 * util + 0.25 * min(apc / 10.0, 1.0) + 0.2 * min(clc / 40.0, 1.0))))
         return preds
 
-    def optimize(self, scan_data: Dict[str, Any]) -> ChannelPlan:
+    def optimize(self, scan_data: dict[str, Any]) -> ChannelPlan:
         """Gera um :class:`ChannelPlan` a partir de um scan agregado.
 
         Args:
@@ -116,7 +116,7 @@ class ChannelOptimizer:
         Returns:
             Plano com canal alvo, canal evil twin e janelas sugeridas.
         """
-        channels: List[Mapping[str, Any]] = list(scan_data.get("channels") or [])
+        channels: list[Mapping[str, Any]] = list(scan_data.get("channels") or [])
         ts = scan_data.get("timestamp")
         if isinstance(ts, datetime):
             hour = float(ts.hour) + ts.minute / 60.0
@@ -156,7 +156,7 @@ class ChannelOptimizer:
             0.35,
         )
         # Canal alvo: equilíbrio entre histórico de sucesso e congestão moderada (clientes ativos)
-        scored: List[Tuple[int, float]] = []
+        scored: list[tuple[int, float]] = []
         for cid, cong in congestion.items():
             hist = next(
                 (

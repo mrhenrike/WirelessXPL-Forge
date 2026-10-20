@@ -29,7 +29,6 @@ Inspired workflow integrations (native, no external bridges):
 
 Version: 2.0.0
 """
-from __future__ import annotations
 
 import logging
 import os
@@ -123,7 +122,7 @@ class _SessionLog:
             logger.debug("session log write failed: %s", exc)
 
 
-def _get_gpu_temperature() -> Optional[int]:
+def _get_gpu_temperature() -> int | None:
     """Read GPU temperature via nvidia-smi or Linux hwmon (°C)."""
     if shutil.which("nvidia-smi"):
         try:
@@ -160,8 +159,8 @@ def _wait_gpu_cooldown(retain_c: int, slog: _SessionLog) -> None:
         time.sleep(30)
 
 
-def _hashcat_safety_args(temp_abort: int, workload: int) -> List[str]:
-    args: List[str] = []
+def _hashcat_safety_args(temp_abort: int, workload: int) -> list[str]:
+    args: list[str] = []
     if workload > 0:
         args.extend(["-w", str(max(1, min(4, workload)))])
     if temp_abort > 0:
@@ -169,9 +168,9 @@ def _hashcat_safety_args(temp_abort: int, workload: int) -> List[str]:
     return args
 
 
-def _generate_smart_masks(essid: str) -> List[str]:
+def _generate_smart_masks(essid: str) -> list[str]:
     """SSID + Brazilian ISP heuristic masks (HashCater + real BR patterns)."""
-    masks: List[str] = []
+    masks: list[str] = []
     essid_up = (essid or "").upper()
     base = re.sub(r"[^a-zA-Z0-9]", "", essid or "").lower()
 
@@ -199,8 +198,8 @@ def _generate_smart_masks(essid: str) -> List[str]:
     if len(base) >= 4:
         masks.extend([f"{base}@?d?d?d", f"{base}@?d?d?d?d"])
 
-    seen: Set[str] = set()
-    ordered: List[str] = []
+    seen: set[str] = set()
+    ordered: list[str] = []
     for m in masks:
         if m not in seen:
             seen.add(m)
@@ -208,7 +207,7 @@ def _generate_smart_masks(essid: str) -> List[str]:
     return ordered
 
 
-def _resolve_mask_list(essid: str, masks_opt: str, smart_masks: bool) -> List[str]:
+def _resolve_mask_list(essid: str, masks_opt: str, smart_masks: bool) -> list[str]:
     manual = [m.strip() for m in masks_opt.split(",") if m.strip()]
     if manual:
         return manual
@@ -220,15 +219,15 @@ def _resolve_mask_list(essid: str, masks_opt: str, smart_masks: bool) -> List[st
 def _batch_convert_directory(
     dir_path: Path,
     skip_existing: bool = True,
-    slog: Optional[_SessionLog] = None,
-) -> Dict[str, int]:
+    slog: _SessionLog | None = None,
+) -> dict[str, int]:
     """Cap2Hash-style batch PCAP/CAP → .hc22000 with skip and cleanup."""
     stats = {"total": 0, "converted": 0, "skipped": 0, "failed": 0}
     if not shutil.which("hcxpcapngtool"):
         print_error("hcxpcapngtool not found — install hcxtools.")
         return stats
 
-    files: List[Path] = []
+    files: list[Path] = []
     for pat in _CAPTURE_GLOBS:
         files.extend(sorted(dir_path.glob(pat)))
     stats["total"] = len(files)
@@ -269,14 +268,14 @@ def _batch_convert_directory(
     return stats
 
 
-def _collect_input_paths(input_file: str, input_dir: str) -> List[Path]:
+def _collect_input_paths(input_file: str, input_dir: str) -> list[Path]:
     """Resolve single file or batch directory inputs."""
     dir_raw = input_dir.strip()
     if dir_raw:
         d = Path(dir_raw).expanduser()
         if not d.is_dir():
             raise FileNotFoundError(f"input_dir not found: {d}")
-        paths: List[Path] = []
+        paths: list[Path] = []
         for pat in _CAPTURE_GLOBS + _HASH_GLOBS + ("*.hccapx",):
             paths.extend(sorted(d.glob(pat)))
         return list(dict.fromkeys(paths))  # dedupe, preserve order
@@ -327,7 +326,7 @@ def _convert_to_hash22000(
     input_path: Path,
     out_dir: Path,
     essid: str = "",
-) -> Optional[Path]:
+) -> Path | None:
     """Convert pcap/pcapng to hashcat 22000 format via hcxpcapngtool."""
     if not shutil.which("hcxpcapngtool"):
         return None
@@ -346,7 +345,7 @@ def _convert_to_hash22000(
     return out_hash if out_hash.exists() and out_hash.stat().st_size > 0 else None
 
 
-def _convert_to_hccapx(input_path: Path, out_dir: Path) -> Optional[Path]:
+def _convert_to_hccapx(input_path: Path, out_dir: Path) -> Path | None:
     """Convert pcap/pcapng to .hccapx for legacy hashcat -m 2500."""
     if not shutil.which("hcxpcapngtool"):
         return None
@@ -357,7 +356,7 @@ def _convert_to_hccapx(input_path: Path, out_dir: Path) -> Optional[Path]:
     return out_hccapx if out_hccapx.exists() and out_hccapx.stat().st_size > 0 else None
 
 
-def _convert_for_john(input_path: Path, out_dir: Path) -> Optional[Path]:
+def _convert_for_john(input_path: Path, out_dir: Path) -> Path | None:
     """Convert pcap to john wpapsk format via hcxpcapngtool or wpapcap2john."""
     # Try wpapcap2john (part of john-the-ripper extras)
     for tool in ("wpapcap2john", "hccap2john"):
@@ -420,12 +419,12 @@ def _prepare_wordlist(wordlist_path: Path, order: str) -> Path:
 
 class CrackResult:
     def __init__(self) -> None:
-        self.found: List[Tuple[str, str, str]] = []  # (essid, password, source)
+        self.found: list[tuple[str, str, str]] = []  # (essid, password, source)
         self.progress: str = ""
         self.speed: str = ""
         self.eta: str = ""
         self.status: str = "running"  # running | finished | exhausted | error
-        self.raw_lines: List[str] = []
+        self.raw_lines: list[str] = []
 
     def add_found(self, essid: str, password: str, source: str) -> None:
         key = (essid, password)
@@ -438,10 +437,10 @@ def _run_hashcat(
     hash_file: Path,
     wordlist: Path,
     mode: int,
-    device_args: List[str],
-    rules: List[str],
+    device_args: list[str],
+    rules: list[str],
     result: CrackResult,
-    extra_args: List[str],
+    extra_args: list[str],
 ) -> None:
     out_file = Path(tempfile.mktemp(suffix=".crack.txt"))
     log_file = Path(tempfile.mktemp(suffix=".hclog.txt"))
@@ -465,7 +464,7 @@ def _run_hashcat(
     print_info(f"  CMD: {' '.join(cmd)}")
     print_status("  hashcat initializing (CPU mode ~30-60s init)…")
 
-    found_during_run: Set[str] = set()
+    found_during_run: set[str] = set()
 
     def _poll_outfile():
         """Background thread: report passwords as soon as they're written."""
@@ -544,9 +543,9 @@ def _run_hashcat(
 def _run_hashcat_mask_chain(
     hash_path: Path,
     mode: int,
-    masks: List[str],
-    dev_args: List[str],
-    extra_base: List[str],
+    masks: list[str],
+    dev_args: list[str],
+    extra_base: list[str],
     mask_runtime: int,
     cooldown_s: int,
     gpu_temp_retain: int,
@@ -826,7 +825,7 @@ def _run_cowpatty(
 # Multi-ESSID detection and selection
 # ---------------------------------------------------------------------------
 
-def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
+def _detect_essids_with_handshakes(pcap_path: Path) -> list[dict]:
     """Scan pcap/pcapng and return list of ESSIDs with valid WPA handshakes.
 
     Uses Scapy directly (no aircrack-ng TUI dependency) to parse
@@ -842,7 +841,7 @@ def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
         # Fallback to aircrack-ng parsing (may fail with TUI)
         return _detect_essids_aircrack(pcap_path)
 
-    networks: Dict[str, Dict] = {}  # bssid → info
+    networks: dict[str, dict] = {}  # bssid → info
     try:
         pkts = rdpcap(str(pcap_path))
     except Exception as exc:
@@ -913,7 +912,7 @@ def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
             networks[ap_bssid]["has_hs"] = True
 
     # Build sorted result list
-    result: List[Dict] = []
+    result: list[dict] = []
     idx = 0
     for bssid, info in sorted(networks.items()):
         if info.get("has_hs") or info.get("handshakes", 0) > 0:
@@ -933,7 +932,7 @@ def _detect_essids_with_handshakes(pcap_path: Path) -> List[Dict]:
     return result
 
 
-def _detect_essids_aircrack(pcap_path: Path) -> List[Dict]:
+def _detect_essids_aircrack(pcap_path: Path) -> list[dict]:
     """Fallback: parse aircrack-ng stdout for network listing."""
     if not shutil.which("aircrack-ng"):
         return []
@@ -942,7 +941,7 @@ def _detect_essids_aircrack(pcap_path: Path) -> List[Dict]:
             ["aircrack-ng", str(pcap_path)],
             capture_output=True, text=True, timeout=15,
         )
-        networks: List[Dict] = []
+        networks: list[dict] = []
         idx = 0
         for line in r.stdout.splitlines():
             # Strip ANSI escape codes
@@ -970,9 +969,9 @@ def _detect_essids_aircrack(pcap_path: Path) -> List[Dict]:
         return []
 
 
-def _detect_essids_from_hash(hash_path: Path) -> List[Dict]:
+def _detect_essids_from_hash(hash_path: Path) -> list[dict]:
     """Extract unique ESSIDs from a .hash / .22000 file."""
-    networks: List[Dict] = []
+    networks: list[dict] = []
     seen: set = set()
     try:
         idx = 0
@@ -1004,9 +1003,9 @@ def _detect_essids_from_hash(hash_path: Path) -> List[Dict]:
 
 
 def _resolve_essid_selection(
-    networks: List[Dict],
+    networks: list[dict],
     essid_spec: str,
-) -> List[str]:
+) -> list[str]:
     """Resolve essid_spec to a list of ESSID strings to crack.
 
     Spec formats:
@@ -1063,7 +1062,7 @@ def _resolve_essid_selection(
         return by_name
 
     # Index selection (1, 1,2, 1-3)
-    selected_essids: List[str] = []
+    selected_essids: list[str] = []
     if "-" in spec and spec.replace("-", "").isdigit():
         a, b = map(int, spec.split("-", 1))
         selected_essids = [n["essid"] for n in with_hs if a <= n["index"] <= b]
@@ -1263,7 +1262,7 @@ class Exploit(Exploit):
             attack_flow = "wordlist"
 
         batch_stats = {"processed": 0, "cracked": 0, "failed": 0}
-        all_batch_found: List[tuple] = []
+        all_batch_found: list[tuple] = []
 
         for input_path in input_paths:
             batch_stats["processed"] += 1
@@ -1303,7 +1302,7 @@ class Exploit(Exploit):
         backend_id: str,
         attack_flow: str,
         slog: _SessionLog,
-    ) -> List[tuple]:
+    ) -> list[tuple]:
         """Crack one capture/hash file; return list of (essid, pwd, source) found."""
         if not wordlist_path.exists() and attack_flow in ("wordlist", "both") and not str(self.masks).strip():
             if not bool(self.smart_masks) and attack_flow != "bruteforce":
@@ -1317,7 +1316,7 @@ class Exploit(Exploit):
             return []
 
         essid_spec = str(self.essid).strip()
-        essids_to_crack: List[str] = []
+        essids_to_crack: list[str] = []
 
         if file_type in ("pcap", "pcapng"):
             detected = _detect_essids_with_handshakes(input_path)
@@ -1336,7 +1335,7 @@ class Exploit(Exploit):
 
         order = str(self.wl_order).strip().lower() or "random"
         prepared_wordlist = wordlist_path
-        _tmp_wordlist: Optional[Path] = None
+        _tmp_wordlist: Path | None = None
         if wordlist_path.exists() and attack_flow in ("wordlist", "both"):
             try:
                 prepared_wordlist = _prepare_wordlist(wordlist_path, order)
@@ -1350,7 +1349,7 @@ class Exploit(Exploit):
                 prepared_wordlist = wordlist_path
 
         backends = self._auto_order() if backend_id == "auto" else [backend_id]
-        all_found: List[tuple] = []
+        all_found: list[tuple] = []
 
         try:
             for target_essid in essids_to_crack:
@@ -1409,7 +1408,7 @@ class Exploit(Exploit):
         file_type: str,
         result: CrackResult,
         attack_flow: str = "wordlist",
-        slog: Optional[_SessionLog] = None,
+        slog: _SessionLog | None = None,
     ) -> None:
         tmp_dir = Path(tempfile.mkdtemp(prefix="wxf_crack_"))
         essid = str(self.essid).strip()
@@ -1465,7 +1464,7 @@ class Exploit(Exploit):
         result: CrackResult,
         tmp_dir: Path,
         attack_flow: str = "wordlist",
-        slog: Optional[_SessionLog] = None,
+        slog: _SessionLog | None = None,
     ) -> None:
         slog = slog or _SessionLog("")
         essid = str(self.essid).strip()
@@ -1481,7 +1480,7 @@ class Exploit(Exploit):
             int(self.gpu_temp_abort), int(self.workload),
         ))
 
-        extra: List[str] = []
+        extra: list[str] = []
         import os as _os
         sudo_user = _os.environ.get("SUDO_USER", "")
         _default_potfile = ""
@@ -1496,7 +1495,7 @@ class Exploit(Exploit):
         if int(self.timeout_s) > 0:
             extra.extend(["--runtime", str(int(self.timeout_s))])
 
-        rule_files: List[str] = []
+        rule_files: list[str] = []
         rules_raw = str(self.rules).strip()
         if rules_raw and rules_raw.lower() != "none":
             for r in rules_raw.split(","):
@@ -1581,7 +1580,7 @@ class Exploit(Exploit):
     # Auto-order
     # ------------------------------------------------------------------
 
-    def _auto_order(self) -> List[str]:
+    def _auto_order(self) -> list[str]:
         """Return backends in priority order based on what's installed."""
         order = []
         # GPU first

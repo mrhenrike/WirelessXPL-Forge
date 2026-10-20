@@ -48,7 +48,6 @@ References:
   - https://github.com/vanhoefm/libwifi-examples/blob/master/beacon_csa_attack.py
   - IEEE 802.11-2020 §9.4.2.18 (Channel Switch Announcement)
 """
-from __future__ import annotations
 
 import logging
 import struct
@@ -106,7 +105,7 @@ except ImportError:
 # PMF detection from RSN IE
 # ---------------------------------------------------------------------------
 
-def _pmf_status(beacon_pkt) -> Tuple[bool, bool]:
+def _pmf_status(beacon_pkt) -> tuple[bool, bool]:
     """Return (pmf_capable, pmf_required) from RSN IE bits."""
     if not beacon_pkt:
         return False, False
@@ -134,7 +133,7 @@ def _pmf_status(beacon_pkt) -> Tuple[bool, bool]:
     return False, False
 
 
-def _parse_beacon(pkt) -> Optional[Dict]:
+def _parse_beacon(pkt) -> dict | None:
     """Extract AP info from a beacon frame."""
     try:
         from scapy.all import Dot11, Dot11Beacon, Dot11Elt
@@ -273,10 +272,10 @@ class CSAHandshakeCapturer:
         self.m1_dwell_ms = m1_dwell_ms
         self.qos_stimulate = qos_null_stimulate
 
-        self.clients: Set[str] = set()
-        self.eapol_store: Dict[str, List] = {}  # client → [pkts]
-        self.m1_sessions: Dict[str, Tuple[bytes, float]] = {}  # client → (anonce, timestamp)
-        self.captured: Dict[str, str] = {}      # client → pcap path
+        self.clients: set[str] = set()
+        self.eapol_store: dict[str, list] = {}  # client → [pkts]
+        self.m1_sessions: dict[str, tuple[bytes, float]] = {}  # client → (anonce, timestamp)
+        self.captured: dict[str, str] = {}      # client → pcap path
         self._stop   = threading.Event()
         self._m1_lock = threading.Event()
         self._beacon_cache = None
@@ -376,7 +375,7 @@ class CSAHandshakeCapturer:
               stop_filter=lambda _: self._stop.is_set(),
               timeout=600, store=False)
 
-    def _save_handshake(self, client: str, pkts: List) -> None:
+    def _save_handshake(self, client: str, pkts: list) -> None:
         if client in self.captured:
             return  # already saved a valid pair for this client
         self.out_dir.mkdir(parents=True, exist_ok=True)
@@ -397,7 +396,7 @@ class CSAHandshakeCapturer:
     # CSA burst
     # ------------------------------------------------------------------
 
-    def _send_csa_burst(self, fake_ch: int, targets: List[str]) -> None:
+    def _send_csa_burst(self, fake_ch: int, targets: list[str]) -> None:
         """Send CSA-injected beacons to force channel switch."""
         if not _SCAPY_OK or self._beacon_cache is None:
             return
@@ -419,7 +418,7 @@ class CSAHandshakeCapturer:
     # QoS Null stimulation
     # ------------------------------------------------------------------
 
-    def _stimulate_clients(self, clients: List[str]) -> None:
+    def _stimulate_clients(self, clients: list[str]) -> None:
         """Send QoS Null FromDS to wake sleeping mobile clients."""
         if not _SCAPY_OK or not clients:
             return
@@ -432,7 +431,7 @@ class CSAHandshakeCapturer:
     # Deauth fallback (for non-PMF)
     # ------------------------------------------------------------------
 
-    def _send_deauth_burst(self, clients: List[str]) -> None:
+    def _send_deauth_burst(self, clients: list[str]) -> None:
         if not _SCAPY_OK:
             return
         print_status(f"  [DEAUTH] fallback burst → {clients or ['broadcast']}")
@@ -444,7 +443,7 @@ class CSAHandshakeCapturer:
     # Main capture loop
     # ------------------------------------------------------------------
 
-    def run(self) -> Dict[str, str]:
+    def run(self) -> dict[str, str]:
         """Run the full capture engine. Returns {client_mac: pcap_path}."""
         if not _SCAPY_OK:
             print_error("Scapy required: pip install scapy")
@@ -671,14 +670,14 @@ class Exploit(Exploit):
 
     # ------------------------------------------------------------------
 
-    def _find_ap(self, iface: str, bssid: str, hint_ch: int) -> Optional[Dict]:
+    def _find_ap(self, iface: str, bssid: str, hint_ch: int) -> dict | None:
         """Sniff beacons to locate the target AP."""
         if hint_ch > 0:
             subprocess.run(
                 ["iw", "dev", iface, "set", "channel", str(hint_ch)],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
-        result: List[Optional[Dict]] = [None]
+        result: list[dict | None] = [None]
         def handler(pkt):
             if result[0] is not None:
                 return

@@ -205,7 +205,7 @@ class Exploit(Exploit):
                         qdcount = struct.unpack("!H", data[4:6])[0]
                         if (flags & 0x8000) == 0 and qdcount > 0:
                             queries.append({"src": addr[0], "size": len(data), "questions": qdcount})
-                except socket.timeout:
+                except TimeoutError:
                     continue
             return queries
         except OSError:

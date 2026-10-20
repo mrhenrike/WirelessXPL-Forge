@@ -10,14 +10,13 @@ Recode: full Python rewrite, no code copied.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import subprocess
 import threading
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, List, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -42,17 +41,17 @@ class ChannelHopper:
     def __init__(
         self,
         interface: str,
-        channels: Optional[Sequence[int]] = None,
+        channels: Sequence[int] | None = None,
         dwell_time: float = 0.3,
     ) -> None:
         self.interface = interface
         self.channels = list(channels or CHANNELS_2GHZ + CHANNELS_5GHZ)
         self.dwell_time = dwell_time
         self._state = HopperState()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._stop_event = threading.Event()
         self._lock = threading.Lock()
-        self._on_hop: Optional[Callable[[int], None]] = None
+        self._on_hop: Callable[[int], None] | None = None
 
     @property
     def state(self) -> HopperState:
@@ -96,7 +95,7 @@ class ChannelHopper:
         except Exception:
             return False
 
-    def start(self, on_hop: Optional[Callable[[int], None]] = None) -> None:
+    def start(self, on_hop: Callable[[int], None] | None = None) -> None:
         """Start channel hopping in a background thread."""
         if self._state.is_running:
             return
@@ -166,7 +165,7 @@ class ChannelHopper:
             self._stop_event.wait(self.dwell_time)
 
 
-def _channel_to_freq(channel: int) -> Optional[int]:
+def _channel_to_freq(channel: int) -> int | None:
     if 1 <= channel <= 14:
         if channel == 14:
             return 2484
@@ -176,7 +175,7 @@ def _channel_to_freq(channel: int) -> Optional[int]:
     return None
 
 
-def get_supported_channels(interface: str) -> List[int]:
+def get_supported_channels(interface: str) -> list[int]:
     """Query supported channels from iw."""
     channels = []
     try:

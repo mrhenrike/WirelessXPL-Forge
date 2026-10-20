@@ -14,9 +14,7 @@ Usage from WXF prompt:
     glossary --list            → compact list
     glossary --category wifi   → filter by category
 """
-from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
 
 # ---------------------------------------------------------------------------
 # Category colors
@@ -39,7 +37,7 @@ _BOLD = "\033[1m"
 # Glossary database
 # ---------------------------------------------------------------------------
 # Each entry: (full_name, category, description, normal_use, attack_relevance)
-GLOSSARY: Dict[str, Tuple[str, str, str, str, str]] = {
+GLOSSARY: dict[str, tuple[str, str, str, str, str]] = {
 
     # ── WiFi Standards & Protocols ─────────────────────────────────────────
     "802.11": (
@@ -1061,7 +1059,7 @@ def _normalize(term: str) -> str:
     return term.lower().strip().replace("-", "_").replace(" ", "_")
 
 
-def search_term(query: str) -> List[Tuple[str, Tuple[str, str, str, str, str]]]:
+def search_term(query: str) -> list[tuple[str, tuple[str, str, str, str, str]]]:
     """Search for terms matching query (substring, case-insensitive)."""
     q = _normalize(query)
     results = []
@@ -1072,7 +1070,7 @@ def search_term(query: str) -> List[Tuple[str, Tuple[str, str, str, str, str]]]:
     return sorted(results, key=lambda x: (0 if _normalize(x[0]) == q else 1, x[0]))
 
 
-def format_entry(key: str, entry: Tuple[str, str, str, str, str]) -> str:
+def format_entry(key: str, entry: tuple[str, str, str, str, str]) -> str:
     full_name, category, description, normal_use, attack_relevance = entry
     cat_color = _C.get(category, "\033[97m")
     lines = [
@@ -1099,7 +1097,7 @@ def format_entry(key: str, entry: Tuple[str, str, str, str, str]) -> str:
     return "\n".join(lines)
 
 
-def format_compact_list(filter_category: Optional[str] = None) -> str:
+def format_compact_list(filter_category: str | None = None) -> str:
     """Return a compact table of all terms."""
     header = (
         f"{_BOLD}{'TERMO':<20} {'CATEGORIA':<12} NOME COMPLETO{_RST}\n"

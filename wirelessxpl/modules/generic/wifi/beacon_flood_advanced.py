@@ -18,7 +18,6 @@ Backends: scapy (native), mdk3, mdk4.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import random
@@ -122,7 +121,7 @@ class Exploit(Exploit):
         delay = 1.0 / self.speed if self.speed > 0 else 0.02
         ch = int(self.channel.split(",")[0]) if self.channel else 6
 
-        ssids: List[str] = []
+        ssids: list[str] = []
         if self.mode == "ssid_list" and self.ssid_list_file:
             p = Path(self.ssid_list_file)
             if p.exists():

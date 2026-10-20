@@ -8,7 +8,6 @@ and likely brand/protocol family.
 
 Input: RTL-SDR raw IQ file or Flipper Zero .sub file.
 """
-from __future__ import annotations
 
 import logging
 import math
@@ -35,7 +34,7 @@ from wirelessxpl.protocols.subghz.sub_file_parser import parse as parse_sub
 logger = logging.getLogger(__name__)
 
 
-def _analyze_raw_data(raw_values: List[int]) -> Dict:
+def _analyze_raw_data(raw_values: list[int]) -> dict:
     """Analyze RAW_Data timing values to estimate OOK protocol parameters."""
     if not raw_values:
         return {"error": "empty data"}
@@ -90,7 +89,7 @@ def _analyze_raw_data(raw_values: List[int]) -> Dict:
     }
 
 
-def _analyze_iq_file(filepath: str, sample_rate: int = 250000) -> Dict:
+def _analyze_iq_file(filepath: str, sample_rate: int = 250000) -> dict:
     """Basic OOK detection from RTL-SDR IQ samples (8-bit signed, interleaved)."""
     path = Path(filepath)
     if not path.exists():

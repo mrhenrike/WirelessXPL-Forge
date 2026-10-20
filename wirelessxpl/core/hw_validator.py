@@ -29,7 +29,6 @@ Uso típico:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import importlib
 import logging
@@ -37,9 +36,9 @@ import platform
 import re
 import shutil
 import subprocess
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +147,7 @@ class CheckResult:
 class ValidationReport:
     """Relatório consolidado de validação de requisitos."""
 
-    results: List[CheckResult] = field(default_factory=list)
+    results: list[CheckResult] = field(default_factory=list)
 
     @property
     def all_satisfied(self) -> bool:
@@ -156,7 +155,7 @@ class ValidationReport:
         return all(r.satisfied for r in self.results)
 
     @property
-    def missing(self) -> List[CheckResult]:
+    def missing(self) -> list[CheckResult]:
         """Lista de requisitos não satisfeitos."""
         return [r for r in self.results if not r.satisfied]
 
@@ -179,7 +178,7 @@ class ValidationReport:
                 print(f"       Como instalar: {result.install_hint}")
 
 
-def _check_binary(name: str) -> Optional[str]:
+def _check_binary(name: str) -> str | None:
     return shutil.which(name)
 
 
@@ -191,7 +190,7 @@ def _check_python_lib(module_name: str) -> bool:
         return False
 
 
-def _run_silent(cmd: List[str]) -> Optional[str]:
+def _run_silent(cmd: list[str]) -> str | None:
     """Executa comando e retorna stdout, ou None em caso de erro."""
     try:
         result = subprocess.run(
@@ -202,7 +201,7 @@ def _run_silent(cmd: List[str]) -> Optional[str]:
         return None
 
 
-def _wifi_interfaces_linux() -> List[str]:
+def _wifi_interfaces_linux() -> list[str]:
     """Retorna lista de interfaces wireless no Linux."""
     out = _run_silent(["iw", "dev"])
     if not out:
@@ -219,7 +218,7 @@ def _wifi_has_monitor_linux(iface: str) -> bool:
     return out is not None and "monitor" in out.lower()
 
 
-def _bluetooth_adapters_linux() -> List[str]:
+def _bluetooth_adapters_linux() -> list[str]:
     """Retorna lista de adaptadores HCI no Linux."""
     out = _run_silent(["hciconfig"])
     if not out:
@@ -243,7 +242,7 @@ def _usb_devices() -> str:
 # Mapa de verificadores por requisito
 # ------------------------------------------------------------------ #
 
-def _make_checkers() -> Dict[Requirement, Callable[[], CheckResult]]:
+def _make_checkers() -> dict[Requirement, Callable[[], CheckResult]]:
     """Cria o dicionário de funções de verificação."""
 
     def wifi_adapter() -> CheckResult:
@@ -446,7 +445,7 @@ def _make_checkers() -> Dict[Requirement, Callable[[], CheckResult]]:
             return CheckResult(r, False, f"Python lib '{module}' não instalada.", hint or f"pip install {module}")
         return checker
 
-    checkers: Dict[Requirement, Callable[[], CheckResult]] = {
+    checkers: dict[Requirement, Callable[[], CheckResult]] = {
         Requirement.WIFI_ADAPTER: wifi_adapter,
         Requirement.WIFI_MONITOR_MODE: wifi_monitor,
         Requirement.PACKET_INJECTION: packet_injection,
@@ -556,10 +555,10 @@ def _make_checkers() -> Dict[Requirement, Callable[[], CheckResult]]:
     return checkers
 
 
-_CHECKERS: Optional[Dict[Requirement, Callable[[], CheckResult]]] = None
+_CHECKERS: dict[Requirement, Callable[[], CheckResult]] | None = None
 
 
-def _get_checkers() -> Dict[Requirement, Callable[[], CheckResult]]:
+def _get_checkers() -> dict[Requirement, Callable[[], CheckResult]]:
     global _CHECKERS
     if _CHECKERS is None:
         _CHECKERS = _make_checkers()
@@ -644,7 +643,7 @@ class HWValidator:
 
 
 # Instância global de conveniência
-_default_validator: Optional[HWValidator] = None
+_default_validator: HWValidator | None = None
 
 
 def get_validator() -> HWValidator:

@@ -27,7 +27,6 @@ Inspired by Fluxion's Handshake Snooper attack module.
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -56,7 +55,7 @@ _KEY_MIC    = 0x0100  # Bit 8 - Key MIC
 _KEY_SECURE = 0x0200  # Bit 9 - Secure
 
 
-def _classify_eapol_message(eapol_raw: bytes) -> Optional[str]:
+def _classify_eapol_message(eapol_raw: bytes) -> str | None:
     """Classify an EAPOL-Key frame as M1, M2, M3, or M4.
 
     Parses the Key Information field from raw EAPOL frame bytes and
@@ -156,7 +155,7 @@ class Exploit(Exploit):
             logger.debug("aircrack-ng verification error: %s", exc)
             return False
 
-    def _try_pmkid_first(self, output: Path) -> Optional[Path]:
+    def _try_pmkid_first(self, output: Path) -> Path | None:
         """Attempt PMKID-first capture before forcing deauth handshakes.
 
         Args:
@@ -265,8 +264,8 @@ class Exploit(Exploit):
             return False
 
         target_bssid_lower = str(self.target_bssid).lower() if self.target_bssid else ""
-        captured_packets: List = []
-        handshake_state: Dict[Tuple[str, str], Dict[str, bool]] = defaultdict(
+        captured_packets: list = []
+        handshake_state: dict[tuple[str, str], dict[str, bool]] = defaultdict(
             lambda: {"M1": False, "M2": False, "M3": False, "M4": False}
         )
         found_event = threading.Event()
@@ -328,7 +327,7 @@ class Exploit(Exploit):
             return True
         return len(captured_packets) >= 4
 
-    def _capture_eapol_airodump(self, cap_prefix: Path) -> Optional[Path]:
+    def _capture_eapol_airodump(self, cap_prefix: Path) -> Path | None:
         """Capture handshake using airodump-ng subprocess.
 
         Launches airodump-ng in the background, sends deauth bursts, and
@@ -373,7 +372,7 @@ class Exploit(Exploit):
 
         print_info(f"Waiting for handshake (max {self.capture_timeout}s)...")
         start = time.time()
-        cap_file: Optional[Path] = None
+        cap_file: Path | None = None
 
         while time.time() - start < int(self.capture_timeout):
             caps = list(cap_prefix.parent.glob(cap_prefix.name + "*-01.cap"))
@@ -472,13 +471,13 @@ class Exploit(Exploit):
 
         print_status(f"Starting handshake capture for {self.target_bssid}...")
 
-        cap_file: Optional[Path] = None
+        cap_file: Path | None = None
 
         if bool(self.use_airodump):
             cap_file = self._capture_eapol_airodump(cap_prefix)
         else:
             scapy_cap_file = output / f"handshake_{bssid_clean}.pcapng"
-            capture_result: Dict[str, object] = {"success": False, "done": False}
+            capture_result: dict[str, object] = {"success": False, "done": False}
 
             def _worker() -> None:
                 capture_result["success"] = self._capture_eapol_scapy(scapy_cap_file)

@@ -1,14 +1,14 @@
 # Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 """Fingerprinting de APs 802.11 com TF-IDF e similaridade de cosseno acelerada."""
 
-from __future__ import annotations
 
 import json
 import logging
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -31,7 +31,7 @@ def _sklearn_available() -> bool:
     return bool(_SKLEARN)
 
 
-DEFAULT_AP_CORPUS: List[Dict[str, str]] = [
+DEFAULT_AP_CORPUS: list[dict[str, str]] = [
     {
         "vendor": "Ubiquiti",
         "model": "UniFi AP",
@@ -82,7 +82,7 @@ DEFAULT_AP_CORPUS: List[Dict[str, str]] = [
 
 def _features_to_text(beacon_features: Mapping[str, Any]) -> str:
     """Converte dict de features de beacon/probe response em texto para TF-IDF."""
-    parts: List[str] = []
+    parts: list[str] = []
     for key in (
         "beacon_interval",
         "supported_rates",
@@ -113,7 +113,7 @@ def _features_to_text(beacon_features: Mapping[str, Any]) -> str:
 def _token_similarity_fallback(query: str, corpus: Sequence[str]) -> np.ndarray:
     """Cosine TF manual simplificado (bag-of-chars) se sklearn ausente."""
     def vec(s: str) -> np.ndarray:
-        counts: Dict[str, int] = {}
+        counts: dict[str, int] = {}
         for ch in re.findall(r"\w+", s):
             counts[ch] = counts.get(ch, 0) + 1
         return np.asarray(list(counts.values()), dtype=np.float32) if counts else np.zeros(1)
@@ -140,7 +140,7 @@ class APFingerprint:
     firmware_guess: str
     confidence: float
     matched_profile: str = ""
-    scores: Dict[str, float] = field(default_factory=dict)
+    scores: dict[str, float] = field(default_factory=dict)
 
 
 class APFingerprinter:
@@ -153,13 +153,13 @@ class APFingerprinter:
 
     def __init__(
         self,
-        known_aps: Optional[Sequence[Mapping[str, str]]] = None,
-        compute_backend: Optional[ComputeBackend] = None,
+        known_aps: Sequence[Mapping[str, str]] | None = None,
+        compute_backend: ComputeBackend | None = None,
     ) -> None:
-        self._corpus_rows: List[Dict[str, str]] = list(known_aps or DEFAULT_AP_CORPUS)
+        self._corpus_rows: list[dict[str, str]] = list(known_aps or DEFAULT_AP_CORPUS)
         self._vectorizer: Any = None
-        self._corpus_matrix: Optional[Any] = None
-        self._corpus_texts: List[str] = [r["profile"] for r in self._corpus_rows]
+        self._corpus_matrix: Any | None = None
+        self._corpus_texts: list[str] = [r["profile"] for r in self._corpus_rows]
         self._backend: ComputeBackend = compute_backend or auto_select_backend()
         self._fit_vectorizer()
 
@@ -199,7 +199,7 @@ class APFingerprinter:
             logger.debug("ComputeBackend cosine falhou, sklearn CPU: %s", exc)
             return cosine_similarity(q, self._corpus_matrix).astype(np.float32)
 
-    def fingerprint(self, beacon_features: Dict[str, Any]) -> APFingerprint:
+    def fingerprint(self, beacon_features: dict[str, Any]) -> APFingerprint:
         """Retorna o fabricante/modelo mais provável dado um dict de features.
 
         Args:
@@ -229,8 +229,8 @@ class APFingerprinter:
 
     def fingerprint_batch(
         self,
-        beacon_feature_list: Sequence[Dict[str, Any]],
-    ) -> List[APFingerprint]:
+        beacon_feature_list: Sequence[dict[str, Any]],
+    ) -> list[APFingerprint]:
         """Processa vários beacons; usa backend para matmul em lote quando útil."""
         if not beacon_feature_list:
             return []
@@ -246,7 +246,7 @@ class APFingerprinter:
             logger.debug("Batch cosine via backend falhou: %s", exc)
             sims = cosine_similarity(qm, cd)
 
-        out: List[APFingerprint] = []
+        out: list[APFingerprint] = []
         for row in np.asarray(sims, dtype=np.float32):
             idx = int(np.argmax(row))
             best = self._corpus_rows[idx]
@@ -264,7 +264,7 @@ class APFingerprinter:
             )
         return out
 
-    def train_from_captures(self, pcap_dir: str) -> Dict[str, Any]:
+    def train_from_captures(self, pcap_dir: str) -> dict[str, Any]:
         """Extrai texto aproximado de beacons em PCAPs para enriquecer o corpus.
 
         Requer ``scapy`` instalado. Não rotula automaticamente vendor/modelo;

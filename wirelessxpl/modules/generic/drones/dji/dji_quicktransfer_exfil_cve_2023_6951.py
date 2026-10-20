@@ -9,7 +9,6 @@ all photos and videos on the drone without any credentials.
 Affected: DJI Mavic 3 Series, Matrice 300 RTK, Mini 3 Pro, and others.
 CVSS: High -- unauthenticated access to drone media content.
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -50,7 +49,7 @@ def _try_connect_http(host: str, port: int = 80, timeout: int = 3) -> bool:
         s = socket.create_connection((host, port), timeout=timeout)
         s.close()
         return True
-    except (socket.timeout, ConnectionRefusedError, OSError):
+    except (TimeoutError, ConnectionRefusedError, OSError):
         return False
 
 

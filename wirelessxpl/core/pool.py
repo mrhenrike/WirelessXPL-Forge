@@ -9,12 +9,12 @@ generation) based on workload type.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
 import threading
 import time
+from collections.abc import Callable, Iterable
 from concurrent.futures import (
     Future,
     ProcessPoolExecutor,
@@ -22,7 +22,7 @@ from concurrent.futures import (
     as_completed,
 )
 from enum import Enum
-from typing import Any, Callable, Iterable, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -116,9 +116,9 @@ class SmartPool:
         fn: Callable,
         items: Iterable,
         timeout_per_item: float = 0,
-        on_result: Optional[Callable] = None,
-        on_error: Optional[Callable] = None,
-    ) -> List[Any]:
+        on_result: Callable | None = None,
+        on_error: Callable | None = None,
+    ) -> list[Any]:
         """Execute fn for each item, collecting results as they complete."""
         self._create_executor()
         items_list = list(items)

@@ -10,7 +10,6 @@ garage door and access control systems.
 Reference: Samy Kamkar's RollJam / OpenSesame research.
 HW_REQ: HackRF One OR Flipper Zero OR Bruce ESP32.
 """
-from __future__ import annotations
 
 import logging
 from pathlib import Path
@@ -55,13 +54,13 @@ _FREQUENCIES = {
 }
 
 
-def _debruijn(n: int) -> List[int]:
+def _debruijn(n: int) -> list[int]:
     """Generate De Bruijn sequence B(2, n) covering all n-bit words.
 
     Uses the Martin algorithm for binary De Bruijn sequences.
     Returns a list of bits (0/1) of length 2^n.
     """
-    sequence: List[int] = []
+    sequence: list[int] = []
     a = [0] * 2 * n
 
     def db(t: int, p: int) -> None:
@@ -79,7 +78,7 @@ def _debruijn(n: int) -> List[int]:
     return sequence
 
 
-def _sequence_to_codes(seq: List[int], n: int) -> List[int]:
+def _sequence_to_codes(seq: list[int], n: int) -> list[int]:
     """Extract all n-bit codes from the De Bruijn sequence window-sliding."""
     codes = []
     for i in range(len(seq)):
@@ -186,7 +185,7 @@ class Exploit(Exploit):
             )
 
         # Build unified RAW timing sequence
-        raw_values: List[int] = []
+        raw_values: list[int] = []
         for code in codes:
             timing = encoder.encode(code)
             for duration, level in timing:

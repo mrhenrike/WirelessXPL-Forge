@@ -1,6 +1,5 @@
 """Tests for wirelessxpl.core.wifi.wifi6e."""
 
-from __future__ import annotations
 
 from wirelessxpl.core.wifi.wifi6e import (
     Band,

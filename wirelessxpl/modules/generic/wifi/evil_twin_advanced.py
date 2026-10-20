@@ -24,7 +24,6 @@ Phishing template variants:
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import json
@@ -152,7 +151,7 @@ class Exploit(Exploit):
         "wifi_connect": "wifi_connect",
     }
 
-    def _resolve_template_dir(self) -> Optional[Path]:
+    def _resolve_template_dir(self) -> Path | None:
         """Resolve the phishing template directory."""
         if self.template == "custom":
             p = Path(self.custom_template_dir)
@@ -186,7 +185,7 @@ class Exploit(Exploit):
                 logger.warning("Command failed: %s — %s", " ".join(cmd), result.stderr.strip())
         return True
 
-    def _start_deauth(self) -> Optional[subprocess.Popen]:
+    def _start_deauth(self) -> subprocess.Popen | None:
         """Start concurrent deauth on real AP."""
         if not self.concurrent_deauth or not self.deauth_interface:
             return None

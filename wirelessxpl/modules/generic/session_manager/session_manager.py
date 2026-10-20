@@ -7,7 +7,6 @@ Backed by SQLite with JSON export per session.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -15,9 +14,10 @@ import sqlite3
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from pathlib import Path
-from typing import Any, Generator, Optional
+from typing import Any, Optional
+from collections.abc import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +34,12 @@ class AttackRecord:
     target_bssid: str
     outcome: str
     timestamp: str = ""
-    tool: Optional[str] = None
-    notes: Optional[str] = None
+    tool: str | None = None
+    notes: str | None = None
 
     def __post_init__(self) -> None:
         if not self.timestamp:
-            self.timestamp = datetime.now(timezone.utc).isoformat()
+            self.timestamp = datetime.now(UTC).isoformat()
 
 
 @dataclass
@@ -53,7 +53,7 @@ class SessionInfo:
     attack_count: int
     capture_count: int
     credential_count: int
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ class SessionManager:
 
     def __init__(
         self,
-        db_path: Optional[str | Path] = None,
+        db_path: str | Path | None = None,
         simulate: bool = True,
     ) -> None:
         self.simulate = simulate
@@ -105,7 +105,7 @@ class SessionManager:
             if not simulate:
                 self._db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        self._active_session_id: Optional[str] = None
+        self._active_session_id: str | None = None
 
         if not simulate:
             self._init_db()
@@ -190,7 +190,7 @@ class SessionManager:
     # Session CRUD
     # ------------------------------------------------------------------
 
-    def save_session(self, name: str, notes: Optional[str] = None) -> str:
+    def save_session(self, name: str, notes: str | None = None) -> str:
         """Create or touch a named session and make it active.
 
         Args:
@@ -206,7 +206,7 @@ class SessionManager:
             logger.info("[SessionManager] simulate save_session name=%s sid=%s", name, sid)
             return sid
 
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         with self._conn() as conn:
             existing = conn.execute(
                 "SELECT session_id FROM sessions WHERE name = ?", (name,)
@@ -229,7 +229,7 @@ class SessionManager:
         logger.info("[SessionManager] Session active: name=%s sid=%s", name, sid)
         return sid
 
-    def load_session(self, name: str) -> Optional[str]:
+    def load_session(self, name: str) -> str | None:
         """Load an existing session by name and make it active.
 
         Args:
@@ -335,9 +335,9 @@ class SessionManager:
         security: str = "",
         channel: int = 0,
         rssi: int = -100,
-        vendor: Optional[str] = None,
-        latitude: Optional[float] = None,
-        longitude: Optional[float] = None,
+        vendor: str | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
     ) -> None:
         """Add a discovered network to the active session.
 
@@ -362,11 +362,11 @@ class SessionManager:
                     vendor, latitude, longitude, timestamp)
                    VALUES (?,?,?,?,?,?,?,?,?,?)""",
                 (sid, ssid, bssid, security, channel, rssi,
-                 vendor, latitude, longitude, datetime.now(timezone.utc).isoformat()),
+                 vendor, latitude, longitude, datetime.now(UTC).isoformat()),
             )
             conn.execute(
                 "UPDATE sessions SET updated_at = ? WHERE session_id = ?",
-                (datetime.now(timezone.utc).isoformat(), sid),
+                (datetime.now(UTC).isoformat(), sid),
             )
 
     def add_attack(
@@ -375,8 +375,8 @@ class SessionManager:
         target_ssid: str,
         target_bssid: str,
         outcome: str,
-        tool: Optional[str] = None,
-        notes: Optional[str] = None,
+        tool: str | None = None,
+        notes: str | None = None,
     ) -> None:
         """Record an executed attack in the active session.
 
@@ -399,11 +399,11 @@ class SessionManager:
                     outcome, tool, notes, timestamp)
                    VALUES (?,?,?,?,?,?,?,?)""",
                 (sid, attack_type, target_ssid, target_bssid,
-                 outcome, tool, notes, datetime.now(timezone.utc).isoformat()),
+                 outcome, tool, notes, datetime.now(UTC).isoformat()),
             )
             conn.execute(
                 "UPDATE sessions SET updated_at = ? WHERE session_id = ?",
-                (datetime.now(timezone.utc).isoformat(), sid),
+                (datetime.now(UTC).isoformat(), sid),
             )
 
     def add_capture(
@@ -431,18 +431,18 @@ class SessionManager:
                    (session_id, ssid, bssid, filepath, capture_type, timestamp)
                    VALUES (?,?,?,?,?,?)""",
                 (sid, ssid, bssid, filepath, capture_type,
-                 datetime.now(timezone.utc).isoformat()),
+                 datetime.now(UTC).isoformat()),
             )
             conn.execute(
                 "UPDATE sessions SET updated_at = ? WHERE session_id = ?",
-                (datetime.now(timezone.utc).isoformat(), sid),
+                (datetime.now(UTC).isoformat(), sid),
             )
 
     def add_credential(
         self,
         ssid: str,
         password: str,
-        bssid: Optional[str] = None,
+        bssid: str | None = None,
         method: str = "handshake",
     ) -> None:
         """Record a recovered credential in the active session.
@@ -463,11 +463,11 @@ class SessionManager:
                    (session_id, ssid, password, bssid, method, timestamp)
                    VALUES (?,?,?,?,?,?)""",
                 (sid, ssid, password, bssid, method,
-                 datetime.now(timezone.utc).isoformat()),
+                 datetime.now(UTC).isoformat()),
             )
             conn.execute(
                 "UPDATE sessions SET updated_at = ? WHERE session_id = ?",
-                (datetime.now(timezone.utc).isoformat(), sid),
+                (datetime.now(UTC).isoformat(), sid),
             )
 
     # ------------------------------------------------------------------
@@ -517,7 +517,7 @@ class SessionManager:
             "session_id": sid,
             "name": name,
             "created_at": s["created_at"],
-            "exported_at": datetime.now(timezone.utc).isoformat(),
+            "exported_at": datetime.now(UTC).isoformat(),
             "notes": s["notes"],
             "networks": networks,
             "attacks": attacks,
@@ -535,7 +535,7 @@ class SessionManager:
     # Context protocol
     # ------------------------------------------------------------------
 
-    def __enter__(self) -> "SessionManager":
+    def __enter__(self) -> SessionManager:
         return self
 
     def __exit__(self, *_: Any) -> None:
@@ -546,6 +546,6 @@ class SessionManager:
     # ------------------------------------------------------------------
 
     @property
-    def active_session_id(self) -> Optional[str]:
+    def active_session_id(self) -> str | None:
         """Currently active session ID, or None if no session is loaded."""
         return self._active_session_id

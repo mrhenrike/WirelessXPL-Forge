@@ -14,7 +14,6 @@ Uses rtl_433 subprocess for demodulation.
 
 HW_REQ: RTL-SDR v3 + 315/433 MHz antenna (passive RX only).
 """
-from __future__ import annotations
 
 import json
 import logging
@@ -54,7 +53,7 @@ class TPMSReading:
     sensor_id: int
     pressure_kpa: float
     pressure_bar: float
-    temperature_celsius: Optional[float]
+    temperature_celsius: float | None
     battery_ok: bool
     protocol: str
     raw: dict
@@ -71,7 +70,7 @@ _TPMS_DECODER_IDS = [
 ]
 
 
-def _parse_rtl433_output(output: str) -> List[TPMSReading]:
+def _parse_rtl433_output(output: str) -> list[TPMSReading]:
     """Parse rtl_433 JSON output into TPMSReading objects."""
     readings = []
     for line in output.splitlines():

@@ -16,7 +16,6 @@ Incorporated from research in:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import random
@@ -80,7 +79,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Simular sem enviar pacotes")
     i_know_scope = OptBool(False, "Confirmo que estou em laboratório autorizado")
 
-    _stop_event: Optional[threading.Event] = None
+    _stop_event: threading.Event | None = None
 
 
     def check(self) -> str:

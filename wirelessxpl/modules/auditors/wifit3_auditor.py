@@ -48,12 +48,12 @@ class WiiFt3Auditor:
         "deauth":         "Deauthentication flood (disconnect clients)",
     }
 
-    def __init__(self, interface: str = "auto", wifit3_path: Optional[str] = None):
+    def __init__(self, interface: str = "auto", wifit3_path: str | None = None):
         self.interface = interface
         self.wifit3_path = wifit3_path or self._find_wifit3()
         self.is_available = self.wifit3_path is not None
 
-    def _find_wifit3(self) -> Optional[str]:
+    def _find_wifit3(self) -> str | None:
         """Find wifit3 installation."""
         # Check common locations
         candidates = [
@@ -74,7 +74,7 @@ class WiiFt3Auditor:
                 return main
         return None
 
-    def scan_networks(self, interface: Optional[str] = None) -> List[dict]:
+    def scan_networks(self, interface: str | None = None) -> list[dict]:
         """Scan for Wi-Fi networks using wifit3 or native tools."""
         iface = interface or self.interface
         networks = []
@@ -102,7 +102,7 @@ class WiiFt3Auditor:
 
         return networks
 
-    def _native_scan(self, interface: str) -> List[dict]:
+    def _native_scan(self, interface: str) -> list[dict]:
         """Native Wi-Fi scan without wifit3."""
         networks = []
         try:
@@ -164,7 +164,7 @@ class WiiFt3Auditor:
             print_warning("[wifit3] wifit3 not found — install from https://github.com/derv82/wifit3")
         return False
 
-    def pmkid_attack(self, bssid: str, interface: str = "auto") -> Optional[str]:
+    def pmkid_attack(self, bssid: str, interface: str = "auto") -> str | None:
         """PMKID attack: capture without requiring clients."""
         iface = interface if interface != "auto" else self.interface
         print_status(f"[wifit3] PMKID attack against {bssid} (no client needed) ...")

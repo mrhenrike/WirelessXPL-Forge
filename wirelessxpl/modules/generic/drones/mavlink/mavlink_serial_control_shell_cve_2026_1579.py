@@ -24,7 +24,6 @@ References:
   - https://docs.px4.io/main/en/mavlink/security_hardening
   - https://mavlink.io/en/messages/common.html#SERIAL_CONTROL
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -143,7 +142,7 @@ def _build_serial_control(
     return frame
 
 
-def _parse_serial_control_response(data: bytes) -> Optional[str]:
+def _parse_serial_control_response(data: bytes) -> str | None:
     """Extract text data from a received SERIAL_CONTROL frame."""
     if len(data) < 8 or data[0] != 0xFE:
         return None
@@ -270,7 +269,7 @@ class Exploit(Exploit):
                     text = _parse_serial_control_response(data)
                     if text:
                         responses.append(text)
-                except socket.timeout:
+                except TimeoutError:
                     break
                 except Exception:
                     break

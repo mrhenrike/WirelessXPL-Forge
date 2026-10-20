@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 # Version: 1.0.0
-from __future__ import annotations
 
 import logging
 import os
@@ -71,7 +70,7 @@ class Exploit(Exploit):
         """
         return Path(__file__).resolve().parents[5] / "third-party-router-poc"
 
-    def _find_binary(self, subdir: str, names: tuple) -> Optional[Path]:
+    def _find_binary(self, subdir: str, names: tuple) -> Path | None:
         """Localiza o primeiro binário existente sob ``subdir``.
 
         Args:
@@ -94,7 +93,7 @@ class Exploit(Exploit):
                     return p
         return None
 
-    def _find_aescrypt2(self) -> Optional[Path]:
+    def _find_aescrypt2(self) -> Path | None:
         """Localiza binário AESCrypt2 compilado."""
         root = self._poc_root() / "AESCrypt2"
         for rel in (
@@ -110,7 +109,7 @@ class Exploit(Exploit):
                 return p
         return self._find_binary("AESCrypt2", ("aescrypt2", "aescrypt2.exe"))
 
-    def _find_hw_passwd(self) -> Optional[Path]:
+    def _find_hw_passwd(self) -> Path | None:
         """Localiza ``hw_passwd`` do HuaweiPasswordTool."""
         root = self._poc_root() / "HuaweiPasswordTool"
         for rel in (
@@ -126,12 +125,12 @@ class Exploit(Exploit):
                 return p
         return self._find_binary("HuaweiPasswordTool", ("hw_passwd", "hw_passwd.exe"))
 
-    def _hwfw_script(self) -> Optional[Path]:
+    def _hwfw_script(self) -> Path | None:
         """Retorna ``hwfw.py`` do hwfw-tool."""
         p = self._poc_root() / "hwfw-tool" / "hwfw.py"
         return p if p.is_file() else None
 
-    def _hwfw_python(self) -> List[str]:
+    def _hwfw_python(self) -> list[str]:
         """Monta prefixo de interpretador preferindo Python 2 (hwfw usa ``xrange``)."""
         py2 = shutil.which("python2")
         if py2:
@@ -152,7 +151,7 @@ class Exploit(Exploit):
             raise ValueError("Arquivo muito curto para remover cabeçalho de 8 bytes.")
         return data[8:]
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Monta linha de comando conforme ``mode``.
 
         Returns:

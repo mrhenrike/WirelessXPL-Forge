@@ -1,7 +1,5 @@
 """BLE device wrapper around bleak BLEDevice + AdvertisementData."""
-from __future__ import annotations
 
-from typing import Optional
 
 from wirelessxpl.core.exploit.printer import (
     color_blue,
@@ -21,7 +19,7 @@ class Device:
         self._dev = ble_device
         self._adv = adv_data
         self.addr: str = ble_device.address
-        self.name: Optional[str] = ble_device.name or (adv_data.local_name if adv_data else None)
+        self.name: str | None = ble_device.name or (adv_data.local_name if adv_data else None)
         self.rssi: int = adv_data.rssi if adv_data else -100
         self.connectable: bool = bool(adv_data and adv_data.tx_power is not None) or True
         self.vendor: str = (
