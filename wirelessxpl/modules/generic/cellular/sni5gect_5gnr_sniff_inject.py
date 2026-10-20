@@ -148,6 +148,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E Sni5Gect: sniff 5G NR PDSCH/PUSCH downlink traffic and
+        inject crafted RRC/NAS messages into the air interface using
+        SDR hardware (USRP B210)."""
         mode = str(self.mode).strip().lower()
         simulate = bool(self.simulate)
 

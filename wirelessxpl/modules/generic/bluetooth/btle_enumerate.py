@@ -46,3 +46,35 @@ class Exploit(BTLEClient):
 
             device.print_info()
             device.print_services()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: enumerate BLE services via raw L2CAP ATT requests."""
+        import socket
+        import struct as _struct
+
+        target_mac = str(self.target).strip()
+        if not target_mac:
+            print_warning("Sem MAC alvo: skip enumeração raw")
+            return
+
+        try:
+            sock = socket.socket(31, socket.SOCK_SEQPACKET, 0)
+            sock.settimeout(5.0)
+            addr_bytes = bytes(int(b, 16) for b in target_mac.split(":"))
+            sock.connect((addr_bytes, 0, 4))
+        except OSError as exc:
+            print_error(f"Falha na conexão L2CAP ATT: {exc}")
+            return
+
+        att_read_by_group = _struct.pack("<BHH", 0x10, 0x0001, 0xFFFF) + b"\x00\x28"
+        try:
+            sock.send(att_read_by_group)
+            resp = sock.recv(512)
+            if resp:
+                print_success(f"ATT Read By Group Type response: {len(resp)} bytes")
+                print_info(f"Raw: {resp.hex()}")
+        except OSError:
+            print_warning("Timeout na resposta ATT")
+        finally:
+            sock.close()

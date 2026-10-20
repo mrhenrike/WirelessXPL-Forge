@@ -564,6 +564,12 @@ class Exploit(Exploit):
             )
             return
         require_authorised_lab()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E GSM frequency scan: use kal/grgsm-scanner to enumerate
+        GSM base stations, parse ARFCN results, and export cell data."""
+        op = str(self.mode).strip().lower()
 
         if op == "kal_scan":
             self._kal_scan()
@@ -582,6 +588,6 @@ class Exploit(Exploit):
 
         else:
             print_error(
-                f"Unknown mode: {op}. Valid: info, kal_scan, grgsm_scan, band_info, "
+                f"Unknown mode: {op}. Valid: kal_scan, grgsm_scan, "
                 "parse_results, export, monitor_cell"
             )

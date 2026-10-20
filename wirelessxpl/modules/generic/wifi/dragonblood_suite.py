@@ -1255,6 +1255,12 @@ class Exploit(Exploit):
             return
         require_authorised_lab()
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: dispatch chosen Dragonblood WPA3 attack variant."""
+        op = str(self.mode).strip().lower()
         dispatch = {
             "timing": self._run_timing,
             "force": self._run_force,

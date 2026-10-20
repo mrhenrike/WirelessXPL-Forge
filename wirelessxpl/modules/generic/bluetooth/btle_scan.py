@@ -48,3 +48,44 @@ class Exploit(BTLEClient):
 
             if self.enum:
                 device.print_services()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: active BLE scan via raw HCI commands."""
+        import socket
+        import struct as _struct
+
+        try:
+            sock = socket.socket(31, socket.SOCK_RAW, 1)
+            sock.settimeout(5.0)
+            sock.bind((0,))
+        except OSError as exc:
+            print_error(f"Falha ao abrir HCI socket: {exc}")
+            return
+
+        le_set_scan_params = _struct.pack("<BHBBHBB", 0x01, 0x200B, 7, 0x01, 0x0010, 0x0010, 0x00, 0x00)
+        sock.send(le_set_scan_params)
+
+        le_set_scan_enable = _struct.pack("<BHBBB", 0x01, 0x200C, 2, 0x01, 0x00)
+        sock.send(le_set_scan_enable)
+
+        print_status("BLE scan ativo via HCI por 10s...")
+        deadline = time.time() + 10
+        devices_found = set()
+        while time.time() < deadline:
+            try:
+                data = sock.recv(256)
+                if len(data) > 12 and data[0] == 0x04 and data[1] == 0x3E:
+                    addr = data[7:13]
+                    mac = ":".join(f"{b:02X}" for b in reversed(addr))
+                    if mac not in devices_found:
+                        devices_found.add(mac)
+                        rssi = _struct.unpack("b", data[-1:])[0]
+                        print_info(f"  BLE device: {mac} (RSSI: {rssi} dBm)")
+            except OSError:
+                break
+
+        le_scan_disable = _struct.pack("<BHBBB", 0x01, 0x200C, 2, 0x00, 0x00)
+        sock.send(le_scan_disable)
+        sock.close()
+        print_success(f"Scan completo: {len(devices_found)} dispositivos BLE encontrados")

