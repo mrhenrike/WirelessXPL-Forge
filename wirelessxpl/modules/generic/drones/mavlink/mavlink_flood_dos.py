@@ -112,6 +112,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E MAVLink heartbeat flood: open UDP socket, send crafted
+        MAVLink v2 HEARTBEAT frames at the configured rate until the
+        duration expires or the target autopilot enters failsafe."""
         simulate = bool(self.simulate)
         target_ip = str(self.target).strip()
         target_port = int(self.port)

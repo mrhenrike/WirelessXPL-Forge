@@ -144,6 +144,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: KRACK 4-way key reinstallation via Msg3 retransmit."""
         simulate = bool(self.simulate)
         iface = str(self.interface).strip()
         bssid = str(self.ap_bssid).strip()

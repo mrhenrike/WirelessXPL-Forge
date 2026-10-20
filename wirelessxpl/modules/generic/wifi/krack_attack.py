@@ -518,6 +518,11 @@ class Exploit(Exploit):
             print_error("Root privileges required for active attacks.")
             return
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: dispatch chosen KRACK attack variant."""
         modes = {
             "monitor": self._passive_monitor,
             "msg3_replay": self._msg3_replay,

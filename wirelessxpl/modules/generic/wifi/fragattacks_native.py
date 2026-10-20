@@ -473,6 +473,11 @@ class Exploit(Exploit):
                 "frame crafting fallback for non-HE dongles."
             )
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: dispatch chosen FragAttack variant."""
         attacks = {
             "cache_poison": self._cache_poison_attack,
             "mixed_key": self._mixed_key_attack,

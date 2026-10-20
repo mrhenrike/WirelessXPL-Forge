@@ -150,6 +150,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: inject plaintext A-MSDU frame into WPA2 session."""
         simulate = bool(self.simulate)
         iface = str(self.interface).strip()
         victim = str(self.victim_mac).strip()

