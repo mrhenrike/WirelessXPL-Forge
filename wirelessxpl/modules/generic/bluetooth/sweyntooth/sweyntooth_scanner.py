@@ -182,6 +182,13 @@ class Exploit(Exploit):
             print_error("bleak not installed: pip install bleak")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: multi-CVE SweynTooth scan + active test."""
+        target_addr = str(self.target).strip()
+        suffixes = [s.strip() for s in str(self.scan_cves).split(",")]
+
         # Step 1: Fingerprint
         print_status(f"\nFingerprinting {target_addr}...")
         try:

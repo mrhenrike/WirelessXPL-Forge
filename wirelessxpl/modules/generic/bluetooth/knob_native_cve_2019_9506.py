@@ -1,4 +1,4 @@
-# Absorvido do EmbedXPL-Forge — Andre Henrique (@mrhenrike)
+# Absorvido do EmbedXPL-Forge : Andre Henrique (@mrhenrike)
 # Adaptado para WirelessXPL-Forge
 
 import struct
@@ -46,7 +46,7 @@ def _parse_bd_addr(addr_str):
 
 @requires_os(OSRequirement.LINUX_ONLY)
 class Exploit(Exploit):
-    """CVE-2019-9506 KNOB — Bluetooth Encryption Key Entropy Downgrade.
+    """CVE-2019-9506 KNOB : Bluetooth Encryption Key Entropy Downgrade.
 
     Explora a negociação de tamanho de chave de criptografia não autenticada
     no protocolo LMP (Link Manager Protocol) Bluetooth BR/EDR. Um atacante
@@ -58,7 +58,7 @@ class Exploit(Exploit):
     """
 
     __info__ = {
-        "name": "KNOB Attack — BT BR/EDR Encryption Key Entropy Downgrade (CVE-2019-9506)",
+        "name": "KNOB Attack : BT BR/EDR Encryption Key Entropy Downgrade (CVE-2019-9506)",
         "description": (
             "Explora negociação de tamanho de chave não autenticada no LMP Bluetooth "
             "BR/EDR. Atacante MitM intercepta LMP_encryption_key_size_req e modifica "
@@ -111,7 +111,7 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Gera sequência de ataque KNOB e análise de força bruta."""
-        print_status("KNOB Attack (CVE-2019-9506) — entropy downgrade BT BR/EDR")
+        print_status("KNOB Attack (CVE-2019-9506) : entropy downgrade BT BR/EDR")
         print_info(f"Alvo: {self.target} | Interface: {self.interface}")
         print_info(f"Key size alvo: {self.target_key_size} byte(s)")
 

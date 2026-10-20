@@ -162,7 +162,12 @@ class Exploit(Exploit):
         """Scan for drone WiFi access points."""
         print_status("Drone WiFi Scanner")
         print_status("Passive WiFi scan -- no injection")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E drone recon: passive WiFi scan via nmcli/netsh, fingerprint
+        SSIDs against known drone vendor patterns (DJI, Parrot, Autel,
+        Skydio, Hubsan, etc.) and report detected drones with signal."""
         import platform
         iface = str(self.interface).strip()
         show_all = bool(self.show_all)

