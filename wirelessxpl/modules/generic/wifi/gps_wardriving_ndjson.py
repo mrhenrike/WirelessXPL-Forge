@@ -123,7 +123,7 @@ class Exploit(Exploit):
                     emitted += 1
                     if emitted >= int(self.max_lines):
                         break
-            print_status("Emitted {} points.".format(emitted))
+            print_status(f"Emitted {emitted} points.")
         finally:
             if out_f:
                 out_f.close()

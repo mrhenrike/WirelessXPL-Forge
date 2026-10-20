@@ -46,7 +46,7 @@ def format_wps_pin(pin7: str) -> str:
         raise ValueError("base PIN inválido")
     body = int(pin7, 10)
     check = _wps_checksum_digit_int(body)
-    return "{}{}".format(pin7, check)
+    return f"{pin7}{check}"
 
 
 def wps_pin_checksum(pin7: str) -> str:
@@ -70,7 +70,7 @@ def algo_compute_pin(bssid: str) -> Optional[str]:
         return None
     nic = (b[3] << 16) | (b[4] << 8) | b[5]
     pin_int = nic % 10000000
-    pin7 = "{:07d}".format(pin_int)
+    pin7 = f"{pin_int:07d}"
     try:
         return format_wps_pin(pin7)
     except ValueError:
@@ -85,7 +85,7 @@ def algo_easybox(bssid: str) -> Optional[str]:
         return None
     mix = ((b[3] ^ b[4]) << 8) | b[5]
     pin_int = mix % 10000000
-    pin7 = "{:07d}".format(pin_int)
+    pin7 = f"{pin_int:07d}"
     return format_wps_pin(pin7)
 
 
@@ -98,7 +98,7 @@ def algo_arcadyan(bssid: str) -> Optional[str]:
     x = (b[0] + b[1] + b[2]) & 0xFF
     nic = ((b[3] ^ x) << 16) | ((b[4] ^ x) << 8) | (b[5] ^ x)
     pin_int = nic % 10000000
-    pin7 = "{:07d}".format(pin_int)
+    pin7 = f"{pin_int:07d}"
     return format_wps_pin(pin7)
 
 
@@ -107,7 +107,7 @@ def algo_hash_fallback(bssid: str, salt: str = "wirelessxpl") -> str:
     raw = (re.sub(r"[^0-9a-fA-F]", "", bssid) + salt).encode("utf-8")
     h = hashlib.sha256(raw).hexdigest()
     pin_int = int(h[:8], 16) % 10000000
-    pin7 = "{:07d}".format(pin_int)
+    pin7 = f"{pin_int:07d}"
     return format_wps_pin(pin7)
 
 

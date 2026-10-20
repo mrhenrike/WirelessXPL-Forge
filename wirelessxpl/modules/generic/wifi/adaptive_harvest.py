@@ -86,7 +86,7 @@ class Exploit(Exploit):
 
         for i in range(1, int(self.rounds) + 1):
             channel = random.choice(chan_pool)
-            prefix = str(out / "adaptive_round_{:02d}".format(i))
+            prefix = str(out / f"adaptive_round_{i:02d}")
             cmd: List[str] = [
                 "sudo",
                 "airodump-ng",
@@ -98,7 +98,7 @@ class Exploit(Exploit):
                 "--output-format",
                 "pcap,csv",
             ]
-            print_status("Adaptive round {}/{} on channel {}".format(i, self.rounds, channel))
+            print_status(f"Adaptive round {i}/{self.rounds} on channel {channel}")
             print_info("Command: {}".format(" ".join(cmd)))
 
             if self.dry_run:

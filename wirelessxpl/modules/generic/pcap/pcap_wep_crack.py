@@ -78,7 +78,7 @@ class Exploit(Exploit):
         if not aircrack:
             print_status("")
             print_error("aircrack-ng not found in PATH. Install with: sudo apt install aircrack-ng")
-            print_info("Manual: aircrack-ng -b <BSSID> {}".format(self.pcap_file))
+            print_info(f"Manual: aircrack-ng -b <BSSID> {self.pcap_file}")
             return
 
         best = max(wep_data.values(), key=lambda a: a.iv_count)
@@ -87,12 +87,12 @@ class Exploit(Exploit):
 
         if not best.crackable_ptw and not best.crackable_fms:
             print_status("")
-            print_error("Insufficient IVs for crack attempt ({} unique). "
-                        "Need ~20k+ for PTW or ~60k+ for FMS.".format(best.unique_ivs))
+            print_error(f"Insufficient IVs for crack attempt ({best.unique_ivs} unique). "
+                        "Need ~20k+ for PTW or ~60k+ for FMS.")
             return
 
         print_status("")
-        print_status("Attempting WEP key recovery on {} ({})...".format(best.bssid, best.ssid))
+        print_status(f"Attempting WEP key recovery on {best.bssid} ({best.ssid})...")
 
         cmd = [aircrack, "-b", best.bssid, self.pcap_file]
         try:
@@ -109,7 +109,7 @@ class Exploit(Exploit):
         except subprocess.TimeoutExpired:
             print_error("aircrack-ng timed out after 300s.")
         except Exception as exc:
-            print_error("aircrack-ng failed: {}".format(exc))
+            print_error(f"aircrack-ng failed: {exc}")
 
     @mute
     def check(self):

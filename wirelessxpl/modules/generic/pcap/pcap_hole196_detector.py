@@ -149,7 +149,7 @@ class Exploit(Exploit):
             print_error("No packets loaded from capture.")
             return
 
-        print_status("Analyzing {} packets for Hole196 indicators...".format(len(packets)))
+        print_status(f"Analyzing {len(packets)} packets for Hole196 indicators...")
 
         known_bssids = _extract_known_bssids(packets)
         anomalies: List[_AnomalyRecord] = []
@@ -181,16 +181,14 @@ class Exploit(Exploit):
                 if _is_multicast(sa) and da not in BROADCAST_MACS and not _is_multicast(da):
                     anomalies.append(_AnomalyRecord(
                         idx, "group_unicast_mismatch",
-                        "Frame #{}: group SA {} -> unicast DA {} (BSSID {})".format(
-                            idx, sa, da, bssid
-                        ),
+                        f"Frame #{idx}: group SA {sa} -> unicast DA {da} (BSSID {bssid})",
                     ))
 
                 # Anomaly 2: transmitter (addr2) does not match known BSSIDs
                 if known_bssids and bssid not in known_bssids:
                     anomalies.append(_AnomalyRecord(
                         idx, "tx_bssid_mismatch",
-                        "Frame #{}: transmitter {} not in known BSSIDs".format(idx, bssid),
+                        f"Frame #{idx}: transmitter {bssid} not in known BSSIDs",
                     ))
 
             # To-DS frames (client to AP): addr1=BSSID, addr2=SA, addr3=DA
@@ -207,9 +205,7 @@ class Exploit(Exploit):
                     if arp_src_mac != sa:
                         anomalies.append(_AnomalyRecord(
                             idx, "arp_unexpected_source",
-                            "Frame #{}: ARP hwsrc {} != 802.11 SA {} (possible GTK spoof)".format(
-                                idx, arp_src_mac, sa
-                            ),
+                            f"Frame #{idx}: ARP hwsrc {arp_src_mac} != 802.11 SA {sa} (possible GTK spoof)",
                         ))
 
             # WDS / IBSS (both to_ds and from_ds): check for suspicious broadcasts
@@ -217,9 +213,7 @@ class Exploit(Exploit):
                 if addr3 in BROADCAST_MACS:
                     anomalies.append(_AnomalyRecord(
                         idx, "suspicious_broadcast",
-                        "Frame #{}: WDS/4-addr broadcast from {} via {}".format(
-                            idx, addr2, addr1
-                        ),
+                        f"Frame #{idx}: WDS/4-addr broadcast from {addr2} via {addr1}",
                     ))
 
         # Report
@@ -233,25 +227,23 @@ class Exploit(Exploit):
         for a in anomalies:
             type_counts[a.anomaly_type] += 1
 
-        print_success("Detected {} anomaly/anomalies across {} category/categories.".format(
-            len(anomalies), len(type_counts)
-        ))
+        print_success(f"Detected {len(anomalies)} anomaly/anomalies across {len(type_counts)} category/categories.")
         print_status("")
 
         print_status("Anomaly Summary:")
         for atype, count in sorted(type_counts.items()):
-            print_info("  {}: {} occurrence(s)".format(atype, count))
+            print_info(f"  {atype}: {count} occurrence(s)")
         print_status("")
 
         print_status("Suspicious Frame Details (first 20):")
         for a in anomalies[:20]:
-            print_info("  [{}] {}".format(a.anomaly_type, a.detail))
+            print_info(f"  [{a.anomaly_type}] {a.detail}")
 
         if len(anomalies) > 20:
-            print_info("  ... and {} more anomalies.".format(len(anomalies) - 20))
+            print_info(f"  ... and {len(anomalies) - 20} more anomalies.")
 
         print_status("")
-        print_info("Attack Indicator Score: {}".format(risk))
+        print_info(f"Attack Indicator Score: {risk}")
         print_status("")
 
         print_status("--- Hole196 Context ---")

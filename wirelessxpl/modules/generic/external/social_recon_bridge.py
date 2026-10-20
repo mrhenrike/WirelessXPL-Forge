@@ -101,7 +101,7 @@ class Exploit(Exploit):
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as err:
-            print_error("profile_data não é JSON válido: {}".format(err))
+            print_error(f"profile_data não é JSON válido: {err}")
             return {}
         if not isinstance(data, dict):
             print_error("profile_data deve ser um objeto JSON (dicionário).")
@@ -126,12 +126,12 @@ class Exploit(Exploit):
         if not path.startswith("/"):
             path = "/" + path
         qs = urllib.parse.urlencode({"q": q})
-        url = "https://{}{}?{}".format(host, path, qs)
+        url = f"https://{host}{path}?{qs}"
 
         if self.dry_run:
-            print_info("DRY RUN — GET {}".format(url))
+            print_info(f"DRY RUN — GET {url}")
             print_info("Header: X-RapidAPI-Key: <redacted>")
-            print_info("Header: X-RapidAPI-Host: {}".format(host))
+            print_info(f"Header: X-RapidAPI-Host: {host}")
             return
 
         req = urllib.request.Request(
@@ -147,15 +147,15 @@ class Exploit(Exploit):
             with urllib.request.urlopen(req, timeout=60) as resp:
                 body = resp.read()
         except urllib.error.HTTPError as err:
-            print_error("HTTP {} — {}".format(err.code, err.reason))
+            print_error(f"HTTP {err.code} — {err.reason}")
             return
         except urllib.error.URLError as err:
-            print_error("Falha de rede: {}".format(err.reason))
+            print_error(f"Falha de rede: {err.reason}")
             return
 
         dest = out / "social_search_response.json"
         dest.write_bytes(body)
-        print_success("Resposta social salva em {}".format(dest))
+        print_success(f"Resposta social salva em {dest}")
 
     def _find_cewler_argv(self, outfile: Path) -> Optional[List[str]]:
         """Monta argv para cewler, ``python -m cewler`` ou ``cewl`` (fallback)."""
@@ -187,17 +187,17 @@ class Exploit(Exploit):
             return
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
-        print_status("cewler: {}".format(cmd_str))
+        print_status(f"cewler: {cmd_str}")
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=600, check=False)
             if r.returncode != 0:
-                print_error("cewler exit {}".format(r.returncode))
+                print_error(f"cewler exit {r.returncode}")
                 if r.stderr:
                     logger.debug("cewler stderr: %s", r.stderr[:2000])
             else:
-                print_success("Palavras salvas em {}".format(outfile))
+                print_success(f"Palavras salvas em {outfile}")
         except FileNotFoundError:
             print_error("cewler não encontrado. Instale com pip ou use CLI no PATH.")
         except subprocess.TimeoutExpired:
@@ -211,7 +211,7 @@ class Exploit(Exploit):
             profile.setdefault("target_name", name)
         dest = out / "cupp_profile.json"
         dest.write_text(json.dumps(profile, indent=2, ensure_ascii=False), encoding="utf-8")
-        print_status("Perfil unificado: {}".format(dest))
+        print_status(f"Perfil unificado: {dest}")
         return dest
 
     def _find_cupp(self) -> Optional[str]:
@@ -328,7 +328,7 @@ class Exploit(Exploit):
                 check=False,
             )
             if r.returncode != 0:
-                print_error("cupp exit {} — confira cupp.cfg e caminho de saída do cupp.".format(r.returncode))
+                print_error(f"cupp exit {r.returncode} — confira cupp.cfg e caminho de saída do cupp.")
                 if r.stderr:
                     logger.debug("cupp stderr: %s", r.stderr[:2000])
             else:
@@ -367,7 +367,7 @@ class Exploit(Exploit):
             return
 
         out = self._resolve_output_dir()
-        print_status("Diretório de saída: {}".format(out))
+        print_status(f"Diretório de saída: {out}")
 
         if mode == "social_search":
             self._run_social_search(out)
@@ -379,4 +379,4 @@ class Exploit(Exploit):
             self._run_social_search(out)
             self._run_web_crawl(out)
             self._run_cupp(out)
-            print_success("full_recon concluído (ver arquivos em {}).".format(out))
+            print_success(f"full_recon concluído (ver arquivos em {out}).")

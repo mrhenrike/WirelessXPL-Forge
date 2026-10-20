@@ -189,7 +189,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_status("Interrupted by user.")
 
-        print_success("Completed {} burst cycle(s).".format(burst_counter))
+        print_success(f"Completed {burst_counter} burst cycle(s).")
 
     def _one_burst_aireplay(self, aireplay_bin: str, stream_id: int, burst_idx: int) -> None:
         """Send one burst of deauth frames via aireplay-ng subprocess.
@@ -289,7 +289,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_status("Interrupted by user.")
 
-        print_success("Completed {} burst cycle(s).".format(burst_counter))
+        print_success(f"Completed {burst_counter} burst cycle(s).")
 
     def check(self) -> str:
         """Verify wireless interface is in monitor mode and ready."""
@@ -300,11 +300,11 @@ class Exploit(Exploit):
                     ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if "Monitor" in out:
-                    return "Interface {} is in Monitor mode - prerequisites OK".format(iface)
+                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
                 if "no wireless extensions" not in out.lower():
                     return (
-                        "Interface {} found but NOT in Monitor mode"
-                        " - run airmon-ng start {}".format(iface, iface)
+                        f"Interface {iface} found but NOT in Monitor mode"
+                        f" - run airmon-ng start {iface}"
                     )
             except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
                 pass
@@ -314,12 +314,12 @@ class Exploit(Exploit):
                     ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if str(iface) in out:
-                    return "Interface {} detected via iw - verify monitor mode".format(iface)
+                    return f"Interface {iface} detected via iw - verify monitor mode"
             except Exception:
                 pass
         return (
-            "Interface {} not found"
-            " - connect wireless adapter and enable monitor mode".format(iface)
+            f"Interface {iface} not found"
+            " - connect wireless adapter and enable monitor mode"
         )
 
     def run(self) -> None:
@@ -339,5 +339,5 @@ class Exploit(Exploit):
             self._run_aireplay_barrage()
         else:
             print_error(
-                "Unknown mode '{}'. Use: native | aireplay".format(selected_mode)
+                f"Unknown mode '{selected_mode}'. Use: native | aireplay"
             )

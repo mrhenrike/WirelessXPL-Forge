@@ -178,7 +178,7 @@ class _NmeaBackend:
             pass
 
     def _read_file(self) -> None:
-        with suppress(Exception), open(self._source, "r", errors="ignore") as fh:
+        with suppress(Exception), open(self._source, errors="ignore") as fh:
             for line in fh:
                 if not self._running:
                     break

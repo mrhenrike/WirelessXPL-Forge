@@ -210,7 +210,7 @@ class Exploit(Exploit):
         ssid_file = str(self.ssid_list).strip()
         ssids = []
         if ssid_file and os.path.isfile(ssid_file):
-            with open(ssid_file, "r", errors="replace") as f:
+            with open(ssid_file, errors="replace") as f:
                 ssids = [line.strip() for line in f if line.strip()]
         if not ssids:
             ssids = self._DEFAULT_SSIDS
@@ -226,9 +226,9 @@ class Exploit(Exploit):
 
         for cycle in range(cycles):
             for ssid in ssids:
-                fake_mac = "02:%02x:%02x:%02x:%02x:%02x" % tuple(
+                fake_mac = "02:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(*tuple(
                     random.randint(0, 255) for _ in range(5)
-                )
+                ))
                 beacon = (
                     RadioTap() /
                     Dot11(type=0, subtype=8, addr1="ff:ff:ff:ff:ff:ff",

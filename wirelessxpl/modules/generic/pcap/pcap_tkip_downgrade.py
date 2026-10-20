@@ -58,10 +58,10 @@ class Exploit(Exploit):
         for info in tkip_results:
             print_status("Network: {} ({})".format(info.bssid, info.ssid or "<hidden>"))
             if info.client_mac:
-                print_info("  Client observed: {}".format(info.client_mac))
-            print_info("  QoS data packets: {}".format(info.qos_data_packets))
-            print_info("  TKIP fragments:   {}".format(info.tkip_fragments))
-            print_info("  MIC failures:     {}".format(info.mic_failures_detected))
+                print_info(f"  Client observed: {info.client_mac}")
+            print_info(f"  QoS data packets: {info.qos_data_packets}")
+            print_info(f"  TKIP fragments:   {info.tkip_fragments}")
+            print_info(f"  MIC failures:     {info.mic_failures_detected}")
             print_status("")
 
             # Beck-Tews
@@ -71,8 +71,7 @@ class Exploit(Exploit):
                 print_info("    Can decrypt ~1 ARP packet and inject 7 custom packets.")
                 print_info("    Time required: ~12-15 minutes with active injection.")
             else:
-                print_info("  [INFO] Beck-Tews: needs QoS data frames (found {})".format(
-                    info.qos_data_packets))
+                print_info(f"  [INFO] Beck-Tews: needs QoS data frames (found {info.qos_data_packets})")
 
             # ChopChop
             if info.chopchop_candidate:
@@ -89,8 +88,7 @@ class Exploit(Exploit):
 
             # MIC failures
             if info.mic_failures_detected > 0:
-                print_success("  [ALERT] {} MIC failure deauth(s) detected".format(
-                    info.mic_failures_detected))
+                print_success(f"  [ALERT] {info.mic_failures_detected} MIC failure deauth(s) detected")
                 print_info("    TKIP countermeasures may be active — AP rekeys after 2 failures.")
                 if info.mic_failures_detected >= 2:
                     print_info("    Network likely experienced TKIP countermeasure lockout (60s).")

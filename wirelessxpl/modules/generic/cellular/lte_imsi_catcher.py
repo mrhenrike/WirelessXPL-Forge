@@ -104,8 +104,7 @@ def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
         ]
         result = subprocess.run(
             cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             timeout=60,
         )
         output = result.stdout.decode("utf-8", errors="replace")
@@ -151,8 +150,7 @@ def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
         ]
         result_req = subprocess.run(
             cmd_req,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             timeout=30,
         )
         req_output = result_req.stdout.decode("utf-8", errors="replace")
@@ -160,7 +158,7 @@ def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
         if req_count > 0:
             results.append({
                 "type": "INFO",
-                "value": "{} Identity Request(s) found in PCAP".format(req_count),
+                "value": f"{req_count} Identity Request(s) found in PCAP",
                 "frame": "",
                 "time": "",
             })
@@ -214,9 +212,7 @@ def _detect_anomalies(cells: List[Dict[str, Any]]) -> List[str]:
         if len(entries) > 1:
             earfcns = [e.get("earfcn", 0) for e in entries]
             anomalies.append(
-                "PCI {} seen on multiple EARFCNs: {} (possible PCI conflict)".format(
-                    pci, earfcns
-                )
+                f"PCI {pci} seen on multiple EARFCNs: {earfcns} (possible PCI conflict)"
             )
 
     if cells:
@@ -299,9 +295,9 @@ class Exploit(Exploit):
     def _run_cmd(self, cmd: List[str], label: str = "", timeout: int = 120) -> Optional[str]:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return None
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd,
@@ -314,15 +310,15 @@ class Exploit(Exploit):
             print_status("Command timed out (expected for long captures).")
             return None
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
             return None
 
     def _start_background(self, cmd: List[str], label: str) -> Optional[subprocess.Popen]:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return None
-        print_status("Starting {}: {}".format(label, cmd_str))
+        print_status(f"Starting {label}: {cmd_str}")
         try:
             return subprocess.Popen(
                 cmd,
@@ -330,13 +326,13 @@ class Exploit(Exploit):
                 stderr=subprocess.STDOUT,
             )
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
             return None
 
     def _stop_background(self, proc: Optional[subprocess.Popen], label: str) -> None:
         if proc is None:
             return
-        print_status("Stopping {}...".format(label))
+        print_status(f"Stopping {label}...")
         try:
             proc.send_signal(signal.SIGTERM)
             proc.wait(timeout=10)
@@ -381,17 +377,15 @@ class Exploit(Exploit):
         print_info("Tool availability:")
         for tool in ("srsenb", "srsue", "tshark", "nr-gnb", "nr-ue"):
             p = _which(tool)
-            status = "[+] {}".format(tool) if p else "[-] {}: not found".format(tool)
-            (print_success if p else print_error)("  {}".format(status))
+            status = f"[+] {tool}" if p else f"[-] {tool}: not found"
+            (print_success if p else print_error)(f"  {status}")
 
     def _passive_analyze(self) -> None:
         srsue = self._resolve_bin("srsue", str(self.srsran_path).strip())
 
         earfcn = int(self.earfcn)
         print_status(
-            "Passive LTE analysis on EARFCN {} (RX gain {})...".format(
-                earfcn, int(self.rx_gain)
-            )
+            f"Passive LTE analysis on EARFCN {earfcn} (RX gain {int(self.rx_gain)})..."
         )
 
         cmd = [srsue, "--rf.dl_earfcn", str(earfcn)]
@@ -402,7 +396,7 @@ class Exploit(Exploit):
             for line in output.splitlines():
                 line = line.strip()
                 if any(kw in line.lower() for kw in ("mib", "sib", "cell", "pci", "earfcn")):
-                    print_info("  {}".format(line))
+                    print_info(f"  {line}")
 
     def _active_enb(self) -> None:
         srsenb = self._resolve_bin("srsenb", str(self.srsran_path).strip())
@@ -424,7 +418,7 @@ class Exploit(Exploit):
         pcap_path = os.path.join(outdir, "enb_capture.pcap")
         conf_content = conf_content.replace(
             "filename = /tmp/enb_capture.pcap",
-            "filename = {}".format(pcap_path),
+            f"filename = {pcap_path}",
         )
         conf_content = conf_content.replace(
             "s1ap_filename = /tmp/enb_s1ap.pcap",
@@ -438,22 +432,20 @@ class Exploit(Exploit):
         if not bool(self.dry_run):
             with open(conf_path, "w", encoding="utf-8") as f:
                 f.write(conf_content)
-            print_status("Generated eNodeB config: {}".format(conf_path))
+            print_status(f"Generated eNodeB config: {conf_path}")
         else:
-            print_info("[dry-run] Would generate config at {}".format(conf_path))
+            print_info(f"[dry-run] Would generate config at {conf_path}")
 
         print_status(
             "Starting srsENB with Identity Request enabled "
-            "(EARFCN {}, BW {} MHz, {} PRB)...".format(
-                int(self.earfcn), bw, n_prb
-            )
+            f"(EARFCN {int(self.earfcn)}, BW {bw} MHz, {n_prb} PRB)..."
         )
 
         cmd = [srsenb, conf_path]
         proc = self._start_background(cmd, "srsENB")
         if proc is not None:
             print_status("eNodeB running. UEs attaching will receive Identity Request.")
-            print_info("PCAP output: {}".format(pcap_path))
+            print_info(f"PCAP output: {pcap_path}")
             print_info("Press Ctrl+C to stop.")
             try:
                 proc.wait()
@@ -468,7 +460,7 @@ class Exploit(Exploit):
             default_pcap = os.path.join(self._outdir(), "enb_capture.pcap")
             if os.path.isfile(default_pcap):
                 pcap = default_pcap
-                print_status("Using default PCAP: {}".format(pcap))
+                print_status(f"Using default PCAP: {pcap}")
             else:
                 print_error(
                     "Set pcap_file to an LTE PCAP path, or run active_enb first."
@@ -476,10 +468,10 @@ class Exploit(Exploit):
                 return
 
         if not os.path.isfile(pcap):
-            print_error("PCAP file not found: {}".format(pcap))
+            print_error(f"PCAP file not found: {pcap}")
             return
 
-        print_status("Parsing NAS Identity messages from {}...".format(pcap))
+        print_status(f"Parsing NAS Identity messages from {pcap}...")
 
         identities = _parse_nas_identities_tshark(pcap)
         if not identities:
@@ -497,9 +489,7 @@ class Exploit(Exploit):
 
         if id_entries:
             print_success(
-                "Extracted {} identity/identities from NAS messages:".format(
-                    len(id_entries)
-                )
+                f"Extracted {len(id_entries)} identity/identities from NAS messages:"
             )
             for entry in id_entries:
                 print_info(
@@ -512,13 +502,13 @@ class Exploit(Exploit):
             outfile = os.path.join(self._outdir(), "lte_identities.json")
             with open(outfile, "w", encoding="utf-8") as f:
                 json.dump(id_entries, f, indent=2, ensure_ascii=False)
-            print_status("Saved to {}".format(outfile))
+            print_status(f"Saved to {outfile}")
 
     def _cell_search(self) -> List[Dict[str, Any]]:
         srsue = self._resolve_bin("srsue", str(self.srsran_path).strip())
 
         earfcn = int(self.earfcn)
-        print_status("LTE cell search on EARFCN {}...".format(earfcn))
+        print_status(f"LTE cell search on EARFCN {earfcn}...")
 
         cmd = [
             srsue,
@@ -532,7 +522,7 @@ class Exploit(Exploit):
 
         cells = _parse_cell_search_output(output)
         if cells:
-            print_success("Found {} cell(s):".format(len(cells)))
+            print_success(f"Found {len(cells)} cell(s):")
             for c in cells:
                 parts = ["PCI {}".format(c["pci"])]
                 if "earfcn" in c:
@@ -546,9 +536,9 @@ class Exploit(Exploit):
             outfile = os.path.join(self._outdir(), "lte_cells.json")
             with open(outfile, "w", encoding="utf-8") as f:
                 json.dump(cells, f, indent=2, ensure_ascii=False)
-            print_status("Cell data saved to {}".format(outfile))
+            print_status(f"Cell data saved to {outfile}")
         else:
-            print_status("No LTE cells found on EARFCN {}.".format(earfcn))
+            print_status(f"No LTE cells found on EARFCN {earfcn}.")
 
         return cells
 
@@ -563,17 +553,13 @@ class Exploit(Exploit):
 
         if anomalies:
             print_error(
-                "Detected {} anomaly/anomalies (possible fake BTS indicators):".format(
-                    len(anomalies)
-                )
+                f"Detected {len(anomalies)} anomaly/anomalies (possible fake BTS indicators):"
             )
             for a in anomalies:
-                print_info("  [!] {}".format(a))
+                print_info(f"  [!] {a}")
         else:
             print_success(
-                "No obvious fake BTS anomalies detected among {} cell(s).".format(
-                    len(cells)
-                )
+                f"No obvious fake BTS anomalies detected among {len(cells)} cell(s)."
             )
 
         print_info("")
@@ -607,16 +593,16 @@ class Exploit(Exploit):
         print_info("")
         print_info("Steps for manual simulation:")
         print_info("  1. Configure open5gs or free5GC as 5G core")
-        print_info("  2. Start gNB: {} -c gnb.yaml".format(nr_gnb))
-        print_info("  3. Start UE:  {} -c ue.yaml".format(nr_ue))
+        print_info(f"  2. Start gNB: {nr_gnb} -c gnb.yaml")
+        print_info(f"  3. Start UE:  {nr_ue} -c ue.yaml")
         print_info("  4. Monitor NAS messages for Identity Request/Response")
         print_info("")
         print_info("Available binaries:")
         for tool in ("nr-gnb", "nr-ue"):
             p = self._resolve_bin(tool, base)
             found = _which(tool) or (base and os.path.isfile(os.path.join(base, tool)))
-            status = "[+] {}".format(p) if found else "[-] {}: not found".format(tool)
-            (print_success if found else print_error)("  {}".format(status))
+            status = f"[+] {p}" if found else f"[-] {tool}: not found"
+            (print_success if found else print_error)(f"  {status}")
 
 
     def check(self) -> str:
@@ -664,6 +650,6 @@ class Exploit(Exploit):
 
         else:
             print_error(
-                "Unknown mode: {}. Valid: info, passive_analyze, active_enb, "
-                "parse_pcap, cell_search, detect_fake_bts, ueransim_sim".format(op)
+                f"Unknown mode: {op}. Valid: info, passive_analyze, active_enb, "
+                "parse_pcap, cell_search, detect_fake_bts, ueransim_sim"
             )

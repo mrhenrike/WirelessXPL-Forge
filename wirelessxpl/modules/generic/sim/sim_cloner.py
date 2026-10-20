@@ -273,7 +273,7 @@ class Exploit(Exploit):
             print_error("ADM PIN required for target programmable SIM. Set adm_pin.")
             return
 
-        with open(data_path, "r", encoding="utf-8") as fh:
+        with open(data_path, encoding="utf-8") as fh:
             sim_data = json.load(fh)
 
         print_status(f"Writing SIM data to target on reader {reader_idx}...")
@@ -365,7 +365,7 @@ class Exploit(Exploit):
             print_error("Set data_file to the source JSON export for comparison.")
             return
 
-        with open(data_path, "r", encoding="utf-8") as fh:
+        with open(data_path, encoding="utf-8") as fh:
             source_data = json.load(fh)
 
         print_status(f"Reading target SIM on reader {reader_idx} for verification...")
@@ -423,7 +423,7 @@ class Exploit(Exploit):
             print_error(f"{_PYSIM_PROG} not found in PATH.")
             return
 
-        with open(csv_path, "r", encoding="utf-8", newline="") as fh:
+        with open(csv_path, encoding="utf-8", newline="") as fh:
             reader = csv.DictReader(fh)
 
             required = {"ICCID", "IMSI", "KI", "OPC", "ADM"}

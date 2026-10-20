@@ -87,25 +87,25 @@ class Exploit(Exploit):
             "  Slave Auth bypass (sa/)  — impersonar slave via role switch + bypass auth"
         )
         print_info("Requisitos: firmware BT patched (InternalBlue/Nexus5/BCM4339), MITM posição.")
-        print_info("Submodule BIAS: {}".format(_bias_root()))
+        print_info(f"Submodule BIAS: {_bias_root()}")
         print_info("Referência: https://francozappa.github.io/about-bias/")
 
     def _run_poc(self, subdir: str) -> None:
         root = _bias_root()
         if not root.exists():
-            print_error("Submodule bias-attack não encontrado: {}".format(root))
+            print_error(f"Submodule bias-attack não encontrado: {root}")
             print_info("Execute: git submodule update --init submodules/IoT/bias-attack")
             return
 
         poc_dir = root / subdir
         if not poc_dir.exists():
-            print_error("Subdiretório não encontrado: {}".format(poc_dir))
+            print_error(f"Subdiretório não encontrado: {poc_dir}")
             return
 
         # Find main PoC script
         candidates = list(poc_dir.glob("*.py"))
         if not candidates:
-            print_error("Nenhum script .py encontrado em {}.".format(poc_dir))
+            print_error(f"Nenhum script .py encontrado em {poc_dir}.")
             return
         poc = candidates[0]
 
@@ -121,17 +121,17 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
         print_status("BIAS {} PoC: alvo={}".format(subdir.upper(), victim or "não definido"))
-        print_info("Comando: {}".format(cmd_str))
+        print_info(f"Comando: {cmd_str}")
         try:
             subprocess.run(cmd, cwd=str(poc_dir), check=False)
         except KeyboardInterrupt:
             print_info("\nInterrompido.")
         except Exception as exc:
-            print_error("Erro ao executar BIAS PoC: {}".format(exc))
+            print_error(f"Erro ao executar BIAS PoC: {exc}")
 
 
     def check(self) -> str:

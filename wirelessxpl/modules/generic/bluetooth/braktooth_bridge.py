@@ -99,19 +99,19 @@ class Exploit(Exploit):
             "Hardware necessário: ESP32 DevKit ou dispositivo BT customizado com "
             "firmware BrAcketooth (ESP-IDF)"
         )
-        print_info("Submodule path: {}".format(root))
+        print_info(f"Submodule path: {root}")
         print_info("Disponível: {}".format("SIM" if root.exists() and any(root.iterdir()) else "NÃO / vazio"))
         print_info("\nUse mode=list para ver ataques disponíveis.")
 
     def _list_mode(self) -> None:
         print_status("Ataques BrAcketooth disponíveis:")
         for name, desc in _ATTACK_MAP.items():
-            print_info("  {:35} {}".format(name, desc))
+            print_info(f"  {name:35} {desc}")
 
     def _run_attack(self, attack_name: str) -> None:
         root = _braktooth_root()
         if not root.exists() or not any(root.iterdir()):
-            print_error("Submodule braktooth não encontrado ou vazio: {}".format(root))
+            print_error(f"Submodule braktooth não encontrado ou vazio: {root}")
             print_info("Execute: git submodule update --init submodules/IoT/braktooth")
             return
 
@@ -135,8 +135,8 @@ class Exploit(Exploit):
 
         if not runner and not bin_path:
             print_error(
-                "Runner ou binário BrAcketooth não encontrado em {}.\n"
-                "Compile o projeto ESP-IDF conforme instruções do submodule.".format(root)
+                f"Runner ou binário BrAcketooth não encontrado em {root}.\n"
+                "Compile o projeto ESP-IDF conforme instruções do submodule."
             )
             return
 
@@ -154,19 +154,17 @@ class Exploit(Exploit):
 
             cmd_str = " ".join(cmd)
             if self.dry_run:
-                print_info("DRY RUN [{}/{}] — {}".format(i + 1, int(self.attack_repeat), cmd_str))
+                print_info(f"DRY RUN [{i + 1}/{int(self.attack_repeat)}] — {cmd_str}")
                 continue
 
-            print_status("[{}/{}] BrAcketooth {}: alvo={}".format(
-                i + 1, int(self.attack_repeat), attack_name, victim
-            ))
+            print_status(f"[{i + 1}/{int(self.attack_repeat)}] BrAcketooth {attack_name}: alvo={victim}")
             try:
                 subprocess.run(cmd, cwd=str(root), check=False)
             except KeyboardInterrupt:
                 print_info("\nInterrompido.")
                 return
             except Exception as exc:
-                print_error("Erro ao executar {}: {}".format(attack_name, exc))
+                print_error(f"Erro ao executar {attack_name}: {exc}")
                 return
 
 

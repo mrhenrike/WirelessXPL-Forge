@@ -84,7 +84,7 @@ class Exploit(Exploit):
         """Lista de canais usados quando ``channel == 0``."""
         b = str(self.band).strip().lower()
         if b not in _BANDS:
-            print_error("band inválido '{}'. Use: 2g | 5g | both.".format(b))
+            print_error(f"band inválido '{b}'. Use: 2g | 5g | both.")
             return list(_CHANNELS_2G)
         if b == "2g":
             return list(_CHANNELS_2G)
@@ -95,7 +95,7 @@ class Exploit(Exploit):
     def _iw_set_channel(self, iface: str, ch: int) -> None:
         """Define canal na interface via ``iw`` (Linux)."""
         if self.dry_run:
-            print_info("DRY RUN — iw dev {} set channel {}".format(iface, ch))
+            print_info(f"DRY RUN — iw dev {iface} set channel {ch}")
             return
         try:
             subprocess.run(
@@ -213,7 +213,7 @@ class Exploit(Exploit):
             ]
 
         if self.dry_run:
-            print_info("DRY RUN — Scapy deauth: {} frame(s) ap={} sta={}".format(len(pkts), ap, sta))
+            print_info(f"DRY RUN — Scapy deauth: {len(pkts)} frame(s) ap={ap} sta={sta}")
             return len(pkts)
 
         n = 0
@@ -254,7 +254,7 @@ class Exploit(Exploit):
             ]
 
         if self.dry_run:
-            print_info("DRY RUN — Scapy disassoc: {} frame(s)".format(len(pkts)))
+            print_info(f"DRY RUN — Scapy disassoc: {len(pkts)} frame(s)")
             return len(pkts)
 
         n = 0
@@ -287,7 +287,7 @@ class Exploit(Exploit):
         )
 
         if self.dry_run:
-            print_info("DRY RUN — CSA beacon ap={} -> ch {}".format(ap, new_ch))
+            print_info(f"DRY RUN — CSA beacon ap={ap} -> ch {new_ch}")
             return 1
 
         sendp(pkt, iface=iface, count=1, verbose=False)
@@ -372,7 +372,7 @@ class Exploit(Exploit):
             ("disassoc", lambda i, ch: self._do_scapy_loop(i, ch, self._send_scapy_disassoc_round)),
         )
         for label, fn in order:
-            print_status("--- all: {} ---".format(label))
+            print_status(f"--- all: {label} ---")
             fn(iface, channels)
 
 
@@ -437,4 +437,4 @@ class Exploit(Exploit):
         elif m == "all":
             self._do_all(iface, channels)
 
-        print_success("Técnica '{}' concluída ou interrompida.".format(m))
+        print_success(f"Técnica '{m}' concluída ou interrompida.")

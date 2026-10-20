@@ -84,12 +84,12 @@ MIN_SAFE_ATTEMPTS = 3
 
 def _hex(data: List[int]) -> str:
     """Format byte list as hex string."""
-    return "".join("{:02X}".format(b) for b in data)
+    return "".join(f"{b:02X}" for b in data)
 
 
 def _hex_spaced(data: List[int]) -> str:
     """Format byte list as hex string with spaces."""
-    return " ".join("{:02X}".format(b) for b in data)
+    return " ".join(f"{b:02X}" for b in data)
 
 
 def _parse_hex_pin(hex_str: str) -> Optional[List[int]]:
@@ -164,7 +164,7 @@ class Exploit(Exploit):
             os.makedirs(out, exist_ok=True)
             return out
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida: {}".format(exc))
+            print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
     def _get_connection(self) -> Optional[Any]:
@@ -174,7 +174,7 @@ class Exploit(Exploit):
         try:
             available = list_readers()
         except Exception as exc:
-            print_error("Falha ao listar leitores PC/SC: {}".format(exc))
+            print_error(f"Falha ao listar leitores PC/SC: {exc}")
             return None
 
         if not available:
@@ -184,20 +184,20 @@ class Exploit(Exploit):
         idx = int(self.reader_index)
         if idx < 0 or idx >= len(available):
             print_error(
-                "Indice {} invalido. Leitores: {}".format(idx, len(available))
+                f"Indice {idx} invalido. Leitores: {len(available)}"
             )
             for i, r in enumerate(available):
-                print_info("  [{}] {}".format(i, r))
+                print_info(f"  [{i}] {r}")
             return None
 
         reader = available[idx]
-        print_status("Conectando ao leitor: {}".format(reader))
+        print_status(f"Conectando ao leitor: {reader}")
         try:
             conn = reader.createConnection()
             conn.connect()
             return conn
         except Exception as exc:
-            print_error("Falha na conexao: {}".format(exc))
+            print_error(f"Falha na conexao: {exc}")
             return None
 
     def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
@@ -210,7 +210,7 @@ class Exploit(Exploit):
         try:
             _, sw1, sw2 = self._send_apdu(conn, apdu)
         except Exception as exc:
-            print_error("Falha ao verificar contador de tentativas: {}".format(exc))
+            print_error(f"Falha ao verificar contador de tentativas: {exc}")
             return -1
 
         if sw1 == 0x63 and (sw2 & 0xF0) == 0xC0:
@@ -224,7 +224,7 @@ class Exploit(Exploit):
             return 0
 
         print_info(
-            "Resposta inesperada ao verificar contador: SW={:02X}{:02X}".format(sw1, sw2)
+            f"Resposta inesperada ao verificar contador: SW={sw1:02X}{sw2:02X}"
         )
         return -1
 
@@ -236,7 +236,7 @@ class Exploit(Exploit):
         try:
             _, sw1, sw2 = self._send_apdu(conn, apdu)
         except Exception as exc:
-            print_error("Erro na transmissao APDU: {}".format(exc))
+            print_error(f"Erro na transmissao APDU: {exc}")
             return False, 0x6F, 0x00
         return (sw1, sw2) == SW_OK, sw1, sw2
 
@@ -257,16 +257,16 @@ class Exploit(Exploit):
             )
             return None
 
-        print_info("Tentativas ADM restantes: {}".format(remaining))
+        print_info(f"Tentativas ADM restantes: {remaining}")
         if remaining < MIN_SAFE_ATTEMPTS:
             print_error(
-                "ATENCAO CRITICA: apenas {} tentativas restantes. "
+                f"ATENCAO CRITICA: apenas {remaining} tentativas restantes. "
                 "Cada erro reduz o contador. Prosseguir pode bloquear "
-                "permanentemente o ADM.".format(remaining)
+                "permanentemente o ADM."
             )
         elif remaining < 5:
             print_status(
-                "AVISO: {} tentativas restantes. Prossiga com cautela.".format(remaining)
+                f"AVISO: {remaining} tentativas restantes. Prossiga com cautela."
             )
         return remaining
 
@@ -278,7 +278,7 @@ class Exploit(Exploit):
         try:
             return open(log_path, "w", encoding="utf-8")
         except OSError as exc:
-            print_error("Falha ao abrir log: {}".format(exc))
+            print_error(f"Falha ao abrir log: {exc}")
             return None
 
     # ------------------------------------------------------------------
@@ -314,7 +314,7 @@ class Exploit(Exploit):
         print_info("")
         print_info("Defaults conhecidos de fabricantes:")
         for label, pin_bytes in COMMON_ADM_PINS:
-            print_info("  {} : {}".format(_hex(pin_bytes), label))
+            print_info(f"  {_hex(pin_bytes)} : {label}")
         print_info("")
         print_info("Modos:")
         print_info("  check_remaining  - Ler contador de tentativas")
@@ -339,10 +339,10 @@ class Exploit(Exploit):
             print_error("ADM PIN BLOQUEADO: 0 tentativas restantes.")
         elif remaining < MIN_SAFE_ATTEMPTS:
             print_error(
-                "ATENCAO: {} tentativas restantes. Risco alto de bloqueio.".format(remaining)
+                f"ATENCAO: {remaining} tentativas restantes. Risco alto de bloqueio."
             )
         else:
-            print_success("Tentativas ADM restantes: {}".format(remaining))
+            print_success(f"Tentativas ADM restantes: {remaining}")
 
     # ------------------------------------------------------------------
     # Mode: verify_single
@@ -358,22 +358,22 @@ class Exploit(Exploit):
         if pin_bytes is None:
             print_error(
                 "pin_start deve conter exatamente 16 caracteres hex (8 bytes). "
-                "Valor atual: '{}'".format(pin_hex)
+                f"Valor atual: '{pin_hex}'"
             )
             return
 
-        print_status("Testando ADM PIN: {}".format(_hex(pin_bytes)))
+        print_status(f"Testando ADM PIN: {_hex(pin_bytes)}")
         success, sw1, sw2 = self._verify_adm(conn, pin_bytes)
 
         if success:
-            print_success("ADM PIN CORRETO: {}".format(_hex(pin_bytes)))
+            print_success(f"ADM PIN CORRETO: {_hex(pin_bytes)}")
         else:
             print_error(
-                "ADM PIN incorreto. SW={:02X}{:02X}".format(sw1, sw2)
+                f"ADM PIN incorreto. SW={sw1:02X}{sw2:02X}"
             )
             new_remaining = self._check_retry_counter(conn)
             if new_remaining >= 0:
-                print_info("Tentativas restantes: {}".format(new_remaining))
+                print_info(f"Tentativas restantes: {new_remaining}")
 
     # ------------------------------------------------------------------
     # Mode: brute_common
@@ -386,17 +386,17 @@ class Exploit(Exploit):
 
         if remaining < len(COMMON_ADM_PINS):
             print_error(
-                "Apenas {} tentativas restantes, mas {} PINs comuns para testar. "
-                "Risco de bloqueio.".format(remaining, len(COMMON_ADM_PINS))
+                f"Apenas {remaining} tentativas restantes, mas {len(COMMON_ADM_PINS)} PINs comuns para testar. "
+                "Risco de bloqueio."
             )
             if remaining < MIN_SAFE_ATTEMPTS:
-                print_error("Abortando por seguranca (< {} tentativas).".format(MIN_SAFE_ATTEMPTS))
+                print_error(f"Abortando por seguranca (< {MIN_SAFE_ATTEMPTS} tentativas).")
                 return
 
         delay_sec = max(int(self.delay_ms), 0) / 1000.0
         log_fh = self._open_log("adm_brute_common.log")
 
-        print_status("Testando {} PINs comuns de fabricantes...".format(len(COMMON_ADM_PINS)))
+        print_status(f"Testando {len(COMMON_ADM_PINS)} PINs comuns de fabricantes...")
         tested = 0
 
         for label, pin_bytes in COMMON_ADM_PINS:
@@ -406,15 +406,13 @@ class Exploit(Exploit):
                 break
             if current_remaining is not None and current_remaining < MIN_SAFE_ATTEMPTS:
                 print_error(
-                    "Apenas {} tentativas restantes. Abortando por seguranca.".format(
-                        current_remaining,
-                    )
+                    f"Apenas {current_remaining} tentativas restantes. Abortando por seguranca."
                 )
                 break
 
             tested += 1
             pin_str = _hex(pin_bytes)
-            print_info("[{}/{}] Testando: {} ({})".format(tested, len(COMMON_ADM_PINS), pin_str, label))
+            print_info(f"[{tested}/{len(COMMON_ADM_PINS)}] Testando: {pin_str} ({label})")
 
             success, sw1, sw2 = self._verify_adm(conn, pin_bytes)
 
@@ -426,9 +424,9 @@ class Exploit(Exploit):
                 )
 
             if success:
-                print_success("ADM PIN ENCONTRADO: {} ({})".format(pin_str, label))
+                print_success(f"ADM PIN ENCONTRADO: {pin_str} ({label})")
                 if log_fh:
-                    log_fh.write("FOUND: {} ({})\n".format(pin_str, label))
+                    log_fh.write(f"FOUND: {pin_str} ({label})\n")
                     log_fh.close()
                 return
 
@@ -439,9 +437,9 @@ class Exploit(Exploit):
             log_fh.close()
 
         final = self._check_retry_counter(conn)
-        print_info("Nenhum PIN comum funcionou. {} testados.".format(tested))
+        print_info(f"Nenhum PIN comum funcionou. {tested} testados.")
         if final is not None and final >= 0:
-            print_info("Tentativas restantes: {}".format(final))
+            print_info(f"Tentativas restantes: {final}")
 
     # ------------------------------------------------------------------
     # Mode: brute_wordlist
@@ -458,14 +456,14 @@ class Exploit(Exploit):
             return
 
         if not os.path.isfile(wl_path):
-            print_error("Arquivo nao encontrado: {}".format(wl_path))
+            print_error(f"Arquivo nao encontrado: {wl_path}")
             return
 
         try:
-            with open(wl_path, "r", encoding="utf-8") as fh:
+            with open(wl_path, encoding="utf-8") as fh:
                 lines = fh.readlines()
         except OSError as exc:
-            print_error("Falha ao ler wordlist: {}".format(exc))
+            print_error(f"Falha ao ler wordlist: {exc}")
             return
 
         pins: List[Tuple[str, List[int]]] = []
@@ -475,7 +473,7 @@ class Exploit(Exploit):
                 continue
             pin_bytes = _parse_hex_pin(line)
             if pin_bytes is None:
-                print_info("Linha {} ignorada (formato invalido): {}".format(line_num, line))
+                print_info(f"Linha {line_num} ignorada (formato invalido): {line}")
                 continue
             pins.append((line, pin_bytes))
 
@@ -485,8 +483,8 @@ class Exploit(Exploit):
 
         if remaining < len(pins):
             print_error(
-                "Apenas {} tentativas restantes para {} PINs na wordlist. "
-                "Risco de bloqueio.".format(remaining, len(pins))
+                f"Apenas {remaining} tentativas restantes para {len(pins)} PINs na wordlist. "
+                "Risco de bloqueio."
             )
             if remaining < MIN_SAFE_ATTEMPTS:
                 print_error("Abortando por seguranca.")
@@ -495,7 +493,7 @@ class Exploit(Exploit):
         delay_sec = max(int(self.delay_ms), 0) / 1000.0
         log_fh = self._open_log("adm_brute_wordlist.log")
 
-        print_status("Testando {} PINs da wordlist...".format(len(pins)))
+        print_status(f"Testando {len(pins)} PINs da wordlist...")
         tested = 0
 
         for pin_str, pin_bytes in pins:
@@ -505,14 +503,12 @@ class Exploit(Exploit):
                 break
             if current_remaining is not None and current_remaining < MIN_SAFE_ATTEMPTS:
                 print_error(
-                    "Apenas {} tentativas restantes. Abortando por seguranca.".format(
-                        current_remaining,
-                    )
+                    f"Apenas {current_remaining} tentativas restantes. Abortando por seguranca."
                 )
                 break
 
             tested += 1
-            print_info("[{}/{}] Testando: {}".format(tested, len(pins), _hex(pin_bytes)))
+            print_info(f"[{tested}/{len(pins)}] Testando: {_hex(pin_bytes)}")
 
             success, sw1, sw2 = self._verify_adm(conn, pin_bytes)
 
@@ -524,9 +520,9 @@ class Exploit(Exploit):
                 )
 
             if success:
-                print_success("ADM PIN ENCONTRADO: {}".format(_hex(pin_bytes)))
+                print_success(f"ADM PIN ENCONTRADO: {_hex(pin_bytes)}")
                 if log_fh:
-                    log_fh.write("FOUND: {}\n".format(_hex(pin_bytes)))
+                    log_fh.write(f"FOUND: {_hex(pin_bytes)}\n")
                     log_fh.close()
                 return
 
@@ -537,9 +533,9 @@ class Exploit(Exploit):
             log_fh.close()
 
         final = self._check_retry_counter(conn)
-        print_info("Nenhum PIN da wordlist funcionou. {} testados.".format(tested))
+        print_info(f"Nenhum PIN da wordlist funcionou. {tested} testados.")
         if final is not None and final >= 0:
-            print_info("Tentativas restantes: {}".format(final))
+            print_info(f"Tentativas restantes: {final}")
 
     # ------------------------------------------------------------------
     # Mode: brute_sequential
@@ -570,23 +566,19 @@ class Exploit(Exploit):
 
         total_range = end_val - start_val + 1
         print_status(
-            "Forca bruta sequencial: {} ate {} ({} combinacoes)".format(
-                start_hex.upper(), end_hex.upper(), total_range,
-            )
+            f"Forca bruta sequencial: {start_hex.upper()} ate {end_hex.upper()} ({total_range} combinacoes)"
         )
 
         if total_range > remaining:
             print_error(
-                "Range ({}) excede tentativas restantes ({}). "
-                "Isso BLOQUEARA o ADM.".format(total_range, remaining)
+                f"Range ({total_range}) excede tentativas restantes ({remaining}). "
+                "Isso BLOQUEARA o ADM."
             )
             if remaining < MIN_SAFE_ATTEMPTS:
                 print_error("Abortando por seguranca.")
                 return
             print_error(
-                "Limitando a {} tentativas (maximo seguro com margem).".format(
-                    max(remaining - MIN_SAFE_ATTEMPTS, 0),
-                )
+                f"Limitando a {max(remaining - MIN_SAFE_ATTEMPTS, 0)} tentativas (maximo seguro com margem)."
             )
             safe_limit = max(remaining - MIN_SAFE_ATTEMPTS, 0)
             if safe_limit == 0:
@@ -606,9 +598,7 @@ class Exploit(Exploit):
                 break
             if current_remaining is not None and current_remaining < MIN_SAFE_ATTEMPTS:
                 print_error(
-                    "Apenas {} tentativas restantes. Abortando por seguranca.".format(
-                        current_remaining,
-                    )
+                    f"Apenas {current_remaining} tentativas restantes. Abortando por seguranca."
                 )
                 break
 
@@ -617,7 +607,7 @@ class Exploit(Exploit):
             pin_str = _hex(pin_bytes)
 
             if tested % 10 == 1 or tested == total_range:
-                print_info("[{}/{}] Testando: {}".format(tested, total_range, pin_str))
+                print_info(f"[{tested}/{total_range}] Testando: {pin_str}")
 
             success, sw1, sw2 = self._verify_adm(conn, pin_bytes)
 
@@ -629,9 +619,9 @@ class Exploit(Exploit):
                 )
 
             if success:
-                print_success("ADM PIN ENCONTRADO: {}".format(pin_str))
+                print_success(f"ADM PIN ENCONTRADO: {pin_str}")
                 if log_fh:
-                    log_fh.write("FOUND: {}\n".format(pin_str))
+                    log_fh.write(f"FOUND: {pin_str}\n")
                     log_fh.close()
                 return
 
@@ -642,9 +632,9 @@ class Exploit(Exploit):
             log_fh.close()
 
         final = self._check_retry_counter(conn)
-        print_info("Nenhum PIN encontrado no range. {} testados.".format(tested))
+        print_info(f"Nenhum PIN encontrado no range. {tested} testados.")
         if final is not None and final >= 0:
-            print_info("Tentativas restantes: {}".format(final))
+            print_info(f"Tentativas restantes: {final}")
 
     # ------------------------------------------------------------------
     # Entry point
@@ -693,12 +683,12 @@ class Exploit(Exploit):
             return
 
         if bool(self.dry_run):
-            print_info("[dry-run] Modo: {}".format(mode))
+            print_info(f"[dry-run] Modo: {mode}")
             print_info("[dry-run] Nenhuma operacao real sera executada.")
             if mode == "brute_common":
                 print_info("[dry-run] PINs que seriam testados:")
                 for label, pin_bytes in COMMON_ADM_PINS:
-                    print_info("  {} ({})".format(_hex(pin_bytes), label))
+                    print_info(f"  {_hex(pin_bytes)} ({label})")
             return
 
         conn = self._get_connection()

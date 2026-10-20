@@ -345,12 +345,12 @@ class Exploit(Exploit):
                 target=self._channel_hopper, args=(iface, 13, hop_interval), daemon=True
             )
             hopper.start()
-            print_status("Hop de canal ativo (intervalo: {}s)".format(hop_interval))
+            print_status(f"Hop de canal ativo (intervalo: {hop_interval}s)")
         else:
             os.system(f"iwconfig {iface} channel {channel} 2>/dev/null")
-            print_status("Canal fixo: {}".format(channel))
+            print_status(f"Canal fixo: {channel}")
 
-        print_status("Varrendo por {}s…".format(scan_time))
+        print_status(f"Varrendo por {scan_time}s…")
         try:
             sniff(
                 iface=iface,
@@ -362,7 +362,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("Interrompido.")
         except Exception as exc:
-            print_error("Erro de sniff: {}".format(exc))
+            print_error(f"Erro de sniff: {exc}")
         finally:
             self._stop_event.set()
 
@@ -383,7 +383,7 @@ class Exploit(Exploit):
                 (b, e) for b, e in bss_list if sec_filter in e["security"].lower()
             ]
 
-        print_status("\n=== Resultados ({} BSSs) ===".format(len(bss_list)))
+        print_status(f"\n=== Resultados ({len(bss_list)} BSSs) ===")
         print_status("{:<20} {:<20} {:<40} {}".format("BSSID", "SSID", "Segurança", "WPS"))
         print_status("-" * 90)
         for bssid, entry in sorted(bss_list, key=lambda x: x[1]["security"]):
@@ -401,12 +401,12 @@ class Exploit(Exploit):
             if any(r in e["security"] for r in ("WEP", "TKIP-only", "OPEN", "WPA (legacy)"))
         ]
         if risky:
-            print_error("\nRedes com configuração insegura ou legada ({})".format(len(risky)))
+            print_error(f"\nRedes com configuração insegura ou legada ({len(risky)})")
             for bssid, entry in risky:
                 print_error("  {} — {} — {}".format(bssid, entry["ssid"], entry["security"]))
 
         wps_aps = [(b, e) for b, e in bss_list if e["wps"]]
         if wps_aps:
-            print_info("\nAPs com WPS ativo ({}) — vulneráveis a Pixie Dust / PIN bruteforce".format(len(wps_aps)))
+            print_info(f"\nAPs com WPS ativo ({len(wps_aps)}) — vulneráveis a Pixie Dust / PIN bruteforce")
 
         print_success("\nAnálise concluída.")

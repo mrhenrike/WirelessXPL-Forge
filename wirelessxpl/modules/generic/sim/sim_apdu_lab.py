@@ -78,7 +78,7 @@ MAX_APDU_LEN = 261
 
 def _hex(data: List[int]) -> str:
     """Format byte list as hex string."""
-    return " ".join("{:02X}".format(b) for b in data)
+    return " ".join(f"{b:02X}" for b in data)
 
 
 def _parse_hex_string(hex_str: str) -> Optional[List[int]]:
@@ -105,11 +105,11 @@ def _interpret_sw(sw1: int, sw2: int) -> str:
     if sw in SW_TABLE:
         return SW_TABLE[sw]
     if sw1 == 0x61:
-        return "{} bytes of response available (use GET RESPONSE)".format(sw2)
+        return f"{sw2} bytes of response available (use GET RESPONSE)"
     if sw1 == 0x6C:
-        return "Wrong Le; correct length is {} (0x{:02X})".format(sw2, sw2)
+        return f"Wrong Le; correct length is {sw2} (0x{sw2:02X})"
     if sw1 == 0x63 and (sw2 & 0xF0) == 0xC0:
-        return "Verification failed, {} attempts remaining".format(sw2 & 0x0F)
+        return f"Verification failed, {sw2 & 0x0F} attempts remaining"
     if sw1 == 0x63:
         return "Warning: state of NV memory changed"
     if sw1 == 0x64:
@@ -125,8 +125,8 @@ def _interpret_sw(sw1: int, sw2: int) -> str:
     if sw1 == 0x6A:
         return "Wrong parameters P1-P2"
     if sw1 == 0x9F:
-        return "{} bytes of response available".format(sw2)
-    return "Unknown SW: {:02X}{:02X}".format(sw1, sw2)
+        return f"{sw2} bytes of response available"
+    return f"Unknown SW: {sw1:02X}{sw2:02X}"
 
 
 class Exploit(Exploit):
@@ -182,7 +182,7 @@ class Exploit(Exploit):
             os.makedirs(out, exist_ok=True)
             return out
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida: {}".format(exc))
+            print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
     def _get_connection(self) -> Optional[Any]:
@@ -192,7 +192,7 @@ class Exploit(Exploit):
         try:
             available = list_readers()
         except Exception as exc:
-            print_error("Falha ao listar leitores PC/SC: {}".format(exc))
+            print_error(f"Falha ao listar leitores PC/SC: {exc}")
             return None
 
         if not available:
@@ -202,20 +202,20 @@ class Exploit(Exploit):
         idx = int(self.reader_index)
         if idx < 0 or idx >= len(available):
             print_error(
-                "Indice {} invalido. Leitores: {}".format(idx, len(available))
+                f"Indice {idx} invalido. Leitores: {len(available)}"
             )
             for i, r in enumerate(available):
-                print_info("  [{}] {}".format(i, r))
+                print_info(f"  [{i}] {r}")
             return None
 
         reader = available[idx]
-        print_status("Conectando ao leitor: {}".format(reader))
+        print_status(f"Conectando ao leitor: {reader}")
         try:
             conn = reader.createConnection()
             conn.connect()
             return conn
         except Exception as exc:
-            print_error("Falha na conexao: {}".format(exc))
+            print_error(f"Falha na conexao: {exc}")
             return None
 
     def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
@@ -225,26 +225,24 @@ class Exploit(Exploit):
 
     def _send_and_display(self, conn: Any, apdu: List[int], label: str = "") -> Tuple[List[int], int, int]:
         """Send APDU, display command/response, and return result."""
-        prefix = "[{}] ".format(label) if label else ""
-        print_info("{}>> {}".format(prefix, _hex(apdu)))
+        prefix = f"[{label}] " if label else ""
+        print_info(f"{prefix}>> {_hex(apdu)}")
 
         data, sw1, sw2 = self._send_apdu(conn, apdu)
 
         sw_meaning = _interpret_sw(sw1, sw2)
         if data:
-            print_info("{}<< Data: {}".format(prefix, _hex(data)))
-        print_info("{}<< SW: {:02X} {:02X} ({})".format(prefix, sw1, sw2, sw_meaning))
+            print_info(f"{prefix}<< Data: {_hex(data)}")
+        print_info(f"{prefix}<< SW: {sw1:02X} {sw2:02X} ({sw_meaning})")
 
         if sw1 == 0x61 and sw2 > 0:
-            print_status("{}Recuperando {} bytes via GET RESPONSE...".format(prefix, sw2))
+            print_status(f"{prefix}Recuperando {sw2} bytes via GET RESPONSE...")
             get_resp = [0x00, 0xC0, 0x00, 0x00, sw2]
             data2, sw1_2, sw2_2 = self._send_apdu(conn, get_resp)
             if data2:
-                print_info("{}<< GET RESPONSE Data: {}".format(prefix, _hex(data2)))
+                print_info(f"{prefix}<< GET RESPONSE Data: {_hex(data2)}")
             print_info(
-                "{}<< GET RESPONSE SW: {:02X} {:02X} ({})".format(
-                    prefix, sw1_2, sw2_2, _interpret_sw(sw1_2, sw2_2),
-                )
+                f"{prefix}<< GET RESPONSE SW: {sw1_2:02X} {sw2_2:02X} ({_interpret_sw(sw1_2, sw2_2)})"
             )
             return data2, sw1_2, sw2_2
 
@@ -299,7 +297,7 @@ class Exploit(Exploit):
         print_info("")
         print_info("Status Words (SW1 SW2):")
         for sw_code, meaning in sorted(SW_TABLE.items()):
-            print_info("  {:04X} - {}".format(sw_code, meaning))
+            print_info(f"  {sw_code:04X} - {meaning}")
         print_info("  61xx - xx bytes disponiveis (GET RESPONSE)")
         print_info("  6Cxx - Le incorreto, correto = xx")
         print_info("  63Cx - Verificacao falhou, x tentativas restantes")
@@ -313,7 +311,7 @@ class Exploit(Exploit):
                 if available:
                     print_info("Leitores PC/SC detectados:")
                     for i, r in enumerate(available):
-                        print_info("  [{}] {}".format(i, r))
+                        print_info(f"  [{i}] {r}")
                 else:
                     print_info("Nenhum leitor PC/SC detectado.")
             except Exception:
@@ -340,9 +338,7 @@ class Exploit(Exploit):
 
         if len(apdu) > MAX_APDU_LEN:
             print_error(
-                "APDU excede tamanho maximo ({} > {} bytes).".format(
-                    len(apdu), MAX_APDU_LEN,
-                )
+                f"APDU excede tamanho maximo ({len(apdu)} > {MAX_APDU_LEN} bytes)."
             )
             return
 
@@ -359,14 +355,14 @@ class Exploit(Exploit):
             return
 
         if not os.path.isfile(script_path):
-            print_error("Arquivo nao encontrado: {}".format(script_path))
+            print_error(f"Arquivo nao encontrado: {script_path}")
             return
 
         try:
-            with open(script_path, "r", encoding="utf-8") as fh:
+            with open(script_path, encoding="utf-8") as fh:
                 lines = fh.readlines()
         except OSError as exc:
-            print_error("Falha ao ler arquivo: {}".format(exc))
+            print_error(f"Falha ao ler arquivo: {exc}")
             return
 
         line_count = 0
@@ -389,21 +385,21 @@ class Exploit(Exploit):
 
             apdu = _parse_hex_string(line)
             if apdu is None:
-                print_error("Linha {}: APDU invalido: {}".format(line_num, line))
+                print_error(f"Linha {line_num}: APDU invalido: {line}")
                 err_count += 1
                 continue
 
             if len(apdu) < 4:
-                print_error("Linha {}: APDU muito curto.".format(line_num))
+                print_error(f"Linha {line_num}: APDU muito curto.")
                 err_count += 1
                 continue
 
             if len(apdu) > MAX_APDU_LEN:
-                print_error("Linha {}: APDU excede limite.".format(line_num))
+                print_error(f"Linha {line_num}: APDU excede limite.")
                 err_count += 1
                 continue
 
-            label = "L{}".format(line_num)
+            label = f"L{line_num}"
             data, sw1, sw2 = self._send_and_display(conn, apdu, label)
             line_count += 1
 
@@ -422,12 +418,10 @@ class Exploit(Exploit):
 
         if log_file:
             log_file.close()
-            print_info("Log salvo em: {}".format(log_path))
+            print_info(f"Log salvo em: {log_path}")
 
         print_info(
-            "Script concluido: {} comandos, {} OK, {} erros".format(
-                line_count, ok_count, err_count,
-            )
+            f"Script concluido: {line_count} comandos, {ok_count} OK, {err_count} erros"
         )
 
     # ------------------------------------------------------------------
@@ -456,7 +450,7 @@ class Exploit(Exploit):
         apdu = [0x00, 0xB0, 0x00, 0x00, 0x00]
         data, sw1, sw2 = self._send_and_display(conn, apdu, "READ BINARY")
         if sw1 == 0x6C and sw2 > 0:
-            print_status("Reenviando com Le=0x{:02X}...".format(sw2))
+            print_status(f"Reenviando com Le=0x{sw2:02X}...")
             apdu[4] = sw2
             self._send_and_display(conn, apdu, "READ BINARY (retry)")
 
@@ -473,7 +467,7 @@ class Exploit(Exploit):
         apdu = [0x00, 0xB2, rec_num, 0x04, 0x00]
         data, sw1, sw2 = self._send_and_display(conn, apdu, "READ RECORD")
         if sw1 == 0x6C and sw2 > 0:
-            print_status("Reenviando com Le=0x{:02X}...".format(sw2))
+            print_status(f"Reenviando com Le=0x{sw2:02X}...")
             apdu[4] = sw2
             self._send_and_display(conn, apdu, "READ RECORD (retry)")
 
@@ -500,7 +494,7 @@ class Exploit(Exploit):
             return
 
         apdu = [0x00, 0xD6, 0x00, 0x00, len(update_data)] + update_data
-        print_status("Enviando UPDATE BINARY ({} bytes)...".format(len(update_data)))
+        print_status(f"Enviando UPDATE BINARY ({len(update_data)} bytes)...")
         self._send_and_display(conn, apdu, "UPDATE BINARY")
 
     # ------------------------------------------------------------------
@@ -544,31 +538,31 @@ class Exploit(Exploit):
         _, chk_sw1, chk_sw2 = self._send_apdu(conn, check_apdu)
         if chk_sw1 == 0x63 and (chk_sw2 & 0xF0) == 0xC0:
             remaining = chk_sw2 & 0x0F
-            print_info("Tentativas restantes antes da verificacao: {}".format(remaining))
+            print_info(f"Tentativas restantes antes da verificacao: {remaining}")
             if remaining == 0:
                 print_error("PIN bloqueado. Nenhuma tentativa restante.")
                 return
             if remaining <= 2:
                 print_error(
-                    "ATENCAO: apenas {} tentativas restantes. "
-                    "Erro ira bloquear o cartao.".format(remaining)
+                    f"ATENCAO: apenas {remaining} tentativas restantes. "
+                    "Erro ira bloquear o cartao."
                 )
 
         apdu = [0x00, 0x20, 0x00, p2, 0x08] + pin_bytes
         # Mask PIN in display for security
         masked_apdu = [0x00, 0x20, 0x00, p2, 0x08] + [0x00] * 8
-        print_info(">> {} (PIN mascarado)".format(_hex(masked_apdu)))
+        print_info(f">> {_hex(masked_apdu)} (PIN mascarado)")
 
         _, sw1, sw2 = self._send_apdu(conn, apdu)
         sw_meaning = _interpret_sw(sw1, sw2)
-        print_info("<< SW: {:02X} {:02X} ({})".format(sw1, sw2, sw_meaning))
+        print_info(f"<< SW: {sw1:02X} {sw2:02X} ({sw_meaning})")
 
         if (sw1, sw2) == (0x90, 0x00):
-            print_success("{} verificado com sucesso.".format(pin_type_str))
+            print_success(f"{pin_type_str} verificado com sucesso.")
         elif sw1 == 0x63:
             remaining = sw2 & 0x0F
             print_error(
-                "{} incorreto. Tentativas restantes: {}".format(pin_type_str, remaining)
+                f"{pin_type_str} incorreto. Tentativas restantes: {remaining}"
             )
 
     # ------------------------------------------------------------------
@@ -618,31 +612,29 @@ class Exploit(Exploit):
 
                 total += 1
                 if (sw1, sw2) == (0x90, 0x00) or sw1 == 0x61 or sw1 == 0x9F:
-                    fid_str = "{:02X}{:02X}".format(fid_hi, fid_lo)
+                    fid_str = f"{fid_hi:02X}{fid_lo:02X}"
                     found.append(fid_str)
-                    print_success("  Encontrado: {} (SW={:02X}{:02X})".format(fid_str, sw1, sw2))
+                    print_success(f"  Encontrado: {fid_str} (SW={sw1:02X}{sw2:02X})")
 
                 if total % 4096 == 0:
                     print_status(
-                        "  Progresso: {}/65536 testados, {} encontrados".format(
-                            total, len(found),
-                        )
+                        f"  Progresso: {total}/65536 testados, {len(found)} encontrados"
                     )
 
         print_info("")
-        print_success("Enumeracao concluida: {} EFs encontrados de {} testados.".format(len(found), total))
+        print_success(f"Enumeracao concluida: {len(found)} EFs encontrados de {total} testados.")
         for fid_str in found:
-            print_info("  {}".format(fid_str))
+            print_info(f"  {fid_str}")
 
         if out_dir and found:
             log_path = os.path.join(out_dir, "enumerated_files.txt")
             try:
                 with open(log_path, "w", encoding="utf-8") as fh:
                     for fid_str in found:
-                        fh.write("{}\n".format(fid_str))
-                print_info("Lista salva em: {}".format(log_path))
+                        fh.write(f"{fid_str}\n")
+                print_info(f"Lista salva em: {log_path}")
             except OSError as exc:
-                print_error("Falha ao gravar log: {}".format(exc))
+                print_error(f"Falha ao gravar log: {exc}")
 
     # ------------------------------------------------------------------
     # Entry point
@@ -691,7 +683,7 @@ class Exploit(Exploit):
             return
 
         if bool(self.dry_run):
-            print_info("[dry-run] Modo: {}".format(mode))
+            print_info(f"[dry-run] Modo: {mode}")
             print_info("[dry-run] Nenhuma operacao real sera executada.")
             return
 

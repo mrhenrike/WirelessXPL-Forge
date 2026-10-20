@@ -87,7 +87,7 @@ class Exploit(Exploit):
         if self.verbose:
             cmd.append("-v")
 
-        print_status("tcpdump capturing on {} → {}".format(self.interface, output))
+        print_status(f"tcpdump capturing on {self.interface} → {output}")
         try:
             subprocess.run(cmd, check=False)
         except KeyboardInterrupt:
@@ -106,9 +106,9 @@ class Exploit(Exploit):
         if self.filter_expr:
             cmd.extend(["-f", self.filter_expr])
         if self.duration > 0:
-            cmd.extend(["-a", "duration:{}".format(self.duration)])
+            cmd.extend(["-a", f"duration:{self.duration}"])
 
-        print_status("tshark capturing on {} → {}".format(self.interface, output))
+        print_status(f"tshark capturing on {self.interface} → {output}")
         try:
             subprocess.run(cmd, check=False)
         except KeyboardInterrupt:
@@ -156,7 +156,7 @@ class Exploit(Exploit):
             with open(cred_path, "a", encoding="utf-8") as f:
                 for c in creds:
                     f.write(json.dumps(c) + "\n")
-            print_success("Extracted {} credentials → {}".format(len(creds), cred_path))
+            print_success(f"Extracted {len(creds)} credentials → {cred_path}")
 
     def _run_scapy(self) -> None:
         """Capture traffic with Scapy and save to PCAP."""
@@ -166,7 +166,7 @@ class Exploit(Exploit):
         output = Path(self.capture_file)
         output.parent.mkdir(parents=True, exist_ok=True)
         timeout = int(self.duration) if int(self.duration) > 0 else None
-        print_status("Scapy capturing on {} → {}".format(self.interface, output))
+        print_status(f"Scapy capturing on {self.interface} → {output}")
         try:
             packets = sniff(iface=self.interface, timeout=timeout, store=True)
             if packets:
@@ -213,8 +213,7 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("DRY RUN — WiFi Sniffer")
-            print_info("Backend: {} | Interface: {} | Output: {}".format(
-                self.backend, self.interface, self.capture_file))
+            print_info(f"Backend: {self.backend} | Interface: {self.interface} | Output: {self.capture_file}")
             return
 
         if self.backend == "tcpdump":

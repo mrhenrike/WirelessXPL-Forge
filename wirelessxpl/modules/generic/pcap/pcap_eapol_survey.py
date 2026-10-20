@@ -46,7 +46,7 @@ class Exploit(Exploit):
         if not rows:
             print_status("No EAPOL-Key 4-way material detected.")
             return
-        print_success("Found {} STA/AP pair(s) with EAPOL-Key traffic".format(len(rows)))
+        print_success(f"Found {len(rows)} STA/AP pair(s) with EAPOL-Key traffic")
         for row in rows:
             print_status("--- {} ↔ {} ({}) ---".format(row.bssid, row.station_mac, row.ssid or "?"))
             mc = row.message_counts
@@ -59,11 +59,11 @@ class Exploit(Exploit):
                     mc.get("unknown", 0),
                 )
             )
-            print_info("Distinct ANonce: {} | SNonce: {}".format(row.distinct_anonce, row.distinct_snonce))
+            print_info(f"Distinct ANonce: {row.distinct_anonce} | SNonce: {row.distinct_snonce}")
             if row.replay_counters_seen:
-                print_info("Replay counters (unique): {}".format(row.replay_counters_seen[:12]))
+                print_info(f"Replay counters (unique): {row.replay_counters_seen[:12]}")
             for h in row.hints:
-                print_status("Hint: {}".format(h))
+                print_status(f"Hint: {h}")
 
     @mute
     def check(self) -> bool:

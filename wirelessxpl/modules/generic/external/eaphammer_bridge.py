@@ -408,8 +408,7 @@ class Exploit(Exploit):
         if self.dry_run:
             print_info("DRY RUN — comando:")
             print_status(cmd_str)
-            print_info("Modo: {}  auth: {}  band: {}".format(
-                self._attack_mode(), self.auth, self.band))
+            print_info(f"Modo: {self._attack_mode()}  auth: {self.auth}  band: {self.band}")
             if self.band == "dual":
                 print_info(
                     "Nota: eaphammer usa um PHY por processo; em dual defina canal/"
@@ -417,12 +416,12 @@ class Exploit(Exploit):
                 )
             return
 
-        print_status("Iniciando EAPHammer ({})...".format(self._attack_mode()))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"Iniciando EAPHammer ({self._attack_mode()})...")
+        print_info(f"Comando: {cmd_str}")
 
         try:
             subprocess.run(cmd, check=False)
         except KeyboardInterrupt:
             print_info("\nEAPHammer interrompido pelo usuário.")
         except Exception as err:
-            print_error("EAPHammer falhou: {}".format(err))
+            print_error(f"EAPHammer falhou: {err}")

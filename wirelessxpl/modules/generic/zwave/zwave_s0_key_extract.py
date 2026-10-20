@@ -143,9 +143,9 @@ class Exploit(Exploit):
     def run(self):
         freq = self._get_frequency()
         print_status("Z-Wave S0 Key Extraction")
-        print_info("Região: {} | Frequência: {} Hz".format(self.region, freq))
+        print_info(f"Região: {self.region} | Frequência: {freq} Hz")
         print_info("Interface SDR: {}".format(self.interface or "(não configurada)"))
-        print_info("Temp key S0 (pública): {}".format(_ZWAVE_S0_TEMP_KEY.hex()))
+        print_info(f"Temp key S0 (pública): {_ZWAVE_S0_TEMP_KEY.hex()}")
         print_warning("S0 usa temp key de bytes zeros — descriptografável sem conhecimento prévio")
 
         print_status("Gerando demonstração de troca S0...")

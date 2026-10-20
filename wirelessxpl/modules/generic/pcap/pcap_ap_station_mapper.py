@@ -51,7 +51,7 @@ class Exploit(Exploit):
         aps = extract_access_points(packets)
         stations = extract_stations(packets)
 
-        print_status("--- Access Points ({}) ---".format(len(aps)))
+        print_status(f"--- Access Points ({len(aps)}) ---")
         print_status("{:<20} {:<32} {:>4}  {:<8}  {:<8}  {:<8}  {:>7}".format(
             "BSSID", "SSID", "CH", "ENC", "CIPHER", "AUTH", "BEACONS"
         ))
@@ -67,7 +67,7 @@ class Exploit(Exploit):
             ))
 
         print_status("")
-        print_status("--- Stations ({}) ---".format(len(stations)))
+        print_status(f"--- Stations ({len(stations)}) ---")
         print_status("{:<20} {:<20} {:>6}  {}".format(
             "MAC", "ASSOCIATED_AP", "DATA", "PROBED_SSIDs"
         ))
@@ -83,8 +83,8 @@ class Exploit(Exploit):
         wpa_aps = [ap for ap in aps.values() if ap.encryption in ("WPA", "WPA2")]
         if wpa_aps:
             print_status("")
-            print_success("{} AP(s) with WPA/WPA2 detected — check for handshakes "
-                          "with generic/pcap/pcap_handshake_extractor".format(len(wpa_aps)))
+            print_success(f"{len(wpa_aps)} AP(s) with WPA/WPA2 detected — check for handshakes "
+                          "with generic/pcap/pcap_handshake_extractor")
 
     @mute
     def check(self):

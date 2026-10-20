@@ -122,7 +122,7 @@ class Exploit(Exploit):
         auth = str(self.auth_mode).strip().lower()
         if auth not in self._AUTH:
             raise ValueError(
-                "auth_mode deve ser open, wep, wpa ou wpa-eap (recebido: {}).".format(auth)
+                f"auth_mode deve ser open, wep, wpa ou wpa-eap (recebido: {auth})."
             )
 
         iface = str(self.interface).strip()
@@ -203,7 +203,7 @@ class Exploit(Exploit):
             return
 
         print_status("Iniciando orquestração evil twin (hostapd/DHCP/RADIUS/…)…")
-        print_info("Comando: {}".format(cmd_str))
+        print_info(f"Comando: {cmd_str}")
         print_info("Requer permissões de root e ferramentas externas configuradas.")
 
         env = os.environ.copy()
@@ -214,5 +214,5 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nRogue bridge interrompido pelo usuário.")
         except Exception as err:
-            print_error("Falha ao executar rogue: {}".format(err))
+            print_error(f"Falha ao executar rogue: {err}")
             logger.exception("rogue subprocess")

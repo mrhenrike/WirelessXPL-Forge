@@ -62,7 +62,7 @@ class Exploit(Exploit):
         for pkt in pkts:
             scanned += 1
             totals.update(_btle_layer_names(pkt))
-        print_status("Scanned {} packets".format(scanned))
+        print_status(f"Scanned {scanned} packets")
         if not totals:
             print_error(
                 "No BTLE/HCI layers found — capture may be Wi‑Fi only, or use tshark "
@@ -70,7 +70,7 @@ class Exploit(Exploit):
             )
             return
         for name, n in totals.most_common():
-            print_info("{} : {}".format(name, n))
+            print_info(f"{name} : {n}")
 
     @mute
     def check(self) -> bool:

@@ -22,10 +22,10 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
         [
             "# T1 — open AP (captive / karma-style lab)",
             "driver=nl80211",
-            "interface={}".format(iface),
-            "ssid={}".format(ssid),
+            f"interface={iface}",
+            f"ssid={ssid}",
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "auth_algs=1",
             "wpa=0",
             "",
@@ -35,14 +35,14 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
         [
             "# T2 — WPA2-PSK (transition / downgrade bait in mixed deployments)",
             "driver=nl80211",
-            "interface={}".format(iface),
-            "ssid={}".format(ssid),
+            f"interface={iface}",
+            f"ssid={ssid}",
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "wpa=2",
             "wpa_key_mgmt=WPA-PSK",
             "rsn_pairwise=CCMP",
-            "wpa_passphrase={}".format(psk),
+            f"wpa_passphrase={psk}",
             "",
         ]
     )
@@ -50,13 +50,13 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
         [
             "# T3 — WPA3-SAE (hostapd 2.9+ typical) — lab only",
             "driver=nl80211",
-            "interface={}".format(iface),
-            "ssid={}".format(ssid),
+            f"interface={iface}",
+            f"ssid={ssid}",
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "wpa=2",
             "wpa_key_mgmt=SAE",
-            "sae_password={}".format(psk),
+            f"sae_password={psk}",
             "ieee80211w=2",
             "sae_require_mfp=2",
             "",
@@ -66,14 +66,14 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
         [
             "# T4 — WPA3 transition (SAE + WPA-PSK) — mirrors risky production mode",
             "driver=nl80211",
-            "interface={}".format(iface),
-            "ssid={}".format(ssid),
+            f"interface={iface}",
+            f"ssid={ssid}",
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "wpa=2",
             "wpa_key_mgmt=SAE WPA-PSK",
-            "sae_password={}".format(psk),
-            "wpa_passphrase={}".format(psk),
+            f"sae_password={psk}",
+            f"wpa_passphrase={psk}",
             "ieee80211w=1",
             "rsn_pairwise=CCMP",
             "",
@@ -83,10 +83,10 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
         [
             "# T5 — OWE transition lab (requires kernel/hostapd OWE build)",
             "driver=nl80211",
-            "interface={}".format(iface),
+            f"interface={iface}",
             "ssid={}".format(ssid + "-OWE"),
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "wpa=2",
             "wpa_key_mgmt=OWE",
             "ieee80211w=2",
@@ -104,10 +104,10 @@ def _templates(iface: str, ssid: str, chan: int, psk: str) -> dict:
             "# wpa_key_mgmt=WPA-EAP",
             "#",
             "driver=nl80211",
-            "interface={}".format(iface),
+            f"interface={iface}",
             "ssid={}".format(ssid + "-ENT"),
             "hw_mode=g",
-            "channel={}".format(chan),
+            f"channel={chan}",
             "",
         ]
     )
@@ -181,6 +181,6 @@ class Exploit(Exploit):
             str(self.wpa_psk),
         ).items():
             (out / name).write_text(body, encoding="utf-8")
-        print_success("Wrote 6 templates under {}".format(out))
+        print_success(f"Wrote 6 templates under {out}")
         print_status("Karma/MANA-style selection attacks require dedicated tooling (e.g. hostapd-mana); "
                      "these templates are hostapd-native baselines only.")

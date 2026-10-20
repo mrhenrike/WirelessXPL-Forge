@@ -113,12 +113,12 @@ class Exploit(Exploit):
         new_bssids = sorted(curr_set - base_set)
 
         print_status("Wireless IDS baseline check:")
-        print_info("  Baseline APs: {}".format(len(base_set)))
-        print_info("  Current APs:  {}".format(len(curr_set)))
-        print_info("  New APs:      {}".format(len(new_bssids)))
+        print_info(f"  Baseline APs: {len(base_set)}")
+        print_info(f"  Current APs:  {len(curr_set)}")
+        print_info(f"  New APs:      {len(new_bssids)}")
 
         threshold = int(self.min_signal)
         for bssid in new_bssids:
             pwr = curr_bssids.get(bssid, -100)
             if pwr >= threshold:
-                print_success("  [ALERT] New BSSID {} (PWR {})".format(bssid, pwr))
+                print_success(f"  [ALERT] New BSSID {bssid} (PWR {pwr})")

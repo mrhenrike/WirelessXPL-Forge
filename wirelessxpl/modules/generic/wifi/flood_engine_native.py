@@ -86,7 +86,7 @@ def michael_mic(key: bytes, data: bytes) -> bytes:
         ValueError: If key length is not exactly 8 bytes.
     """
     if len(key) != 8:
-        raise ValueError("Michael key must be exactly 8 bytes, got {}".format(len(key)))
+        raise ValueError(f"Michael key must be exactly 8 bytes, got {len(key)}")
 
     l = struct.unpack("<I", key[:4])[0]
     r = struct.unpack("<I", key[4:8])[0]
@@ -119,7 +119,7 @@ def _random_mac() -> str:
     """
     octets = [random.randint(0, 255) for _ in range(6)]
     octets[0] = (octets[0] & 0xFE) | 0x02  # unicast, locally administered
-    return ":".join("{:02x}".format(b) for b in octets)
+    return ":".join(f"{b:02x}" for b in octets)
 
 
 def _random_ssid(min_len: int = 4, max_len: int = 16) -> str:
@@ -292,7 +292,7 @@ def _run_beacon_flood(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("Beacon flood: {} frames sent".format(sent))
+                print_status(f"Beacon flood: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -343,7 +343,7 @@ def _run_auth_flood(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("Auth flood: {} frames sent".format(sent))
+                print_status(f"Auth flood: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -408,7 +408,7 @@ def _run_deauth_flood(
             sent += 2
 
             if verbose and i % 50 == 0 and i > 0:
-                print_status("Deauth flood: {} frames sent".format(sent))
+                print_status(f"Deauth flood: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -468,7 +468,7 @@ def _run_probe_flood(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("Probe flood: {} frames sent".format(sent))
+                print_status(f"Probe flood: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -561,7 +561,7 @@ def _run_michael_shutdown(
             sent += 1
 
             if verbose and sent % 10 == 0:
-                print_status("Michael MIC shutdown: {} reports sent".format(sent))
+                print_status(f"Michael MIC shutdown: {sent} reports sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -649,7 +649,7 @@ def _run_wpa_downgrade(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("WPA downgrade: {} beacons sent".format(sent))
+                print_status(f"WPA downgrade: {sent} beacons sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -714,7 +714,7 @@ def _run_eapol_flood(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("EAPOL flood: {} frames sent".format(sent))
+                print_status(f"EAPOL flood: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -779,7 +779,7 @@ def _run_wids_confusion(
             sent += 1
 
             if verbose and sent % 100 == 0:
-                print_status("WIDS confusion: {} frames sent".format(sent))
+                print_status(f"WIDS confusion: {sent} frames sent")
             if delay:
                 time.sleep(delay)
     except KeyboardInterrupt:
@@ -985,5 +985,5 @@ class Exploit(Exploit):
             )
 
         print_success(
-            "Flood mode '{}' complete: {} frames injected.".format(self.mode, sent)
+            f"Flood mode '{self.mode}' complete: {sent} frames injected."
         )

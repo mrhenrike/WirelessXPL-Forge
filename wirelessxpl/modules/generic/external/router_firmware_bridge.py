@@ -166,12 +166,12 @@ class Exploit(Exploit):
         if mode not in self._MODES:
             raise ValueError(
                 "mode deve ser decrypt_config, decode_password, unpack_firmware ou repack_firmware "
-                "(recebido: {}).".format(mode)
+                f"(recebido: {mode})."
             )
         fw = str(self.firmware_type).strip().lower()
         if fw not in self._FW_TYPES:
             raise ValueError(
-                "firmware_type deve ser huawei_ont, huawei_hg ou generic (recebido: {}).".format(fw)
+                f"firmware_type deve ser huawei_ont, huawei_hg ou generic (recebido: {fw})."
             )
 
         inp = str(self.input_file).strip()
@@ -190,7 +190,7 @@ class Exploit(Exploit):
         poc = self._poc_root()
         if not poc.is_dir():
             raise FileNotFoundError(
-                "third-party-router-poc não encontrado em {}. Verifique o submódulo.".format(poc)
+                f"third-party-router-poc não encontrado em {poc}. Verifique o submódulo."
             )
 
         if mode == "decrypt_config":
@@ -265,11 +265,11 @@ class Exploit(Exploit):
         if self.dry_run:
             print_info("DRY RUN — comando planejado:")
             print_status(" ".join(cmd))
-            print_info("Referência HWFW_GUI: {}".format(ref_gui))
-            print_info("Pasta third-party-router-poc: {}".format(self._poc_root()))
+            print_info(f"Referência HWFW_GUI: {ref_gui}")
+            print_info(f"Pasta third-party-router-poc: {self._poc_root()}")
             return
 
-        print_status("Router firmware bridge (mode={})…".format(self.mode))
+        print_status(f"Router firmware bridge (mode={self.mode})…")
         print_info("Comando: {}".format(" ".join(cmd)))
 
         cwd_run = str(self._poc_root())
@@ -283,7 +283,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nInterrompido pelo usuário.")
         except Exception as err:
-            print_error("Falha ao executar: {}".format(err))
+            print_error(f"Falha ao executar: {err}")
             logger.exception("router_firmware_bridge subprocess")
 
         if str(self.mode).strip().lower() == "decrypt_config":

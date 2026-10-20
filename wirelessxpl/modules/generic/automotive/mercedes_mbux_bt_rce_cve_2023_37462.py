@@ -108,8 +108,7 @@ class Exploit(Exploit):
         print_info("  probe: obter info SDP do alvo (set target=MAC)")
 
     def _scan_mode(self):
-        print_status("Scanning para dispositivos Mercedes Bluetooth em {}...".format(
-            self.bt_interface))
+        print_status(f"Scanning para dispositivos Mercedes Bluetooth em {self.bt_interface}...")
         hcitool = shutil.which("hcitool")
         if not hcitool:
             print_error("hcitool não encontrado — instale o pacote bluez")
@@ -118,7 +117,7 @@ class Exploit(Exploit):
         try:
             result = subprocess.run(
                 [hcitool, "-i", str(self.bt_interface), "scan",
-                 "--flush", "--length={}".format(int(self.timeout))],
+                 "--flush", f"--length={int(self.timeout)}"],
                 capture_output=True, text=True,
                 timeout=int(self.timeout) + 5,
             )
@@ -130,10 +129,10 @@ class Exploit(Exploit):
                         continue
                     lower = line.lower()
                     if any(k in lower for k in ["mercedes", "mbux", "mb ", "daimler", "benz", "ntg", "comand"]):
-                        print_success("  MBUX candidato: {}".format(line))
+                        print_success(f"  MBUX candidato: {line}")
                         found = True
                     else:
-                        print_info("  {}".format(line))
+                        print_info(f"  {line}")
                 if not found:
                     print_warning("Nenhum dispositivo Mercedes detectado no range")
             else:
@@ -141,14 +140,14 @@ class Exploit(Exploit):
         except subprocess.TimeoutExpired:
             print_info("Scan timed out")
         except Exception as exc:
-            print_error("Erro no scan: {}".format(exc))
+            print_error(f"Erro no scan: {exc}")
 
     def _probe_mode(self):
         mac = str(self.target).strip()
         if not mac or len(mac) < 17:
             print_error("Defina target=AA:BB:CC:DD:EE:FF (endereço BT do MBUX)")
             return
-        print_status("Probing MBUX em {}...".format(mac))
+        print_status(f"Probing MBUX em {mac}...")
         hcitool = shutil.which("hcitool")
         if hcitool:
             try:
@@ -159,9 +158,9 @@ class Exploit(Exploit):
                 if result.stdout:
                     print_success("Informações do dispositivo:")
                     for line in result.stdout.strip().split("\n"):
-                        print_info("  {}".format(line.strip()))
+                        print_info(f"  {line.strip()}")
             except (subprocess.TimeoutExpired, Exception) as exc:
-                print_warning("hcitool info: {}".format(exc))
+                print_warning(f"hcitool info: {exc}")
 
         sdptool = shutil.which("sdptool")
         if sdptool:
@@ -173,13 +172,13 @@ class Exploit(Exploit):
                 )
                 if result.stdout:
                     services = result.stdout.count("Service Name:")
-                    print_success("{} serviços SDP encontrados".format(services))
+                    print_success(f"{services} serviços SDP encontrados")
                     for line in result.stdout.split("\n"):
                         stripped = line.strip()
                         if stripped.startswith("Service Name:"):
-                            print_info("  {}".format(stripped))
+                            print_info(f"  {stripped}")
             except (subprocess.TimeoutExpired, Exception) as exc:
-                print_warning("sdptool: {}".format(exc))
+                print_warning(f"sdptool: {exc}")
 
         print_warning("[CVE-2023-37462] Exploração completa requer cadeia de pacotes BLE "
                       "crafted targeting NTG6 BT firmware — não incluída neste módulo.")
@@ -200,4 +199,4 @@ class Exploit(Exploit):
         elif mode == "probe":
             self._probe_mode()
         else:
-            print_error("Modo inválido: {}. Use: info, scan, probe".format(mode))
+            print_error(f"Modo inválido: {mode}. Use: info, scan, probe")

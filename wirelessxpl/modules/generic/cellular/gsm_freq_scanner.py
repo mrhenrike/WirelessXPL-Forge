@@ -233,9 +233,9 @@ class Exploit(Exploit):
     def _run_cmd(self, cmd: List[str], label: str = "") -> Optional[str]:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return None
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd,
@@ -249,7 +249,7 @@ class Exploit(Exploit):
             print_status("Command timed out.")
             return None
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
             return None
 
     def _info(self) -> None:
@@ -276,8 +276,8 @@ class Exploit(Exploit):
         print_info("Tool availability:")
         for tool in ("kal", "grgsm_scanner", "grgsm_livemon", "rtl_test"):
             p = _which(tool)
-            status = "[+] {}".format(tool) if p else "[-] {}: not found".format(tool)
-            (print_success if p else print_error)("  {}".format(status))
+            status = f"[+] {tool}" if p else f"[-] {tool}: not found"
+            (print_success if p else print_error)(f"  {status}")
 
     def _band_info(self) -> None:
         target = str(self.band).strip().upper()
@@ -287,9 +287,7 @@ class Exploit(Exploit):
         )
         if not bands_to_show:
             print_error(
-                "Unknown band: {}. Valid: GSM900, GSM1800, GSM850, PCS1900, all".format(
-                    target
-                )
+                f"Unknown band: {target}. Valid: GSM900, GSM1800, GSM850, PCS1900, all"
             )
             return
 
@@ -324,7 +322,7 @@ class Exploit(Exploit):
                 freq = _arfcn_to_freq_dl(arfcn, band_name)
                 if freq > 0:
                     print_info(
-                        "    ARFCN {:>4d} -> {:.1f} MHz (DL)".format(arfcn, freq)
+                        f"    ARFCN {arfcn:>4d} -> {freq:.1f} MHz (DL)"
                     )
 
     def _kal_scan(self) -> List[Dict[str, Any]]:
@@ -338,12 +336,12 @@ class Exploit(Exploit):
             else [target] if target in _GSM_BANDS else []
         )
         if not bands_to_scan:
-            print_error("Unknown band: {}".format(target))
+            print_error(f"Unknown band: {target}")
             return []
 
         all_results: List[Dict[str, Any]] = []
         for band_name in bands_to_scan:
-            print_status("Scanning {} with kalibrate-rtl...".format(band_name))
+            print_status(f"Scanning {band_name} with kalibrate-rtl...")
             cmd = [
                 "kal",
                 "-s", band_name,
@@ -354,7 +352,7 @@ class Exploit(Exploit):
             if dev > 0:
                 cmd.extend(["-d", str(dev)])
 
-            output = self._run_cmd(cmd, "kal ({})".format(band_name))
+            output = self._run_cmd(cmd, f"kal ({band_name})")
             if output:
                 parsed = _parse_kal_output(output)
                 for r in parsed:
@@ -364,9 +362,7 @@ class Exploit(Exploit):
         if all_results:
             all_results.sort(key=lambda r: r.get("power", 0), reverse=True)
             print_success(
-                "Found {} channel(s) across {} band(s).".format(
-                    len(all_results), len(bands_to_scan)
-                )
+                f"Found {len(all_results)} channel(s) across {len(bands_to_scan)} band(s)."
             )
             for r in all_results[:20]:
                 print_info(
@@ -376,12 +372,12 @@ class Exploit(Exploit):
                     )
                 )
             if len(all_results) > 20:
-                print_info("  ... and {} more.".format(len(all_results) - 20))
+                print_info(f"  ... and {len(all_results) - 20} more.")
 
             outfile = os.path.join(self._outdir(), "kal_scan.json")
             with open(outfile, "w", encoding="utf-8") as f:
                 json.dump(all_results, f, indent=2, ensure_ascii=False)
-            print_status("Results saved to {}".format(outfile))
+            print_status(f"Results saved to {outfile}")
         else:
             print_status("No channels found.")
 
@@ -402,7 +398,7 @@ class Exploit(Exploit):
 
         dev = int(self.sdr_device)
         if dev > 0:
-            cmd.extend(["-a", "rtl={}".format(dev)])
+            cmd.extend(["-a", f"rtl={dev}"])
 
         output = self._run_cmd(cmd, "grgsm_scanner")
         if not output:
@@ -410,7 +406,7 @@ class Exploit(Exploit):
 
         results = _parse_grgsm_output(output)
         if results:
-            print_success("Found {} cell(s).".format(len(results)))
+            print_success(f"Found {len(results)} cell(s).")
             header = (
                 "  {:>5s} | {:>8s} | {:>7s} | {:>3s} | {:>3s} | {:>5s} | {:>6s}"
             )
@@ -426,12 +422,12 @@ class Exploit(Exploit):
                     )
                 )
             if len(results) > 30:
-                print_info("  ... and {} more cells.".format(len(results) - 30))
+                print_info(f"  ... and {len(results) - 30} more cells.")
 
             outfile = os.path.join(self._outdir(), "grgsm_scan.json")
             with open(outfile, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
-            print_status("Results saved to {}".format(outfile))
+            print_status(f"Results saved to {outfile}")
         else:
             print_status("No cells found.")
 
@@ -457,7 +453,7 @@ class Exploit(Exploit):
         ]
 
         print_status(
-            "Decoding BCCH on {} to extract System Information messages...".format(freq)
+            f"Decoding BCCH on {freq} to extract System Information messages..."
         )
         print_info("Press Ctrl+C to stop.")
 
@@ -469,10 +465,10 @@ class Exploit(Exploit):
             ]
             if si_lines:
                 print_success(
-                    "Extracted {} System Information message(s):".format(len(si_lines))
+                    f"Extracted {len(si_lines)} System Information message(s):"
                 )
                 for ln in si_lines[:30]:
-                    print_info("  {}".format(ln.strip()))
+                    print_info(f"  {ln.strip()}")
             else:
                 print_status(
                     "No System Information messages decoded. "
@@ -486,9 +482,9 @@ class Exploit(Exploit):
             if not os.path.isfile(fpath):
                 continue
             try:
-                with open(fpath, "r", encoding="utf-8") as f:
+                with open(fpath, encoding="utf-8") as f:
                     data = json.load(f)
-                print_success("Loaded {} records from {}".format(len(data), fname))
+                print_success(f"Loaded {len(data)} records from {fname}")
                 for r in data[:20]:
                     parts = []
                     if "arfcn" in r:
@@ -501,9 +497,9 @@ class Exploit(Exploit):
                         parts.append("MCC/MNC {}/{}".format(r["mcc"], r.get("mnc", 0)))
                     print_info("  {}".format(" | ".join(parts)))
                 if len(data) > 20:
-                    print_info("  ... and {} more.".format(len(data) - 20))
+                    print_info(f"  ... and {len(data) - 20} more.")
             except (json.JSONDecodeError, OSError) as exc:
-                print_error("Failed to parse {}: {}".format(fname, exc))
+                print_error(f"Failed to parse {fname}: {exc}")
 
     def _export(self) -> None:
         outdir = self._outdir()
@@ -512,7 +508,7 @@ class Exploit(Exploit):
             fpath = os.path.join(outdir, fname)
             if os.path.isfile(fpath):
                 try:
-                    with open(fpath, "r", encoding="utf-8") as f:
+                    with open(fpath, encoding="utf-8") as f:
                         all_data.extend(json.load(f))
                 except (json.JSONDecodeError, OSError):
                     pass
@@ -537,9 +533,7 @@ class Exploit(Exploit):
             json.dump(all_data, f, indent=2, ensure_ascii=False)
 
         print_success(
-            "Exported {} records to {} and {}".format(
-                len(all_data), csv_path, json_path
-            )
+            f"Exported {len(all_data)} records to {csv_path} and {json_path}"
         )
 
 
@@ -589,6 +583,6 @@ class Exploit(Exploit):
 
         else:
             print_error(
-                "Unknown mode: {}. Valid: info, kal_scan, grgsm_scan, band_info, "
-                "parse_results, export, monitor_cell".format(op)
+                f"Unknown mode: {op}. Valid: info, kal_scan, grgsm_scan, band_info, "
+                "parse_results, export, monitor_cell"
             )

