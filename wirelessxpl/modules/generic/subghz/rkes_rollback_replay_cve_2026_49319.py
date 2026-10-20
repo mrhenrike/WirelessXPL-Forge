@@ -229,6 +229,10 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: RollJam capture and replay of rolling codes."""
         mode = str(self.mode).strip().lower()
         freq_mhz = float(str(self.frequency))
         freq_hz = int(freq_mhz * 1_000_000)

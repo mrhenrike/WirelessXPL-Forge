@@ -444,6 +444,13 @@ class Exploit(Exploit):
             )
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E GSM A5/1 crack: capture BCCH bursts via SDR, extract Kc
+        with rainbow tables or known-plaintext, and decrypt encrypted
+        GSM traffic in the selected mode."""
+        mode = str(self.mode).strip().lower()
         dispatch = {
             "capture_bursts": self._capture_bursts,
             "crack_rainbow": self._crack_rainbow,

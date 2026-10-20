@@ -104,7 +104,11 @@ class Exploit(Exploit):
         """Scan for DJI drone WiFi networks."""
         print_status("DJI WiFi Drone Scanner")
         print_status("Passive WiFi scan")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E DJI recon: passive WiFi scan, fingerprint DJI SSIDs,
+        estimate model from SSID pattern and report default IPs."""
         import platform
 
         if platform.system().lower() == "windows":

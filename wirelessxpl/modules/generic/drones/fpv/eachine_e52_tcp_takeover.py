@@ -109,6 +109,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E TCP takeover: connect to Eachine E52 control port, send
+        the configured command (takeoff/land/emergency/photo/video) and
+        capture the response to confirm hijack."""
         simulate = bool(self.simulate)
         target_ip = str(self.target).strip()
         cmd_name = str(self.command).strip().lower()

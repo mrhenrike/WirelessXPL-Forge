@@ -138,6 +138,10 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: extract device ID, synthesize command frame, and transmit."""
         simulate = bool(self.simulate)
         cmd_name = str(self.command).strip().lower()
         freq_mhz = float(str(self.frequency))

@@ -28,7 +28,7 @@ from collections import defaultdict, deque
 from contextlib import suppress
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, UTC
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Optional
 from collections.abc import Callable
 
@@ -62,7 +62,7 @@ except ImportError:
 # Alert types and structure
 # ---------------------------------------------------------------------------
 
-class AlertType(str, Enum):
+class AlertType(StrEnum):
     DEAUTH_FLOOD = "DEAUTH_FLOOD"
     BEACON_FLOOD = "BEACON_FLOOD"
     PROBE_FLOOD = "PROBE_FLOOD"
@@ -73,7 +73,7 @@ class AlertType(str, Enum):
     DISASSOC_FLOOD = "DISASSOC_FLOOD"
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"

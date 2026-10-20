@@ -24,7 +24,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, UTC
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Optional
 from collections.abc import Callable
 
@@ -46,7 +46,7 @@ except ImportError:
 # Alert types
 # ---------------------------------------------------------------------------
 
-class ESP8266AlertType(str, Enum):
+class ESP8266AlertType(StrEnum):
     """Alert types emitted by the ESP8266 WIDS firmware."""
     DEAUTH_DETECTED = "DEAUTH_DETECTED"
     BEACON_FLOOD = "BEACON_FLOOD"

@@ -204,6 +204,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E 5Ghoul 5G NR DoS: select CVE from catalog, validate
+        srsRAN prerequisites, launch the appropriate exploit script
+        against the target UE in an RF-shielded environment."""
         mode = str(self.mode).strip().lower()
         simulate = bool(self.simulate)
 

