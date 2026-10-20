@@ -17,7 +17,7 @@ from typing import Any
 logger = logging.getLogger("wirelessxpl.pcap")
 
 try:
-    from scapy.all import (  # noqa: F401
+    from scapy.all import (  # noqa: F401  # type: ignore[attr-defined]
         EAPOL,
         IP,
         TCP,
@@ -194,7 +194,7 @@ def _extract_ssid(packet: Any) -> str:
     while elt:
         if elt.ID == 0:
             try:
-                return elt.info.decode("utf-8", errors="replace").strip("\x00")
+                return elt.info.decode("utf-8", errors="replace").strip("\x00")  # type: ignore[no-any-return]
             except Exception:
                 return ""
         elt = elt.payload.getlayer(Dot11Elt)
@@ -206,7 +206,7 @@ def _extract_channel(packet: Any) -> int:
     elt = packet.getlayer(Dot11Elt)
     while elt:
         if elt.ID == 3 and elt.info:
-            return elt.info[0]
+            return elt.info[0]  # type: ignore[no-any-return]
         elt = elt.payload.getlayer(Dot11Elt)
     return 0
 

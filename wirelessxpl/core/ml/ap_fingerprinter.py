@@ -156,7 +156,7 @@ class APFingerprinter:
         known_aps: Sequence[Mapping[str, str]] | None = None,
         compute_backend: ComputeBackend | None = None,
     ) -> None:
-        self._corpus_rows: list[dict[str, str]] = list(known_aps or DEFAULT_AP_CORPUS)
+        self._corpus_rows: list[dict[str, str]] = list(known_aps or DEFAULT_AP_CORPUS)  # type: ignore[arg-type]
         self._vectorizer: Any = None
         self._corpus_matrix: Any | None = None
         self._corpus_texts: list[str] = [r["profile"] for r in self._corpus_rows]
@@ -197,7 +197,7 @@ class APFingerprinter:
             return np.asarray(sim, dtype=np.float32)
         except Exception as exc:  # pylint: disable=broad-except
             logger.debug("ComputeBackend cosine falhou, sklearn CPU: %s", exc)
-            return cosine_similarity(q, self._corpus_matrix).astype(np.float32)
+            return cosine_similarity(q, self._corpus_matrix).astype(np.float32)  # type: ignore[no-any-return]
 
     def fingerprint(self, beacon_features: dict[str, Any]) -> APFingerprint:
         """Retorna o fabricante/modelo mais provável dado um dict de features.

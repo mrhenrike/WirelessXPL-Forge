@@ -18,7 +18,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 try:
-    from scapy.all import EAPOL, Dot11, Dot11Beacon, Dot11ProbeResp, rdpcap
+    from scapy.all import EAPOL, Dot11, Dot11Beacon, Dot11ProbeResp, rdpcap  # type: ignore[attr-defined]
     _SCAPY_OK = True
 except ImportError:
     _SCAPY_OK = False

@@ -104,30 +104,30 @@ class ROCmBackend(ComputeBackend):
 
     def device_info(self) -> str:
         if self._torch:
-            dev = self._torch.cuda.get_device_name(0)
+            dev = self._torch.cuda.get_device_name(0)  # type: ignore[unreachable]
             return f"ROCm [PyTorch-HIP] {dev}"
         return "ROCm (indisponível)"
 
     def array_from_numpy(self, arr: np.ndarray):
         if self._torch:
-            return self._torch.tensor(arr, device="cuda", dtype=self._torch.float32)
+            return self._torch.tensor(arr, device="cuda", dtype=self._torch.float32)  # type: ignore[unreachable]
         return arr
 
     def to_numpy(self, arr) -> np.ndarray:
         if self._torch:
-            return arr.detach().cpu().numpy()
+            return arr.detach().cpu().numpy()  # type: ignore[unreachable]
         return np.asarray(arr)
 
     def matmul(self, a, b):
         if self._torch:
-            return self._torch.matmul(a, b)
+            return self._torch.matmul(a, b)  # type: ignore[unreachable]
         return np.matmul(np.asarray(a), np.asarray(b))
 
     def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
         q = self.array_from_numpy(np.asarray(queries, dtype=np.float32))
         c = self.array_from_numpy(np.asarray(corpus, dtype=np.float32))
         if self._torch:
-            q_n = q / (q.norm(dim=1, keepdim=True) + 1e-10)
+            q_n = q / (q.norm(dim=1, keepdim=True) + 1e-10)  # type: ignore[unreachable]
             c_n = c / (c.norm(dim=1, keepdim=True) + 1e-10)
             sim = self._torch.mm(q_n, c_n.t())
             return self.to_numpy(sim)

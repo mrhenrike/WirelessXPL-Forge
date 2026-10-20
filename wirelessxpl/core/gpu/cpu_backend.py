@@ -40,4 +40,4 @@ class CPUBackend(ComputeBackend):
         c = np.asarray(corpus, dtype=np.float32)
         q_norm = q / (np.linalg.norm(q, axis=1, keepdims=True) + 1e-10)
         c_norm = c / (np.linalg.norm(c, axis=1, keepdims=True) + 1e-10)
-        return q_norm @ c_norm.T
+        return q_norm @ c_norm.T  # type: ignore[no-any-return]

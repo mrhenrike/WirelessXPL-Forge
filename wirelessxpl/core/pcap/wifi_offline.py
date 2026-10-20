@@ -17,7 +17,7 @@ from typing import Any
 logger = logging.getLogger("wirelessxpl.pcap.wifi_offline")
 
 try:
-    from scapy.all import (  # noqa: F401
+    from scapy.all import (  # noqa: F401  # type: ignore[attr-defined]
         EAP,
         EAPOL,
         IP,

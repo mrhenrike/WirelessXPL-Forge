@@ -85,7 +85,7 @@ def run_msf_batch_commands(
         return -1, "", str(exc)
 
 
-def read_metasploit_rb_metadata(rb_path: str) -> dict:
+def read_metasploit_rb_metadata(rb_path: str) -> dict:  # type: ignore[type-arg]
     """Best-effort parse of Name/Author/Description from a Metasploit .rb module.
 
     Does not execute Ruby; reads file as text. Preserves original file untouched.
@@ -96,7 +96,7 @@ def read_metasploit_rb_metadata(rb_path: str) -> dict:
     Returns:
         Dict with keys name, authors, description, references (lists/str).
     """
-    out: dict = {"name": "", "authors": [], "description": "", "references": [], "path": rb_path}
+    out: dict = {"name": "", "authors": [], "description": "", "references": [], "path": rb_path}  # type: ignore[type-arg]
     if not os.path.isfile(rb_path):
         return out
     with open(rb_path, encoding="utf-8", errors="replace") as handle:

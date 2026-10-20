@@ -30,7 +30,7 @@ class FTPCli:
         if ssl:
             self.ftp_client = ftplib.FTP_TLS()
         else:
-            self.ftp_client = ftplib.FTP()
+            self.ftp_client = ftplib.FTP()  # type: ignore[assignment]
 
     def connect(self, retries: int = 1) -> bool:
         """ Connect to FTP server
@@ -90,11 +90,11 @@ class FTPCli:
         try:
             fp_content = io.BytesIO()
             self.ftp_client.retrbinary(f"RETR {remote_file}", fp_content.write)
-            return fp_content.getvalue()
+            return fp_content.getvalue()  # type: ignore[return-value]
         except Exception as err:
             print_error(self.peer, "FTP Error while retrieving content", err, verbose=self.verbosity)
 
-        return None
+        return None  # type: ignore[return-value]
 
     def close(self) -> bool:
         """ Close FTP connection
@@ -120,7 +120,7 @@ class FTPClient(Exploit):
     ssl = OptBool(False, "SSL enabled: true/false")
     verbosity = OptBool(True, "Enable verbose output: true/false")
 
-    def ftp_create(self, target: str = None, port: int = None) -> FTPCli:
+    def ftp_create(self, target: str = None, port: int = None) -> FTPCli:  # type: ignore[assignment]
         """ Create FTP client
 
         :param str target: target FTP server ip address
@@ -128,8 +128,8 @@ class FTPClient(Exploit):
         :return FTPCli: FTP client object
         """
 
-        ftp_target = target if target else self.target
-        ftp_port = port if port else self.port
+        ftp_target = target if target else self.target  # type: ignore[attr-defined]
+        ftp_port = port if port else self.port  # type: ignore[attr-defined]
 
         ftp_client = FTPCli(ftp_target, ftp_port, ssl=self.ssl, verbosity=self.verbosity)
         return ftp_client

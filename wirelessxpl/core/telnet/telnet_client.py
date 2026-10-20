@@ -1,7 +1,7 @@
 try:
     import telnetlib
 except ImportError:
-    import telnetlib3 as telnetlib
+    import telnetlib3 as telnetlib  # type: ignore[no-redef]
 
 from wirelessxpl.core.exploit.exploit import Exploit, Protocol
 from wirelessxpl.core.exploit.option import OptBool
@@ -37,7 +37,7 @@ class TelnetCli:
         """
 
         try:
-            self.telnet_client = telnetlib.Telnet(self.telnet_target, self.telnet_port, timeout=TELNET_TIMEOUT)
+            self.telnet_client = telnetlib.Telnet(self.telnet_target, self.telnet_port, timeout=TELNET_TIMEOUT)  # type: ignore[assignment]
             return True
         except Exception as err:
             print_error(self.peer, "Telnet Error while connecting to the server", err, verbose=self.verbosity)
@@ -58,13 +58,13 @@ class TelnetCli:
                 if not self.connect():
                     continue
 
-                self.telnet_client.expect([b"Login: ", b"login: ", b"Username: ", b"username: "], 5)
-                self.telnet_client.write(bytes(username, "utf-8") + b"\r\n")
-                self.telnet_client.expect([b"Password: ", b"password: "], 5)
-                self.telnet_client.write(bytes(password, "utf-8") + b"\r\n")
-                self.telnet_client.write(b"\r\n")
+                self.telnet_client.expect([b"Login: ", b"login: ", b"Username: ", b"username: "], 5)  # type: ignore[attr-defined]
+                self.telnet_client.write(bytes(username, "utf-8") + b"\r\n")  # type: ignore[attr-defined]
+                self.telnet_client.expect([b"Password: ", b"password: "], 5)  # type: ignore[attr-defined]
+                self.telnet_client.write(bytes(password, "utf-8") + b"\r\n")  # type: ignore[attr-defined]
+                self.telnet_client.write(b"\r\n")  # type: ignore[attr-defined]
 
-                (i, obj, res) = self.telnet_client.expect([b"Incorrect", b"incorrect"], 5)
+                (i, obj, res) = self.telnet_client.expect([b"Incorrect", b"incorrect"], 5)  # type: ignore[attr-defined]
 
                 if (i == -1 and any([x in res for x in [b"#", b"$", b">"]])) or len(res) > 500:  # big banner e.g. mikrotik
                     print_success(self.peer, f"Telnet Authentication Successful - Username: '{username}' Password: '{password}'", verbose=self.verbosity)
@@ -84,9 +84,9 @@ class TelnetCli:
         """
 
         try:
-            self.telnet_client = telnetlib.Telnet(self.telnet_target, self.telnet_port, timeout=TELNET_TIMEOUT)
-            self.telnet_client.expect([b"Login: ", b"login: ", b"Username: ", b"username: "], 5)
-            self.telnet_client.close()
+            self.telnet_client = telnetlib.Telnet(self.telnet_target, self.telnet_port, timeout=TELNET_TIMEOUT)  # type: ignore[assignment]
+            self.telnet_client.expect([b"Login: ", b"login: ", b"Username: ", b"username: "], 5)  # type: ignore[attr-defined]
+            self.telnet_client.close()  # type: ignore[attr-defined]
 
             return True
         except Exception as err:
@@ -100,7 +100,7 @@ class TelnetCli:
         :return None:
         """
 
-        self.telnet_client.interact()
+        self.telnet_client.interact()  # type: ignore[attr-defined]
 
     def read_until(self, data: bytes) -> bytes:
         """ Read until specified data found in response
@@ -110,12 +110,12 @@ class TelnetCli:
         """
 
         try:
-            response = self.telnet_client.read_until(data, 5)
-            return response
+            response = self.telnet_client.read_until(data, 5)  # type: ignore[attr-defined]
+            return response  # type: ignore[no-any-return]
         except Exception as err:
             print_error(self.peer, "Telnet Error while reading data from the server", err, verbose=self.verbosity)
 
-        return None
+        return None  # type: ignore[return-value]
 
     def write(self, data: bytes) -> bool:
         """ Write data to Telnet server
@@ -125,7 +125,7 @@ class TelnetCli:
         """
 
         try:
-            self.telnet_client.write(data)
+            self.telnet_client.write(data)  # type: ignore[attr-defined]
             return True
         except Exception as err:
             print_error(self.peer, "Telnet Error while writing to the server", err, verbose=self.verbosity)
@@ -139,7 +139,7 @@ class TelnetCli:
         """
 
         try:
-            self.telnet_client.close()
+            self.telnet_client.close()  # type: ignore[attr-defined]
             return True
         except Exception as err:
             print_error(self.peer, "Telnet Error while closing connection", err, verbose=self.verbosity)
@@ -155,7 +155,7 @@ class TelnetClient(Exploit):
 
     verbosity = OptBool(True, "Enable verbose output: true/false")
 
-    def telnet_create(self, target: str = None, port: int = None) -> TelnetCli:
+    def telnet_create(self, target: str = None, port: int = None) -> TelnetCli:  # type: ignore[assignment]
         """ Create Telnet client
 
         :param str target: target Telnet ip address
@@ -163,8 +163,8 @@ class TelnetClient(Exploit):
         :return TelnetCli: Telnet client object
         """
 
-        telnet_target = target if target else self.target
-        telnet_port = port if port else self.port
+        telnet_target = target if target else self.target  # type: ignore[attr-defined]
+        telnet_port = port if port else self.port  # type: ignore[attr-defined]
 
         telnet_client = TelnetCli(telnet_target, telnet_port, verbosity=self.verbosity)
         return telnet_client

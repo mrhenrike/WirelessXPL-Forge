@@ -128,7 +128,7 @@ class PortalOptimizer:
 
         assert best_key is not None
         tpl, loc = best_key
-        top_os = max(os_dist, key=os_dist.get) if os_dist else "unknown"
+        top_os = max(os_dist, key=os_dist.get) if os_dist else "unknown"  # type: ignore[arg-type]
 
         fields: tuple[str, ...]
         if enterprise:

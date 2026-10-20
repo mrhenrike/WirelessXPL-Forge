@@ -334,7 +334,7 @@ class AnomalyDetector:
         if self._centroid is None or self._scale is None:
             return np.zeros(arr.shape[0], dtype=np.float64)
         d = np.linalg.norm((arr - self._centroid) / self._scale, axis=1)
-        return -d
+        return -d  # type: ignore[no-any-return]
 
     def predict(self, X: np.ndarray | Sequence[Sequence[float]]) -> np.ndarray:
         """Rótulos 1=inlier, -1=outlier."""

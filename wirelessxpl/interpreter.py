@@ -77,7 +77,7 @@ except ImportError:
         def get_endidx():
             return 0
 
-    readline = _ReadlineShim()
+    readline = _ReadlineShim()  # type: ignore[assignment]
 
 
 def is_libedit():
@@ -161,14 +161,14 @@ class BaseInterpreter:
             sys.exit(1)
 
         try:
-            from embedxpl.core.banner import show_banner
+            from embedxpl.core.banner import show_banner  # type: ignore[import-not-found]
             show_banner("wirelessxpl", version="v5.0.0")
         except Exception:
             if self.banner:
                 print_info(self.banner)
-        print_warning("FOR AUTHORIZED PENETRATION TESTING AND SECURITY RESEARCH ONLY.")
-        print_warning("Unauthorized use is illegal. Operator assumes full responsibility.")
-        print_warning("simulate=True enforced. Use 'set simulate false' to execute for real.")
+        print_warning("FOR AUTHORIZED PENETRATION TESTING AND SECURITY RESEARCH ONLY.")  # type: ignore[name-defined]
+        print_warning("Unauthorized use is illegal. Operator assumes full responsibility.")  # type: ignore[name-defined]
+        print_warning("simulate=True enforced. Use 'set simulate false' to execute for real.")  # type: ignore[name-defined]
         printer_queue.join()
 
         while True:
@@ -282,7 +282,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         self.module_commands.sort()
 
         self.modules = index_modules()
-        self.modules_count = Counter()
+        self.modules_count = Counter()  # type: ignore[var-annotated]
         self.modules_count.update([module.split('.')[0] for module in self.modules])
         self.main_modules_dirs = [module for module in os.listdir(MODULES_DIR) if not module.startswith("__")]
         self._module_device_index = {}
@@ -387,11 +387,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         if self.current_module:
             try:
-                return self.module_prompt_template.format(host=self.prompt_hostname, module=self.module_metadata['name'])
+                return self.module_prompt_template.format(host=self.prompt_hostname, module=self.module_metadata['name'])  # type: ignore[union-attr]
             except (AttributeError, KeyError):
-                return self.module_prompt_template.format(host=self.prompt_hostname, module="UnnamedModule")
+                return self.module_prompt_template.format(host=self.prompt_hostname, module="UnnamedModule")  # type: ignore[union-attr]
         else:
-            return self.raw_prompt_template.format(host=self.prompt_hostname)
+            return self.raw_prompt_template.format(host=self.prompt_hostname)  # type: ignore[union-attr]
 
     def available_modules_completion(self, text):
         """ Looking for tab completion hints using setup.py entry_points.
@@ -516,7 +516,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         previous_sigint_handler = signal.getsignal(signal.SIGINT)
         try:
             signal.signal(signal.SIGINT, self.__command_sigint_handler)
-            self.current_module.run()
+            self.current_module.run()  # type: ignore[union-attr]
         except KeyboardInterrupt:
             print_info()
             print_error("Operation cancelled by user")
@@ -532,23 +532,23 @@ class WirelessXPLInterpreter(BaseInterpreter):
     @module_required
     def command_set(self, *args, **kwargs):
         key, _, value = args[0].partition(" ")
-        if key in self.current_module.options:
+        if key in self.current_module.options:  # type: ignore[union-attr]
             setattr(self.current_module, key, value)
-            self.current_module.exploit_attributes[key][0] = value
+            self.current_module.exploit_attributes[key][0] = value  # type: ignore[union-attr]
 
             if kwargs.get("glob", False):
                 GLOBAL_OPTS[key] = value
             print_success(f"{key} => {value}")
         else:
             print_error(f"You can't set option '{key}'.\n"
-                        f"Available options: {self.current_module.options}")
+                        f"Available options: {self.current_module.options}")  # type: ignore[union-attr]
 
     @stop_after(2)
     def complete_set(self, text, *args, **kwargs):
         if text:
-            return [" ".join((attr, "")) for attr in self.current_module.options if attr.startswith(text)]
+            return [" ".join((attr, "")) for attr in self.current_module.options if attr.startswith(text)]  # type: ignore[union-attr]
         else:
-            return self.current_module.options
+            return self.current_module.options  # type: ignore[union-attr]
 
     @module_required
     def command_setg(self, *args, **kwargs):
@@ -587,9 +587,9 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         for opt_key in args:
             try:
-                opt_description = self.current_module.exploit_attributes[opt_key][1]
-                opt_display_value = self.current_module.exploit_attributes[opt_key][0]
-                if self.current_module.exploit_attributes[opt_key][2]:
+                opt_description = self.current_module.exploit_attributes[opt_key][1]  # type: ignore[union-attr]
+                opt_display_value = self.current_module.exploit_attributes[opt_key][0]  # type: ignore[union-attr]
+                if self.current_module.exploit_attributes[opt_key][2]:  # type: ignore[union-attr]
                     continue
             except (KeyError, IndexError, AttributeError):
                 pass
@@ -605,8 +605,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         for opt_key in args:
             try:
-                opt_description = self.current_module.exploit_attributes[opt_key][1]
-                opt_display_value = self.current_module.exploit_attributes[opt_key][0]
+                opt_description = self.current_module.exploit_attributes[opt_key][1]  # type: ignore[union-attr]
+                opt_display_value = self.current_module.exploit_attributes[opt_key][0]  # type: ignore[union-attr]
             except (KeyError, AttributeError):
                 pass
             else:
@@ -623,8 +623,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
     @module_required
     def _show_options(self, *args, **kwargs):
         target_names = ["target", "port", "ssl", "rhost", "rport", "lhost", "lport"]
-        target_opts = [opt for opt in self.current_module.options if opt in target_names]
-        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]
+        target_opts = [opt for opt in self.current_module.options if opt in target_names]  # type: ignore[union-attr]
+        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]  # type: ignore[union-attr]
         headers = ("Name", "Current settings", "Description")
 
         print_info("\nTarget options:")
@@ -639,8 +639,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
     @module_required
     def _show_advanced(self, *args, **kwargs):
         target_names = ["target", "port", "ssl", "rhost", "rport", "lhost", "lport"]
-        target_opts = [opt for opt in self.current_module.options if opt in target_names]
-        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]
+        target_opts = [opt for opt in self.current_module.options if opt in target_names]  # type: ignore[union-attr]
+        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]  # type: ignore[union-attr]
         headers = ("Name", "Current settings", "Description")
 
         print_info("\nTarget options:")
@@ -655,7 +655,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
     @module_required
     def _show_devices(self, *args, **kwargs):
         try:
-            devices = self.current_module._Exploit__info__['devices']
+            devices = self.current_module._Exploit__info__['devices']  # type: ignore[union-attr]
 
             print_info("\nTarget devices:")
             i = 0
@@ -715,7 +715,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
     @module_required
     def command_check(self, *args, **kwargs):
         try:
-            result = self.current_module.check()
+            result = self.current_module.check()  # type: ignore[union-attr]
         except Exception as error:
             print_error(error)
         else:

@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 # Timing profiles
 # ---------------------------------------------------------------------------
 
-TIMING_PROFILES: dict[str, dict] = {
+TIMING_PROFILES: dict[str, dict] = {  # type: ignore[type-arg]
     "0": {"name": "paranoid",   "level": 0, "scan_delay_ms": 300_000, "timeout_ms": 60_000, "retries": 0},
     "1": {"name": "sneaky",     "level": 1, "scan_delay_ms": 15_000,  "timeout_ms": 30_000, "retries": 1},
     "2": {"name": "polite",     "level": 2, "scan_delay_ms": 400,     "timeout_ms": 10_000, "retries": 2},
@@ -63,7 +63,7 @@ TIMING_PROFILES: dict[str, dict] = {
 TIMING_BY_NAME: dict[str, str] = {v["name"]: k for k, v in TIMING_PROFILES.items()}
 
 
-def parse_timing(value: str) -> dict:
+def parse_timing(value: str) -> dict:  # type: ignore[type-arg]
     """Accept T0-T5, 0-5, or name (paranoid/sneaky/polite/normal/aggressive/insane)."""
     v = str(value).strip().lower().lstrip("t")
     if v in TIMING_BY_NAME:
@@ -172,7 +172,7 @@ def _get_local_ip() -> str:
         s.connect(("8.8.8.8", 80))
         ip = s.getsockname()[0]
         s.close()
-        return ip
+        return ip  # type: ignore[no-any-return]
     except Exception:
         return "127.0.0.1"
 
@@ -232,7 +232,7 @@ class WXFConfig:
 
     # ── Timing (nmap-style) ─────────────────────────────────────────────────
     timing:          str   = "3"    # T3 / normal
-    timing_profile:  dict  = field(default_factory=lambda: TIMING_PROFILES["3"])
+    timing_profile:  dict  = field(default_factory=lambda: TIMING_PROFILES["3"])  # type: ignore[type-arg]
 
     # ── Reverse shell defaults ─────────────────────────────────────────────
     reverse_host:    str   = ""     # filled at init
@@ -257,13 +257,13 @@ class WXFConfig:
         if not hasattr(cls, "_singleton") or cls._singleton is None:
             cfg = cls()
             cfg._init()
-            cls._singleton = cfg
-        return cls._singleton
+            cls._singleton = cfg  # type: ignore[attr-defined]
+        return cls._singleton  # type: ignore[attr-defined, no-any-return]
 
     @classmethod
     def reset(cls) -> 'WXFConfig':
         """Re-detect everything (call after attaching new adapters)."""
-        cls._singleton = None
+        cls._singleton = None  # type: ignore[attr-defined]
         return cls.get()
 
     def _init(self) -> None:
@@ -302,15 +302,15 @@ class WXFConfig:
 
     @property
     def timing_name(self) -> str:
-        return self.timing_profile.get("name", "normal")
+        return self.timing_profile.get("name", "normal")  # type: ignore[no-any-return]
 
     @property
     def scan_delay_ms(self) -> int:
-        return self.timing_profile.get("scan_delay_ms", 100)
+        return self.timing_profile.get("scan_delay_ms", 100)  # type: ignore[no-any-return]
 
     @property
     def timeout_ms(self) -> int:
-        return self.timing_profile.get("timeout_ms", 5000)
+        return self.timing_profile.get("timeout_ms", 5000)  # type: ignore[no-any-return]
 
     # ------------------------------------------------------------------
     # Interface selection

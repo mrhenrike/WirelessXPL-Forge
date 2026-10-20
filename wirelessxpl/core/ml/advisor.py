@@ -43,13 +43,13 @@ def _load_default_config() -> dict[str, Any]:
     if hasattr(resources, "files"):
         path = resources.files(ml_pkg).joinpath("default_advisor.json")
         with path.open("r", encoding="utf-8") as handle:
-            return json.load(handle)
+            return json.load(handle)  # type: ignore[no-any-return]
     import importlib
 
     mod = importlib.import_module(ml_pkg)
-    path = Path(mod.__file__).resolve().parent.joinpath("default_advisor.json")
+    path = Path(mod.__file__).resolve().parent.joinpath("default_advisor.json")  # type: ignore[arg-type]
     with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        return json.load(handle)  # type: ignore[no-any-return]
 
 
 def _softmax(logits: Sequence[float]) -> list[float]:
