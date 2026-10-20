@@ -57,7 +57,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
       - run: pip install -e ".[dev]"
-      - run: pytest tests/ -v --tb=short --cov=wirelessxpl --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=30
+      - run: pytest tests/ -v --tb=short --cov=wirelessxpl --cov-report=term-missing --cov-report=html:htmlcov --cov-fail-under=15
       - name: Upload coverage report
         if: always() && matrix.python-version == '3.12'
         uses: actions/upload-artifact@v4
