@@ -6,7 +6,6 @@ Tests the target device for all major SweynTooth CVEs (CVE-2019-16336,
 17517, 17519, 17520) and attempts to identify the vulnerable SDK/vendor
 from observed behavior.
 """
-from __future__ import annotations
 
 import asyncio
 import logging
@@ -69,7 +68,7 @@ _SWEYNTOOTH_CVES = {
 }
 
 
-async def _fingerprint_device(target_addr: str) -> Dict:
+async def _fingerprint_device(target_addr: str) -> dict:
     """Connect and collect GATT service/characteristic info for vendor fingerprinting."""
     if not HAS_BLEAK:
         return {}
@@ -199,7 +198,7 @@ class Exploit(Exploit):
             return
 
         # Step 2: CVE tests
-        results: Dict[str, str] = {}
+        results: dict[str, str] = {}
         for suffix in suffixes:
             cve_id = f"CVE-2019-{suffix}"
             print_status(f"\nTesting {cve_id}...")

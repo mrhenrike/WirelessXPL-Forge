@@ -15,7 +15,6 @@ Incorporated / ported from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -63,9 +62,9 @@ _RSN_CAP_MFPR = 0x0040  # MFP required
 _RSN_CAP_MFPC = 0x0080  # MFP capable
 
 
-def _parse_rsn_ie(data: bytes) -> Dict[str, Any]:
+def _parse_rsn_ie(data: bytes) -> dict[str, Any]:
     """Parse RSN (802.11i) Information Element payload."""
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "version": 0,
         "group_cipher": "unknown",
         "pairwise_ciphers": [],
@@ -114,7 +113,7 @@ def _parse_rsn_ie(data: bytes) -> Dict[str, Any]:
 
 def _classify_security(
     wpa_ie_present: bool,
-    rsn: Optional[Dict[str, Any]],
+    rsn: dict[str, Any] | None,
     wps_present: bool,
     cap_privacy: bool,
 ) -> str:
@@ -183,7 +182,7 @@ class Exploit(Exploit):
     i_know_scope = OptBool(False, "Confirmo que estou em laboratório autorizado")
 
     # Internal state
-    _bss_db: Dict[str, Dict[str, Any]]
+    _bss_db: dict[str, dict[str, Any]]
     _lock: threading.Lock
     _stop_event: threading.Event
 
@@ -216,7 +215,7 @@ class Exploit(Exploit):
             return
 
         ssid = ""
-        rsn_ie: Optional[Dict[str, Any]] = None
+        rsn_ie: dict[str, Any] | None = None
         wpa_ie = False
         wps_ie = False
         cap_privacy = False
@@ -263,7 +262,7 @@ class Exploit(Exploit):
         except Exception:
             pass
 
-        entry: Dict[str, Any] = {
+        entry: dict[str, Any] = {
             "ssid": ssid or "<hidden>",
             "security": security,
             "wps": wps_ie,
@@ -339,7 +338,7 @@ class Exploit(Exploit):
         self._lock = threading.Lock()
         self._stop_event = threading.Event()
 
-        hopper: Optional[threading.Thread] = None
+        hopper: threading.Thread | None = None
         if channel == 0:
             hopper = threading.Thread(
                 target=self._channel_hopper, args=(iface, 13, hop_interval), daemon=True

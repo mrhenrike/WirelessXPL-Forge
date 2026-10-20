@@ -10,7 +10,6 @@ Tests verify that:
 - Error messages are clear and actionable.
 """
 
-from __future__ import annotations
 
 import unittest
 from unittest.mock import patch

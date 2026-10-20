@@ -10,12 +10,10 @@ Recode: full Python rewrite using scapy, no code copied.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +41,7 @@ class HandshakeState:
     has_m2: bool = False
     has_m3: bool = False
     has_m4: bool = False
-    pmkid: Optional[bytes] = None
+    pmkid: bytes | None = None
     ssid: str = ""
 
     @property
@@ -63,7 +61,7 @@ class HandshakeState:
         return self.has_full_handshake or self.has_partial_handshake or self.has_pmkid
 
     @property
-    def crack_methods(self) -> List[str]:
+    def crack_methods(self) -> list[str]:
         methods = []
         if self.has_full_handshake:
             methods.append("4way-m1m2")
@@ -78,8 +76,8 @@ class HandshakeState:
 class CrackableReport:
     filepath: str
     total_packets: int = 0
-    handshakes: List[HandshakeState] = field(default_factory=list)
-    ssids_seen: Set[str] = field(default_factory=set)
+    handshakes: list[HandshakeState] = field(default_factory=list)
+    ssids_seen: set[str] = field(default_factory=set)
 
     @property
     def crackable_count(self) -> int:
@@ -107,7 +105,7 @@ def _classify_eapol_message(key_info: int) -> int:
     return 0
 
 
-def _extract_pmkid_from_kde(key_data: bytes) -> Optional[bytes]:
+def _extract_pmkid_from_kde(key_data: bytes) -> bytes | None:
     pos = 0
     while pos + 2 <= len(key_data):
         kde_type = key_data[pos]
@@ -154,8 +152,8 @@ def detect_crackable(pcap_path: str) -> CrackableReport:
 
     report.total_packets = len(packets)
 
-    pairs: Dict[Tuple[str, str], HandshakeState] = {}
-    ssid_map: Dict[str, str] = {}
+    pairs: dict[tuple[str, str], HandshakeState] = {}
+    ssid_map: dict[str, str] = {}
 
     for pkt in packets:
         if pkt.haslayer(Dot11Beacon) or pkt.haslayer(Dot11ProbeResp):

@@ -9,7 +9,6 @@ per-BSSID TKIP attack feasibility assessment.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -155,7 +154,7 @@ class Exploit(Exploit):
 
         print_status(f"Analyzing {len(packets)} packets for TKIP/MIC indicators...")
 
-        bssid_map: Dict[str, _BSSIDStats] = defaultdict(_BSSIDStats)
+        bssid_map: dict[str, _BSSIDStats] = defaultdict(_BSSIDStats)
 
         for pkt in packets:
             if not pkt.haslayer(Dot11):

@@ -1,7 +1,6 @@
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """WirelessXPL-Forge entry point for `python -m wirelessxpl` and `wxf` CLI."""
 
-from __future__ import annotations
 
 import sys
 

@@ -21,7 +21,6 @@ Improvements incorporated from upstream mikeryan/crackle:
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import math
@@ -148,31 +147,31 @@ class PairingState:
     """Captures BLE pairing exchange state from PCAP."""
 
     def __init__(self) -> None:
-        self.preq: Optional[bytes] = None
-        self.pres: Optional[bytes] = None
-        self.mconfirm: Optional[bytes] = None
-        self.sconfirm: Optional[bytes] = None
-        self.mrand: Optional[bytes] = None
-        self.srand: Optional[bytes] = None
-        self.ia: Optional[bytes] = None
-        self.ra: Optional[bytes] = None
+        self.preq: bytes | None = None
+        self.pres: bytes | None = None
+        self.mconfirm: bytes | None = None
+        self.sconfirm: bytes | None = None
+        self.mrand: bytes | None = None
+        self.srand: bytes | None = None
+        self.ia: bytes | None = None
+        self.ra: bytes | None = None
         self.iat: int = 0
         self.rat: int = 0
         self.aa: int = 0
-        self.skdm: Optional[bytes] = None
-        self.skds: Optional[bytes] = None
-        self.ivm: Optional[bytes] = None
-        self.ivs: Optional[bytes] = None
-        self.rand_val: Optional[bytes] = None
-        self.ediv: Optional[bytes] = None
+        self.skdm: bytes | None = None
+        self.skds: bytes | None = None
+        self.ivm: bytes | None = None
+        self.ivs: bytes | None = None
+        self.rand_val: bytes | None = None
+        self.ediv: bytes | None = None
         self.has_sc: bool = False
         self.lesc_debug_key: bool = False
 
-        self.tk: Optional[int] = None
-        self.stk: Optional[bytes] = None
-        self.session_key: Optional[bytes] = None
-        self.iv: Optional[bytes] = None
-        self.ltk: Optional[bytes] = None
+        self.tk: int | None = None
+        self.stk: bytes | None = None
+        self.session_key: bytes | None = None
+        self.iv: bytes | None = None
+        self.ltk: bytes | None = None
 
     @property
     def can_crack_fast(self) -> bool:
@@ -195,7 +194,7 @@ class PairingState:
 def _brute_force_chunk(preq: bytes, pres: bytes, iat: int, rat: int,
                        ia: bytes, ra: bytes, rand_val: bytes,
                        target_confirm: bytes,
-                       start_tk: int, end_tk: int) -> Optional[int]:
+                       start_tk: int, end_tk: int) -> int | None:
     """Worker function for parallel TK brute-force over a range.
 
     Designed to run in a separate process via ProcessPoolExecutor.
@@ -209,7 +208,7 @@ def _brute_force_chunk(preq: bytes, pres: bytes, iat: int, rat: int,
 
 
 def brute_force_tk(state: PairingState, progress_interval: int = 100000,
-                   workers: int = 0) -> Optional[int]:
+                   workers: int = 0) -> int | None:
     """Brute-force the BLE Legacy Pairing TK (0 to 999999).
 
     Uses parallel workers (processes) when workers > 1, falling back
@@ -309,7 +308,7 @@ class Exploit(Exploit):
     workers = OptInteger(0, "Parallel brute-force workers (0=auto detect CPU count)")
     dry_run = OptBool(False, "Show configuration without executing")
 
-    def _extract_pairing_state(self) -> Optional[PairingState]:
+    def _extract_pairing_state(self) -> PairingState | None:
         """Extract BLE pairing data from PCAP.
 
         Parses CONNECT_REQ, SMP exchanges, and LL Control PDUs.

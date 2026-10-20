@@ -23,7 +23,6 @@ References:
   - CVE-2026-78306
   - https://notcve.org/cve/CVE-2026-78306
 """
-from __future__ import annotations
 
 import asyncio
 import logging
@@ -134,7 +133,7 @@ except ImportError:
     HAS_BLEAK = False
 
 
-async def _send_duml_command(address: str, frame: bytes, wait_response_s: float = 2.0) -> Optional[bytes]:
+async def _send_duml_command(address: str, frame: bytes, wait_response_s: float = 2.0) -> bytes | None:
     """Connect to DJI drone BLE and send a DUML command frame."""
     if not HAS_BLEAK:
         return None

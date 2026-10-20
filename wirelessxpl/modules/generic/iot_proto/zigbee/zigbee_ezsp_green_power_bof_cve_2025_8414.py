@@ -27,7 +27,6 @@ References:
   - https://nvd.nist.gov/vuln/detail/CVE-2025-8414
   - https://community.silabs.com/068Vm00000WJZED
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -93,11 +92,11 @@ def _check_host_reachable(host: str, port: int, timeout: float = 3.0) -> bool:
         sock = socket.create_connection((host, port), timeout=timeout)
         sock.close()
         return True
-    except (socket.timeout, ConnectionRefusedError, OSError):
+    except (TimeoutError, ConnectionRefusedError, OSError):
         return False
 
 
-def _query_ezsp_version(host: str, port: int, timeout: float = 5.0) -> Optional[str]:
+def _query_ezsp_version(host: str, port: int, timeout: float = 5.0) -> str | None:
     """Send EZSP version query and parse response."""
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -140,7 +139,7 @@ def _scan_mdns_zigbee_hosts(timeout: float = 5.0) -> list[dict]:
                 data, addr = sock.recvfrom(4096)
                 if addr[0] not in [e["ip"] for e in found]:
                     found.append({"ip": addr[0], "raw": data.hex()[:64], "source": "mdns"})
-            except socket.timeout:
+            except TimeoutError:
                 break
         sock.close()
     except Exception as exc:
@@ -166,7 +165,7 @@ def _send_overflow_probe(host: str, port: int, network_key_hex: str, timeout: fl
         try:
             resp = sock.recv(256)
             result["response"] = resp.hex() if resp else None
-        except socket.timeout:
+        except TimeoutError:
             # No response after overflow -- possible crash
             result["crash_detected"] = True
             result["response"] = None
@@ -174,7 +173,7 @@ def _send_overflow_probe(host: str, port: int, network_key_hex: str, timeout: fl
         sock.close()
     except ConnectionRefusedError:
         result["error"] = "Connection refused"
-    except socket.timeout:
+    except TimeoutError:
         result["crash_detected"] = True
         result["error"] = "Timeout (possible crash)"
     except Exception as exc:

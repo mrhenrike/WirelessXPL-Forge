@@ -5,7 +5,6 @@ periodic advertising, direction finding (AoA/AoD), LE Audio (LC3),
 and GATT security assessment.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto

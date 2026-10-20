@@ -16,7 +16,6 @@ OS requirement: Linux only (raw sockets).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import ipaddress
 import logging
@@ -178,8 +177,8 @@ class CaptiveDNSServer:
         """
         self._portal_ip = portal_ip
         self._port = port
-        self._dns_server: Optional[object] = None
-        self._thread: Optional[threading.Thread] = None
+        self._dns_server: object | None = None
+        self._thread: threading.Thread | None = None
         self._running: bool = False
 
     @property
@@ -285,18 +284,18 @@ class CaptiveDHCPServer:
         self._ip_end = ipaddress.IPv4Address(ip_range_end)
         self._subnet_mask = subnet_mask
         self._lease_time = lease_time
-        self._leases: Dict[str, str] = {}
+        self._leases: dict[str, str] = {}
         self._lock = threading.Lock()
         self._running: bool = False
         self._stop_event = threading.Event()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
 
     @property
     def is_running(self) -> bool:
         """Return True while the DHCP daemon thread is alive."""
         return self._running and self._thread is not None and self._thread.is_alive()
 
-    def get_leases(self) -> Dict[str, str]:
+    def get_leases(self) -> dict[str, str]:
         """Return a thread-safe snapshot of active MAC-to-IP leases.
 
         Returns:
@@ -309,7 +308,7 @@ class CaptiveDHCPServer:
     # Internal IP allocation
     # ------------------------------------------------------------------
 
-    def _next_available_ip(self) -> Optional[str]:
+    def _next_available_ip(self) -> str | None:
         """Scan the pool for an unallocated IP.
 
         Returns:
@@ -325,7 +324,7 @@ class CaptiveDHCPServer:
                 current += 1
         return None
 
-    def _get_or_assign_ip(self, mac: str) -> Optional[str]:
+    def _get_or_assign_ip(self, mac: str) -> str | None:
         """Return the existing lease for a MAC or allocate a new IP.
 
         Args:
@@ -605,7 +604,7 @@ class CaptiveNetwork:
         self.dns.stop()
         logger.info("CaptiveNetwork stopped")
 
-    def status(self) -> Dict[str, object]:
+    def status(self) -> dict[str, object]:
         """Return operational status for both servers.
 
         Returns:
@@ -705,7 +704,7 @@ class Exploit(Exploit):
             lease_time=int(self.lease_time),
         )
 
-        errors: List[str] = []
+        errors: list[str] = []
         try:
             dns.start()
         except ImportError as exc:

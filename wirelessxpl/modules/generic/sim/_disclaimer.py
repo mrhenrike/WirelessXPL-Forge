@@ -7,7 +7,6 @@ Unauthorized interception, IMSI catching, spectrum use without license, and
 SIM manipulation of cards you do not own are illegal in most jurisdictions.
 """
 
-from __future__ import annotations
 
 from wirelessxpl.core.exploit.printer import print_status
 

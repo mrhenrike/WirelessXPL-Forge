@@ -131,7 +131,7 @@ class Exploit(Exploit):
                     if src[0] == str(self.target):
                         responses.append(data)
                         total_resp_size += len(data)
-                except socket.timeout:
+                except TimeoutError:
                     continue
             return req_size, total_resp_size, len(responses)
         except OSError:

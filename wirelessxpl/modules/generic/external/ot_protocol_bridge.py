@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 # Version: 1.0.0
-from __future__ import annotations
 
 import logging
 import os
@@ -88,7 +87,7 @@ class Exploit(Exploit):
                 return w
         return None
 
-    def _python_isf(self) -> List[str]:
+    def _python_isf(self) -> list[str]:
         """isf é Python 2 (ConfigParser legado); tenta python2 / py -2 / python."""
         if shutil.which("python2"):
             return ["python2"]
@@ -205,7 +204,7 @@ class Exploit(Exploit):
         lines.append("m.main()")
         return "\n".join(lines)
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Monta argv para subprocess conforme ``mode``.
 
         Returns:
@@ -261,7 +260,7 @@ class Exploit(Exploit):
         snippet = self._build_modbussploit_snippet()
         return [py, "-c", snippet]
 
-    def _cwd_for_command(self, cmd: List[str]) -> str:
+    def _cwd_for_command(self, cmd: list[str]) -> str:
         """Define cwd para o subprocess."""
         mode = str(self.mode).strip().lower()
         if mode == "isf":

@@ -24,7 +24,6 @@ Requires: wpa_supplicant binary with EAP support.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -59,7 +58,7 @@ network={{
 """
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -98,7 +97,7 @@ def _build_wpa_config(
     )
 
 
-def _read_lines(filepath: str) -> List[str]:
+def _read_lines(filepath: str) -> list[str]:
     """Read non-empty, stripped lines from a file."""
     if not filepath or not os.path.isfile(filepath):
         return []
@@ -163,7 +162,7 @@ class Exploit(Exploit):
         os.makedirs(out, exist_ok=True)
         return out
 
-    def _validate_eap_type(self) -> Optional[str]:
+    def _validate_eap_type(self) -> str | None:
         eap = str(self.eap_type).strip().upper()
         if eap not in _SUPPORTED_EAP_TYPES:
             print_error(
@@ -212,7 +211,7 @@ class Exploit(Exploit):
                 stderr=subprocess.STDOUT,
             )
             deadline = time.time() + self._AUTH_TIMEOUT
-            output_chunks: List[str] = []
+            output_chunks: list[str] = []
 
             while time.time() < deadline:
                 if proc.poll() is not None:
@@ -257,8 +256,8 @@ class Exploit(Exploit):
 
     def _run_attempts(
         self,
-        credentials: List[Tuple[str, str]],
-    ) -> List[Tuple[str, str]]:
+        credentials: list[tuple[str, str]],
+    ) -> list[tuple[str, str]]:
         """Execute credential attempts and return list of successful pairs."""
         iface = str(self.interface).strip()
         ssid = str(self.target_ssid).strip()
@@ -279,7 +278,7 @@ class Exploit(Exploit):
             f"delay: {delay_sec}s)"
         )
 
-        found: List[Tuple[str, str]] = []
+        found: list[tuple[str, str]] = []
         attempted = 0
 
         for username, password in credentials:
@@ -310,7 +309,7 @@ class Exploit(Exploit):
         return found
 
     def _save_results(
-        self, found: List[Tuple[str, str]], total: int
+        self, found: list[tuple[str, str]], total: int
     ) -> None:
         """Save brute-force results to output directory."""
         out_dir = self._get_output_dir()

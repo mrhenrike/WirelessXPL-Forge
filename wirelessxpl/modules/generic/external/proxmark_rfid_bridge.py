@@ -15,7 +15,6 @@ Requires: Proxmark3 hardware + pm3 client (proxmark3 or pm3).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -30,7 +29,7 @@ from wirelessxpl.core.phase_gateway import PhaseGateway
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -80,7 +79,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print commands without executing")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
-    def _find_pm3(self) -> Optional[str]:
+    def _find_pm3(self) -> str | None:
         pm3 = str(self.pm3_client).strip()
         if pm3 and os.path.isfile(pm3):
             return pm3
@@ -90,7 +89,7 @@ class Exploit(Exploit):
                 return p
         return None
 
-    def _pm3_cmd(self, *args: str) -> List[str]:
+    def _pm3_cmd(self, *args: str) -> list[str]:
         pm3 = self._find_pm3()
         if not pm3:
             return []
@@ -101,7 +100,7 @@ class Exploit(Exploit):
         cmd.extend(["-c", " ".join(args)])
         return cmd
 
-    def _run(self, cmd: List[str], label: str = "") -> None:
+    def _run(self, cmd: list[str], label: str = "") -> None:
         if not cmd:
             print_error("pm3 client not found. Install proxmark3.")
             return

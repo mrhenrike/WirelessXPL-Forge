@@ -21,7 +21,6 @@ Improvements incorporated from upstream hi_my_name_is_keyboard:
 Version: 1.2.0
 """
 
-from __future__ import annotations
 
 import enum
 import logging
@@ -102,7 +101,7 @@ class Key(enum.IntEnum):
     DOWN_ARROW = 0x51; UP_ARROW = 0x52
 
 
-_ASCII_TO_HID: Dict[str, Tuple] = {}
+_ASCII_TO_HID: dict[str, tuple] = {}
 
 
 def _init_ascii_map() -> None:
@@ -153,7 +152,7 @@ class MouseButton(enum.IntFlag):
     MIDDLE = 0x04
 
 
-def keyboard_report(keys: List[Key] = None, modifiers: Mod = Mod.NONE) -> bytes:
+def keyboard_report(keys: list[Key] = None, modifiers: Mod = Mod.NONE) -> bytes:
     """Build an 11-byte HID keyboard input report.
 
     Format: [0xA1, 0x01, modifiers, 0x00, key1, key2, ..., key7]
@@ -188,7 +187,7 @@ def empty_mouse_report() -> bytes:
     return mouse_report()
 
 
-def string_to_reports(text: str) -> List[Tuple[bytes, bytes]]:
+def string_to_reports(text: str) -> list[tuple[bytes, bytes]]:
     """Convert a string to a list of (press, release) HID report pairs."""
     reports = []
     for ch in text:
@@ -211,7 +210,7 @@ class L2CAPSocket:
     def __init__(self, target: str, psm: int) -> None:
         self.target = target
         self.psm = psm
-        self.sock: Optional[_bt_socket.socket] = None
+        self.sock: _bt_socket.socket | None = None
 
     def connect(self, timeout: float = 5.0) -> None:
         """Establish L2CAP connection."""
@@ -225,7 +224,7 @@ class L2CAPSocket:
         if self.sock:
             self.sock.send(data)
 
-    def recv(self, bufsize: int = 1024) -> Optional[bytes]:
+    def recv(self, bufsize: int = 1024) -> bytes | None:
         """Non-blocking receive."""
         if not self.sock:
             return None
@@ -254,7 +253,7 @@ class HIDKeyboardClient:
         self.intr = L2CAPSocket(target, PSM_HID_INTERRUPT)
         self.hid_ready = False
         self._exit = threading.Event()
-        self._ack_thread: Optional[threading.Thread] = None
+        self._ack_thread: threading.Thread | None = None
 
     def connect(self, timeout: float = 5.0) -> bool:
         """Establish SDP + HID Control + HID Interrupt connections."""
@@ -303,7 +302,7 @@ class HIDKeyboardClient:
             time.sleep(0.1)
         return self.hid_ready
 
-    def send_keypress(self, keys: List[Key] = None,
+    def send_keypress(self, keys: list[Key] = None,
                       modifiers: Mod = Mod.NONE,
                       delay: float = 0.004) -> None:
         """Send a single keypress (down + up)."""

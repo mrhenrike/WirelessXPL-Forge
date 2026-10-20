@@ -17,7 +17,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -39,7 +38,7 @@ def _sweyntooth_root() -> Path:
 
 
 # Map of known SweynTooth attack scripts to their CVEs and descriptions
-_ATTACKS: Dict[str, Dict[str, str]] = {
+_ATTACKS: dict[str, dict[str, str]] = {
     "llid_deadlock": {"cve": "CVE-2019-17519", "desc": "LLID deadlock (freeze)"},
     "zero_len_llid": {"cve": "CVE-2019-17517", "desc": "Zero-length LLID crash"},
     "silent_length_overflow": {"cve": "CVE-2019-17516", "desc": "Silent length overflow"},
@@ -131,7 +130,7 @@ class Exploit(Exploit):
         port = str(self.dongle_port).strip()
 
         for i in range(max(1, int(self.repeat))):
-            cmd: List[str] = [python_bin, str(poc), port, victim]
+            cmd: list[str] = [python_bin, str(poc), port, victim]
             if self.verbose:
                 cmd.append("-v")
             cmd_str = " ".join(cmd)

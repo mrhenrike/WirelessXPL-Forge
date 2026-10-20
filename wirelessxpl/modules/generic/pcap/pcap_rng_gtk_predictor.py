@@ -10,7 +10,6 @@ RNG weaknesses. Extracts GTK values from EAPOL Group Key Handshake
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import math
@@ -28,7 +27,7 @@ if SCAPY_AVAILABLE:
     from scapy.all import EAPOL, Dot11
 
 
-def _extract_gtk_from_eapol(raw_eapol: bytes) -> Optional[bytes]:
+def _extract_gtk_from_eapol(raw_eapol: bytes) -> bytes | None:
     """Extract GTK from EAPOL Group Key Handshake Message 1.
 
     Group Message 1 carries the encrypted GTK in the Key Data field.
@@ -131,7 +130,7 @@ def _chi_squared_byte_test(data: bytes) -> float:
     return chi2
 
 
-def _runs_test(data: bytes) -> Tuple[int, int]:
+def _runs_test(data: bytes) -> tuple[int, int]:
     """Simple runs test on MSB of each byte.
 
     Counts the number of 'runs' (consecutive sequences of the same bit
@@ -203,8 +202,8 @@ class Exploit(Exploit):
 
     def _assess_rng_risk(
         self,
-        gtk_samples: List[bytes],
-        entropies: List[float],
+        gtk_samples: list[bytes],
+        entropies: list[float],
     ) -> str:
         """Assess RNG weakness risk based on collected GTK entropy data."""
         if len(gtk_samples) < 2:
@@ -263,8 +262,8 @@ class Exploit(Exploit):
 
         print_status(f"Scanning {len(packets)} packets for Group Key Handshake messages...")
 
-        gtk_samples: List[bytes] = []
-        bssid_gtk_map: Dict[str, List[bytes]] = defaultdict(list)
+        gtk_samples: list[bytes] = []
+        bssid_gtk_map: dict[str, list[bytes]] = defaultdict(list)
 
         for pkt in packets:
             if not pkt.haslayer(EAPOL):
@@ -299,7 +298,7 @@ class Exploit(Exploit):
         print_success(f"Extracted {len(gtk_samples)} GTK sample(s) from {len(bssid_gtk_map)} BSSID(s).")
         print_status("")
 
-        all_entropies: List[float] = []
+        all_entropies: list[float] = []
 
         for bssid, gtks in sorted(bssid_gtk_map.items()):
             print_status(f"BSSID: {bssid}")

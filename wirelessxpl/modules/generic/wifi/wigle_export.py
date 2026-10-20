@@ -21,7 +21,6 @@ Requires: Python 3.7+, sqlite3 (stdlib), csv (stdlib).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import csv
 import json
@@ -60,7 +59,7 @@ def _sanitize_ssid(ssid: str) -> str:
     return clean[:32]
 
 
-def _parse_airodump_csv(filepath: str) -> List[Dict[str, Any]]:
+def _parse_airodump_csv(filepath: str) -> list[dict[str, Any]]:
     """Parse airodump-ng CSV and extract AP records.
 
     Args:
@@ -69,7 +68,7 @@ def _parse_airodump_csv(filepath: str) -> List[Dict[str, Any]]:
     Returns:
         List of dicts with keys: bssid, ssid, channel, signal, encryption.
     """
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     in_ap_section = False
 
     with open(filepath, encoding="utf-8", errors="replace") as f:
@@ -108,7 +107,7 @@ def _parse_airodump_csv(filepath: str) -> List[Dict[str, Any]]:
     return results
 
 
-def _parse_kismetdb(filepath: str) -> List[Dict[str, Any]]:
+def _parse_kismetdb(filepath: str) -> list[dict[str, Any]]:
     """Parse kismetdb (SQLite) and extract device records.
 
     Args:
@@ -117,7 +116,7 @@ def _parse_kismetdb(filepath: str) -> List[Dict[str, Any]]:
     Returns:
         List of dicts with AP information.
     """
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
 
     if not os.path.isfile(filepath):
         return results
@@ -193,7 +192,7 @@ def _parse_kismetdb(filepath: str) -> List[Dict[str, Any]]:
     return results
 
 
-def _parse_gps_file(filepath: str) -> List[Dict[str, str]]:
+def _parse_gps_file(filepath: str) -> list[dict[str, str]]:
     """Parse GPX or NMEA file to extract trackpoints.
 
     Args:
@@ -202,7 +201,7 @@ def _parse_gps_file(filepath: str) -> List[Dict[str, str]]:
     Returns:
         List of dicts with lat/lon/time keys.
     """
-    points: List[Dict[str, str]] = []
+    points: list[dict[str, str]] = []
     if not filepath or not os.path.isfile(filepath):
         return points
 
@@ -250,7 +249,7 @@ def _parse_gps_file(filepath: str) -> List[Dict[str, str]]:
     return points
 
 
-def _write_wigle_csv(records: List[Dict[str, Any]], output_path: str) -> None:
+def _write_wigle_csv(records: list[dict[str, Any]], output_path: str) -> None:
     """Write records in WiGLE CSV format (WigleWifi-1.4).
 
     Args:
@@ -292,7 +291,7 @@ def _write_wigle_csv(records: List[Dict[str, Any]], output_path: str) -> None:
             })
 
 
-def _write_kml(records: List[Dict[str, Any]], output_path: str) -> None:
+def _write_kml(records: list[dict[str, Any]], output_path: str) -> None:
     """Write records as KML placemarks for Google Earth.
 
     Args:
@@ -367,7 +366,7 @@ class Exploit(Exploit):
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _enrich_with_gps(self, records: List[Dict[str, Any]]) -> None:
+    def _enrich_with_gps(self, records: list[dict[str, Any]]) -> None:
         """Add GPS coordinates from gps_file to records missing lat/lon."""
         gps_path = str(self.gps_file).strip()
         if not gps_path:

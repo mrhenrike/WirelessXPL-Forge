@@ -7,7 +7,6 @@ AGL, RCG, Garen, PPA Motor, Rossi. Identifies protocol from timing analysis.
 
 HW_REQ: RTL-SDR v3 + 433 MHz antenna (passive only, no TX).
 """
-from __future__ import annotations
 
 import json
 import logging
@@ -30,7 +29,7 @@ from wirelessxpl.core.exploit import (
 logger = logging.getLogger(__name__)
 
 # Brand fingerprints based on common TE (bit time) and protocol
-_BRAND_SIGNATURES: List[Dict] = [
+_BRAND_SIGNATURES: list[dict] = [
     {
         "brand": "AGL (Automatizadores de Garagem Ltda)",
         "protocol": "EV1527",
@@ -90,7 +89,7 @@ _BRAND_SIGNATURES: List[Dict] = [
 ]
 
 
-def _fingerprint_from_te(te_us: int, code_bits: int) -> List[Dict]:
+def _fingerprint_from_te(te_us: int, code_bits: int) -> list[dict]:
     """Match a TE value and bit count to known BR brand signatures."""
     matches = []
     for sig in _BRAND_SIGNATURES:

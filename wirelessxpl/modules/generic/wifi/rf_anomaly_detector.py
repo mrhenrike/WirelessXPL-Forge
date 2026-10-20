@@ -24,7 +24,6 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import collections
 import logging
@@ -50,7 +49,7 @@ _SEV = {"info": 0, "low": 1, "medium": 2, "high": 3, "critical": 4}
 _SEV_LABEL = {v: k for k, v in _SEV.items()}
 
 
-def _load_scapy() -> Tuple[bool, Optional[Any], Optional[Any]]:
+def _load_scapy() -> tuple[bool, Any | None, Any | None]:
     """Attempt to import Scapy 802.11 layers.
 
     Returns:
@@ -147,7 +146,7 @@ class Finding:
         self.evidence = evidence
         self.count = count
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "technique": self.technique,
             "severity": self.severity,
@@ -166,7 +165,7 @@ def analyse_pcap(
     beacon_threshold: int = _BEACON_FLOOD_THRESHOLD,
     sae_threshold: int = _SAE_BURST_THRESHOLD,
     probe_hidden_threshold: int = _PROBE_HIDDEN_THRESHOLD,
-) -> Tuple[List[Finding], Dict[str, int]]:
+) -> tuple[list[Finding], dict[str, int]]:
     """Analyse a PCAP file and return detected anomalies.
 
     Args:
@@ -201,18 +200,18 @@ def analyse_pcap(
     dot11_pkts = [p for p in packets if p.haslayer(Dot11)]
     logger.info("Total frames: %d, Dot11 frames: %d", len(packets), len(dot11_pkts))
 
-    findings: List[Finding] = []
+    findings: list[Finding] = []
 
     # Per-frame counters
-    frame_types: Dict[str, int] = collections.defaultdict(int)
-    deauth_sources: Dict[str, int] = collections.defaultdict(int)
-    beacon_bssids: Dict[str, int] = collections.defaultdict(int)
-    ssid_bssid_map: Dict[str, List[str]] = collections.defaultdict(list)
-    sae_commit_sources: Dict[str, int] = collections.defaultdict(int)
-    probe_hidden_sources: Dict[str, int] = collections.defaultdict(int)
+    frame_types: dict[str, int] = collections.defaultdict(int)
+    deauth_sources: dict[str, int] = collections.defaultdict(int)
+    beacon_bssids: dict[str, int] = collections.defaultdict(int)
+    ssid_bssid_map: dict[str, list[str]] = collections.defaultdict(list)
+    sae_commit_sources: dict[str, int] = collections.defaultdict(int)
+    probe_hidden_sources: dict[str, int] = collections.defaultdict(int)
     broadcast_deauth_count = 0
-    csa_sources: Dict[str, int] = collections.defaultdict(int)
-    bssid_signal: Dict[str, List[int]] = collections.defaultdict(list)
+    csa_sources: dict[str, int] = collections.defaultdict(int)
+    bssid_signal: dict[str, list[int]] = collections.defaultdict(list)
 
     for pkt in dot11_pkts:
         d = pkt.getlayer(Dot11)

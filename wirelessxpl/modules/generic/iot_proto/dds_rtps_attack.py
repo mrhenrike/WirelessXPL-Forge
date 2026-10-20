@@ -143,7 +143,7 @@ class Exploit(Exploit):
                             "rtps_version": f"{data[4]}.{data[5]}",
                             "guid_prefix": data[8:20].hex() if len(data) >= 20 else "?",
                         }
-            except socket.timeout:
+            except TimeoutError:
                 continue
         sock.close()
         return participants

@@ -6,7 +6,6 @@ Reads ``wireless_research_submodules.json`` and tests path presence relative to
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import json
 import os
@@ -22,7 +21,7 @@ def _wirelessxpl_package_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
-def _load_catalog() -> List[Dict[str, Any]]:
+def _load_catalog() -> list[dict[str, Any]]:
     """Load embedded submodule catalog JSON."""
 
     path = _wirelessxpl_package_root() / "resources" / "catalogs" / "wireless_research_submodules.json"

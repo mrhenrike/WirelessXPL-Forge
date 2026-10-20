@@ -6,11 +6,11 @@ Pure-Python heuristics always run; scikit-learn IsolationForest activates when
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Sequence
+from typing import Any, Dict, List
+from collections.abc import Sequence
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.pcap.pcap_parser import SCAPY_AVAILABLE, load_packets
@@ -33,7 +33,7 @@ except ImportError:
     _SKLEARN = False
 
 
-def _count_dot11_stats(packets: Sequence[Any]) -> Dict[str, float]:
+def _count_dot11_stats(packets: Sequence[Any]) -> dict[str, float]:
     """Return numeric features for one capture."""
 
     deauth = disassoc = beacon = data = other_mgmt = 0
@@ -71,7 +71,7 @@ def _count_dot11_stats(packets: Sequence[Any]) -> Dict[str, float]:
     }
 
 
-def _heuristic_score(f: Dict[str, float]) -> float:
+def _heuristic_score(f: dict[str, float]) -> float:
     """Scale 0–100: higher = more hostile / stress-like (lab heuristic only)."""
 
     s = 0.0
@@ -134,7 +134,7 @@ class Exploit(Exploit):
         if not SCAPY_AVAILABLE or _DOT11 is None:
             print_error("Install scapy.")
             return
-        paths: List[str] = []
+        paths: list[str] = []
         if str(self.pcap_dir).strip():
             base = Path(str(self.pcap_dir)).resolve()
             for pat in ("*.pcap", "*.pcapng", "*.cap"):
@@ -146,7 +146,7 @@ class Exploit(Exploit):
             print_error("Set pcap_file or a non-empty pcap_dir.")
             return
 
-        feature_rows: List[Tuple[str, Dict[str, float]]] = []
+        feature_rows: list[Tuple[str, dict[str, float]]] = []
         for p in paths:
             mp = int(self.max_packets)
             pkts = load_packets(p, max_packets=mp if mp > 0 else 0)

@@ -3,17 +3,15 @@
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
 import subprocess
-from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
 
-def _nvidia_smi_query() -> Optional[str]:
+def _nvidia_smi_query() -> str | None:
     """Return first line of ``nvidia-smi`` query or None if unavailable."""
     binary = shutil.which("nvidia-smi")
     if not binary:
@@ -44,13 +42,13 @@ def torch_cuda_available() -> bool:
         return False
 
 
-def gpu_capability_summary() -> Tuple[bool, bool, List[str]]:
+def gpu_capability_summary() -> tuple[bool, bool, list[str]]:
     """Summarize GPU-related capabilities for user messaging.
 
     Returns:
         Tuple of (nvidia_driver_visible, torch_cuda, advisory_lines).
     """
-    lines: List[str] = []
+    lines: list[str] = []
     smi_line = _nvidia_smi_query()
     nvidia_ok = smi_line is not None
     if nvidia_ok:

@@ -19,7 +19,6 @@ MQTT alerting: requires paho-mqtt (optional, graceful fallback)
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import threading
@@ -28,9 +27,10 @@ import uuid
 from collections import defaultdict, deque
 from contextlib import suppress
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any, Optional
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -99,8 +99,8 @@ class WIDSAlert:
     alert_type: AlertType
     severity: Severity
     timestamp: str
-    bssid: Optional[str]
-    ssid: Optional[str]
+    bssid: str | None
+    ssid: str | None
     details: dict[str, Any] = field(default_factory=dict)
     simulated: bool = False
 
@@ -214,9 +214,9 @@ class WirelessIDS:
     def __init__(
         self,
         interface: str = "wlan0mon",
-        thresholds: Optional[WIDSThresholds] = None,
-        on_alert: Optional[Callable[[WIDSAlert], None]] = None,
-        mqtt_broker: Optional[str] = None,
+        thresholds: WIDSThresholds | None = None,
+        on_alert: Callable[[WIDSAlert], None] | None = None,
+        mqtt_broker: str | None = None,
         mqtt_port: int = 1883,
         mqtt_topic: str = "wids/alerts",
         simulate: bool = True,
@@ -230,7 +230,7 @@ class WirelessIDS:
         self._alerts: list[WIDSAlert] = []
         self._lock = threading.Lock()
         self._running = False
-        self._sniffer: Optional[Any] = None
+        self._sniffer: Any | None = None
 
         # Per-BSSID state
         self._known_ssids: dict[str, str] = {}       # bssid -> ssid
@@ -248,7 +248,7 @@ class WirelessIDS:
         self._alert_cooldown: dict[str, float] = {}
         self._cooldown_seconds = 10.0
 
-        self._mqtt: Optional[Any] = None
+        self._mqtt: Any | None = None
         if mqtt_broker and _MQTT_AVAILABLE and not simulate:
             self._init_mqtt(mqtt_broker, mqtt_port, mqtt_topic)
 
@@ -280,11 +280,11 @@ class WirelessIDS:
     def _emit(
         self,
         alert_type: AlertType,
-        bssid: Optional[str],
-        ssid: Optional[str],
+        bssid: str | None,
+        ssid: str | None,
         details: dict[str, Any],
         simulated: bool = False,
-    ) -> Optional[WIDSAlert]:
+    ) -> WIDSAlert | None:
         """Build and dispatch a WIDSAlert, respecting per-type cooldown."""
         cooldown_key = f"{alert_type.value}:{bssid}:{ssid}"
         now = time.monotonic()
@@ -298,7 +298,7 @@ class WirelessIDS:
             alert_id=str(uuid.uuid4()),
             alert_type=alert_type,
             severity=_SEVERITY_MAP.get(alert_type, Severity.MEDIUM),
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             bssid=bssid,
             ssid=ssid,
             details=details,

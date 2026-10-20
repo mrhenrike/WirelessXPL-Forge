@@ -1,9 +1,8 @@
-"""Wordlist path resolvers with Python 3.8+ compatibility."""
+"""Wordlist path resolvers."""
 
 import re
 from importlib import resources
 from pathlib import Path
-from typing import List, Optional
 from urllib.parse import unquote, urlparse
 
 
@@ -30,7 +29,7 @@ def _file_uri_to_path(file_uri: str) -> str:
     return path
 
 
-def _load_entries(source: str) -> List[str]:
+def _load_entries(source: str) -> list[str]:
     """Load entries from ``file://`` URI or CSV-like inline content."""
     if source.startswith("file://"):
         path = _file_uri_to_path(source)
@@ -39,7 +38,7 @@ def _load_entries(source: str) -> List[str]:
     return [item.strip() for item in source.split(",") if item.strip()]
 
 
-def _infer_protocol(module_name: str) -> Optional[str]:
+def _infer_protocol(module_name: str) -> str | None:
     leaf = module_name.rsplit(".", 1)[-1].lower()
     if "ssh" in leaf:
         return "ssh"
@@ -54,7 +53,7 @@ def _infer_protocol(module_name: str) -> Optional[str]:
     return None
 
 
-def _resolve_router_vendor_uri(module_name: str) -> Optional[str]:
+def _resolve_router_vendor_uri(module_name: str) -> str | None:
     marker = ".modules.creds.routers."
     if marker not in module_name:
         return None
@@ -90,7 +89,7 @@ def _resolve_router_vendor_uri(module_name: str) -> Optional[str]:
     return defaults
 
 
-def resolve_default_pairs(module_name: str, current_defaults: List[str]) -> List[str]:
+def resolve_default_pairs(module_name: str, current_defaults: list[str]) -> list[str]:
     """Resolve default credential pairs from file-based sources for modules."""
     source_uri = _resolve_router_vendor_uri(module_name)
     if source_uri is None:

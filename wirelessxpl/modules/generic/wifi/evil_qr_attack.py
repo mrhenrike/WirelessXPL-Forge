@@ -15,7 +15,6 @@ Modes:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import logging
@@ -71,7 +70,7 @@ class Exploit(Exploit):
         hidden = "false"
         return f"WIFI:T:{enc};S:{self.ssid};P:{self.password};H:{hidden};;"
 
-    def _generate_qr(self, data: str) -> Optional[str]:
+    def _generate_qr(self, data: str) -> str | None:
         """Generate QR code image using qrcode library."""
         try:
             import qrcode

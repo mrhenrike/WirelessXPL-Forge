@@ -10,7 +10,6 @@ allowing injection of arbitrary broadcast Ethernet frames.
 Reference: Mathy Vanhoef, "Fragment and Forge: Breaking Wi-Fi Through Frame
 Aggregation and Fragmentation", USENIX Security 2021.
 """
-from __future__ import annotations
 
 import logging
 import struct
@@ -53,7 +52,7 @@ def _build_broadcast_amsdu_inject(
     bssid: str,
     subframe_payload: bytes,
     seq: int = 0,
-) -> Optional[bytes]:
+) -> bytes | None:
     """Build plaintext broadcast A-MSDU inject frame (CVE-2020-26143)."""
     if not HAS_SCAPY:
         return None

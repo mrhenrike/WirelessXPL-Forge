@@ -17,7 +17,6 @@ Requires: wpa_supplicant, optionally wacker (Python WPA3 brute-forcer).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -36,7 +35,7 @@ _project_tmp = os.path.join(os.path.dirname(__file__), "..", "..", "..", ".tmp")
 os.makedirs(_project_tmp, exist_ok=True)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 

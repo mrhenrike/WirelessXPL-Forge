@@ -137,7 +137,7 @@ def _detect_monitor_mode(iface: str) -> bool:
         return False
 
 
-def _get_interface_channel(iface: str) -> Optional[int]:
+def _get_interface_channel(iface: str) -> int | None:
     """Retrieve current channel from iwconfig output."""
     try:
         result = subprocess.run(

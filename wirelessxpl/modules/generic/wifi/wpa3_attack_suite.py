@@ -8,7 +8,6 @@ dragon-drain / WPA3-Attack-Nuseo1, Politician (CSA), and wpa3_sec (timing).
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -46,7 +45,7 @@ def _project_tmp() -> Path:
     return p
 
 
-def _parse_rsn_akms_mfp(rsn_info: bytes) -> Tuple[List[str], str]:
+def _parse_rsn_akms_mfp(rsn_info: bytes) -> tuple[list[str], str]:
     """Parse RSN IE for AKM OUI types and MFP string (DragonShift-style).
 
     Args:
@@ -57,7 +56,7 @@ def _parse_rsn_akms_mfp(rsn_info: bytes) -> Tuple[List[str], str]:
     """
     if len(rsn_info) < 10:
         return [], "Inactive"
-    auths: List[str] = []
+    auths: list[str] = []
     cipher_suite_count = int.from_bytes(rsn_info[6:8], byteorder="little")
     cipher_offset = 8 + cipher_suite_count * 4
     if len(rsn_info) < cipher_offset + 2:
@@ -87,7 +86,7 @@ def _parse_rsn_akms_mfp(rsn_info: bytes) -> Tuple[List[str], str]:
     return auths, mfp
 
 
-def _is_transition_fingerprint(auths: List[str], mfp: str) -> bool:
+def _is_transition_fingerprint(auths: list[str], mfp: str) -> bool:
     """Return True if AKMs suggest WPA3 transition (SAE + PSK) with weak MFP."""
     return "SAE" in auths and "PSK" in auths and mfp == "Inactive"
 
@@ -111,7 +110,7 @@ def _set_monitor_channel(iface: str, channel: int) -> bool:
         return False
 
 
-def _find_sae_clogging_binary() -> Optional[Path]:
+def _find_sae_clogging_binary() -> Path | None:
     """Locate compiled ``sae_clogging_attack`` from WPA3-Transition-mode-Downgrade-attack."""
     wr = _wireless_research_root()
     candidates = [
@@ -256,7 +255,7 @@ class Exploit(Exploit):
         else:
             self._run_auto()
 
-    def _handshake_paths(self) -> Tuple[Path, Path]:
+    def _handshake_paths(self) -> tuple[Path, Path]:
         """Resolve .cap prefix for airodump and .hccapx path for mana_wpaout."""
         raw = str(self.handshake_output).strip()
         if not raw:
@@ -387,13 +386,13 @@ class Exploit(Exploit):
             except subprocess.TimeoutExpired:
                 proc.kill()
 
-    def _duration_seconds(self, override: Optional[int] = None) -> int:
+    def _duration_seconds(self, override: int | None = None) -> int:
         """Effective duration; 0 means unlimited."""
         if override is not None:
             return int(override)
         return int(self.duration)
 
-    def _run_sae_flood(self, duration_override: Optional[int] = None) -> None:
+    def _run_sae_flood(self, duration_override: int | None = None) -> None:
         """SAE commit flood: prefer sae_clogging_attack / dragon-drain binary; else Scapy.
 
         Args:
@@ -515,7 +514,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_status("SAE flood interrupted.")
 
-    def _run_csa(self, duration_override: Optional[int] = None) -> None:
+    def _run_csa(self, duration_override: int | None = None) -> None:
         """Inject Politician-style CSA beacons (PMF-friendly client redirect hint).
 
         Args:
@@ -648,8 +647,8 @@ class Exploit(Exploit):
         ap = str(self.target_bssid).lower()
         _set_monitor_channel(iface, int(self.target_channel))
 
-        times: List[float] = []
-        last_by_src: Dict[str, float] = {}
+        times: list[float] = []
+        last_by_src: dict[str, float] = {}
 
         def _handle(p: Any) -> None:
             if not p.haslayer(Dot11Auth):
@@ -693,7 +692,7 @@ class Exploit(Exploit):
         from scapy.all import Dot11, Dot11Beacon, Dot11Elt, Dot11ProbeResp, sniff  # type: ignore
 
         ap = self._bssid_str()
-        found: Dict[str, bool] = {"ok": False}
+        found: dict[str, bool] = {"ok": False}
 
         def _proc(p: Any) -> None:
             if found["ok"]:

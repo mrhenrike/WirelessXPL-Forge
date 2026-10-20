@@ -7,18 +7,16 @@ by crunch/CUPP but focused on router/network device contexts.
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import itertools
 import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set
 
 logger = logging.getLogger("wirelessxpl.wordlist")
 
-LEET_MAP: Dict[str, List[str]] = {
+LEET_MAP: dict[str, list[str]] = {
     "a": ["@", "4"],
     "e": ["3"],
     "i": ["1", "!"],
@@ -109,7 +107,7 @@ class TargetProfile:
     city: str = ""
     zip_code: str = ""
     phone_suffix: str = ""
-    custom_words: List[str] = field(default_factory=list)
+    custom_words: list[str] = field(default_factory=list)
 
     # Generation control
     min_length: int = 4
@@ -126,10 +124,10 @@ class TargetProfile:
 class GenerationResult:
     """Result of a wordlist generation operation."""
 
-    passwords: List[str]
-    usernames: List[str]
-    passwords_file: Optional[str] = None
-    usernames_file: Optional[str] = None
+    passwords: list[str]
+    usernames: list[str]
+    passwords_file: str | None = None
+    usernames_file: str | None = None
     estimated_size_bytes: int = 0
     profile_type: str = ""
     base_words_used: int = 0
@@ -141,7 +139,7 @@ def _clean_word(word: str) -> str:
     return word.strip()
 
 
-def _case_mutations(word: str) -> List[str]:
+def _case_mutations(word: str) -> list[str]:
     """Generate common case variations of a word."""
     results = [word]
     if word != word.lower():
@@ -156,7 +154,7 @@ def _case_mutations(word: str) -> List[str]:
     return list(dict.fromkeys(results))
 
 
-def _leet_speak(word: str, depth: int = 1) -> List[str]:
+def _leet_speak(word: str, depth: int = 1) -> list[str]:
     """Apply leet-speak substitutions (limited depth to avoid explosion)."""
     results = [word]
     lower = word.lower()
@@ -169,7 +167,7 @@ def _leet_speak(word: str, depth: int = 1) -> List[str]:
     return list(dict.fromkeys(results))
 
 
-def _number_mutations(word: str) -> List[str]:
+def _number_mutations(word: str) -> list[str]:
     """Append common number/special suffixes and prefixes."""
     results = []
     for suffix in COMMON_SUFFIXES:
@@ -180,7 +178,7 @@ def _number_mutations(word: str) -> List[str]:
     return results
 
 
-def _date_mutations(word: str, date_str: str) -> List[str]:
+def _date_mutations(word: str, date_str: str) -> list[str]:
     """Combine word with date fragments (DDMMYYYY, MMYYYY, YYYY, YY, DD)."""
     results = []
     date_clean = re.sub(r"[^0-9]", "", date_str)
@@ -199,7 +197,7 @@ def _date_mutations(word: str, date_str: str) -> List[str]:
     return results
 
 
-def _combine_words(words: List[str], separators: Optional[List[str]] = None) -> List[str]:
+def _combine_words(words: list[str], separators: list[str] | None = None) -> list[str]:
     """Create combinations of 2 seed words with optional separators."""
     if separators is None:
         separators = ["", ".", "-", "_"]
@@ -211,9 +209,9 @@ def _combine_words(words: List[str], separators: Optional[List[str]] = None) -> 
     return results
 
 
-def _collect_seed_words(profile: TargetProfile) -> List[str]:
+def _collect_seed_words(profile: TargetProfile) -> list[str]:
     """Build the base seed word list from profile information."""
-    seeds: List[str] = []
+    seeds: list[str] = []
 
     if profile.profile_type == "corporate":
         seeds.extend(CORPORATE_BASE_WORDS)
@@ -254,9 +252,9 @@ def _collect_seed_words(profile: TargetProfile) -> List[str]:
     return list(dict.fromkeys(seeds))
 
 
-def _generate_usernames(profile: TargetProfile) -> List[str]:
+def _generate_usernames(profile: TargetProfile) -> list[str]:
     """Generate candidate usernames based on profile."""
-    usernames: List[str] = list(ROUTER_COMMON_USERNAMES)
+    usernames: list[str] = list(ROUTER_COMMON_USERNAMES)
 
     if profile.profile_type == "corporate":
         if profile.admin_name:
@@ -305,7 +303,7 @@ def generate_wordlist(profile: TargetProfile) -> GenerationResult:
     seeds = _collect_seed_words(profile)
     base_count = len(seeds)
 
-    candidates: Set[str] = set()
+    candidates: set[str] = set()
     mutations_count = 0
 
     for seed in seeds:
@@ -372,7 +370,7 @@ def generate_wordlist(profile: TargetProfile) -> GenerationResult:
 
 
 def save_wordlist(
-    words: List[str],
+    words: list[str],
     output_path: str,
     label: str = "wordlist",
 ) -> Path:

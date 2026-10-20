@@ -10,7 +10,6 @@ from the AP, enabling Layer-2 man-in-the-middle attacks.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -91,9 +90,9 @@ class Exploit(Exploit):
     pcap_file = OptString("", "Path to PCAP/PCAPNG capture file")
     max_packets = OptInteger(0, "Max packets to load (0 = unlimited)")
 
-    def _compute_risk_score(self, anomalies: List[_AnomalyRecord]) -> str:
+    def _compute_risk_score(self, anomalies: list[_AnomalyRecord]) -> str:
         """Compute a textual risk indicator from anomaly counts."""
-        type_counts: Dict[str, int] = defaultdict(int)
+        type_counts: dict[str, int] = defaultdict(int)
         for a in anomalies:
             type_counts[a.anomaly_type] += 1
 
@@ -152,7 +151,7 @@ class Exploit(Exploit):
         print_status(f"Analyzing {len(packets)} packets for Hole196 indicators...")
 
         known_bssids = _extract_known_bssids(packets)
-        anomalies: List[_AnomalyRecord] = []
+        anomalies: list[_AnomalyRecord] = []
 
         for idx, pkt in enumerate(packets):
             if not pkt.haslayer(Dot11):
@@ -223,7 +222,7 @@ class Exploit(Exploit):
 
         risk = self._compute_risk_score(anomalies)
 
-        type_counts: Dict[str, int] = defaultdict(int)
+        type_counts: dict[str, int] = defaultdict(int)
         for a in anomalies:
             type_counts[a.anomaly_type] += 1
 

@@ -17,7 +17,6 @@ Requires: Python 3.7+, Scapy (optional but needed for start mode).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -50,7 +49,7 @@ except ImportError:
     HAS_SCAPY = False
 
 
-def _parse_domain_map(raw: str) -> Dict[str, str]:
+def _parse_domain_map(raw: str) -> dict[str, str]:
     """Parse and validate the domain_map JSON string.
 
     Args:
@@ -74,7 +73,7 @@ def _parse_domain_map(raw: str) -> Dict[str, str]:
     return mapping
 
 
-def _resolve_domain(qname: str, domain_map: Dict[str, str]) -> Optional[str]:
+def _resolve_domain(qname: str, domain_map: dict[str, str]) -> str | None:
     """Match a queried domain against the domain map.
 
     Exact match takes priority; then wildcard "*".

@@ -32,7 +32,6 @@ References:
   - https://github.com/zephyrproject-rtos/zephyr/security/advisories/GHSA-fvm7-7whg-8gj6
   - https://github.com/zephyrproject-rtos/zephyr/commit/452c704a28369236e555543c61a1894cd1a4afbb
 """
-from __future__ import annotations
 
 import logging
 import struct
@@ -201,7 +200,7 @@ class Exploit(Exploit):
 
     _MODES = ("build", "session", "analyze")
 
-    def _parse_dev_addr(self) -> Optional[int]:
+    def _parse_dev_addr(self) -> int | None:
         try:
             return int(str(self.dev_addr).strip(), 16) & 0xFFFFFFFF
         except ValueError:

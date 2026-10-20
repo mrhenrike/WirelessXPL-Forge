@@ -7,7 +7,6 @@ não são tratados aqui — use ``ROCmBackend`` em ``backend.py``.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 

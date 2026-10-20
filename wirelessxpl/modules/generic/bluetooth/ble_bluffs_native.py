@@ -18,7 +18,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -129,7 +128,7 @@ class Exploit(Exploit):
             repo / "bluffs.py",
             repo / "src" / "bluffs.py",
         ]
-        poc_script: Optional[Path] = None
+        poc_script: Path | None = None
         for c in candidates:
             if c.exists():
                 poc_script = c
@@ -146,7 +145,7 @@ class Exploit(Exploit):
             return
 
         python_bin = shutil.which("python3") or shutil.which("python") or "python3"
-        cmd: List[str] = [
+        cmd: list[str] = [
             python_bin,
             str(poc_script),
             "--target", victim,

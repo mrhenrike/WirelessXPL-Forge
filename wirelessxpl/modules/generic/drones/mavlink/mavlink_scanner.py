@@ -6,7 +6,6 @@ Identifies autopilot type, vehicle type, and system/component IDs from
 passive MAVLink HEARTBEAT frames. Works with ArduPilot, PX4, and other
 MAVLink-compatible flight controllers.
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -52,7 +51,7 @@ _VEHICLE_TYPES = {
 }
 
 
-def _parse_mavlink_v1_heartbeat(data: bytes) -> Optional[Dict]:
+def _parse_mavlink_v1_heartbeat(data: bytes) -> dict | None:
     """Parse MAVLink v1 HEARTBEAT message.
 
     MAVLink v1 frame: STX(0xFE) LEN SEQ SYS COMP MSGID PAYLOAD CRC
@@ -88,7 +87,7 @@ def _parse_mavlink_v1_heartbeat(data: bytes) -> Optional[Dict]:
     }
 
 
-def _parse_mavlink_v2_heartbeat(data: bytes) -> Optional[Dict]:
+def _parse_mavlink_v2_heartbeat(data: bytes) -> dict | None:
     """Parse MAVLink v2 HEARTBEAT message.
 
     MAVLink v2 header: STX(0xFD) LEN INCOMPAT COMPAT SEQ SYS COMP MSGID[3] PAYLOAD CRC
@@ -220,7 +219,7 @@ class Exploit(Exploit):
                                     f"Autopilot={parsed['autopilot_name']} | "
                                     f"MAVLink v{parsed['mavlink_version']}"
                                 )
-                    except socket.timeout:
+                    except TimeoutError:
                         continue
                     except Exception:
                         continue

@@ -26,7 +26,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -45,7 +44,7 @@ def _killerbee_root() -> Path:
     return Path(__file__).resolve().parents[5] / "killerbee"
 
 
-def _which_kb(tool: str) -> Optional[str]:
+def _which_kb(tool: str) -> str | None:
     """Resolve killerbee CLI tool: installed bin or repo script."""
     found = shutil.which(tool)
     if found:
@@ -102,7 +101,7 @@ class Exploit(Exploit):
 
     _VALID_MODES = frozenset({"zbid", "zbdump", "zbreplay", "zbstumbler", "zbassocflood", "zbscapy"})
 
-    def _build_cmd(self, mode: str) -> Optional[List[str]]:
+    def _build_cmd(self, mode: str) -> list[str] | None:
         tool = _which_kb(mode)
         if not tool:
             print_error(
@@ -113,7 +112,7 @@ class Exploit(Exploit):
 
         python_bin = shutil.which("python3") or "python3"
         # If tool is a .py script, prefix with python
-        cmd: List[str] = (
+        cmd: list[str] = (
             [python_bin, tool] if tool.endswith(".py") else [tool]
         )
 

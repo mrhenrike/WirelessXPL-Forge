@@ -5,7 +5,6 @@
 Tests whether an AP/client implementation is vulnerable to KRACK attacks by
 monitoring 4-way handshake behavior and checking for nonce reuse indicators.
 """
-from __future__ import annotations
 
 import logging
 import time
@@ -148,9 +147,9 @@ class Exploit(Exploit):
 
         print_status(f"Passive scan on {iface} for {scan_time}s...")
 
-        nonces_seen: Dict[str, Set[bytes]] = {}
-        msg3_count: Dict[str, int] = {}
-        handshakes: List[str] = []
+        nonces_seen: dict[str, set[bytes]] = {}
+        msg3_count: dict[str, int] = {}
+        handshakes: list[str] = []
 
         def handler(pkt):
             if not pkt.haslayer(EAPOL):

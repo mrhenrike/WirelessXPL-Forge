@@ -7,7 +7,6 @@ PREREQ: Network access to device management interfaces.
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import concurrent.futures
 import ipaddress
@@ -34,14 +33,14 @@ class TrafficDevice:
     ip: str
     vendor: str = "Unknown"
     model: str = ""
-    open_ports: List[int] = field(default_factory=list)
+    open_ports: list[int] = field(default_factory=list)
     banner: str = ""
-    cves: List[str] = field(default_factory=list)
+    cves: list[str] = field(default_factory=list)
     notes: str = ""
 
 
 # Known fingerprints for traffic enforcement devices
-FINGERPRINTS: Dict[str, Dict] = {
+FINGERPRINTS: dict[str, dict] = {
     "Kapsch": {
         "ports": [80, 443, 22, 8080, 8443],
         "http_patterns": ["kapsch", "roadisys", "its-rsu", "trafficom"],
@@ -171,7 +170,7 @@ class TrafficEnforcementScanner:
         except Exception:
             return ""
 
-    def _fingerprint_device(self, ip: str, open_ports: List[int]) -> TrafficDevice:
+    def _fingerprint_device(self, ip: str, open_ports: list[int]) -> TrafficDevice:
         """Fingerprint a device based on open ports and HTTP banners.
 
         Args:
@@ -203,7 +202,7 @@ class TrafficEnforcementScanner:
 
         return device
 
-    def scan(self) -> List[TrafficDevice]:
+    def scan(self) -> list[TrafficDevice]:
         """Scan target range for traffic enforcement devices.
 
         Returns:
@@ -215,9 +214,9 @@ class TrafficEnforcementScanner:
         except ValueError:
             hosts = [ipaddress.ip_address(self.target_cidr)]
 
-        discovered: List[TrafficDevice] = []
+        discovered: list[TrafficDevice] = []
 
-        def scan_host(ip_obj: ipaddress.IPv4Address) -> Optional[TrafficDevice]:
+        def scan_host(ip_obj: ipaddress.IPv4Address) -> TrafficDevice | None:
             ip = str(ip_obj)
             open_ports = []
             for port in TRAFFIC_DEFAULT_PORTS:

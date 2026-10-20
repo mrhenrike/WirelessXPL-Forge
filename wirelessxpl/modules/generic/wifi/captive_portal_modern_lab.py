@@ -6,10 +6,9 @@ Pair with ``dnsmasq`` DHCP + DNS redirect (see ``evil_twin_workflow``).
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
@@ -193,7 +192,7 @@ class Exploit(Exploit):
                 identity = (data.get("identity") or [""])[0]
                 secret = (data.get("secret") or [""])[0]
                 record = {
-                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "ts": datetime.now(UTC).isoformat(),
                     "remote": self.client_address[0],
                     "identity": identity,
                     "secret": secret,

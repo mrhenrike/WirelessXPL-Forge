@@ -21,7 +21,6 @@ Uso típico dentro de um módulo:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import hashlib
 import logging
@@ -30,10 +29,10 @@ import platform
 import shutil
 import subprocess
 import tempfile
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -64,20 +63,20 @@ class LangConfig:
 
     lang: Lang
     # Candidatos de binário a procurar no PATH (ordem de preferência)
-    compiler_candidates: List[str] = field(default_factory=list)
+    compiler_candidates: list[str] = field(default_factory=list)
     # Se True, precisa compilar antes de executar
     needs_compile: bool = False
     # Flags de compilação base
-    compile_flags: List[str] = field(default_factory=list)
+    compile_flags: list[str] = field(default_factory=list)
     # Extensão do binário compilado (vazio = sem extensão)
     binary_ext: str = ""
     # Extensão padrão do arquivo fonte
     source_ext: str = ""
     # Flags de execução (para interpreters)
-    run_flags: List[str] = field(default_factory=list)
+    run_flags: list[str] = field(default_factory=list)
 
 
-_LANG_CONFIGS: Dict[Lang, LangConfig] = {
+_LANG_CONFIGS: dict[Lang, LangConfig] = {
     Lang.C: LangConfig(
         lang=Lang.C,
         compiler_candidates=["gcc", "cc", "clang", "x86_64-linux-gnu-gcc"],
@@ -188,7 +187,7 @@ class RunResult:
     stdout: str = ""
     stderr: str = ""
     timed_out: bool = False
-    binary_path: Optional[Path] = None
+    binary_path: Path | None = None
 
     @property
     def success(self) -> bool:
@@ -216,7 +215,7 @@ class PolyglotOrchestrator:
 
     def __init__(
         self,
-        cache_dir: Optional[Union[str, Path]] = None,
+        cache_dir: str | Path | None = None,
         default_timeout: int = 120,
         dry_run: bool = False,
     ) -> None:
@@ -229,13 +228,13 @@ class PolyglotOrchestrator:
 
         self.default_timeout = default_timeout
         self.dry_run = dry_run
-        self._compiler_cache: Dict[Lang, Optional[str]] = {}
+        self._compiler_cache: dict[Lang, str | None] = {}
 
     # ------------------------------------------------------------------ #
     # Detecção de compiladores/interpretadores
     # ------------------------------------------------------------------ #
 
-    def find_compiler(self, lang: Lang) -> Optional[str]:
+    def find_compiler(self, lang: Lang) -> str | None:
         """Retorna o caminho do compilador/interpretador para a linguagem.
 
         Args:
@@ -273,7 +272,7 @@ class PolyglotOrchestrator:
         """
         return self.find_compiler(lang) is not None
 
-    def runtime_report(self) -> Dict[str, bool]:
+    def runtime_report(self) -> dict[str, bool]:
         """Retorna um relatório de disponibilidade de todos os runtimes.
 
         Returns:
@@ -314,10 +313,10 @@ class PolyglotOrchestrator:
     def compile(
         self,
         lang: Lang,
-        source_path: Union[str, Path],
-        extra_flags: Optional[List[str]] = None,
+        source_path: str | Path,
+        extra_flags: list[str] | None = None,
         force: bool = False,
-    ) -> Tuple[bool, Path, str]:
+    ) -> tuple[bool, Path, str]:
         """Compila um arquivo fonte.
 
         Args:
@@ -407,13 +406,13 @@ class PolyglotOrchestrator:
     def run(
         self,
         lang: Lang,
-        source_path: Union[str, Path],
-        args: Optional[Sequence[str]] = None,
-        env: Optional[Dict[str, str]] = None,
-        cwd: Optional[Union[str, Path]] = None,
-        timeout: Optional[int] = None,
-        stdin_data: Optional[str] = None,
-        extra_compile_flags: Optional[List[str]] = None,
+        source_path: str | Path,
+        args: Sequence[str] | None = None,
+        env: dict[str, str] | None = None,
+        cwd: str | Path | None = None,
+        timeout: int | None = None,
+        stdin_data: str | None = None,
+        extra_compile_flags: list[str] | None = None,
         force_recompile: bool = False,
         capture_output: bool = True,
     ) -> RunResult:
@@ -534,8 +533,8 @@ class PolyglotOrchestrator:
         self,
         lang: Lang,
         code: str,
-        args: Optional[Sequence[str]] = None,
-        timeout: Optional[int] = None,
+        args: Sequence[str] | None = None,
+        timeout: int | None = None,
     ) -> RunResult:
         """Executa código-fonte fornecido como string.
 
@@ -569,11 +568,11 @@ class PolyglotOrchestrator:
 
 
 # Instância global de conveniência
-_default_orchestrator: Optional[PolyglotOrchestrator] = None
+_default_orchestrator: PolyglotOrchestrator | None = None
 
 
 def get_orchestrator(
-    cache_dir: Optional[Union[str, Path]] = None,
+    cache_dir: str | Path | None = None,
     dry_run: bool = False,
 ) -> PolyglotOrchestrator:
     """Retorna (ou cria) a instância global do orquestrador.

@@ -17,7 +17,6 @@ Prerequisites: hostapd-mana or hostapd + dnsmasq + monitor-mode interface.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -103,7 +102,7 @@ class Exploit(Exploit):
     phishing_portal = OptBool(True, "Redirect all HTTP to captive portal")
     dry_run = OptBool(False, "Print config without executing")
 
-    def _find_hostapd_mana(self) -> Optional[str]:
+    def _find_hostapd_mana(self) -> str | None:
         """Locate hostapd-mana or regular hostapd."""
         for binary in ("hostapd-mana", "hostapd"):
             path = shutil.which(binary)
