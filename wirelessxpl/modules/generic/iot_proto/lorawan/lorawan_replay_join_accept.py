@@ -133,7 +133,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "Not applicable (radio attack)")
-    port = OptPort(0, "Not applicable")
     timeout = OptInteger(60, "Capture window for join procedure in seconds")
     interface = OptString("", "SDR interface (e.g., hackrf, bladerf)")
     app_eui = OptString("70B3D57ED0000001", "Target AppEUI/JoinEUI (hex, 8 bytes)")

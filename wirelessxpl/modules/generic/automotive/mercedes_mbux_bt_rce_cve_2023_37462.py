@@ -56,7 +56,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Endereço BT MAC do MBUX alvo (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "N/A (Bluetooth)")
     mode = OptString("info", "Modo: info, scan, probe")
     bt_interface = OptString("hci0", "Adaptador Bluetooth (hci0, hci1)")
     timeout = OptInteger(10, "Timeout de scan/probe em segundos")

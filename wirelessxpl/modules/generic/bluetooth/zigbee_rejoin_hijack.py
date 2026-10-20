@@ -112,7 +112,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Endereço curto Zigbee do dispositivo alvo (ex: A1B2 ou 0xA1B2)")
-    port = OptPort(0, "N/A (IEEE 802.15.4 radio)")
     channel = OptInteger(15, "Canal Zigbee (11-26)")
     pan_id = OptString(_ZIGBEE_DEFAULT_PAN, "PAN ID da rede Zigbee (hex, ex: 1234)")
     interface = OptString("", "Dongle Zigbee (ex: /dev/ttyACM0)")

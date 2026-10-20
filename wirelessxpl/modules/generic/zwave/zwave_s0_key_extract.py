@@ -100,7 +100,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (sniffing de rádio Z-Wave)")
-    port = OptPort(0, "N/A")
     timeout = OptInteger(120, "Timeout de captura em segundos")
     interface = OptString("", "Interface SDR/Z-Wave sniffer")
     region = OptString("US", "Região Z-Wave (US=908.42MHz, EU=868.42MHz)")

@@ -343,6 +343,7 @@ class Exploit(_BaseExploit):
 
     def _exploit(self) -> None:
         """E2E BT HID keyboard injection via L2CAP raw sockets."""
+        from wirelessxpl.core.exploit.printer import print_error, print_success
         addr = str(self.target_addr).strip()
         injector = BTHIDKeyboardInject(
             target_addr=addr,

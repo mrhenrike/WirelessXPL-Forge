@@ -124,7 +124,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "Not applicable (radio attack)")
-    port = OptPort(0, "Not applicable")
     timeout = OptInteger(30, "Capture timeout in seconds")
     interface = OptString("", "SDR interface (e.g., hackrf, yardstickone)")
     home_id = OptString("FA1B2C3D", "Z-Wave Home ID (hex, 4 bytes)")

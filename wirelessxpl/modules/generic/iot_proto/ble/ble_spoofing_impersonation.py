@@ -146,7 +146,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target BLE device address to clone (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "Not applicable (BLE)")
     timeout = OptInteger(10, "Scan timeout in seconds")
     interface = OptString("hci0", "BLE adapter interface for spoofing")
     device_name = OptString("SmartLock-Pro", "Device name to advertise")
