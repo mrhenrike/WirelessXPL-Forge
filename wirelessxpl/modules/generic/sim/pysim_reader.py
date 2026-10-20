@@ -81,7 +81,7 @@ SW_OK = (0x90, 0x00)
 
 def _hex(data: List[int]) -> str:
     """Format byte list as hex string."""
-    return " ".join("{:02X}".format(b) for b in data)
+    return " ".join(f"{b:02X}" for b in data)
 
 
 def _decode_bcd_imsi(data: List[int]) -> str:
@@ -122,13 +122,13 @@ def _decode_bcd_iccid(data: List[int]) -> str:
         elif low == 0x0F:
             pass
         else:
-            iccid += "{:X}".format(low)
+            iccid += f"{low:X}"
         if high <= 9:
             iccid += str(high)
         elif high == 0x0F:
             pass
         else:
-            iccid += "{:X}".format(high)
+            iccid += f"{high:X}"
     return iccid.rstrip("F").rstrip("f")
 
 
@@ -192,14 +192,14 @@ def _decode_atr_bytes(atr: List[int]) -> Dict[str, Any]:
         return result
 
     ts = atr[0]
-    result["ts"] = "direct" if ts == 0x3B else ("inverse" if ts == 0x3F else "unknown(0x{:02X})".format(ts))
+    result["ts"] = "direct" if ts == 0x3B else ("inverse" if ts == 0x3F else f"unknown(0x{ts:02X})")
 
     if len(atr) < 2:
         return result
 
     t0 = atr[1]
     num_historical = t0 & 0x0F
-    result["t0"] = "0x{:02X} (historical bytes: {})".format(t0, num_historical)
+    result["t0"] = f"0x{t0:02X} (historical bytes: {num_historical})"
 
     idx = 2
     protocols = set()
@@ -287,7 +287,7 @@ class Exploit(Exploit):
             os.makedirs(out, exist_ok=True)
             return out
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida: {}".format(exc))
+            print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
     def _get_connection(self) -> Optional[Any]:
@@ -299,7 +299,7 @@ class Exploit(Exploit):
         try:
             available = list_readers()
         except Exception as exc:
-            print_error("Falha ao listar leitores PC/SC: {}".format(exc))
+            print_error(f"Falha ao listar leitores PC/SC: {exc}")
             return None
 
         if not available:
@@ -309,23 +309,21 @@ class Exploit(Exploit):
         idx = int(self.reader_index)
         if idx < 0 or idx >= len(available):
             print_error(
-                "Indice {} invalido. Leitores disponiveis: {}".format(
-                    idx, len(available),
-                )
+                f"Indice {idx} invalido. Leitores disponiveis: {len(available)}"
             )
             for i, r in enumerate(available):
-                print_info("  [{}] {}".format(i, r))
+                print_info(f"  [{i}] {r}")
             return None
 
         reader = available[idx]
-        print_status("Conectando ao leitor: {}".format(reader))
+        print_status(f"Conectando ao leitor: {reader}")
 
         try:
             conn = reader.createConnection()
             conn.connect()
             return conn
         except Exception as exc:
-            print_error("Falha na conexao com o cartao: {}".format(exc))
+            print_error(f"Falha na conexao com o cartao: {exc}")
             return None
 
     def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
@@ -404,11 +402,11 @@ class Exploit(Exploit):
             return True
         if sw1 == 0x63:
             remaining = sw2 & 0x0F
-            print_error("PIN incorreto. Tentativas restantes: {}".format(remaining))
+            print_error(f"PIN incorreto. Tentativas restantes: {remaining}")
         elif sw1 == 0x69 and sw2 == 0x83:
             print_error("PIN bloqueado. Use PUK para desbloqueio.")
         else:
-            print_error("Falha na verificacao do PIN: SW={:02X}{:02X}".format(sw1, sw2))
+            print_error(f"Falha na verificacao do PIN: SW={sw1:02X}{sw2:02X}")
         return False
 
     # ------------------------------------------------------------------
@@ -501,7 +499,7 @@ class Exploit(Exploit):
 
             status_map = {0x01: "received_read", 0x03: "received_unread",
                          0x05: "sent", 0x07: "sent_unsent"}
-            status = status_map.get(data[0], "unknown(0x{:02X})".format(data[0]))
+            status = status_map.get(data[0], f"unknown(0x{data[0]:02X})")
             messages.append({
                 "record": rec_num,
                 "status": status,
@@ -571,22 +569,22 @@ class Exploit(Exploit):
                 if available:
                     print_info("Leitores PC/SC detectados:")
                     for i, r in enumerate(available):
-                        print_info("  [{}] {}".format(i, r))
+                        print_info(f"  [{i}] {r}")
                 else:
                     print_info("Nenhum leitor PC/SC detectado.")
             except Exception as exc:
-                print_error("Erro ao listar leitores: {}".format(exc))
+                print_error(f"Erro ao listar leitores: {exc}")
         print_info("")
         print_info("Modos disponiveis:")
         for m in sorted(self._VALID_MODES):
-            print_info("  {}".format(m))
+            print_info(f"  {m}")
 
     def _mode_read_all(self, conn: Any) -> Dict[str, Any]:
         result: Dict[str, Any] = {}
         print_status("Lendo ICCID...")
         iccid = self._read_iccid(conn)
         if iccid:
-            print_success("ICCID: {}".format(iccid))
+            print_success(f"ICCID: {iccid}")
             result["iccid"] = iccid
         else:
             print_info("ICCID nao disponivel.")
@@ -594,7 +592,7 @@ class Exploit(Exploit):
         print_status("Lendo IMSI...")
         imsi = self._read_imsi(conn)
         if imsi:
-            print_success("IMSI: {}".format(imsi))
+            print_success(f"IMSI: {imsi}")
             result["imsi"] = imsi
         else:
             print_info("IMSI nao disponivel (pode necessitar PIN).")
@@ -602,7 +600,7 @@ class Exploit(Exploit):
         print_status("Lendo MSISDN...")
         msisdn = self._read_msisdn(conn)
         if msisdn:
-            print_success("MSISDN: {}".format(msisdn))
+            print_success(f"MSISDN: {msisdn}")
             result["msisdn"] = msisdn
         else:
             print_info("MSISDN nao disponivel.")
@@ -610,38 +608,38 @@ class Exploit(Exploit):
         print_status("Lendo SPN...")
         spn = self._read_spn(conn)
         if spn:
-            print_success("SPN: {}".format(spn))
+            print_success(f"SPN: {spn}")
             result["spn"] = spn
 
         print_status("Lendo SST...")
         sst = self._read_sst(conn)
         if sst:
             result["sst_raw"] = _hex(sst)
-            print_info("SST: {}".format(_hex(sst)))
+            print_info(f"SST: {_hex(sst)}")
 
         print_status("Lendo SMS...")
         sms = self._read_sms_records(conn)
         if sms:
             result["sms_count"] = len(sms)
             result["sms"] = sms
-            print_info("SMS encontrados: {}".format(len(sms)))
+            print_info(f"SMS encontrados: {len(sms)}")
 
         print_status("Lendo agenda telefonica (ADN)...")
         phonebook = self._read_phonebook(conn)
         if phonebook:
             result["phonebook_count"] = len(phonebook)
             result["phonebook"] = phonebook
-            print_info("Contatos encontrados: {}".format(len(phonebook)))
+            print_info(f"Contatos encontrados: {len(phonebook)}")
 
         return result
 
     def _mode_read_imsi(self, conn: Any) -> None:
         imsi = self._read_imsi(conn)
         if imsi:
-            print_success("IMSI: {}".format(imsi))
+            print_success(f"IMSI: {imsi}")
             if len(imsi) >= 6:
-                print_info("MCC: {}".format(imsi[:3]))
-                print_info("MNC: {}".format(imsi[3:5] if len(imsi) > 5 else imsi[3:]))
+                print_info(f"MCC: {imsi[:3]}")
+                print_info(f"MNC: {imsi[3:5] if len(imsi) > 5 else imsi[3:]}")
                 print_info("MSIN: {}".format(imsi[5:] if len(imsi) > 5 else ""))
         else:
             print_error("Falha ao ler IMSI. Verifique se o PIN foi informado.")
@@ -649,9 +647,9 @@ class Exploit(Exploit):
     def _mode_read_iccid(self, conn: Any) -> None:
         iccid = self._read_iccid(conn)
         if iccid:
-            print_success("ICCID: {}".format(iccid))
+            print_success(f"ICCID: {iccid}")
             if len(iccid) >= 7:
-                print_info("Issuer: {}".format(iccid[:7]))
+                print_info(f"Issuer: {iccid[:7]}")
         else:
             print_error("Falha ao ler ICCID.")
 
@@ -660,7 +658,7 @@ class Exploit(Exploit):
         if not sms:
             print_info("Nenhum SMS encontrado no cartao.")
             return
-        print_success("{} SMS encontrados:".format(len(sms)))
+        print_success(f"{len(sms)} SMS encontrados:")
         for msg in sms:
             print_info(
                 "  Registro {}: status={}, dados={}".format(
@@ -673,7 +671,7 @@ class Exploit(Exploit):
         if not entries:
             print_info("Nenhum contato encontrado na agenda.")
             return
-        print_success("{} contatos encontrados:".format(len(entries)))
+        print_success(f"{len(entries)} contatos encontrados:")
         for entry in entries:
             print_info(
                 "  [{}] {} - {}".format(entry["record"], entry["name"], entry["number"])
@@ -683,19 +681,19 @@ class Exploit(Exploit):
         try:
             atr = conn.getATR()
         except Exception as exc:
-            print_error("Falha ao obter ATR: {}".format(exc))
+            print_error(f"Falha ao obter ATR: {exc}")
             return
 
         if not atr:
             print_error("ATR vazio.")
             return
 
-        print_success("ATR: {}".format(_hex(atr)))
+        print_success(f"ATR: {_hex(atr)}")
         parsed = _decode_atr_bytes(atr)
         print_info("  Convencao: {}".format(parsed["ts"]))
         print_info("  T0: {}".format(parsed["t0"]))
         if parsed["protocols"]:
-            proto_names = ["T={}".format(p) for p in parsed["protocols"]]
+            proto_names = [f"T={p}" for p in parsed["protocols"]]
             print_info("  Protocolos: {}".format(", ".join(proto_names)))
         if parsed.get("historical_bytes"):
             print_info("  Historical Bytes: {}".format(parsed["historical_bytes"]))
@@ -720,16 +718,16 @@ class Exploit(Exploit):
         out_file = str(self.output_file).strip()
         if not out_file:
             iccid = card_data.get("iccid", "unknown")
-            out_file = os.path.join(out_dir, "sim_dump_{}.json".format(iccid))
+            out_file = os.path.join(out_dir, f"sim_dump_{iccid}.json")
         elif not os.path.isabs(out_file):
             out_file = os.path.join(out_dir, out_file)
 
         try:
             with open(out_file, "w", encoding="utf-8") as fh:
                 json.dump(card_data, fh, indent=2, ensure_ascii=False)
-            print_success("Dados exportados para: {}".format(out_file))
+            print_success(f"Dados exportados para: {out_file}")
         except OSError as exc:
-            print_error("Falha ao gravar arquivo: {}".format(exc))
+            print_error(f"Falha ao gravar arquivo: {exc}")
 
     def _mode_check_services(self, conn: Any) -> None:
         sst_data = self._read_sst(conn)
@@ -737,7 +735,7 @@ class Exploit(Exploit):
             print_error("Falha ao ler tabela de servicos (SST/UST).")
             return
 
-        print_success("Tabela de servicos (raw): {}".format(_hex(sst_data)))
+        print_success(f"Tabela de servicos (raw): {_hex(sst_data)}")
 
         sst_services = {
             1: "CHV1 disable", 2: "Abbreviated Dialling Numbers (ADN)",
@@ -758,9 +756,9 @@ class Exploit(Exploit):
                 allocated = (byte_val >> (bit_pos * 2)) & 0x01
                 activated = (byte_val >> (bit_pos * 2 + 1)) & 0x01
                 if allocated:
-                    svc_name = sst_services.get(svc_num, "Service {}".format(svc_num))
+                    svc_name = sst_services.get(svc_num, f"Service {svc_num}")
                     status = "ativo" if activated else "alocado"
-                    print_info("  [{:02d}] {} ({})".format(svc_num, svc_name, status))
+                    print_info(f"  [{svc_num:02d}] {svc_name} ({status})")
 
     def _mode_esim_info(self, conn: Any) -> None:
         print_status("Tentando acessar informacoes eUICC/eSIM...")
@@ -774,22 +772,22 @@ class Exploit(Exploit):
         if (sw1, sw2) == SW_OK or sw1 == 0x61:
             print_success("eUICC ISD-R detectado.")
             if data:
-                print_info("Resposta: {}".format(_hex(data)))
+                print_info(f"Resposta: {_hex(data)}")
 
             # EID retrieval via GET DATA
             get_eid = [0x80, 0xCA, 0xBF, 0x3E, 0x00]
             data2, sw1_2, sw2_2 = self._send_apdu(conn, get_eid)
             if (sw1_2, sw2_2) == SW_OK and data2:
-                print_info("EID data: {}".format(_hex(data2)))
+                print_info(f"EID data: {_hex(data2)}")
             elif sw1_2 == 0x6C and sw2_2 > 0:
                 get_eid[4] = sw2_2
                 data2, sw1_2, sw2_2 = self._send_apdu(conn, get_eid)
                 if (sw1_2, sw2_2) == SW_OK and data2:
-                    print_info("EID data: {}".format(_hex(data2)))
+                    print_info(f"EID data: {_hex(data2)}")
         else:
             print_info(
-                "ISD-R nao encontrado (SW={:02X}{:02X}). "
-                "O cartao pode nao ser eUICC.".format(sw1, sw2)
+                f"ISD-R nao encontrado (SW={sw1:02X}{sw2:02X}). "
+                "O cartao pode nao ser eUICC."
             )
 
         # ECASD AID
@@ -800,7 +798,7 @@ class Exploit(Exploit):
         if (sw1_3, sw2_3) == SW_OK or sw1_3 == 0x61:
             print_info("ECASD detectado.")
             if data3:
-                print_info("ECASD resposta: {}".format(_hex(data3)))
+                print_info(f"ECASD resposta: {_hex(data3)}")
 
     # ------------------------------------------------------------------
     # Entry point
@@ -850,8 +848,8 @@ class Exploit(Exploit):
             return
 
         if bool(self.dry_run):
-            print_info("[dry-run] Modo: {}".format(mode))
-            print_info("[dry-run] Leitor: {}".format(int(self.reader_index)))
+            print_info(f"[dry-run] Modo: {mode}")
+            print_info(f"[dry-run] Leitor: {int(self.reader_index)}")
             print_info("[dry-run] Nenhuma operacao real sera executada.")
             return
 

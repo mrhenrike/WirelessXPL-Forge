@@ -78,7 +78,7 @@ class Exploit(Exploit):
             return
 
         meta = full.get("_meta", {})
-        useful_items: List[Dict[str, Any]] = list((useful.get("items") or []))
+        useful_items: List[Dict[str, Any]] = list(useful.get("items") or [])
 
         view = str(self.view).strip().lower()
         if view == "summary":
@@ -107,7 +107,7 @@ class Exploit(Exploit):
                     )
                 )
                 print_info("  {}".format(item.get("title", "")))
-            print_status("Shown: {}".format(count))
+            print_status(f"Shown: {count}")
             return
 
         if view == "open_high":
@@ -127,7 +127,7 @@ class Exploit(Exploit):
                     )
                 )
                 print_info("  {}".format(item.get("title", "")))
-            print_status("Shown: {}".format(len(rows)))
+            print_status(f"Shown: {len(rows)}")
             return
 
         if view == "open_high_pending":
@@ -149,7 +149,7 @@ class Exploit(Exploit):
                     )
                 )
                 print_info("  {}".format(item.get("title", "")))
-            print_status("Shown: {}".format(len(rows)))
+            print_status(f"Shown: {len(rows)}")
             return
 
         if view == "open_pending":
@@ -171,7 +171,7 @@ class Exploit(Exploit):
                     )
                 )
                 print_info("  {}".format(item.get("title", "")))
-            print_status("Shown: {}".format(len(rows)))
+            print_status(f"Shown: {len(rows)}")
             return
 
         if view == "by_category":
@@ -180,7 +180,7 @@ class Exploit(Exploit):
                 print_error("Set category for by_category view.")
                 return
             rows = [x for x in useful_items if str(x.get("category", "")).lower() == cat][: max(1, int(self.limit))]
-            print_status("Useful items in category '{}'".format(cat))
+            print_status(f"Useful items in category '{cat}'")
             for item in rows:
                 print_info(
                     "#{:04d} [{}] {} {}".format(
@@ -191,7 +191,7 @@ class Exploit(Exploit):
                     )
                 )
                 print_info("  {}".format(item.get("title", "")))
-            print_status("Shown: {}".format(len(rows)))
+            print_status(f"Shown: {len(rows)}")
             return
 
-        print_error("Unknown view '{}'. Use: summary | top_useful | by_category | open_high | open_high_pending | open_pending".format(view))
+        print_error(f"Unknown view '{view}'. Use: summary | top_useful | by_category | open_high | open_high_pending | open_pending")

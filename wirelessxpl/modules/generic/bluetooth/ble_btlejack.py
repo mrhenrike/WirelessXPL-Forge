@@ -140,8 +140,8 @@ class Exploit(Exploit):
             print_status(cmd_str)
             return
 
-        print_status("Launching BTLEJack action '{}'...".format(self.action))
-        print_info("Command: {}".format(cmd_str))
+        print_status(f"Launching BTLEJack action '{self.action}'...")
+        print_info(f"Command: {cmd_str}")
         try:
             if int(self.timeout) > 0:
                 subprocess.run(cmd, timeout=int(self.timeout), check=False)
@@ -153,4 +153,4 @@ class Exploit(Exploit):
             print_info("BTLEJack interrupted by user.")
         except Exception as err:
             logger.exception("BTLEJack execution failed")
-            print_error("BTLEJack failed: {}".format(err))
+            print_error(f"BTLEJack failed: {err}")

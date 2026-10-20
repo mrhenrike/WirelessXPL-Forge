@@ -97,7 +97,7 @@ class Exploit(Exploit):
         print_info("Fabricantes afetados: TI CC26xx/CC2640R2F, NXP KW41Z, Dialog DA14xxx,")
         print_info("  Microchip ATBTLC1000, STM BlueNRG-1/2, Telink TLSR8266, Cypress PSoC 6")
         print_info("\nHardware necessário: nRF52-series dongle com firmware customizado")
-        print_info("Submodule SweynTooth: {}".format(_sweyntooth_root()))
+        print_info(f"Submodule SweynTooth: {_sweyntooth_root()}")
         print_info("\nUse mode=list para ver todos os ataques disponíveis.")
 
     def _list_mode(self) -> None:
@@ -108,7 +108,7 @@ class Exploit(Exploit):
     def _run_attack(self, attack_name: str) -> None:
         root = _sweyntooth_root()
         if not root.exists():
-            print_error("Submodule sweyntooth não encontrado: {}".format(root))
+            print_error(f"Submodule sweyntooth não encontrado: {root}")
             print_info("Execute: git submodule update --init submodules/IoT/sweyntooth")
             return
 
@@ -118,11 +118,11 @@ class Exploit(Exploit):
             return
 
         # Search for the attack script
-        candidates = list(root.rglob("{}.py".format(attack_name)))
+        candidates = list(root.rglob(f"{attack_name}.py"))
         if not candidates:
-            candidates = list(root.rglob("*{}*.py".format(attack_name)))
+            candidates = list(root.rglob(f"*{attack_name}*.py"))
         if not candidates:
-            print_error("Script '{}' não encontrado em {}.".format(attack_name, root))
+            print_error(f"Script '{attack_name}' não encontrado em {root}.")
             self._list_mode()
             return
 
@@ -136,18 +136,16 @@ class Exploit(Exploit):
                 cmd.append("-v")
             cmd_str = " ".join(cmd)
             if self.dry_run:
-                print_info("DRY RUN [{}/{}] — {}".format(i + 1, int(self.repeat), cmd_str))
+                print_info(f"DRY RUN [{i + 1}/{int(self.repeat)}] — {cmd_str}")
                 continue
-            print_status("[{}/{}] SweynTooth {}: {}".format(
-                i + 1, int(self.repeat), attack_name, victim
-            ))
+            print_status(f"[{i + 1}/{int(self.repeat)}] SweynTooth {attack_name}: {victim}")
             try:
                 subprocess.run(cmd, cwd=str(root), check=False)
             except KeyboardInterrupt:
                 print_info("\nInterrompido.")
                 return
             except Exception as exc:
-                print_error("Erro ao executar {}: {}".format(attack_name, exc))
+                print_error(f"Erro ao executar {attack_name}: {exc}")
                 return
 
 

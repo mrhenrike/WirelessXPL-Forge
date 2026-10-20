@@ -195,7 +195,7 @@ def _run_silent(cmd: List[str]) -> Optional[str]:
     """Executa comando e retorna stdout, ou None em caso de erro."""
     try:
         result = subprocess.run(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5
+            cmd, capture_output=True, timeout=5
         )
         return result.stdout.decode("utf-8", errors="replace")
     except Exception:

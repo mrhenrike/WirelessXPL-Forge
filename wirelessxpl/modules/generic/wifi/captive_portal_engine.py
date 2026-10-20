@@ -234,14 +234,14 @@ class Exploit(Exploit):
         if custom_dir and os.path.isdir(custom_dir):
             index = os.path.join(custom_dir, "index.html")
             if os.path.isfile(index):
-                with open(index, "r") as f:
+                with open(index) as f:
                     return f.read()
 
         tpl_dir = os.path.join(_TEMPLATE_DIR, tpl_name)
         if os.path.isdir(tpl_dir):
             index = os.path.join(tpl_dir, "index.html")
             if os.path.isfile(index):
-                with open(index, "r") as f:
+                with open(index) as f:
                     return f.read()
 
         ssid = str(self.ssid).strip()

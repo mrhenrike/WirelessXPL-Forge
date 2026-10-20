@@ -1096,10 +1096,7 @@ def pixie_dust_recover_pin(
                 return pin_candidate
 
         if verbose:
-            print_info("Pixie Dust: snonce pattern {}/{} exhausted".format(
-                snonce_candidates.index((try_snonce1, try_snonce2)) + 1,
-                len(snonce_candidates),
-            ))
+            print_info(f"Pixie Dust: snonce pattern {snonce_candidates.index((try_snonce1, try_snonce2)) + 1}/{len(snonce_candidates)} exhausted")
 
     return None
 
@@ -1925,7 +1922,7 @@ class Exploit(Exploit):
             print_info("     If still failing, try: sudo iw dev <iface> set channel <ch>")
             return
 
-        print_info("M2 captured. PKR: {}...".format(capture.pkr[:8].hex()))
+        print_info(f"M2 captured. PKR: {capture.pkr[:8].hex()}...")
         print_info("Attempting offline Pixie Dust PIN recovery ...")
 
         recovered_pin = pixie_dust_recover_pin(capture, verbose=bool(self.verbose))
@@ -2095,12 +2092,12 @@ class Exploit(Exploit):
         log_dir = Path(str(self.output_dir) or ".log")
         log_dir.mkdir(parents=True, exist_ok=True)
         bssid_clean = str(self.target_bssid).replace(":", "")
-        out_file = log_dir / "wps_{}_{}.txt".format(mode, bssid_clean)
+        out_file = log_dir / f"wps_{mode}_{bssid_clean}.txt"
         out_file.write_text(
-            "BSSID: {}\nMode: {}\n{}\n".format(self.target_bssid, mode, result),
+            f"BSSID: {self.target_bssid}\nMode: {mode}\n{result}\n",
             encoding="utf-8",
         )
-        print_info("Result saved to: {}".format(out_file))
+        print_info(f"Result saved to: {out_file}")
 
     def _save_capture(self, capture: WscCapture, bssid: str) -> None:
         """Save captured EAP-WSC material for offline analysis.
@@ -2113,7 +2110,7 @@ class Exploit(Exploit):
         log_dir = Path(str(self.output_dir) or ".log")
         log_dir.mkdir(parents=True, exist_ok=True)
         bssid_clean = bssid.replace(":", "")
-        cap_file = log_dir / "wps_pixie_capture_{}.txt".format(bssid_clean)
+        cap_file = log_dir / f"wps_pixie_capture_{bssid_clean}.txt"
         lines = [
             f"enrollee_nonce={capture.enrollee_nonce.hex()}",
             f"registrar_nonce={capture.registrar_nonce.hex()}",
@@ -2126,4 +2123,4 @@ class Exploit(Exploit):
             f"auth_key={capture.auth_key.hex()}",
         ]
         cap_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        print_info("Pixie Dust capture saved to: {}".format(cap_file))
+        print_info(f"Pixie Dust capture saved to: {cap_file}")

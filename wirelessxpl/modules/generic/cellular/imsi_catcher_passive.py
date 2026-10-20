@@ -115,7 +115,7 @@ def _parse_imsi_captures(capture_dir: str) -> List[Dict[str, str]]:
 
         elif fname.endswith(".txt") or fname.endswith(".log"):
             try:
-                with open(fpath, "r", encoding="utf-8", errors="replace") as fh:
+                with open(fpath, encoding="utf-8", errors="replace") as fh:
                     for line in fh:
                         line = line.strip()
                         if not line or line.startswith("#"):
@@ -199,9 +199,9 @@ class Exploit(Exploit):
     def _run_cmd(self, cmd: List[str], label: str = "") -> Optional[str]:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return None
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd,
@@ -215,16 +215,16 @@ class Exploit(Exploit):
             print_status("Command timed out (expected for live capture).")
             return None
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
             return None
 
     def _start_background(self, cmd: List[str], label: str) -> Optional[subprocess.Popen]:
         """Start a background process, returning the Popen handle."""
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return None
-        print_status("Starting {}: {}".format(label, cmd_str))
+        print_status(f"Starting {label}: {cmd_str}")
         try:
             proc = subprocess.Popen(
                 cmd,
@@ -233,13 +233,13 @@ class Exploit(Exploit):
             )
             return proc
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
             return None
 
     def _stop_background(self, proc: Optional[subprocess.Popen], label: str) -> None:
         if proc is None:
             return
-        print_status("Stopping {}...".format(label))
+        print_status(f"Stopping {label}...")
         try:
             proc.send_signal(signal.SIGTERM)
             proc.wait(timeout=10)
@@ -274,8 +274,8 @@ class Exploit(Exploit):
         print_info("Tool availability:")
         for tool in ("grgsm_livemon", "grgsm_scanner", "rtl_test", "python3"):
             p = _which(tool)
-            status = "[+] {}".format(tool) if p else "[-] {}: not found".format(tool)
-            (print_success if p else print_error)("  {}".format(status))
+            status = f"[+] {tool}" if p else f"[-] {tool}: not found"
+            (print_success if p else print_error)(f"  {status}")
 
     def _start_livemon(self) -> Optional[subprocess.Popen]:
         freq = str(self.frequency).strip()
@@ -293,7 +293,7 @@ class Exploit(Exploit):
 
         dev = int(self.sdr_device)
         if dev > 0:
-            cmd.extend(["-a", "rtl={}".format(dev)])
+            cmd.extend(["-a", f"rtl={dev}"])
 
         return self._start_background(cmd, "grgsm_livemon")
 
@@ -306,7 +306,7 @@ class Exploit(Exploit):
             return None
 
         if not os.path.isfile(catcher):
-            print_error("IMSI catcher script not found: {}".format(catcher))
+            print_error(f"IMSI catcher script not found: {catcher}")
             return None
 
         outdir = self._outdir()
@@ -323,7 +323,7 @@ class Exploit(Exploit):
 
         dev = int(self.sdr_device)
         if dev > 0:
-            cmd.extend(["-a", "rtl={}".format(dev)])
+            cmd.extend(["-a", f"rtl={dev}"])
 
         output = self._run_cmd(cmd, "grgsm_scanner")
         if not output:
@@ -331,7 +331,7 @@ class Exploit(Exploit):
 
         results = _parse_scanner_output(output)
         if results:
-            print_success("Found {} active GSM channel(s).".format(len(results)))
+            print_success(f"Found {len(results)} active GSM channel(s).")
             for r in results[:15]:
                 print_info(
                     "  ARFCN {:>4d} | {:>7.1f} MHz | {:.1f} dBm | MCC {:>3d} MNC {:>3d}".format(
@@ -340,7 +340,7 @@ class Exploit(Exploit):
                     )
                 )
             if len(results) > 15:
-                print_info("  ... and {} more channels.".format(len(results) - 15))
+                print_info(f"  ... and {len(results) - 15} more channels.")
         else:
             print_status("No active GSM channels found.")
 
@@ -361,7 +361,7 @@ class Exploit(Exploit):
             )
         )
 
-        print_status("Phase 2: Starting grgsm_livemon on {}...".format(freq_str))
+        print_status(f"Phase 2: Starting grgsm_livemon on {freq_str}...")
         self.frequency = freq_str  # type: ignore[assignment]
         livemon_proc = self._start_livemon()
         if livemon_proc is None and not bool(self.dry_run):
@@ -378,7 +378,7 @@ class Exploit(Exploit):
             return
 
         duration = max(int(self.capture_time), 10)
-        print_status("Capturing for {} seconds...".format(duration))
+        print_status(f"Capturing for {duration} seconds...")
 
         if not bool(self.dry_run):
             try:
@@ -388,29 +388,29 @@ class Exploit(Exploit):
 
         self._stop_background(catcher_proc, "IMSI catcher")
         self._stop_background(livemon_proc, "grgsm_livemon")
-        print_success("Pipeline complete. Check output in: {}".format(self._outdir()))
+        print_success(f"Pipeline complete. Check output in: {self._outdir()}")
 
     def _parse_results(self) -> None:
         outdir = self._outdir()
         if not os.path.isdir(outdir):
-            print_error("Output directory not found: {}".format(outdir))
+            print_error(f"Output directory not found: {outdir}")
             return
 
         records = _parse_imsi_captures(outdir)
         if not records:
-            print_status("No IMSI records found in {}.".format(outdir))
+            print_status(f"No IMSI records found in {outdir}.")
             return
 
-        print_success("Parsed {} IMSI record(s):".format(len(records)))
+        print_success(f"Parsed {len(records)} IMSI record(s):")
         for idx, rec in enumerate(records[:50]):
             parts = []
             for key in ("imsi", "tmsi", "imei"):
                 if key in rec:
-                    parts.append("{}: {}".format(key.upper(), rec[key]))
+                    parts.append(f"{key.upper()}: {rec[key]}")
             print_info("  [{}] {}".format(idx + 1, ", ".join(parts) if parts else str(rec)))
 
         if len(records) > 50:
-            print_info("  ... and {} more records.".format(len(records) - 50))
+            print_info(f"  ... and {len(records) - 50} more records.")
 
     def _export(self) -> None:
         outdir = self._outdir()
@@ -431,17 +431,17 @@ class Exploit(Exploit):
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(records)
-            print_success("Exported {} records to {}".format(len(records), outfile))
+            print_success(f"Exported {len(records)} records to {outfile}")
 
         elif fmt == "json":
             outfile = os.path.join(outdir, "imsi_export.json")
             with open(outfile, "w", encoding="utf-8") as f:
                 json.dump(records, f, indent=2, ensure_ascii=False)
-            print_success("Exported {} records to {}".format(len(records), outfile))
+            print_success(f"Exported {len(records)} records to {outfile}")
 
         else:
             print_error(
-                "Unsupported export format: {}. Use csv or json.".format(fmt)
+                f"Unsupported export format: {fmt}. Use csv or json."
             )
 
 
@@ -480,7 +480,7 @@ class Exploit(Exploit):
             proc = self._start_livemon()
             if proc is not None:
                 duration = max(int(self.capture_time), 10)
-                print_status("Running grgsm_livemon for {} seconds...".format(duration))
+                print_status(f"Running grgsm_livemon for {duration} seconds...")
                 try:
                     time.sleep(duration)
                 except KeyboardInterrupt:
@@ -492,7 +492,7 @@ class Exploit(Exploit):
             if proc is not None:
                 duration = max(int(self.capture_time), 10)
                 print_status(
-                    "Running IMSI catcher for {} seconds...".format(duration)
+                    f"Running IMSI catcher for {duration} seconds..."
                 )
                 try:
                     time.sleep(duration)
@@ -514,6 +514,6 @@ class Exploit(Exploit):
 
         else:
             print_error(
-                "Unknown mode: {}. Valid: info, start_livemon, start_catcher, "
-                "scan_frequencies, full_pipeline, parse_results, export".format(op)
+                f"Unknown mode: {op}. Valid: info, start_livemon, start_catcher, "
+                "scan_frequencies, full_pipeline, parse_results, export"
             )

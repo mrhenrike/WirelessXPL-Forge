@@ -103,7 +103,7 @@ def _read_lines(filepath: str) -> List[str]:
     if not filepath or not os.path.isfile(filepath):
         return []
     lines = []
-    with open(filepath, "r", errors="replace") as fh:
+    with open(filepath, errors="replace") as fh:
         for raw in fh:
             line = raw.strip()
             if line and not line.startswith("#"):

@@ -332,7 +332,7 @@ def extract_pmkid(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None)
         essid_hex = ssid.encode("utf-8").hex() if ssid else ""
         mac_ap = bssid.replace(":", "").lower()
         mac_sta = client.replace(":", "").lower()
-        hashcat_line = "WPA*02*{}*{}*{}*{}".format(pmkid_hex, mac_ap, mac_sta, essid_hex)
+        hashcat_line = f"WPA*02*{pmkid_hex}*{mac_ap}*{mac_sta}*{essid_hex}"
 
         results.append(PMKIDEntry(
             bssid=bssid,

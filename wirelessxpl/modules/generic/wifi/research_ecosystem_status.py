@@ -108,7 +108,7 @@ class Exploit(Exploit):
 
     def run(self) -> None:
         root = _resolve_superproject_root(str(self.superproject_root))
-        print_status("Superproject root: {}".format(root))
+        print_status(f"Superproject root: {root}")
         rows = _load_catalog()
         if not rows:
             print_error("Catalog wireless_research_submodules.json missing or invalid.")
@@ -133,12 +133,12 @@ class Exploit(Exploit):
             wxf_module = str(row.get("wxf_module") or "").strip()
             if wxf_module:
                 mapped += 1
-                print_info("  wxf_module: {}".format(wxf_module))
+                print_info(f"  wxf_module: {wxf_module}")
             note = row.get("notes")
             if note:
-                print_status("  note: {}".format(note))
+                print_status(f"  note: {note}")
         if shown == 0:
             print_error("No catalog entries matched tag_filter.")
             return
-        print_status("Present: {}/{} entries (after tag filter).".format(ok, shown))
-        print_status("WXF mapped modules: {}/{} entries.".format(mapped, shown))
+        print_status(f"Present: {ok}/{shown} entries (after tag filter).")
+        print_status(f"WXF mapped modules: {mapped}/{shown} entries.")

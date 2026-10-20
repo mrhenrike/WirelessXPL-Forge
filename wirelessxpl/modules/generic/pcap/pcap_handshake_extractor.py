@@ -66,7 +66,7 @@ class Exploit(Exploit):
 
         out_dir = self.output_dir if self.output_dir else os.path.dirname(os.path.abspath(self.pcap_file))
 
-        print_status("Found {} handshake(s):".format(len(handshakes)))
+        print_status(f"Found {len(handshakes)} handshake(s):")
         print_status("{:<20} {:<20} {:<32} {:>5}  {:<16}".format(
             "BSSID", "CLIENT", "SSID", "MSGS", "STATUS"
         ))
@@ -100,14 +100,12 @@ class Exploit(Exploit):
                 ][:5]
 
                 save_handshake_pcap(hs, out_path, include_beacons=relevant_beacons)
-                print_success("  -> Exported: {}".format(out_path))
+                print_success(f"  -> Exported: {out_path}")
                 exported += 1
 
         print_status("")
         total_usable = sum(1 for h in handshakes if h.is_complete)
-        print_status("Summary: {} total, {} usable, {} exported".format(
-            len(handshakes), total_usable, exported
-        ))
+        print_status(f"Summary: {len(handshakes)} total, {total_usable} usable, {exported} exported")
         if total_usable > 0:
             print_success("Use generic/pcap/pcap_offline_wpa_crack to attempt dictionary attack")
 

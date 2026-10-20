@@ -261,7 +261,7 @@ class Exploit(Exploit):
             print_error("No packets loaded from capture.")
             return
 
-        print_status("Scanning {} packets for Group Key Handshake messages...".format(len(packets)))
+        print_status(f"Scanning {len(packets)} packets for Group Key Handshake messages...")
 
         gtk_samples: List[bytes] = []
         bssid_gtk_map: Dict[str, List[bytes]] = defaultdict(list)
@@ -296,16 +296,14 @@ class Exploit(Exploit):
             )
             return
 
-        print_success("Extracted {} GTK sample(s) from {} BSSID(s).".format(
-            len(gtk_samples), len(bssid_gtk_map)
-        ))
+        print_success(f"Extracted {len(gtk_samples)} GTK sample(s) from {len(bssid_gtk_map)} BSSID(s).")
         print_status("")
 
         all_entropies: List[float] = []
 
         for bssid, gtks in sorted(bssid_gtk_map.items()):
-            print_status("BSSID: {}".format(bssid))
-            print_info("  GTK samples: {}".format(len(gtks)))
+            print_status(f"BSSID: {bssid}")
+            print_info(f"  GTK samples: {len(gtks)}")
 
             for i, gtk in enumerate(gtks):
                 entropy = _byte_entropy(gtk)
@@ -319,11 +317,11 @@ class Exploit(Exploit):
                 if len(gtk_hex) > 64:
                     gtk_hex = gtk_hex[:64] + "..."
 
-                print_info("  Sample #{}: {}".format(i + 1, gtk_hex))
-                print_info("    Length: {} bytes".format(len(gtk)))
-                print_info("    Entropy: {:.3f} / 8.000 bits".format(entropy))
-                print_info("    Chi-squared: {:.2f} (expected ~256 for uniform)".format(chi2))
-                print_info("    Runs test: {} runs (expected ~{})".format(runs, expected_runs))
+                print_info(f"  Sample #{i + 1}: {gtk_hex}")
+                print_info(f"    Length: {len(gtk)} bytes")
+                print_info(f"    Entropy: {entropy:.3f} / 8.000 bits")
+                print_info(f"    Chi-squared: {chi2:.2f} (expected ~256 for uniform)")
+                print_info(f"    Runs test: {runs} runs (expected ~{expected_runs})")
 
                 flags = []
                 if is_sequential:
@@ -343,34 +341,30 @@ class Exploit(Exploit):
                 all_gtk_bytes = b"".join(gtks)
                 combined_entropy = _byte_entropy(all_gtk_bytes)
                 combined_chi2 = _chi_squared_byte_test(all_gtk_bytes)
-                print_status("  Cross-sample analysis ({} GTKs combined):".format(len(gtks)))
-                print_info("    Combined entropy: {:.3f} / 8.000".format(combined_entropy))
-                print_info("    Combined chi-squared: {:.2f}".format(combined_chi2))
+                print_status(f"  Cross-sample analysis ({len(gtks)} GTKs combined):")
+                print_info(f"    Combined entropy: {combined_entropy:.3f} / 8.000")
+                print_info(f"    Combined chi-squared: {combined_chi2:.2f}")
 
                 # Check for identical GTKs (very bad)
                 unique_gtks = set(gtk.hex() for gtk in gtks)
                 if len(unique_gtks) < len(gtks):
                     print_error(
-                        "    [CRITICAL] {} duplicate GTK(s) detected out of {} - "
-                        "strong indicator of broken RNG.".format(
-                            len(gtks) - len(unique_gtks), len(gtks)
-                        )
+                        f"    [CRITICAL] {len(gtks) - len(unique_gtks)} duplicate GTK(s) detected out of {len(gtks)} - "
+                        "strong indicator of broken RNG."
                     )
 
             print_status("")
 
         risk = self._assess_rng_risk(gtk_samples, all_entropies)
         print_status("=== RNG Weakness Assessment ===")
-        print_info("  Risk level: {}".format(risk))
+        print_info(f"  Risk level: {risk}")
         print_status("")
 
         if all_entropies:
             avg = sum(all_entropies) / len(all_entropies)
             min_e = min(all_entropies)
             max_e = max(all_entropies)
-            print_info("  Entropy stats: avg={:.3f}, min={:.3f}, max={:.3f}".format(
-                avg, min_e, max_e
-            ))
+            print_info(f"  Entropy stats: avg={avg:.3f}, min={min_e:.3f}, max={max_e:.3f}")
 
         print_status("")
         print_status("--- Context ---")

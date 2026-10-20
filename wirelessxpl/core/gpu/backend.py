@@ -106,7 +106,7 @@ class ROCmBackend(ComputeBackend):
     def device_info(self) -> str:
         if self._torch:
             dev = self._torch.cuda.get_device_name(0)
-            return "ROCm [PyTorch-HIP] {}".format(dev)
+            return f"ROCm [PyTorch-HIP] {dev}"
         return "ROCm (indisponível)"
 
     def array_from_numpy(self, arr: np.ndarray):

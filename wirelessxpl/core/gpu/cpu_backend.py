@@ -25,7 +25,7 @@ class CPUBackend(ComputeBackend):
         return True
 
     def device_info(self) -> str:
-        return "CPU ({} threads, NumPy)".format(os.cpu_count() or 1)
+        return f"CPU ({os.cpu_count() or 1} threads, NumPy)"
 
     def array_from_numpy(self, arr: np.ndarray):
         return arr

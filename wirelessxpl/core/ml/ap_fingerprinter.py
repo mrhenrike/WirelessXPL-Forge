@@ -103,7 +103,7 @@ def _features_to_text(beacon_features: Mapping[str, Any]) -> str:
         if isinstance(val, (list, tuple, set)):
             parts.append("{}={}".format(key, " ".join(str(x) for x in val)))
         else:
-            parts.append("{}={}".format(key, val))
+            parts.append(f"{key}={val}")
     extra = beacon_features.get("raw_tags")
     if isinstance(extra, str) and extra.strip():
         parts.append(extra.strip())

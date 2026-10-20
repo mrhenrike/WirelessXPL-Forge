@@ -153,7 +153,7 @@ class Exploit(Exploit):
             print_error("No packets loaded from capture.")
             return
 
-        print_status("Analyzing {} packets for TKIP/MIC indicators...".format(len(packets)))
+        print_status(f"Analyzing {len(packets)} packets for TKIP/MIC indicators...")
 
         bssid_map: Dict[str, _BSSIDStats] = defaultdict(_BSSIDStats)
 
@@ -216,22 +216,20 @@ class Exploit(Exploit):
             print_status("No TKIP-enabled networks or MIC failure indicators found.")
             return
 
-        print_success("Found {} BSSID(s) with TKIP/MIC indicators:".format(len(relevant)))
+        print_success(f"Found {len(relevant)} BSSID(s) with TKIP/MIC indicators:")
         print_status("")
 
         for bssid, stats in sorted(relevant.items()):
             print_status("BSSID: {} ({})".format(bssid, stats.ssid or "<hidden>"))
             print_info("  TKIP detected:       {}".format("Yes" if stats.tkip_detected else "No"))
-            print_info("  Data frames:         {}".format(stats.data_frame_count))
-            print_info("  QoS data frames:     {}".format(stats.qos_frame_count))
-            print_info("  MIC failure deauths:  {}".format(stats.mic_failure_deauths))
+            print_info(f"  Data frames:         {stats.data_frame_count}")
+            print_info(f"  QoS data frames:     {stats.qos_frame_count}")
+            print_info(f"  MIC failure deauths:  {stats.mic_failure_deauths}")
 
             if stats.mic_failure_deauths >= 2:
                 print_success(
-                    "  [ALERT] {} MIC failure countermeasure deauths detected; "
-                    "AP likely triggered 60-second TKIP lockout.".format(
-                        stats.mic_failure_deauths
-                    )
+                    f"  [ALERT] {stats.mic_failure_deauths} MIC failure countermeasure deauths detected; "
+                    "AP likely triggered 60-second TKIP lockout."
                 )
             elif stats.mic_failure_deauths == 1:
                 print_info(
@@ -239,7 +237,7 @@ class Exploit(Exploit):
                 )
 
             feasibility = self._assess_feasibility(stats)
-            print_info("  Attack feasibility:  {}".format(feasibility))
+            print_info(f"  Attack feasibility:  {feasibility}")
             print_status("")
 
         print_status("--- Recommendations ---")

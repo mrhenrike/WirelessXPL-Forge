@@ -147,9 +147,9 @@ class BaseInterpreter:
         :return: command_handler
         """
         try:
-            command_handler = getattr(self, "command_{}".format(command))
+            command_handler = getattr(self, f"command_{command}")
         except AttributeError:
-            raise WirelessXPLException("Unknown command: '{}'".format(command))
+            raise WirelessXPLException(f"Unknown command: '{command}'")
 
         return command_handler
 
@@ -266,7 +266,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
     check                               Check if a given target is vulnerable to a selected module's exploit"""
 
     def __init__(self):
-        super(WirelessXPLInterpreter, self).__init__()
+        super().__init__()
         PrinterThread().start()
 
         self.current_module = None
@@ -334,13 +334,13 @@ class WirelessXPLInterpreter(BaseInterpreter):
         try:
             opts, args = getopt.getopt(argv[1:], "hm:s:", ["help=", "module=", "set="])
         except getopt.GetoptError:
-            print_info("{} -m <module> -s \"<option> <value>\"".format(argv[0]))
+            print_info(f"{argv[0]} -m <module> -s \"<option> <value>\"")
             printer_queue.join()
             return
 
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                print_info("{} -m <module> -s \"<option> <value>\"".format(argv[0]))
+                print_info(f"{argv[0]} -m <module> -s \"<option> <value>\"")
                 printer_queue.join()
                 return
             elif opt in ("-m", "--module"):
@@ -375,7 +375,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
     @property
     def module_metadata(self):
-        return getattr(self.current_module, "_{}__info__".format(self.current_module.__class__.__name__))
+        return getattr(self.current_module, f"_{self.current_module.__class__.__name__}__info__")
 
     @property
     def prompt(self):
@@ -452,8 +452,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 module_devices.add("awdl")
 
             try:
-                exploit_cls = import_exploit("wirelessxpl.modules.{}".format(module))
-                info = getattr(exploit_cls, "_{}__info__".format(exploit_cls.__name__), {})
+                exploit_cls = import_exploit(f"wirelessxpl.modules.{module}")
+                info = getattr(exploit_cls, f"_{exploit_cls.__name__}__info__", {})
                 for raw_device in info.get("devices", []):
                     if isinstance(raw_device, dict):
                         device_name = raw_device.get("name", "")
@@ -512,7 +512,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
     @module_required
     def command_run(self, *args, **kwargs):
-        print_status("Running module {}...".format(self.current_module))
+        print_status(f"Running module {self.current_module}...")
         previous_sigint_handler = signal.getsignal(signal.SIGINT)
         try:
             signal.signal(signal.SIGINT, self.__command_sigint_handler)
@@ -538,10 +538,10 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
             if kwargs.get("glob", False):
                 GLOBAL_OPTS[key] = value
-            print_success("{} => {}".format(key, value))
+            print_success(f"{key} => {value}")
         else:
-            print_error("You can't set option '{}'.\n"
-                        "Available options: {}".format(key, self.current_module.options))
+            print_error(f"You can't set option '{key}'.\n"
+                        f"Available options: {self.current_module.options}")
 
     @stop_after(2)
     def complete_set(self, text, *args, **kwargs):
@@ -565,8 +565,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
         try:
             del GLOBAL_OPTS[key]
         except KeyError:
-            print_error("You can't unset global option '{}'.\n"
-                        "Available global options: {}".format(key, list(GLOBAL_OPTS.keys())))
+            print_error(f"You can't unset global option '{key}'.\n"
+                        f"Available global options: {list(GLOBAL_OPTS.keys())}")
         else:
             print_success({key: value})
 
@@ -663,7 +663,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 if isinstance(device, dict):
                     print_info("   {} - {}".format(i, device['name']))
                 else:
-                    print_info("   {} - {}".format(i, device))
+                    print_info(f"   {i} - {device}")
                 i += 1
             print_info()
         except KeyError:
@@ -699,11 +699,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
     def command_show(self, *args, **kwargs):
         sub_command = args[0]
         try:
-            getattr(self, "_show_{}".format(sub_command))(*args, **kwargs)
+            getattr(self, f"_show_{sub_command}")(*args, **kwargs)
         except AttributeError:
-            print_error("Unknown 'show' sub-command '{}'. "
+            print_error(f"Unknown 'show' sub-command '{sub_command}'. "
                         "What do you want to show?\n"
-                        "Possible choices are: {}".format(sub_command, self.show_sub_commands))
+                        f"Possible choices are: {self.show_sub_commands}")
 
     @stop_after(2)
     def complete_show(self, text, *args, **kwargs):
@@ -800,7 +800,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 if value not in existing_modules:
                     print_error("Unknown module type.")
                     return
-                mod_type = "{}.".format(value)
+                mod_type = f"{value}."
             elif key == 'device':
                 normalized_device = self._normalize_device_name(value)
                 if normalized_device not in devices:
@@ -809,7 +809,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 mod_device = normalized_device
             elif key == 'vendor':
                 # print_info(' - Vendor:\t{}'.format(value))
-                mod_vendor = ".{}.".format(value)
+                mod_vendor = f".{value}."
 
         for module in self.modules:
             if mod_type not in str(module):
@@ -827,7 +827,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
             if len(keyword):
                 for word in keyword.split():
-                    found = found.replace(word, "\033[31m{}\033[0m".format(word))
+                    found = found.replace(word, f"\033[31m{word}\033[0m")
 
             print_info(found)
 

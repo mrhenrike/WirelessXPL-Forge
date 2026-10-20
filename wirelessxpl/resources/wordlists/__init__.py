@@ -34,7 +34,7 @@ def _load_entries(source: str) -> List[str]:
     """Load entries from ``file://`` URI or CSV-like inline content."""
     if source.startswith("file://"):
         path = _file_uri_to_path(source)
-        with open(path, "r") as handler:
+        with open(path) as handler:
             return [line.strip() for line in handler.readlines() if line.strip()]
     return [item.strip() for item in source.split(",") if item.strip()]
 

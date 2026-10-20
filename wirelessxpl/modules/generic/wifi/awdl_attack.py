@@ -141,8 +141,8 @@ class Exploit(Exploit):
             print_status(cmd_str)
             return
 
-        print_status("Running AWDL action '{}'...".format(self.action))
-        print_info("Command: {}".format(cmd_str))
+        print_status(f"Running AWDL action '{self.action}'...")
+        print_info(f"Command: {cmd_str}")
         try:
             if int(self.timeout) > 0:
                 subprocess.run(cmd, timeout=int(self.timeout), check=False)
@@ -154,4 +154,4 @@ class Exploit(Exploit):
             print_info("AWDL action interrupted by user.")
         except Exception as err:
             logger.exception("AWDL execution failed")
-            print_error("AWDL action failed: {}".format(err))
+            print_error(f"AWDL action failed: {err}")

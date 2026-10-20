@@ -84,16 +84,16 @@ class Exploit(Exploit):
 
         conf_lines = [
             "driver=nl80211",
-            "interface={}".format(self.interface),
-            "ssid={}".format(self.ssid),
-            "hw_mode={}".format(self.hw_mode),
-            "channel={}".format(int(self.channel)),
+            f"interface={self.interface}",
+            f"ssid={self.ssid}",
+            f"hw_mode={self.hw_mode}",
+            f"channel={int(self.channel)}",
             "auth_algs=1",
             "wmm_enabled=1",
         ]
         cc = str(self.country_code).strip()
         if cc:
-            conf_lines.append("country_code={}".format(cc))
+            conf_lines.append(f"country_code={cc}")
 
         if int(self.wpa) == 2:
             conf_lines.extend(
@@ -111,7 +111,7 @@ class Exploit(Exploit):
         dump = str(self.dump_config_path).strip()
         if dump:
             Path(dump).write_text(text, encoding="utf-8")
-            print_success("Wrote {}".format(dump))
+            print_success(f"Wrote {dump}")
             return
 
         if self.dry_run:
@@ -131,7 +131,7 @@ class Exploit(Exploit):
         ) as tmp:
             tmp.write(text)
             cfg = tmp.name
-        print_status("Starting hostapd with {}".format(cfg))
+        print_status(f"Starting hostapd with {cfg}")
         print_info(text)
         try:
             subprocess.run([hp, cfg], check=False)

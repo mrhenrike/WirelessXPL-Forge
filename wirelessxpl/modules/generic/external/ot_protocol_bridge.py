@@ -106,7 +106,7 @@ class Exploit(Exploit):
             raise ValueError("Defina target_ip (host ou CIDR) para scan Modbus.")
         if "/" in ip:
             return ip
-        return "{}/32".format(ip)
+        return f"{ip}/32"
 
     def _mitm_pair(self):
         """Extrai dois IPs de ``target_ip`` para ARP poisoning."""
@@ -129,14 +129,14 @@ class Exploit(Exploit):
             return "modules.exploit.dos.dosWriteRegisters"
         if act == "mitm":
             return "modules.auxiliary.sniff.arp_poisoning"
-        raise ValueError("action inválida: {}.".format(act))
+        raise ValueError(f"action inválida: {act}.")
 
     def _build_modbussploit_snippet(self) -> str:
         """Gera código ``python -c`` que carrega o módulo e chama ``main()``."""
         proto = str(self.protocol).strip().lower()
         if proto != "modbus":
             raise ValueError(
-                "ModBusSploit cobre apenas Modbus TCP. Para {} use mode=isf.".format(proto)
+                f"ModBusSploit cobre apenas Modbus TCP. Para {proto} use mode=isf."
             )
 
         mode = str(self.mode).strip().lower()
@@ -155,13 +155,13 @@ class Exploit(Exploit):
         ]
         if iface and act == "mitm":
             lines.append("from scapy.all import conf")
-            lines.append("conf.iface = {!r}".format(iface))
+            lines.append(f"conf.iface = {iface!r}")
 
-        lines.append("m = importlib.import_module({!r})".format(mod))
+        lines.append(f"m = importlib.import_module({mod!r})")
 
         if act == "scan":
-            lines.append("m.options[0][1] = {!r}".format(self._modbus_cidr()))
-            lines.append("m.options[1][1] = {!r}".format(port))
+            lines.append(f"m.options[0][1] = {self._modbus_cidr()!r}")
+            lines.append(f"m.options[1][1] = {port!r}")
         elif act == "read":
             ip = str(self.target_ip).strip()
             if not ip or "," in ip:
@@ -170,10 +170,10 @@ class Exploit(Exploit):
             if not reg:
                 raise ValueError("read exige register_address.")
             sid = str(self.slave_id).strip() or "1"
-            lines.append("m.options[0][1] = {!r}".format(ip))
-            lines.append("m.options[1][1] = {!r}".format(port))
-            lines.append("m.options[2][1] = {!r}".format(sid))
-            lines.append("m.options[3][1] = {!r}".format(reg))
+            lines.append(f"m.options[0][1] = {ip!r}")
+            lines.append(f"m.options[1][1] = {port!r}")
+            lines.append(f"m.options[2][1] = {sid!r}")
+            lines.append(f"m.options[3][1] = {reg!r}")
         elif act == "write":
             ip = str(self.target_ip).strip()
             if not ip or "," in ip:
@@ -183,24 +183,24 @@ class Exploit(Exploit):
             if not reg or not val:
                 raise ValueError("write exige register_address e register_value.")
             sid = str(self.slave_id).strip() or "1"
-            lines.append("m.options[0][1] = {!r}".format(ip))
-            lines.append("m.options[1][1] = {!r}".format(port))
-            lines.append("m.options[2][1] = {!r}".format(sid))
-            lines.append("m.options[3][1] = {!r}".format(reg))
-            lines.append("m.options[4][1] = {!r}".format(val))
+            lines.append(f"m.options[0][1] = {ip!r}")
+            lines.append(f"m.options[1][1] = {port!r}")
+            lines.append(f"m.options[2][1] = {sid!r}")
+            lines.append(f"m.options[3][1] = {reg!r}")
+            lines.append(f"m.options[4][1] = {val!r}")
         elif act == "dos":
             ip = str(self.target_ip).strip()
             if not ip or "," in ip:
                 raise ValueError("dos exige um único target_ip.")
             sid = str(self.slave_id).strip() or "1"
-            lines.append("m.options[0][1] = {!r}".format(ip))
-            lines.append("m.options[1][1] = {!r}".format(port))
-            lines.append("m.options[2][1] = {!r}".format(sid))
+            lines.append(f"m.options[0][1] = {ip!r}")
+            lines.append(f"m.options[1][1] = {port!r}")
+            lines.append(f"m.options[2][1] = {sid!r}")
             lines.append("m.options[3][1] = '20'")
         elif act == "mitm":
             a1, a2 = self._mitm_pair()
-            lines.append("m.options[0][1] = {!r}".format(a1))
-            lines.append("m.options[1][1] = {!r}".format(a2))
+            lines.append(f"m.options[0][1] = {a1!r}")
+            lines.append(f"m.options[1][1] = {a2!r}")
 
         lines.append("m.main()")
         return "\n".join(lines)
@@ -225,7 +225,7 @@ class Exploit(Exploit):
 
         ot = self._ot_root()
         if not ot.is_dir():
-            raise FileNotFoundError("submodules/OT não encontrado em {}.".format(ot))
+            raise FileNotFoundError(f"submodules/OT não encontrado em {ot}.")
 
         if mode == "isf":
             script = self._isf_entry()
@@ -237,7 +237,7 @@ class Exploit(Exploit):
             root = self._buspwn_root()
             pwn = root / "pwn.py"
             if not pwn.is_file():
-                raise FileNotFoundError("pwn.py não encontrado em {}.".format(root))
+                raise FileNotFoundError(f"pwn.py não encontrado em {root}.")
             py = self._python3()
             if not py:
                 raise FileNotFoundError("Python 3 não encontrado no PATH (BusPwn).")
@@ -247,12 +247,12 @@ class Exploit(Exploit):
         if proto != "modbus":
             raise ValueError(
                 "Este modo automatizado usa ModBusSploit (Modbus TCP). "
-                "Para {} use mode=isf no diretório isf.".format(proto)
+                f"Para {proto} use mode=isf no diretório isf."
             )
 
         root = self._modbussploit_root()
         if not root.is_dir():
-            raise FileNotFoundError("ModBusSploit não encontrado em {}.".format(root))
+            raise FileNotFoundError(f"ModBusSploit não encontrado em {root}.")
 
         py = self._python3()
         if not py:
@@ -307,15 +307,15 @@ class Exploit(Exploit):
             if "-c" in cmd:
                 i = cmd.index("-c")
                 print_status("{} -c \"...\" ".format(" ".join(cmd[:i])))
-                print_info("Código:\n{}".format(cmd[i + 1]))
+                print_info(f"Código:\n{cmd[i + 1]}")
             else:
                 print_status(" ".join(cmd))
-            print_info("cwd: {}".format(cwd_run))
-            print_info("submodules/OT: {}".format(self._ot_root()))
+            print_info(f"cwd: {cwd_run}")
+            print_info(f"submodules/OT: {self._ot_root()}")
             return
 
-        print_status("OT protocol bridge (mode={})…".format(self.mode))
-        print_info("cwd: {}".format(cwd_run))
+        print_status(f"OT protocol bridge (mode={self.mode})…")
+        print_info(f"cwd: {cwd_run}")
 
         if str(self.mode).strip().lower() == "isf":
             print_info("ISF/icssploit: framework interativo (Python 2). Ctrl+C para sair.")
@@ -328,5 +328,5 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nInterrompido pelo usuário.")
         except Exception as err:
-            print_error("Falha ao executar: {}".format(err))
+            print_error(f"Falha ao executar: {err}")
             logger.exception("ot_protocol_bridge subprocess")

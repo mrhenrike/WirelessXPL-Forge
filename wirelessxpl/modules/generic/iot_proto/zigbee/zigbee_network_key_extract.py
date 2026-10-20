@@ -144,7 +144,7 @@ class Exploit(Exploit):
     def _validate_channel(self):
         ch = int(self.channel)
         if ch < 11 or ch > 26:
-            print_error("Invalid channel: {} (must be 11-26)".format(ch))
+            print_error(f"Invalid channel: {ch} (must be 11-26)")
             return False
         return True
 
@@ -193,7 +193,7 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("Zigbee network key extraction on channel {}".format(self.channel))
+        print_status(f"Zigbee network key extraction on channel {self.channel}")
 
         if not self._validate_channel():
             return
@@ -202,7 +202,7 @@ class Exploit(Exploit):
         if not tc_key:
             return
 
-        print_info("Trust Center Link Key: {}".format(tc_key.hex()))
+        print_info(f"Trust Center Link Key: {tc_key.hex()}")
         print_info("Radio interface: {}".format(self.interface or "(not configured)"))
 
         if not self.interface.strip():
@@ -229,12 +229,12 @@ class Exploit(Exploit):
             key_type = plaintext[1]
             extracted_key = plaintext[2:18]
 
-            print_success("APS Command ID: 0x{:02X} (Transport Key)".format(cmd_id))
+            print_success(f"APS Command ID: 0x{cmd_id:02X} (Transport Key)")
             print_success("Key Type: 0x{:02X} ({})".format(
                 key_type,
                 "Standard Network Key" if key_type == _KEY_TYPE_STANDARD_NWK else "Unknown",
             ))
-            print_success("NETWORK KEY EXTRACTED: {}".format(extracted_key.hex()))
+            print_success(f"NETWORK KEY EXTRACTED: {extracted_key.hex()}")
 
             if extracted_key == demo["original_key"]:
                 print_success("Verification: extracted key matches original")
@@ -247,7 +247,7 @@ class Exploit(Exploit):
                 ("TC Link Key", tc_key.hex()),
                 ("Source EUI-64", demo["src_eui64"].hex()),
                 ("Network Key", extracted_key.hex()),
-                ("Key Type", "Standard NWK" if key_type == 1 else "0x{:02X}".format(key_type)),
+                ("Key Type", "Standard NWK" if key_type == 1 else f"0x{key_type:02X}"),
             ]
             print_table(headers, *rows)
 

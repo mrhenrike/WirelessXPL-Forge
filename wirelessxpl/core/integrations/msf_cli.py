@@ -37,8 +37,8 @@ def build_command_sequence(
 ) -> str:
     """Build a single ``-x`` string for msfconsole (semicolon-separated)."""
     parts = [
-        "use {}".format(module_ref.strip()),
-        "setg RHOSTS {}".format(rhosts.strip()),
+        f"use {module_ref.strip()}",
+        f"setg RHOSTS {rhosts.strip()}",
     ]
     for line in extra_lines:
         line = line.strip()
@@ -82,7 +82,7 @@ def run_msf_batch_commands(
         )
         return proc.returncode, proc.stdout or "", proc.stderr or ""
     except subprocess.TimeoutExpired as exc:
-        return -9, "", "timeout: {}".format(exc)
+        return -9, "", f"timeout: {exc}"
     except OSError as exc:
         return -1, "", str(exc)
 
@@ -101,7 +101,7 @@ def read_metasploit_rb_metadata(rb_path: str) -> dict:
     out: dict = {"name": "", "authors": [], "description": "", "references": [], "path": rb_path}
     if not os.path.isfile(rb_path):
         return out
-    with open(rb_path, "r", encoding="utf-8", errors="replace") as handle:
+    with open(rb_path, encoding="utf-8", errors="replace") as handle:
         text = handle.read()
     name_m = re.search(r"['\"]Name['\"]\s*=>\s*['\"]([^'\"]+)['\"]", text)
     if name_m:

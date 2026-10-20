@@ -190,8 +190,8 @@ class Exploit(Exploit):
             tx_power=int(self.tx_power),
         )
 
-        print_success("Advertising payload constructed ({} bytes)".format(len(ad_payload)))
-        print_info("AD payload hex: {}".format(ad_payload.hex()))
+        print_success(f"Advertising payload constructed ({len(ad_payload)} bytes)")
+        print_info(f"AD payload hex: {ad_payload.hex()}")
 
         interval_units = max(int(self.adv_interval) * 1000 // 625, 0x0020)
         params_cmd = _build_hci_le_set_adv_params(
@@ -202,9 +202,9 @@ class Exploit(Exploit):
         enable_cmd = _build_hci_le_set_adv_enable(True)
 
         print_status("HCI commands generated:")
-        print_info("  Set Advertising Parameters: {}".format(params_cmd.hex()))
-        print_info("  Set Advertising Data: {}".format(data_cmd.hex()))
-        print_info("  Set Advertising Enable: {}".format(enable_cmd.hex()))
+        print_info(f"  Set Advertising Parameters: {params_cmd.hex()}")
+        print_info(f"  Set Advertising Data: {data_cmd.hex()}")
+        print_info(f"  Set Advertising Enable: {enable_cmd.hex()}")
 
         headers = ("AD Type", "Type Name", "Length", "Data (hex)")
         rows = []
@@ -225,7 +225,7 @@ class Exploit(Exploit):
                 _AD_TYPE_APPEARANCE: "Appearance",
             }
             rows.append((
-                "0x{:02X}".format(ad_type),
+                f"0x{ad_type:02X}",
                 type_names.get(ad_type, "Unknown"),
                 str(len(ad_data)),
                 ad_data.hex(),
@@ -234,9 +234,9 @@ class Exploit(Exploit):
 
         print_table(headers, *rows, title="Advertising Data Structures")
 
-        print_warning("Spoofed device will appear as '{}' to BLE scanners".format(self.device_name))
+        print_warning(f"Spoofed device will appear as '{self.device_name}' to BLE scanners")
         print_info("Impact: centrals may connect to spoofed device for credential harvesting")
         print_info(
-            "To activate: send HCI commands to adapter '{}' via hcitool or "
-            "BlueZ management interface".format(self.interface)
+            f"To activate: send HCI commands to adapter '{self.interface}' via hcitool or "
+            "BlueZ management interface"
         )

