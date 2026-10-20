@@ -1,6 +1,5 @@
 """Unit tests for Phase 3 Batch 3 driver/mac80211 CVE exploit modules."""
 import importlib
-import struct
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch

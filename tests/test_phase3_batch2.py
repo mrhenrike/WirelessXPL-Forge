@@ -280,7 +280,7 @@ class TestBlueZAvrcpStack:
         assert exploit._AVRCP_PDU_GET_ELEMENT_ATTR == 0x20
 
     def test_company_bt_sig(self, exploit) -> None:
-        assert exploit._AVRCP_COMPANY_BT_SIG == bytes([0x00, 0x19, 0x58])
+        assert bytes([0x00, 0x19, 0x58]) == exploit._AVRCP_COMPANY_BT_SIG
 
     def test_build_oversized_attribute(self, exploit) -> None:
         attr = exploit._build_oversized_attribute(0x01, 100)

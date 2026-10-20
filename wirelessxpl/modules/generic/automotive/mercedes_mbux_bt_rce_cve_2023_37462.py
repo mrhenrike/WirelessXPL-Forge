@@ -191,6 +191,14 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
+        if not self._check_bt_tools():
+            print_error("Pre-conditions not met; aborting.")
+            return
+        print_success("Pre-conditions satisfied; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploitation: BT RCE against Mercedes MBUX NTG6."""
         mode = str(self.mode).strip().lower()
         if mode == "info":
             self._info_mode()
@@ -199,4 +207,4 @@ class Exploit(Exploit):
         elif mode == "probe":
             self._probe_mode()
         else:
-            print_error(f"Modo inválido: {mode}. Use: info, scan, probe")
+            print_error(f"Modo invalido: {mode}. Use: info, scan, probe")

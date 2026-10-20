@@ -3,8 +3,6 @@
 import importlib
 import os
 import struct
-import sys
-import types
 
 import pytest
 
@@ -471,9 +469,9 @@ class TestZigbeeEcosystemExpansion:
 
     def test_zha_default_key(self):
         assert len(self.Exploit._ZHA_DEFAULT_TC_LINK_KEY) == 16
-        assert self.Exploit._ZHA_DEFAULT_TC_LINK_KEY == bytes.fromhex(
+        assert bytes.fromhex(
             "5A6967426565416C6C69616E63653039"
-        )
+        ) == self.Exploit._ZHA_DEFAULT_TC_LINK_KEY
 
     def test_zll_master_key(self):
         assert len(self.Exploit._ZLL_MASTER_KEY) == 16

