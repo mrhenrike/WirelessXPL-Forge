@@ -159,7 +159,7 @@ class SmartPool:
                 target=target_function,
                 args=(stop_event,) + args,
                 kwargs=kwargs,
-                name="{}-{}".format(self._thread_prefix, tid),
+                name=f"{self._thread_prefix}-{tid}",
             )
             thread.daemon = True
             threads.append(thread)
@@ -199,5 +199,4 @@ class SmartPool:
         self.shutdown(wait=False)
 
     def __repr__(self) -> str:
-        return "<SmartPool strategy={} workers={}>".format(
-            self._resolved_strategy.value, self._max_workers)
+        return f"<SmartPool strategy={self._resolved_strategy.value} workers={self._max_workers}>"

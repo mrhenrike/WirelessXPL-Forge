@@ -125,7 +125,7 @@ class Exploit(Exploit):
             mreq = struct.pack("4sL", socket.inet_aton(mcast_addr), socket.INADDR_ANY)
             sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         except OSError as exc:
-            print_warning("Falha ao entrar no multicast DDS: {}".format(exc))
+            print_warning(f"Falha ao entrar no multicast DDS: {exc}")
             sock.close()
             return participants
 
@@ -140,7 +140,7 @@ class Exploit(Exploit):
                         participants[ip] = {
                             "ip": ip,
                             "port": addr[1],
-                            "rtps_version": "{}.{}".format(data[4], data[5]),
+                            "rtps_version": f"{data[4]}.{data[5]}",
                             "guid_prefix": data[8:20].hex() if len(data) >= 20 else "?",
                         }
             except socket.timeout:
@@ -166,9 +166,9 @@ class Exploit(Exploit):
         guid_prefix = os.urandom(12)
         header = _build_rtps_header(guid_prefix)
         payload_bytes = data.encode("utf-8") if isinstance(data, str) else data
-        print_info("Construindo RTPS DATA para tópico '{}' ({} bytes)".format(topic, len(payload_bytes)))
-        print_info("GUID Prefix: {}".format(guid_prefix.hex()))
-        print_info("Payload: {}".format(payload_bytes[:32].hex()))
+        print_info(f"Construindo RTPS DATA para tópico '{topic}' ({len(payload_bytes)} bytes)")
+        print_info(f"GUID Prefix: {guid_prefix.hex()}")
+        print_info(f"Payload: {payload_bytes[:32].hex()}")
         print_warning("Injeção real requer conhecimento do TypeCode/InstanceHandle do DataWriter")
         return True
 
@@ -182,18 +182,17 @@ class Exploit(Exploit):
     @multi
     def run(self):
         """Enumera participantes DDS e opcionalmente injeta dados."""
-        print_status("Varredura DDS/RTPS domínio {} ({} segundos)...".format(
-            self.domain_id, self.timeout))
+        print_status(f"Varredura DDS/RTPS domínio {self.domain_id} ({self.timeout} segundos)...")
         print_status("Enviando anúncio SPDP para estimular respostas...")
         self._send_spdp_announcement()
         participants = self._discover_participants(int(self.timeout))
 
         if not participants:
-            print_warning("Nenhum participante DDS detectado no domínio {}".format(self.domain_id))
+            print_warning(f"Nenhum participante DDS detectado no domínio {self.domain_id}")
             print_info("Verifique: DDS Security pode estar ativa ou domínio incorreto")
             return
 
-        print_success("{} participante(s) DDS descoberto(s)".format(len(participants)))
+        print_success(f"{len(participants)} participante(s) DDS descoberto(s)")
         headers = ["IP", "Porta", "RTPS Ver.", "GUID Prefix"]
         rows = [(p["ip"], str(p["port"]), p["rtps_version"], p["guid_prefix"])
                 for p in sorted(participants.values(), key=lambda x: x["ip"])]
@@ -205,8 +204,7 @@ class Exploit(Exploit):
         if self.inject_topic and self.inject_data:
             first_ip = list(participants.values())[0]["ip"]
             first_port = list(participants.values())[0]["port"]
-            print_status("Tentando injeção em tópico '{}' em {}:{}".format(
-                self.inject_topic, first_ip, first_port))
+            print_status(f"Tentando injeção em tópico '{self.inject_topic}' em {first_ip}:{first_port}")
             success = self._inject_dds_data(first_ip, first_port,
                                             str(self.inject_topic), str(self.inject_data))
             if success:

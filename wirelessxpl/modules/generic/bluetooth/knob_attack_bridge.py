@@ -98,7 +98,7 @@ class Exploit(Exploit):
             "  - Hardware compatível: Nexus 5, BCM4339/4358 chipsets\n"
             "  - Dois dispositivos vítima em processo de pairing (BR/EDR)"
         )
-        print_info("Submodule KNOB: {}".format(_knob_root()))
+        print_info(f"Submodule KNOB: {_knob_root()}")
 
     def _internalblue_hint(self) -> None:
         print_status("KNOB via InternalBlue — setup hints")
@@ -114,7 +114,7 @@ class Exploit(Exploit):
     def _poc_mode(self) -> None:
         root = _knob_root()
         if not root.exists():
-            print_error("Submodule knob-attack não encontrado em: {}".format(root))
+            print_error(f"Submodule knob-attack não encontrado em: {root}")
             print_info("Execute: git submodule update --init submodules/IoT/knob-attack")
             return
 
@@ -129,9 +129,9 @@ class Exploit(Exploit):
         if not poc:
             # List what's available
             available = list(root.rglob("*.py"))
-            print_error("Script PoC não encontrado. Disponíveis em {}:".format(root))
+            print_error(f"Script PoC não encontrado. Disponíveis em {root}:")
             for p in available[:10]:
-                print_info("  {}".format(p))
+                print_info(f"  {p}")
             return
 
         python_bin = shutil.which("python3") or "python3"
@@ -150,17 +150,17 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
-        print_status("KNOB PoC: forçando entropia={} byte(s)".format(int(self.forced_entropy)))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"KNOB PoC: forçando entropia={int(self.forced_entropy)} byte(s)")
+        print_info(f"Comando: {cmd_str}")
         try:
             subprocess.run(cmd, cwd=str(root), check=False)
         except KeyboardInterrupt:
             print_info("\nInterrompido.")
         except Exception as exc:
-            print_error("Erro ao executar KNOB PoC: {}".format(exc))
+            print_error(f"Erro ao executar KNOB PoC: {exc}")
 
 
     def check(self) -> str:

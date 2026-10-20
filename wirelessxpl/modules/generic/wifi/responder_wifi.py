@@ -136,9 +136,9 @@ class Exploit(Exploit):
             print_status(cmd_str)
             return
 
-        print_status("Launching Responder on {}...".format(self.interface))
-        print_info("Command: {}".format(cmd_str))
-        print_info("Logs: {}".format(log_dir))
+        print_status(f"Launching Responder on {self.interface}...")
+        print_info(f"Command: {cmd_str}")
+        print_info(f"Logs: {log_dir}")
         print_info("Capturing LLMNR/NBT-NS/mDNS/WPAD from Wi-Fi clients...")
 
         try:
@@ -146,10 +146,10 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nResponder interrupted.")
         except Exception as err:
-            print_error("Responder failed: {}".format(err))
+            print_error(f"Responder failed: {err}")
 
         hash_files = list(log_dir.glob("*NTLM*")) + list(log_dir.glob("*hash*"))
         if hash_files:
             print_success("Captured hashes:")
             for f in hash_files:
-                print_info("  {}".format(f))
+                print_info(f"  {f}")

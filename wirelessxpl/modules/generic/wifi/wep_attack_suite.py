@@ -1045,7 +1045,7 @@ class Exploit(Exploit):
         )
         capture_thread.start()
         threads.append(("Scapy-IV-sniffer", capture_thread))
-        print_status("Scapy IV sniffer started on {}".format(iface))
+        print_status(f"Scapy IV sniffer started on {iface}")
         time.sleep(2)
 
         if bool(self.fakeauth_keepalive):
@@ -1057,7 +1057,7 @@ class Exploit(Exploit):
             )
             fa_thread.start()
             threads.append(("Scapy-fakeauth", fa_thread))
-            print_status("Fake-auth keepalive started (MAC: {})".format(src_mac))
+            print_status(f"Fake-auth keepalive started (MAC: {src_mac})")
             time.sleep(1)
 
         if bool(self.attack_arp_replay):

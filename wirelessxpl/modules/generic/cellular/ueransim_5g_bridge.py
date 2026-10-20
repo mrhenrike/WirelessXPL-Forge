@@ -219,16 +219,16 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN - {}".format(cmd_str))
+            print_info(f"DRY RUN - {cmd_str}")
             return None
 
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             if background:
                 proc = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 )
-                print_info("Started in background, PID: {}".format(proc.pid))
+                print_info(f"Started in background, PID: {proc.pid}")
                 return proc
             else:
                 result = subprocess.run(
@@ -236,9 +236,9 @@ class Exploit(Exploit):
                 )
                 if result.stdout.strip():
                     for line in result.stdout.strip().splitlines():
-                        print_info("  {}".format(line))
+                        print_info(f"  {line}")
                 if result.returncode != 0 and result.stderr.strip():
-                    print_error("stderr: {}".format(result.stderr.strip()))
+                    print_error(f"stderr: {result.stderr.strip()}")
 
                 outdir = self._outdir()
                 report = os.path.join(
@@ -246,15 +246,15 @@ class Exploit(Exploit):
                     "ueransim_{}.txt".format(label.lower().replace(" ", "_")),
                 )
                 with open(report, "w", encoding="utf-8") as fh:
-                    fh.write("Command: {}\n".format(cmd_str))
-                    fh.write("Exit code: {}\n\n".format(result.returncode))
+                    fh.write(f"Command: {cmd_str}\n")
+                    fh.write(f"Exit code: {result.returncode}\n\n")
                     fh.write(result.stdout)
-                print_info("Output saved: {}".format(report))
+                print_info(f"Output saved: {report}")
                 return None
         except subprocess.TimeoutExpired:
             print_error("UERANSIM timed out (60s limit).")
         except Exception as exc:
-            print_error("UERANSIM error: {}".format(exc))
+            print_error(f"UERANSIM error: {exc}")
         return None
 
     def _info_mode(self) -> None:
@@ -313,7 +313,7 @@ class Exploit(Exploit):
         gnb_path = os.path.join(outdir, "ueransim_gnb.yaml")
         with open(gnb_path, "w", encoding="utf-8") as fh:
             fh.write(gnb_cfg)
-        print_success("gNB config generated: {}".format(gnb_path))
+        print_success(f"gNB config generated: {gnb_path}")
 
         if k_val and opc_val:
             ue_cfg = _UE_CONFIG_TEMPLATE.format(
@@ -323,7 +323,7 @@ class Exploit(Exploit):
             ue_path = os.path.join(outdir, "ueransim_ue.yaml")
             with open(ue_path, "w", encoding="utf-8") as fh:
                 fh.write(ue_cfg)
-            print_success("UE config generated: {}".format(ue_path))
+            print_success(f"UE config generated: {ue_path}")
         else:
             print_info(
                 "UE config not generated: key_k and key_opc are required. "
@@ -352,7 +352,7 @@ class Exploit(Exploit):
                 return
 
         print_status("Starting UERANSIM gNB (5G base station simulator)")
-        print_info("Config: {}".format(config))
+        print_info(f"Config: {config}")
         self._run_ueransim_cmd(nr_gnb, ["-c", config], "gNB Start", background=True)
 
     def _start_ue(self) -> None:
@@ -377,7 +377,7 @@ class Exploit(Exploit):
                 return
 
         print_status("Starting UERANSIM UE (5G user equipment simulator)")
-        print_info("Config: {}".format(config))
+        print_info(f"Config: {config}")
         self._run_ueransim_cmd(nr_ue, ["-c", config], "UE Start", background=True)
 
     def _test_registration(self) -> None:
@@ -403,7 +403,7 @@ class Exploit(Exploit):
             return
         dnn_val = str(self.dnn).strip() or "internet"
         print_status("Testing PDU Session Establishment")
-        print_info("DNN: {}".format(dnn_val))
+        print_info(f"DNN: {dnn_val}")
         print_info(
             "PDU session flow:\n"
             "  1. UE -> AMF: PDU Session Establishment Request\n"
@@ -417,7 +417,7 @@ class Exploit(Exploit):
     def _suci_analysis(self) -> None:
         print_status("SUCI/SUPI Analysis (Subscription Identifier Concealment)")
         supi_val = str(self.supi).strip()
-        print_info("SUPI (permanent): imsi-{}".format(supi_val))
+        print_info(f"SUPI (permanent): imsi-{supi_val}")
         print_info(
             "SUCI (concealed) generation:\n"
             "  - SUPI is encrypted using the home network public key\n"

@@ -140,7 +140,7 @@ class Exploit(Exploit):
 
         channel = int(self.channel)
         if channel not in range(1, 15) and channel not in range(36, 178):
-            print_error("Canal inválido: {}".format(channel))
+            print_error(f"Canal inválido: {channel}")
             return
 
         count = int(self.frame_count)
@@ -150,10 +150,8 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info(
-                "DRY RUN — SAE commit flood: iface={}, bssid={}, channel={}, "
-                "count={}, interval={}s, randomize={}".format(
-                    iface, bssid, channel, count, interval, randomize
-                )
+                f"DRY RUN — SAE commit flood: iface={iface}, bssid={bssid}, channel={channel}, "
+                f"count={count}, interval={interval}s, randomize={randomize}"
             )
             return
 
@@ -200,7 +198,7 @@ class Exploit(Exploit):
                 sent += 1
 
                 if self.verbose:
-                    print_status("Frame #{}: src={}".format(sent, src_mac))
+                    print_status(f"Frame #{sent}: src={src_mac}")
 
                 if not infinite and sent >= count:
                     break
@@ -216,7 +214,7 @@ class Exploit(Exploit):
                 "se a interface está em modo monitor."
             )
         except Exception as exc:
-            print_error("Erro durante SAE flood: {}".format(exc))
+            print_error(f"Erro durante SAE flood: {exc}")
             logger.exception("SAE flood error")
 
-        print_success("SAE commit flood finalizado. Frames enviados: {}".format(sent))
+        print_success(f"SAE commit flood finalizado. Frames enviados: {sent}")

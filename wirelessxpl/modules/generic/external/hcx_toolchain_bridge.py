@@ -121,8 +121,8 @@ class Exploit(Exploit):
         if proc.stderr:
             print_status(proc.stderr.strip())
         if proc.returncode == 0:
-            print_success("Wrote: {}".format(outp))
+            print_success(f"Wrote: {outp}")
             effective_mode = hm if hm != "auto" else "22000"
-            print_info("Try: hashcat -m {} {} wordlist.txt".format(effective_mode, outp))
+            print_info(f"Try: hashcat -m {effective_mode} {outp} wordlist.txt")
         else:
-            print_error("hcxtools exited with code {}".format(proc.returncode))
+            print_error(f"hcxtools exited with code {proc.returncode}")

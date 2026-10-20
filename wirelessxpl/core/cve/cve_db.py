@@ -55,7 +55,7 @@ class CVEEntry:
             return "EXPLOITABLE (rxf module available)"
         if self.is_remote:
             return "REMOTE (no rxf module yet)"
-        return "{} access required".format(self.access_vector.upper())
+        return f"{self.access_vector.upper()} access required"
 
 
 # =====================================================================

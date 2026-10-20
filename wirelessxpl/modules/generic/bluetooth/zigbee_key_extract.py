@@ -76,7 +76,7 @@ NWK_FRAME_TYPE_CMD = 0x01
 
 
 def _bytes_to_hex(data: bytes) -> str:
-    return ":".join("{:02X}".format(b) for b in data)
+    return ":".join(f"{b:02X}" for b in data)
 
 
 def _try_aes_ccm_decrypt(
@@ -130,7 +130,7 @@ class Exploit(Exploit):
             os.makedirs(out_dir, exist_ok=True)
             return out_dir
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida: {}".format(exc))
+            print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
     def _check_deps(self) -> bool:
@@ -152,16 +152,16 @@ class Exploit(Exploit):
         if not pcap or not os.path.isfile(pcap):
             print_error("Defina pcap_file com caminho valido para arquivo PCAP.")
             return None
-        print_status("Carregando PCAP: {}".format(pcap))
+        print_status(f"Carregando PCAP: {pcap}")
         try:
             packets = rdpcap(pcap)
             max_pkt = int(self.max_packets)
             if max_pkt > 0:
                 packets = packets[:max_pkt]
-            print_info("Pacotes carregados: {}".format(len(packets)))
+            print_info(f"Pacotes carregados: {len(packets)}")
             return packets
         except Exception as exc:
-            print_error("Falha ao ler PCAP: {}".format(exc))
+            print_error(f"Falha ao ler PCAP: {exc}")
             return None
 
     def _info_mode(self) -> None:
@@ -189,7 +189,7 @@ class Exploit(Exploit):
 
         has_scapy = "SIM" if HAS_SCAPY else "NAO"
         has_crypto = "SIM" if HAS_PYCRYPTODOME else "NAO"
-        print_info("Dependencias: Scapy={}, pycryptodome={}".format(has_scapy, has_crypto))
+        print_info(f"Dependencias: Scapy={has_scapy}, pycryptodome={has_crypto}")
 
     def _extract_mode(self) -> None:
         if not self._check_deps():
@@ -209,9 +209,7 @@ class Exploit(Exploit):
             if transport_key:
                 keys_found.append((idx, transport_key))
                 print_success(
-                    "Pacote #{}: chave de rede encontrada: {}".format(
-                        idx, _bytes_to_hex(transport_key),
-                    )
+                    f"Pacote #{idx}: chave de rede encontrada: {_bytes_to_hex(transport_key)}"
                 )
 
         if not keys_found:
@@ -221,14 +219,14 @@ class Exploit(Exploit):
                 "ou o trafego pode estar criptografado com install code."
             )
         else:
-            print_success("Total de chaves encontradas: {}".format(len(keys_found)))
+            print_success(f"Total de chaves encontradas: {len(keys_found)}")
             out_dir = self._ensure_output_dir()
             if out_dir:
                 out_file = os.path.join(out_dir, "extracted_keys.txt")
                 with open(out_file, "w", encoding="utf-8") as fh:
                     for pkt_idx, key in keys_found:
-                        fh.write("packet={} key={}\n".format(pkt_idx, _bytes_to_hex(key)))
-                print_info("Chaves salvas em: {}".format(out_file))
+                        fh.write(f"packet={pkt_idx} key={_bytes_to_hex(key)}\n")
+                print_info(f"Chaves salvas em: {out_file}")
 
     def _search_transport_key_in_raw(self, raw_data: bytes) -> Optional[bytes]:
         """Search raw frame bytes for APS Transport Key command payload.
@@ -266,11 +264,11 @@ class Exploit(Exploit):
         if packets is None:
             return
 
-        print_status("Testando {} chaves padrao conhecidas...".format(len(_DEFAULT_KEYS)))
+        print_status(f"Testando {len(_DEFAULT_KEYS)} chaves padrao conhecidas...")
         print_info("")
 
         for key_name, key_bytes in _DEFAULT_KEYS.items():
-            print_status("Testando: {} ({})".format(key_name, _bytes_to_hex(key_bytes)))
+            print_status(f"Testando: {key_name} ({_bytes_to_hex(key_bytes)})")
             matches = 0
 
             for idx, pkt in enumerate(packets):
@@ -282,12 +280,12 @@ class Exploit(Exploit):
                     matches += 1
                     if matches <= 5:
                         print_info(
-                            "  Pacote #{}: bytes da chave encontrados no frame".format(idx)
+                            f"  Pacote #{idx}: bytes da chave encontrados no frame"
                         )
 
             if matches > 0:
                 print_success(
-                    "  {} ocorrencias da chave '{}' encontradas".format(matches, key_name)
+                    f"  {matches} ocorrencias da chave '{key_name}' encontradas"
                 )
             else:
                 print_info("  Nenhuma ocorrencia encontrada.")

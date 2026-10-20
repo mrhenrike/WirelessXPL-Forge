@@ -174,7 +174,7 @@ class PortalOptimizer:
         else:
             self._beta[key] += 1.0
 
-        k = "{}|{}".format(template, locale)
+        k = f"{template}|{locale}"
         self._stats["attempts"][k] = self._stats["attempts"].get(k, 0) + 1
         if success:
             self._stats["successes"][k] = self._stats["successes"].get(k, 0) + 1
@@ -191,7 +191,7 @@ class PortalOptimizer:
             succ = self._stats["successes"].get(k, 0)
             rates[k] = float(succ) / float(max(1, att))
         beta_params = {
-            "{}|{}".format(t, l): {"alpha": self._alpha[(t, l)], "beta": self._beta[(t, l)]}
+            f"{t}|{l}": {"alpha": self._alpha[(t, l)], "beta": self._beta[(t, l)]}
             for t in self._templates
             for l in self._locales
             if (t, l) in self._alpha

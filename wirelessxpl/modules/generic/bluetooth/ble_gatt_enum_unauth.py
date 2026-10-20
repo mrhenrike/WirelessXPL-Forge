@@ -147,15 +147,15 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("BLE GATT Enumeration → {}".format(self.target))
-        print_info("Adaptador: {}, MTU: {}".format(self.interface, self.mtu))
+        print_status(f"BLE GATT Enumeration → {self.target}")
+        print_info(f"Adaptador: {self.interface}, MTU: {self.mtu}")
 
         if not self.check():
-            print_error("Endereço BLE inválido: {}".format(self.target))
+            print_error(f"Endereço BLE inválido: {self.target}")
             return
 
         mtu_req = _build_mtu_request(int(self.mtu))
-        print_info("MTU Exchange Request PDU: {}".format(mtu_req.hex()))
+        print_info(f"MTU Exchange Request PDU: {mtu_req.hex()}")
 
         services, characteristics = self._simulate_gatt_discovery()
 
@@ -191,9 +191,7 @@ class Exploit(Exploit):
         print_table(char_headers, *char_rows, title="GATT Characteristics")
 
         total_chars = sum(len(v) for v in characteristics.values())
-        print_info("Resumo: {} serviços, {} características, {} escrita sem auth".format(
-            len(services), total_chars, len(writable_chars)
-        ))
+        print_info(f"Resumo: {len(services)} serviços, {total_chars} características, {len(writable_chars)} escrita sem auth")
 
         if writable_chars:
             print_warning("Características escrita expostas sem autenticação:")
@@ -206,6 +204,6 @@ class Exploit(Exploit):
 
         print_info("")
         print_info("Para enumeração real:")
-        print_info("  gatttool -b {} -i {} --primary".format(self.target, self.interface))
-        print_info("  gatttool -b {} -i {} --characteristics".format(self.target, self.interface))
-        print_info("  gattacker --target {} --iface {}".format(self.target, self.interface))
+        print_info(f"  gatttool -b {self.target} -i {self.interface} --primary")
+        print_info(f"  gatttool -b {self.target} -i {self.interface} --characteristics")
+        print_info(f"  gattacker --target {self.target} --iface {self.interface}")

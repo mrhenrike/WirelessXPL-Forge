@@ -141,11 +141,11 @@ class Exploit(Exploit):
             print_error("Target address not specified")
             return False
         if _parse_bd_addr(self.target) is None:
-            print_error("Invalid BD_ADDR format: {}".format(self.target))
+            print_error(f"Invalid BD_ADDR format: {self.target}")
             return False
         ks = int(self.target_key_size)
         if ks < 1 or ks > 16:
-            print_error("Key size must be 1-16, got {}".format(ks))
+            print_error(f"Key size must be 1-16, got {ks}")
             return False
         return True
 
@@ -179,8 +179,8 @@ class Exploit(Exploit):
     @multi
     def run(self):
         print_status("KNOB attack (CVE-2019-9506) - entropy downgrade")
-        print_info("Target: {}".format(self.target))
-        print_info("Target key size: {} byte(s)".format(self.target_key_size))
+        print_info(f"Target: {self.target}")
+        print_info(f"Target key size: {self.target_key_size} byte(s)")
 
         if not self._validate_inputs():
             return
@@ -199,28 +199,26 @@ class Exploit(Exploit):
 
         print_info("Attack flow:")
         print_info("  1. MitM intercepts LMP key size negotiation")
-        print_info("  2. Original request: key_size={} bytes".format(_DEFAULT_KEY_SIZE))
-        print_info("  3. Modified request: key_size={} byte(s)".format(key_size))
+        print_info(f"  2. Original request: key_size={_DEFAULT_KEY_SIZE} bytes")
+        print_info(f"  3. Modified request: key_size={key_size} byte(s)")
         print_info("  4. Both devices accept minimum key size")
-        print_info("  5. Encryption established with {}-byte key".format(key_size))
+        print_info(f"  5. Encryption established with {key_size}-byte key")
 
         brute_force_space = 256 ** key_size
         print_info("Brute-force analysis:")
-        print_info("  Key space: {} possibilities".format(brute_force_space))
-        print_info("  Estimated brute-force time: {:.4f} seconds".format(
-            brute_force_space / 1e9,
-        ))
+        print_info(f"  Key space: {brute_force_space} possibilities")
+        print_info(f"  Estimated brute-force time: {brute_force_space / 1e9:.4f} seconds")
 
         if key_size == 1:
             print_success("1-byte key: trivially brute-forceable (256 possibilities)")
         elif key_size <= 4:
-            print_warning("Key size {} bytes: feasibly brute-forceable".format(key_size))
+            print_warning(f"Key size {key_size} bytes: feasibly brute-forceable")
         else:
-            print_info("Key size {} bytes: reduced but may still resist brute-force".format(key_size))
+            print_info(f"Key size {key_size} bytes: reduced but may still resist brute-force")
 
         print_warning("CVE-2019-9506: unpatched devices accept minimum key entropy")
         print_info("Mitigation: enforce minimum key size >= 7 bytes in LMP negotiation")
         print_info(
-            "To execute: configure adapter '{}' for MitM relay and inject "
-            "modified LMP packets".format(self.interface)
+            f"To execute: configure adapter '{self.interface}' for MitM relay and inject "
+            "modified LMP packets"
         )

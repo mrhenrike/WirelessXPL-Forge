@@ -88,7 +88,7 @@ class Exploit(Exploit):
     def run(self):
         """Demonstra construção de Join Request e estratégia de replay."""
         print_status("LoRaWAN Join Accept Replay Attack")
-        print_info("AppEUI: {} | DevEUI: {}".format(self.app_eui, self.dev_eui))
+        print_info(f"AppEUI: {self.app_eui} | DevEUI: {self.dev_eui}")
         print_info("Frequência: {} Hz | SF{} | Interface: {}".format(
             self.frequency, self.spreading_factor, self.interface or "não configurada"))
 
@@ -113,7 +113,6 @@ class Exploit(Exploit):
             print_info("  Com as chaves derivadas: descriptografia e injeção de uplinks possível")
         else:
             print_info("AppKey não fornecida — exploit parcial (replay sem decrypt)")
-        print_warning("Replay Count: {} respostas Join Accept a enviar".format(self.replay_count))
-        print_info("Hardware necessário: SDR com TX em {} Hz SF{}".format(
-            self.frequency, self.spreading_factor))
+        print_warning(f"Replay Count: {self.replay_count} respostas Join Accept a enviar")
+        print_info(f"Hardware necessário: SDR com TX em {self.frequency} Hz SF{self.spreading_factor}")
         print_info("Ferramentas: gr-lora, Chirpotle, LoRaSniffer, lorawan-sniffer")

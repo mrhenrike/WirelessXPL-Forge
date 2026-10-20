@@ -139,20 +139,19 @@ class Exploit(Exploit):
                 context = {"ap_vendor": "", "ssid": self.ssid}
                 rec = optimizer.recommend(context)
                 print_info("ML Portal Recommendation:")
-                print_info("  Template: {} (confidence: {:.0%})".format(
-                    rec.template, rec.confidence))
-                print_info("  Reasoning: {}".format(rec.reasoning))
+                print_info(f"  Template: {rec.template} (confidence: {rec.confidence:.0%})")
+                print_info(f"  Reasoning: {rec.reasoning}")
                 if rec.template in self.AVAILABLE_TEMPLATES and self.template == "tplink_generic":
                     self.template = rec.template
                     tpl_dir = self._resolve_template()
-                    print_status("Template auto-switched to '{}' by ML".format(self.template))
+                    print_status(f"Template auto-switched to '{self.template}' by ML")
             except Exception as exc:
                 logger.debug("ML portal optimization failed: %s", exc)
 
         if self.dry_run:
             print_info("DRY RUN — Connectivity Portal (i18n)")
-            print_info("Template: {} ({})".format(self.template, tpl_dir))
-            print_info("Port: {} | IP: {}".format(self.portal_port, self.portal_ip))
+            print_info(f"Template: {self.template} ({tpl_dir})")
+            print_info(f"Port: {self.portal_port} | IP: {self.portal_ip}")
             print_info("Locales: {}".format(", ".join(SUPPORTED_LOCALES)))
             print_info("Connectivity detection: {}".format(
                 "ON" if self.connectivity_detect else "OFF"))
@@ -168,11 +167,11 @@ class Exploit(Exploit):
 
         server = http.server.HTTPServer(("0.0.0.0", self.portal_port), I18nPortalHandler)
 
-        print_status("Connectivity Portal (i18n) on port {}".format(self.portal_port))
-        print_info("Template: {}".format(self.template))
-        print_info("Gateway IP: {}".format(self.portal_ip))
+        print_status(f"Connectivity Portal (i18n) on port {self.portal_port}")
+        print_info(f"Template: {self.template}")
+        print_info(f"Gateway IP: {self.portal_ip}")
         print_info("Auto-detect locales: {}".format(", ".join(SUPPORTED_LOCALES)))
-        print_info("Credentials: {}".format(self.credentials_file))
+        print_info(f"Credentials: {self.credentials_file}")
         print_info("Connectivity detection: {}".format(
             "ON" if self.connectivity_detect else "OFF"))
         print_info("Press Ctrl+C to stop.")
@@ -185,4 +184,4 @@ class Exploit(Exploit):
         cred_log = Path(self.credentials_file)
         if cred_log.exists():
             count = sum(1 for _ in open(cred_log, encoding="utf-8"))
-            print_success("Captured {} credential entries → {}".format(count, cred_log))
+            print_success(f"Captured {count} credential entries → {cred_log}")

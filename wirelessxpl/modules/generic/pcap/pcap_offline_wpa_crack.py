@@ -53,11 +53,11 @@ class Exploit(Exploit):
 
     def run(self):
         if not os.path.isfile(self.pcap_file):
-            print_error("PCAP file not found: {}".format(self.pcap_file))
+            print_error(f"PCAP file not found: {self.pcap_file}")
             return
 
         if not os.path.isfile(self.wordlist):
-            print_error("Wordlist not found: {}".format(self.wordlist))
+            print_error(f"Wordlist not found: {self.wordlist}")
             return
 
         tool_name = self.tool.lower().strip()
@@ -67,7 +67,7 @@ class Exploit(Exploit):
         elif tool_name == "hashcat":
             self._run_hashcat()
         else:
-            print_error("Unsupported tool '{}'. Use 'aircrack-ng' or 'hashcat'.".format(tool_name))
+            print_error(f"Unsupported tool '{tool_name}'. Use 'aircrack-ng' or 'hashcat'.")
 
     def _run_aircrack(self):
         """Execute aircrack-ng against the PCAP."""
@@ -108,12 +108,12 @@ class Exploit(Exploit):
                     print_info(line_stripped)
 
             if result.returncode != 0 and result.stderr.strip():
-                print_error("aircrack-ng stderr: {}".format(result.stderr.strip()))
+                print_error(f"aircrack-ng stderr: {result.stderr.strip()}")
 
         except subprocess.TimeoutExpired:
-            print_error("aircrack-ng timed out after {} seconds.".format(self.timeout))
+            print_error(f"aircrack-ng timed out after {self.timeout} seconds.")
         except Exception as exc:
-            print_error("Failed to run aircrack-ng: {}".format(exc))
+            print_error(f"Failed to run aircrack-ng: {exc}")
 
     def _run_hashcat(self):
         """Execute hashcat against the PCAP (requires hcxpcapngtool for conversion)."""
@@ -151,9 +151,7 @@ class Exploit(Exploit):
             )
 
             if conv_result.returncode != 0:
-                print_error("hcxpcapngtool conversion failed: {}".format(
-                    conv_result.stderr.strip()
-                ))
+                print_error(f"hcxpcapngtool conversion failed: {conv_result.stderr.strip()}")
                 return
 
             if not os.path.isfile(hcx_output) or os.path.getsize(hcx_output) == 0:
@@ -193,12 +191,12 @@ class Exploit(Exploit):
                 if "Exhausted" in (hc_result.stdout + stderr):
                     print_error("Passphrase not found in wordlist (exhausted).")
                 elif stderr:
-                    print_error("hashcat error: {}".format(stderr))
+                    print_error(f"hashcat error: {stderr}")
 
         except subprocess.TimeoutExpired:
-            print_error("hashcat timed out after {} seconds.".format(self.timeout))
+            print_error(f"hashcat timed out after {self.timeout} seconds.")
         except Exception as exc:
-            print_error("Failed to run hashcat: {}".format(exc))
+            print_error(f"Failed to run hashcat: {exc}")
         finally:
             if os.path.exists(hcx_output):
                 os.unlink(hcx_output)

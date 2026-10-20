@@ -161,20 +161,20 @@ class Exploit(Exploit):
         try:
             mapping = _parse_domain_map(str(self.domain_map))
         except (json.JSONDecodeError, ValueError) as exc:
-            print_error("Invalid domain_map JSON: {}".format(exc))
+            print_error(f"Invalid domain_map JSON: {exc}")
             return
 
         outdir = self._outdir()
 
         print_success("Configuration validated:")
-        print_info("  Interface:    {}".format(iface))
-        print_info("  Listen port:  {}".format(self.listen_port))
+        print_info(f"  Interface:    {iface}")
+        print_info(f"  Listen port:  {self.listen_port}")
         print_info("  Upstream DNS: {}".format(self.upstream_dns or "(disabled)"))
-        print_info("  Log queries:  {}".format(self.log_queries))
-        print_info("  Output dir:   {}".format(outdir))
+        print_info(f"  Log queries:  {self.log_queries}")
+        print_info(f"  Output dir:   {outdir}")
         print_info("  Domain map:")
         for domain, ip_addr in mapping.items():
-            print_info("    {} -> {}".format(domain, ip_addr))
+            print_info(f"    {domain} -> {ip_addr}")
 
     def _start(self) -> None:
         """Start the DNS spoofing sniffer."""
@@ -190,7 +190,7 @@ class Exploit(Exploit):
         try:
             mapping = _parse_domain_map(str(self.domain_map))
         except (json.JSONDecodeError, ValueError) as exc:
-            print_error("Invalid domain_map JSON: {}".format(exc))
+            print_error(f"Invalid domain_map JSON: {exc}")
             return
 
         port = int(self.listen_port)
@@ -201,15 +201,15 @@ class Exploit(Exploit):
         query_log: list = []
 
         if bool(self.dry_run):
-            print_info("[dry-run] Would sniff DNS on {} port {} with mapping:".format(iface, port))
+            print_info(f"[dry-run] Would sniff DNS on {iface} port {port} with mapping:")
             for domain, ip_addr in mapping.items():
-                print_info("  {} -> {}".format(domain, ip_addr))
+                print_info(f"  {domain} -> {ip_addr}")
             return
 
-        print_status("Starting DNS spoof engine on {} (UDP/{})".format(iface, port))
-        print_info("Domain map: {}".format(json.dumps(mapping)))
+        print_status(f"Starting DNS spoof engine on {iface} (UDP/{port})")
+        print_info(f"Domain map: {json.dumps(mapping)}")
         if upstream:
-            print_info("Upstream DNS for non-matched: {}".format(upstream))
+            print_info(f"Upstream DNS for non-matched: {upstream}")
 
         def _handle_packet(pkt: Any) -> None:
             if not pkt.haslayer(DNS) or not pkt.haslayer(DNSQR):
@@ -267,8 +267,8 @@ class Exploit(Exploit):
                     qname.rstrip("."), upstream or "system resolver",
                 ))
 
-        bpf = "udp port {}".format(port)
-        print_info("BPF filter: {}".format(bpf))
+        bpf = f"udp port {port}"
+        print_info(f"BPF filter: {bpf}")
         print_info("Press Ctrl+C to stop.")
 
         try:
@@ -284,8 +284,8 @@ class Exploit(Exploit):
             print_error("Permission denied. Run with elevated privileges (sudo).")
 
         if do_log and query_log:
-            print_info("Total queries logged: {}".format(len(query_log)))
-            print_info("Log file: {}".format(log_path))
+            print_info(f"Total queries logged: {len(query_log)}")
+            print_info(f"Log file: {log_path}")
 
 
     def check(self) -> str:
@@ -325,4 +325,4 @@ class Exploit(Exploit):
         elif op == "start":
             self._start()
         else:
-            print_error("Unknown mode: {}. Valid: info, start, config_only".format(op))
+            print_error(f"Unknown mode: {op}. Valid: info, start, config_only")

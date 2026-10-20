@@ -51,7 +51,7 @@ class Exploit(Exploit):
             print_error("No cleartext credentials found in capture.")
             return
 
-        print_status("--- Extracted Credentials ({}) ---".format(len(creds)))
+        print_status(f"--- Extracted Credentials ({len(creds)}) ---")
         print_status("{:<12} {:<18} {:<18} {:>6} {:>6}  {:<20} {:<20} {}".format(
             "PROTOCOL", "SRC_IP", "DST_IP", "SPORT", "DPORT", "USERNAME", "PASSWORD", "EXTRA"
         ))
@@ -77,9 +77,7 @@ class Exploit(Exploit):
         print_status("")
         protocols = sorted({c.protocol for c in creds})
         print_status("Protocols found: {}".format(", ".join(protocols)))
-        print_status("Unique credentials: {} (deduplicated from {} raw extractions)".format(
-            len(seen), len(creds)
-        ))
+        print_status(f"Unique credentials: {len(seen)} (deduplicated from {len(creds)} raw extractions)")
 
     @mute
     def check(self):

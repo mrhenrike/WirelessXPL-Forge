@@ -173,7 +173,7 @@ class Exploit(Exploit):
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
-            print_error("target_profile_json inválido: {}".format(exc))
+            print_error(f"target_profile_json inválido: {exc}")
             return {}
         return data if isinstance(data, dict) else {}
 
@@ -223,7 +223,7 @@ class Exploit(Exploit):
         path = tmp / "profile_seed.txt"
         lines = self._profile_seed_lines(profile, ssid)
         if bool(self.dry_run):
-            print_status("[dry_run] sementes ({} linhas) → {}".format(len(lines), path))
+            print_status(f"[dry_run] sementes ({len(lines)} linhas) → {path}")
             return path
         path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8", errors="replace")
         return path
@@ -283,7 +283,7 @@ class Exploit(Exploit):
             paths.extend(self._collect_text_files(ow, recursive=False))
 
         uniq = sorted({p.resolve() for p in paths if p.is_file()})
-        print_status("Wordlists estáticas localizadas: {}".format(len(uniq)))
+        print_status(f"Wordlists estáticas localizadas: {len(uniq)}")
         return uniq
 
     def _run_cmd(
@@ -305,7 +305,7 @@ class Exploit(Exploit):
 
         print_status("CMD: {}".format(" ".join(argv)))
         if cwd:
-            print_status("CWD: {}".format(cwd))
+            print_status(f"CWD: {cwd}")
         if bool(self.dry_run):
             print_status("dry_run — subprocesso não executado.")
             return 0
@@ -319,7 +319,7 @@ class Exploit(Exploit):
             )
             return int(proc.returncode)
         except OSError as exc:
-            print_error("Falha ao iniciar processo: {}".format(exc))
+            print_error(f"Falha ao iniciar processo: {exc}")
             return 127
 
     def _generate_osint_wordlist(self, tmp: Path) -> List[Path]:
@@ -400,18 +400,12 @@ class Exploit(Exploit):
             cupp_py = wl / "cupp" / "cupp.py"
             if cupp_py.is_file():
                 print_status(
-                    "cupp (interativo): {} {} -i   ou   {} {} -w {}".format(
-                        self._python_exe(),
-                        cupp_py,
-                        self._python_exe(),
-                        cupp_py,
-                        seed,
-                    )
+                    f"cupp (interativo): {self._python_exe()} {cupp_py} -i   ou   {self._python_exe()} {cupp_py} -w {seed}"
                 )
             elp = wl / "elpscrk" / "elpscrk.py"
             if elp.is_file():
                 print_status(
-                    "elpscrk (interativo): {} {}".format(self._python_exe(), elp)
+                    f"elpscrk (interativo): {self._python_exe()} {elp}"
                 )
 
         return generated
@@ -451,7 +445,7 @@ class Exploit(Exploit):
                         vdict = json.loads(vars_json)
                         if isinstance(vdict, dict):
                             for k, val in vdict.items():
-                                argv.extend(["--vars", "{}={}".format(k, val)])
+                                argv.extend(["--vars", f"{k}={val}"])
                     except json.JSONDecodeError:
                         print_error("wfh_pattern_vars_json inválido.")
                 out_wfh = tmp / "wfh_pattern.txt"
@@ -626,7 +620,7 @@ class Exploit(Exploit):
                             if not unlimited and written >= cap:
                                 return (written, read_lines)
                 except OSError as exc:
-                    print_error("Erro ao ler {}: {}".format(src, exc))
+                    print_error(f"Erro ao ler {src}: {exc}")
 
         return (written, read_lines)
 
@@ -724,10 +718,8 @@ class Exploit(Exploit):
                 seen_p.add(key)
                 uniq_sources.append(p)
 
-        print_status("Fontes para merge: {}".format(len(uniq_sources)))
+        print_status(f"Fontes para merge: {len(uniq_sources)}")
         written, read_lines = self._merge_wordlists(uniq_sources, out)
         print_success(
-            "Concluído: {} linhas gravadas (≈{} linhas lidas) em {}".format(
-                written, read_lines, out
-            )
+            f"Concluído: {written} linhas gravadas (≈{read_lines} linhas lidas) em {out}"
         )

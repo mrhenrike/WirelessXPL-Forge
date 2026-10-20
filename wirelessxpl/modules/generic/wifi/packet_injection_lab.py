@@ -126,10 +126,10 @@ class Exploit(Exploit):
                 stderr=subprocess.DEVNULL,
                 timeout=5,
             )
-            print_info("Channel set to {} on {}".format(ch, iface))
+            print_info(f"Channel set to {ch} on {iface}")
         except Exception as exc:
             logger.debug("Channel set failed: %s", exc)
-            print_info("Could not set channel {} (may need root): {}".format(ch, exc))
+            print_info(f"Could not set channel {ch} (may need root): {exc}")
 
     def _send_frames(self, frames: list, iface: str) -> None:
         """Send a list of Scapy frames, respecting count and interval."""
@@ -137,11 +137,9 @@ class Exploit(Exploit):
         delay = float(self.interval)
 
         if bool(self.dry_run):
-            print_info("[dry-run] Would inject {} frame(s) on {}:".format(
-                n * len(frames), iface,
-            ))
+            print_info(f"[dry-run] Would inject {n * len(frames)} frame(s) on {iface}:")
             for i, frame in enumerate(frames):
-                print_info("  Frame {}: {}".format(i, frame.summary()))
+                print_info(f"  Frame {i}: {frame.summary()}")
             return
 
         total_sent = 0
@@ -152,7 +150,7 @@ class Exploit(Exploit):
             if delay > 0 and iteration < n - 1:
                 time.sleep(delay)
 
-        print_success("Injected {} frame(s) on {}".format(total_sent, iface))
+        print_success(f"Injected {total_sent} frame(s) on {iface}")
 
     def _info(self) -> None:
         print_info("Packet Injection Lab")
@@ -201,7 +199,7 @@ class Exploit(Exploit):
             / b"WXF-injection-test"
         )
 
-        print_status("Injecting data frame: {} -> {} (BSSID {})".format(src, dst, bss))
+        print_status(f"Injecting data frame: {src} -> {dst} (BSSID {bss})")
         self._send_frames([frame], iface)
 
     def _inject_arp(self) -> None:
@@ -230,7 +228,7 @@ class Exploit(Exploit):
             / ARP(op="who-has", hwsrc=src, psrc="10.0.0.1", hwdst=dst, pdst="10.0.0.2")
         )
 
-        print_status("Injecting ARP frame: {} -> {} (BSSID {})".format(src, dst, bss))
+        print_status(f"Injecting ARP frame: {src} -> {dst} (BSSID {bss})")
         self._send_frames([frame], iface)
 
     def _inject_icmp(self) -> None:
@@ -261,7 +259,7 @@ class Exploit(Exploit):
             / b"WXF-ping-test"
         )
 
-        print_status("Injecting ICMP echo: {} -> {} (BSSID {})".format(src, dst, bss))
+        print_status(f"Injecting ICMP echo: {src} -> {dst} (BSSID {bss})")
         self._send_frames([frame], iface)
 
     def _craft_custom(self) -> None:
@@ -287,7 +285,7 @@ class Exploit(Exploit):
         try:
             raw_bytes = binascii.unhexlify(hex_payload)
         except (binascii.Error, ValueError) as exc:
-            print_error("Invalid hex payload: {}".format(exc))
+            print_error(f"Invalid hex payload: {exc}")
             return
 
         self._set_channel(iface)
@@ -298,9 +296,7 @@ class Exploit(Exploit):
             / raw_bytes
         )
 
-        print_status("Injecting custom frame ({} bytes payload): {} -> {}".format(
-            len(raw_bytes), src, dst,
-        ))
+        print_status(f"Injecting custom frame ({len(raw_bytes)} bytes payload): {src} -> {dst}")
         self._send_frames([frame], iface)
 
     def _replay_pcap(self) -> None:
@@ -316,7 +312,7 @@ class Exploit(Exploit):
             print_error("Set pcap_file for replay_pcap mode.")
             return
         if not os.path.isfile(pcap):
-            print_error("PCAP file not found: {}".format(pcap))
+            print_error(f"PCAP file not found: {pcap}")
             return
 
         self._set_channel(iface)
@@ -324,23 +320,21 @@ class Exploit(Exploit):
         try:
             packets = rdpcap(pcap)
         except Exception as exc:
-            print_error("Failed to read PCAP: {}".format(exc))
+            print_error(f"Failed to read PCAP: {exc}")
             return
 
         if not packets:
             print_error("PCAP file is empty.")
             return
 
-        print_status("Replaying {} frame(s) from {} on {}".format(
-            len(packets), pcap, iface,
-        ))
+        print_status(f"Replaying {len(packets)} frame(s) from {pcap} on {iface}")
 
         if bool(self.dry_run):
-            print_info("[dry-run] Would replay {} frame(s)".format(len(packets)))
+            print_info(f"[dry-run] Would replay {len(packets)} frame(s)")
             for i, pkt in enumerate(packets[:5]):
-                print_info("  Frame {}: {}".format(i, pkt.summary()))
+                print_info(f"  Frame {i}: {pkt.summary()}")
             if len(packets) > 5:
-                print_info("  ... and {} more".format(len(packets) - 5))
+                print_info(f"  ... and {len(packets) - 5} more")
             return
 
         delay = float(self.interval)
@@ -351,7 +345,7 @@ class Exploit(Exploit):
             if delay > 0:
                 time.sleep(delay)
 
-        print_success("Replayed {} frame(s) on {}".format(sent, iface))
+        print_success(f"Replayed {sent} frame(s) on {iface}")
 
 
     def check(self) -> str:
@@ -397,5 +391,5 @@ class Exploit(Exploit):
         elif op == "replay_pcap":
             self._replay_pcap()
         else:
-            print_error("Unknown mode: {}. Valid: info, inject_data, inject_arp, "
-                        "inject_icmp, craft_custom, replay_pcap".format(op))
+            print_error(f"Unknown mode: {op}. Valid: info, inject_data, inject_arp, "
+                        "inject_icmp, craft_custom, replay_pcap")

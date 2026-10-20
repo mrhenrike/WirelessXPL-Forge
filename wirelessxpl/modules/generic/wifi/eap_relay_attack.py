@@ -216,12 +216,12 @@ class Exploit(Exploit):
         os.makedirs(tmpdir, exist_ok=True)
 
         users = []
-        with open(user_file, "r", errors="replace") as f:
+        with open(user_file, errors="replace") as f:
             users = [line.strip() for line in f if line.strip()]
 
         passwords = []
         if pass_file and os.path.isfile(pass_file):
-            with open(pass_file, "r", errors="replace") as f:
+            with open(pass_file, errors="replace") as f:
                 passwords = [line.strip() for line in f if line.strip()]
         elif single_pw:
             passwords = [single_pw]

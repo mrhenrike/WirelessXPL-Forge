@@ -92,10 +92,7 @@ def _uuid_to_str(uuid_bytes):
         return "{:04x}".format(struct.unpack("<H", uuid_bytes)[0])
     if len(uuid_bytes) == 16:
         b = uuid_bytes[::-1]
-        return "{}-{}-{}-{}-{}".format(
-            b[0:4].hex(), b[4:6].hex(), b[6:8].hex(),
-            b[8:10].hex(), b[10:16].hex(),
-        )
+        return f"{b[0:4].hex()}-{b[4:6].hex()}-{b[6:8].hex()}-{b[8:10].hex()}-{b[10:16].hex()}"
     return uuid_bytes.hex()
 
 
@@ -184,7 +181,7 @@ class Exploit(Exploit):
         start = 0x0001
         while start <= 0xFFFF:
             pdu = _build_read_by_group_type(start, 0xFFFF, _UUID_PRIMARY_SERVICE)
-            pdus.append(("Discover Services from 0x{:04X}".format(start), pdu))
+            pdus.append((f"Discover Services from 0x{start:04X}", pdu))
             start += 0x0020
             if start > 0x0100:
                 break
@@ -204,18 +201,18 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("BLE GATT enumeration targeting {}".format(self.target))
-        print_info("Adapter: {}, MTU: {}".format(self.interface, self.mtu))
+        print_status(f"BLE GATT enumeration targeting {self.target}")
+        print_info(f"Adapter: {self.interface}, MTU: {self.mtu}")
 
         if not self.check():
-            print_error("Invalid BLE address format: {}".format(self.target))
+            print_error(f"Invalid BLE address format: {self.target}")
             return
 
         mtu_req = _build_mtu_request(int(self.mtu))
-        print_info("MTU Exchange Request: {}".format(mtu_req.hex()))
+        print_info(f"MTU Exchange Request: {mtu_req.hex()}")
 
         disc_pdus = self._build_service_discovery_pdus()
-        print_info("Generated {} service discovery PDU(s)".format(len(disc_pdus)))
+        print_info(f"Generated {len(disc_pdus)} service discovery PDU(s)")
 
         print_status("Simulating GATT discovery (no live radio)...")
         services, characteristics = self._simulate_gatt_discovery()
@@ -255,9 +252,9 @@ class Exploit(Exploit):
 
         total_chars = sum(len(v) for v in characteristics.values())
         print_info("Summary:")
-        print_info("  Services: {}".format(len(services)))
-        print_info("  Characteristics: {}".format(total_chars))
-        print_info("  Writable characteristics: {}".format(len(writable_chars)))
+        print_info(f"  Services: {len(services)}")
+        print_info(f"  Characteristics: {total_chars}")
+        print_info(f"  Writable characteristics: {len(writable_chars)}")
 
         if writable_chars:
             print_warning("Writable characteristics exposed without authentication:")
@@ -268,4 +265,4 @@ class Exploit(Exploit):
                     _props_to_str(wc["props"]),
                 ))
 
-        print_info("To perform live enumeration, connect radio '{}' to target".format(self.interface))
+        print_info(f"To perform live enumeration, connect radio '{self.interface}' to target")

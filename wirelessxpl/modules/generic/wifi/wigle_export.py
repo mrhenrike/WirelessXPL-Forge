@@ -72,7 +72,7 @@ def _parse_airodump_csv(filepath: str) -> List[Dict[str, Any]]:
     results: List[Dict[str, Any]] = []
     in_ap_section = False
 
-    with open(filepath, "r", encoding="utf-8", errors="replace") as f:
+    with open(filepath, encoding="utf-8", errors="replace") as f:
         for line in f:
             stripped = line.strip()
             if not stripped:
@@ -124,7 +124,7 @@ def _parse_kismetdb(filepath: str) -> List[Dict[str, Any]]:
 
     conn = None
     try:
-        conn = sqlite3.connect("file:{}?mode=ro".format(filepath), uri=True)
+        conn = sqlite3.connect(f"file:{filepath}?mode=ro", uri=True)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
@@ -226,7 +226,7 @@ def _parse_gps_file(filepath: str) -> List[Dict[str, str]]:
             logger.debug("GPX parse error: %s", exc)
 
     elif filepath.lower().endswith(".nmea") or filepath.lower().endswith(".txt"):
-        with open(filepath, "r", encoding="utf-8", errors="replace") as f:
+        with open(filepath, encoding="utf-8", errors="replace") as f:
             for line in f:
                 if line.startswith("$GPGGA") or line.startswith("$GPRMC"):
                     parts = line.split(",")
@@ -241,8 +241,8 @@ def _parse_gps_file(filepath: str) -> List[Dict[str, str]]:
                             if parts[5] == "W":
                                 lon_deg = -lon_deg
                             points.append({
-                                "lat": "{:.6f}".format(lat_deg),
-                                "lon": "{:.6f}".format(lon_deg),
+                                "lat": f"{lat_deg:.6f}",
+                                "lon": f"{lon_deg:.6f}",
                             })
                         except (ValueError, IndexError):
                             continue
@@ -330,7 +330,7 @@ def _write_kml(records: List[Dict[str, Any]], output_path: str) -> None:
         )
         point = ET.SubElement(pm, "Point")
         coords = ET.SubElement(point, "coordinates")
-        coords.text = "{},{},0".format(lon, lat)
+        coords.text = f"{lon},{lat},0"
 
     tree = ET.ElementTree(kml)
     ET.indent(tree, space="  ")
@@ -375,10 +375,10 @@ class Exploit(Exploit):
 
         points = _parse_gps_file(gps_path)
         if not points:
-            print_info("No GPS points extracted from {}".format(gps_path))
+            print_info(f"No GPS points extracted from {gps_path}")
             return
 
-        print_info("Loaded {} GPS trackpoints from {}".format(len(points), gps_path))
+        print_info(f"Loaded {len(points)} GPS trackpoints from {gps_path}")
 
         idx = 0
         for rec in records:
@@ -413,25 +413,25 @@ class Exploit(Exploit):
             print_error("Set input_file (airodump CSV path).")
             return
         if not os.path.isfile(infile):
-            print_error("File not found: {}".format(infile))
+            print_error(f"File not found: {infile}")
             return
 
-        print_status("Parsing airodump CSV: {}".format(infile))
+        print_status(f"Parsing airodump CSV: {infile}")
         records = _parse_airodump_csv(infile)
         if not records:
             print_error("No AP records found in CSV.")
             return
 
-        print_info("Parsed {} AP(s)".format(len(records)))
+        print_info(f"Parsed {len(records)} AP(s)")
         self._enrich_with_gps(records)
 
         outfile = str(self.output_file).strip()
         if not outfile:
             base = os.path.splitext(os.path.basename(infile))[0]
-            outfile = os.path.join(self._outdir(), "{}_wigle.csv".format(base))
+            outfile = os.path.join(self._outdir(), f"{base}_wigle.csv")
 
         _write_wigle_csv(records, outfile)
-        print_success("WiGLE CSV written: {} ({} records)".format(outfile, len(records)))
+        print_success(f"WiGLE CSV written: {outfile} ({len(records)} records)")
 
     def _kismetdb_to_wigle(self) -> None:
         infile = str(self.input_file).strip()
@@ -439,25 +439,25 @@ class Exploit(Exploit):
             print_error("Set input_file (kismetdb path).")
             return
         if not os.path.isfile(infile):
-            print_error("File not found: {}".format(infile))
+            print_error(f"File not found: {infile}")
             return
 
-        print_status("Parsing kismetdb: {}".format(infile))
+        print_status(f"Parsing kismetdb: {infile}")
         records = _parse_kismetdb(infile)
         if not records:
             print_error("No AP records found in kismetdb.")
             return
 
-        print_info("Parsed {} device(s)".format(len(records)))
+        print_info(f"Parsed {len(records)} device(s)")
         self._enrich_with_gps(records)
 
         outfile = str(self.output_file).strip()
         if not outfile:
             base = os.path.splitext(os.path.basename(infile))[0]
-            outfile = os.path.join(self._outdir(), "{}_wigle.csv".format(base))
+            outfile = os.path.join(self._outdir(), f"{base}_wigle.csv")
 
         _write_wigle_csv(records, outfile)
-        print_success("WiGLE CSV written: {} ({} records)".format(outfile, len(records)))
+        print_success(f"WiGLE CSV written: {outfile} ({len(records)} records)")
 
     def _csv_to_kml(self) -> None:
         infile = str(self.input_file).strip()
@@ -465,16 +465,16 @@ class Exploit(Exploit):
             print_error("Set input_file (airodump CSV path).")
             return
         if not os.path.isfile(infile):
-            print_error("File not found: {}".format(infile))
+            print_error(f"File not found: {infile}")
             return
 
-        print_status("Parsing CSV for KML export: {}".format(infile))
+        print_status(f"Parsing CSV for KML export: {infile}")
         records = _parse_airodump_csv(infile)
         if not records:
             print_error("No AP records found in CSV.")
             return
 
-        print_info("Parsed {} AP(s)".format(len(records)))
+        print_info(f"Parsed {len(records)} AP(s)")
         self._enrich_with_gps(records)
 
         geo_count = sum(1 for r in records if r.get("lat") and r.get("lon"))
@@ -485,10 +485,10 @@ class Exploit(Exploit):
         outfile = str(self.output_file).strip()
         if not outfile:
             base = os.path.splitext(os.path.basename(infile))[0]
-            outfile = os.path.join(self._outdir(), "{}.kml".format(base))
+            outfile = os.path.join(self._outdir(), f"{base}.kml")
 
         _write_kml(records, outfile)
-        print_success("KML written: {} ({} placemarks)".format(outfile, geo_count))
+        print_success(f"KML written: {outfile} ({geo_count} placemarks)")
 
 
     def check(self) -> str:
@@ -530,5 +530,5 @@ class Exploit(Exploit):
         elif op == "csv_to_kml":
             self._csv_to_kml()
         else:
-            print_error("Unknown mode: {}. Valid: info, pcap_to_wigle, "
-                        "kismetdb_to_wigle, csv_to_kml".format(op))
+            print_error(f"Unknown mode: {op}. Valid: info, pcap_to_wigle, "
+                        "kismetdb_to_wigle, csv_to_kml")

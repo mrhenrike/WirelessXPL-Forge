@@ -106,8 +106,8 @@ class Exploit(Exploit):
         tool = _which_kb(mode)
         if not tool:
             print_error(
-                "{} não encontrado. Instale KillerBee: pip install killerbee "
-                "ou inicialize o submodule.".format(mode)
+                f"{mode} não encontrado. Instale KillerBee: pip install killerbee "
+                "ou inicialize o submodule."
             )
             return None
 
@@ -212,19 +212,19 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if self.dry_run:
-            print_info("DRY RUN — {}".format(cmd_str))
+            print_info(f"DRY RUN — {cmd_str}")
             return
 
-        print_status("Executando KillerBee {}: {}".format(mode.upper(), cmd_str))
+        print_status(f"Executando KillerBee {mode.upper()}: {cmd_str}")
         try:
             result = subprocess.run(cmd, check=False)
             if result.returncode == 0:
-                print_success("{} concluiu (código 0).".format(mode))
+                print_success(f"{mode} concluiu (código 0).")
             else:
-                print_error("{} saiu com código {}.".format(mode, result.returncode))
+                print_error(f"{mode} saiu com código {result.returncode}.")
         except KeyboardInterrupt:
             print_info("\nInterrompido.")
         except FileNotFoundError as exc:
-            print_error("Ferramenta não encontrada: {}".format(exc))
+            print_error(f"Ferramenta não encontrada: {exc}")
         except Exception as exc:
-            print_error("Erro ao executar {}: {}".format(mode, exc))
+            print_error(f"Erro ao executar {mode}: {exc}")

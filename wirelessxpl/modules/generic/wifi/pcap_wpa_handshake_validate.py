@@ -68,7 +68,7 @@ class Exploit(Exploit):
                 )
             )
             for hint in r.hints:
-                print_status("  hint: {}".format(hint))
+                print_status(f"  hint: {hint}")
 
         print_status("=== PMKID (hashcat mode 22000) ===")
         if not pmkids:
@@ -99,15 +99,15 @@ class Exploit(Exploit):
             if proc.stderr.strip():
                 print_status(proc.stderr.strip())
             if sz > 0:
-                print_success("hcxpcapngtool wrote {} bytes → {} (candidate hash lines)".format(sz, out_path))
-                print_info("hashcat -m 22000 {} wordlist.txt".format(out_path))
+                print_success(f"hcxpcapngtool wrote {sz} bytes → {out_path} (candidate hash lines)")
+                print_info(f"hashcat -m 22000 {out_path} wordlist.txt")
             else:
                 print_error(
                     "hcxpcapngtool produced empty output — capture may lack crackable "
                     "PSK material or use unsupported framing."
                 )
         except Exception as exc:
-            print_error("hcx probe failed: {}".format(exc))
+            print_error(f"hcx probe failed: {exc}")
         finally:
             try:
                 os.unlink(out_path)

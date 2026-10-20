@@ -59,7 +59,7 @@ class CUDABackend(ComputeBackend):
         props = torch.cuda.get_device_properties(0)
         raw_mem = getattr(props, "total_memory", None) or getattr(props, "total_mem", 0)
         vram = raw_mem // (1024 * 1024)
-        return "CUDA [PyTorch] {} ({}MB)".format(dev, vram)
+        return f"CUDA [PyTorch] {dev} ({vram}MB)"
 
     def array_from_numpy(self, arr: np.ndarray):
         torch = _get_torch_cuda()

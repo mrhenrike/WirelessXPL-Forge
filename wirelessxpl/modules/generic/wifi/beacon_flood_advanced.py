@@ -68,7 +68,7 @@ class Exploit(Exploit):
 
     def _random_mac(self) -> str:
         """Generate a random MAC address."""
-        return ":".join("{:02x}".format(random.randint(0, 255)) for _ in range(6))
+        return ":".join(f"{random.randint(0, 255):02x}" for _ in range(6))
 
     def _random_ssid(self, min_len: int = 4, max_len: int = 16) -> str:
         """Generate a random SSID."""
@@ -155,13 +155,13 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             pass
 
-        print_success("Beacon flood: {} frames sent.".format(sent))
+        print_success(f"Beacon flood: {sent} frames sent.")
 
     def _mdk_flood(self) -> None:
         """Flood beacons using mdk3 or mdk4."""
         tool = self.backend
         if not shutil.which(tool):
-            print_error("{} not found on PATH.".format(tool))
+            print_error(f"{tool} not found on PATH.")
             return
 
         cmd = ["sudo", tool, self.interface, "b"]
@@ -212,15 +212,14 @@ class Exploit(Exploit):
             return
 
         if self.dry_run:
-            print_info("DRY RUN — {} via {} on {}".format(self.mode, self.backend, self.interface))
+            print_info(f"DRY RUN — {self.mode} via {self.backend} on {self.interface}")
             return
 
-        print_status("Beacon flood: {} mode via {} on ch {}".format(
-            self.mode, self.backend, self.channel))
+        print_status(f"Beacon flood: {self.mode} mode via {self.backend} on ch {self.channel}")
 
         if self.backend == "scapy":
             self._scapy_flood()
         elif self.backend in ("mdk3", "mdk4"):
             self._mdk_flood()
         else:
-            print_error("Unknown backend '{}'.".format(self.backend))
+            print_error(f"Unknown backend '{self.backend}'.")

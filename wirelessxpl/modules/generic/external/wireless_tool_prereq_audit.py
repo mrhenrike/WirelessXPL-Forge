@@ -77,7 +77,7 @@ class Exploit(Exploit):
             path = shutil.which(name)
             if path:
                 found += 1
-                print_success("{} → {} ({})".format(name, path, note))
+                print_success(f"{name} → {path} ({note})")
             else:
-                print_error("{} — missing ({})".format(name, note))
-        print_status("Found {}/{} tools on PATH.".format(found, len(tools)))
+                print_error(f"{name} — missing ({note})")
+        print_status(f"Found {found}/{len(tools)} tools on PATH.")

