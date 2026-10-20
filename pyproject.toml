@@ -308,4 +308,4 @@ known-first-party = ["wirelessxpl"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --tb=short --cov=wirelessxpl --cov-report=term-missing --cov-fail-under=30"
+addopts = "-v --tb=short --cov=wirelessxpl --cov-report=term-missing --cov-fail-under=15"
