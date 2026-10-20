@@ -112,7 +112,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "Target device IEEE 802.15.4 address (or broadcast)")
-    port = OptPort(0, "Not applicable (radio interface)")
     timeout = OptInteger(5, "Radio response timeout in seconds")
     channel = OptInteger(11, "Zigbee channel (11-26)")
     interface = OptString("", "IEEE 802.15.4 radio interface (e.g., /dev/ttyACM0)")

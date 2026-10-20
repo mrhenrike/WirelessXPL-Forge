@@ -62,7 +62,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (interface física)")
-    port = OptPort(0, "N/A")
     uart_device = OptString("", "Dispositivo serial (ex: /dev/ttyUSB0, vazio = auto-detectar)")
     baud_rate = OptInteger(0, "Taxa baud (0 = testar todas comuns: 9600-921600)")
     probe_timeout = OptFloat(2.0, "Timeout de sondagem por baud rate em segundos")

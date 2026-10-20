@@ -124,7 +124,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Endereço BLE do dispositivo a clonar (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "N/A (BLE)")
     interface = OptString("hci0", "Adaptador BLE para spoofing")
     device_name = OptString("SmartLock-Pro", "Nome do dispositivo a anunciar")
     service_uuids = OptString("180a,180f", "UUIDs de serviço 16-bit separados por vírgula (hex)")

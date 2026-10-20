@@ -82,7 +82,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (ataque de rádio Z-Wave)")
-    port = OptPort(0, "N/A")
     interface = OptString("", "Interface SDR (ex: hackrf, yardstickone)")
     home_id = OptString("FA1B2C3D", "Z-Wave Home ID (hex, 4 bytes)")
     src_node = OptInteger(1, "Node ID fonte (controller, normalmente 1)")

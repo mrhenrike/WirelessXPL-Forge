@@ -85,7 +85,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Endereço Bluetooth do dispositivo alvo (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "N/A (Bluetooth)")
     timeout = OptInteger(10, "Timeout de conexão em segundos")
     interface = OptString("hci0", "Adaptador Bluetooth do atacante")
     target_key_size = OptInteger(1, "Tamanho de chave alvo em bytes (1=mínimo, 16=máximo)")

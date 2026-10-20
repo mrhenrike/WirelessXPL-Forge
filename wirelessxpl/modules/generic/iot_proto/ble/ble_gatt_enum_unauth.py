@@ -141,7 +141,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target BLE device address (e.g., AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "Not applicable (BLE)")
     timeout = OptInteger(10, "Connection timeout in seconds")
     interface = OptString("hci0", "BLE adapter interface (e.g., hci0)")
     mtu = OptInteger(247, "Requested ATT MTU size")
