@@ -6,7 +6,7 @@
 - `pyproject.toml` removido do GitHub (`.gitignore`); template: `pyproject.toml.example`
 - Workflow `publish-pypi.yml` removido do repositório remoto
 - README/wiki: instalação via clone + `requirements.txt`; sem badges PyPI
-- Regra Cursor: `.cursor/rules/local-packaging.mdc`
+- Regra de packaging local: `.cursor/rules/local-packaging.mdc`
 - Cópia local `pyproject.toml` (v2.0.3) permanece na máquina para build/twine manual
 
 ---
@@ -30,7 +30,7 @@
 - Contato unificado: **suporte@uniaogeek.com.br** em pyproject, README, SECURITY, CODE_OF_CONDUCT, CONTRIBUTORS e wiki
 - Removidas menções a SafeLabs, paths legados `/mnt` e `Projetos-SafeLabs` em HANDOFF, docs e código
 - Guia offline adicionado: `docs/GUIA-CRACK-PCAP-OFFLINE.md` (sem arquivos PCAP no repositório)
-- Commits remotos com `Co-authored-by: Cursor` e PCAPs sintéticos **não** incorporados — master sobrescrito
+- Commits remotos com trailers de coautoria e PCAPs sinteticos **nao** incorporados — master sobrescrito
 - Versão bump: **2.0.2**
 
 ### Paths importantes
@@ -39,7 +39,7 @@
 - PCAPs de lab: repositório externo `PCAPTrafficAnalysis` (não versionados aqui)
 
 ### Pendências resolvidas
-- [x] Atribuições de IA (`Co-authored-by: Cursor`) removidas do histórico remoto via force-push
+- [x] Atribuicoes de coautoria removidas do historico remoto via force-push
 - [x] Contato e suporte atualizados para União Geek
 
 ---
@@ -111,7 +111,7 @@
 - Os 5 projetos estão em `/home/mrhenrike/Documentos/Projetos/`
 - Histórico reescrito com `git-filter-repo`: todos os commits agora têm autor `mrhenrike <suporte@uniaogeek.com.br>`; atribuições de IA removidas
 - Hook `commit-msg` ativo em `.githooks/` (superprojeto); cada repo aponta via `core.hooksPath`
-- Regra do Cursor: `.cursor/rules/no-ai-attribution.mdc` (alwaysApply)
+- Regra de no-attribution: `.cursor/rules/no-ai-attribution.mdc` (alwaysApply)
 - Auth GitHub configurada via `gh` CLI (HTTPS, token com escopo `repo`)
 
 ### Fixes aplicados nesta sessão
@@ -1088,7 +1088,7 @@ aireplay_deauth_barrage.py:
 ## [2026-08-13 16:20] -- Authorship cleanup + sync
 
 ### Estado ao encerrar
-- Trailers Cursor/Copilot removidos do historico da default branch (onde aplicavel)
+- Trailers de coautoria removidos do historico da default branch (onde aplicavel)
 - Hook `.githooks/commit-msg` ativo via `core.hooksPath=.githooks`
 - Remoto alinhado apos force-with-lease / push
 
