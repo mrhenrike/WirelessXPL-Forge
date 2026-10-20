@@ -8,7 +8,6 @@ indicators of vulnerability (unexpected decapsulation, ICMP responses, etc.).
 References: vanhoefm/fragattacks GitHub repository.
 PREREQ HW: WiFi adapter in monitor mode + packet injection.
 """
-from __future__ import annotations
 
 import logging
 from typing import Dict
@@ -174,7 +173,7 @@ class Exploit(Exploit):
             marker = "(*)" if suffix in cve_suffixes else "   "
             print_info(f"  {marker} {cve}: {desc}")
 
-        results: Dict[str, str] = {}
+        results: dict[str, str] = {}
         seq = 0
 
         for suffix in cve_suffixes:

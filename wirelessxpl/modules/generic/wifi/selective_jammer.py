@@ -14,7 +14,6 @@ Modes:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -65,9 +64,9 @@ class Exploit(Exploit):
     duration = OptInteger(0, "Duration in seconds (0 = until Ctrl+C)")
     dry_run = OptBool(False, "Print config without executing")
 
-    def _load_mac_list(self) -> List[str]:
+    def _load_mac_list(self) -> list[str]:
         """Load target MAC list from option or file."""
-        macs: List[str] = []
+        macs: list[str] = []
         if self.client_macs:
             macs = [m.strip().upper() for m in self.client_macs.split(",") if m.strip()]
         if self.client_file:

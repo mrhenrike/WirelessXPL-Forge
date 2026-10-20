@@ -20,7 +20,6 @@ License: GPL-3.0 (subprocess only, no code import)
 Version: 1.2.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -116,7 +115,7 @@ class Exploit(Exploit):
     debug = OptBool(False, "Saída debug (--debug)")
     dry_run = OptBool(False, "Mostrar comando sem executar")
 
-    def _preflight_build(self, cmd: List[str]) -> List[str]:
+    def _preflight_build(self, cmd: list[str]) -> list[str]:
         """Valida comando e tenta fallback de launcher para layouts diferentes."""
         try:
             probe = subprocess.run(
@@ -147,7 +146,7 @@ class Exploit(Exploit):
 
         return cmd
 
-    def _eap_phase_presets(self) -> Tuple[str, str]:
+    def _eap_phase_presets(self) -> tuple[str, str]:
         """Retorna (phase_1_methods, phase_2_methods) conforme ``eap_type``."""
         t = (self.eap_type or "PEAP").strip().upper()
         if t not in _EAP_TYPE_CHOICES:
@@ -161,7 +160,7 @@ class Exploit(Exploit):
             return "TTLS", "TTLS-PAP,TTLS-MSCHAP,TTLS-MSCHAPV2,MSCHAPV2,GTC,MD5"
         return "PEAP,TTLS", "MD5,MSCHAPV2,GTC,TTLS-PAP,TTLS-MSCHAP"
 
-    def _effective_hw_mode(self) -> Optional[str]:
+    def _effective_hw_mode(self) -> str | None:
         """Resolve ``hw_mode`` final a partir de ``band`` e ``hw_mode`` explícito."""
         explicit = (self.hw_mode or "").strip().lower()
         if explicit:
@@ -175,7 +174,7 @@ class Exploit(Exploit):
             return "a"
         return None
 
-    def _find_eaphammer(self) -> Optional[str]:
+    def _find_eaphammer(self) -> str | None:
         """Localiza o binário ou o script ``eaphammer``."""
         found = shutil.which("eaphammer")
         if found:
@@ -203,7 +202,7 @@ class Exploit(Exploit):
             return "creds"
         return "none"
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Monta a linha de comando do eaphammer."""
         eh = self._find_eaphammer()
         if not eh:
@@ -213,7 +212,7 @@ class Exploit(Exploit):
             )
 
         if eh.endswith(".py"):
-            cmd: List[str] = ["sudo", "python3", eh]
+            cmd: list[str] = ["sudo", "python3", eh]
         else:
             cmd = ["sudo", eh]
 

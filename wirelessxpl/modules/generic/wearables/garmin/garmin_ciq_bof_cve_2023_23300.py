@@ -193,7 +193,7 @@ class Exploit(Exploit):
             while time.monotonic() < deadline:
                 try:
                     pkt = sock.recv(260)
-                except bt_socket.timeout:
+                except TimeoutError:
                     continue
                 dev = self._parse_garmin_adv(pkt)
                 if dev and dev.get("is_garmin"):

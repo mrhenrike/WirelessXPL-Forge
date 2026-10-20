@@ -9,10 +9,8 @@ No external dependencies required.
 KeeLoq is a block cipher with 64-bit key and 32-bit block size.
 Used in rolling code remote entry systems (cars, garage doors).
 """
-from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 # KeeLoq NLFC (Non-Linear Function) lookup table -- 32-bit extraction
 # Derived from the hardware circuit described in AN642
@@ -102,7 +100,7 @@ class KeeLoqFrame:
     hop: int
     serial: int
     button: int
-    counter: Optional[int] = None
+    counter: int | None = None
     vlow: bool = False
     rpt: bool = False
 

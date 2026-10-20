@@ -88,7 +88,7 @@ class Exploit(Exploit):
             while True:
                 try:
                     raw, addr = sock.recvfrom(65535)
-                except socket.timeout:
+                except TimeoutError:
                     print_warning(f"Timeout aguardando bloco {expected_block} do servidor")
                     break
 
@@ -156,7 +156,7 @@ class Exploit(Exploit):
                 try:
                     raw, _ = sock.recvfrom(65535)
                     acked_block = struct.unpack("!H", raw[2:4])[0] if len(raw) >= 4 else 0
-                except socket.timeout:
+                except TimeoutError:
                     print_warning(f"Timeout aguardando ACK {block_num}")
                     break
 
@@ -181,7 +181,7 @@ class Exploit(Exploit):
             raw, _ = sock.recvfrom(65535)
             op = struct.unpack("!H", raw[:2])[0] if len(raw) >= 2 else 0
             return op in (_TFTP_OP_DATA, _TFTP_OP_OACK)
-        except (socket.timeout, OSError):
+        except (TimeoutError, OSError):
             return False
         finally:
             sock.close()

@@ -29,7 +29,6 @@ Dependencies: scapy, pycryptodome.
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -92,8 +91,8 @@ class IvTracker:
     """Track IVs/PNs per MAC address for replay detection."""
 
     def __init__(self) -> None:
-        self._seen: Dict[str, List[int]] = defaultdict(list)
-        self._reuse_count: Dict[str, int] = defaultdict(int)
+        self._seen: dict[str, list[int]] = defaultdict(list)
+        self._reuse_count: dict[str, int] = defaultdict(int)
 
     def observe(self, mac: str, pn: int) -> bool:
         """Record a PN observation. Returns True if reuse detected."""
@@ -110,7 +109,7 @@ class IvTracker:
 
         return reused
 
-    def get_stats(self) -> Dict[str, Dict[str, int]]:
+    def get_stats(self) -> dict[str, dict[str, int]]:
         """Get IV/PN statistics per MAC."""
         return {
             mac: {
@@ -222,8 +221,8 @@ class Exploit(Exploit):
     def __init__(self) -> None:
         super().__init__()
         self._iv_tracker = IvTracker()
-        self._captured_msg3: List = []
-        self._captured_group: List = []
+        self._captured_msg3: list = []
+        self._captured_group: list = []
         self._stop = threading.Event()
 
     def _passive_monitor(self) -> None:
@@ -375,7 +374,7 @@ class Exploit(Exploit):
         print_status("FT handshake vulnerability test...")
         print_info("Monitoring for FT Auth/Reassoc exchanges...")
 
-        ft_events: Dict[str, List] = {"auth": [], "reassoc": []}
+        ft_events: dict[str, list] = {"auth": [], "reassoc": []}
 
         def _monitor_ft(pkt):
             if pkt.haslayer(Dot11Auth):

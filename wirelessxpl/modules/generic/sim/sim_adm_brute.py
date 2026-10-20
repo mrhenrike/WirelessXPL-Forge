@@ -25,7 +25,6 @@ ADM1 uses P2=0x0A: 00 20 00 0A 08 [8-byte PIN].
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -61,7 +60,7 @@ SW_OK = (0x90, 0x00)
 # ---------------------------------------------------------------------------
 # Known vendor default ADM PINs (8 bytes each, hex representation)
 # ---------------------------------------------------------------------------
-COMMON_ADM_PINS: List[Tuple[str, List[int]]] = [
+COMMON_ADM_PINS: list[tuple[str, list[int]]] = [
     ("Gemalto default (8888...88FF)", [0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0xFF]),
     ("All zeros", [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
     ("All ones (1111...11)", [0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11]),
@@ -82,17 +81,17 @@ COMMON_ADM_PINS: List[Tuple[str, List[int]]] = [
 MIN_SAFE_ATTEMPTS = 3
 
 
-def _hex(data: List[int]) -> str:
+def _hex(data: list[int]) -> str:
     """Format byte list as hex string."""
     return "".join(f"{b:02X}" for b in data)
 
 
-def _hex_spaced(data: List[int]) -> str:
+def _hex_spaced(data: list[int]) -> str:
     """Format byte list as hex string with spaces."""
     return " ".join(f"{b:02X}" for b in data)
 
 
-def _parse_hex_pin(hex_str: str) -> Optional[List[int]]:
+def _parse_hex_pin(hex_str: str) -> list[int] | None:
     """Parse hex string into 8-byte ADM PIN. Returns None on invalid input."""
     cleaned = hex_str.strip().replace(" ", "").replace("0x", "").replace("0X", "")
     if not cleaned:
@@ -105,7 +104,7 @@ def _parse_hex_pin(hex_str: str) -> Optional[List[int]]:
         return None
 
 
-def _int_to_pin_bytes(value: int) -> List[int]:
+def _int_to_pin_bytes(value: int) -> list[int]:
     """Convert integer (0 to 2^64-1) into 8-byte big-endian PIN."""
     pin_bytes = []
     for shift in range(56, -1, -8):
@@ -158,7 +157,7 @@ class Exploit(Exploit):
     # Infrastructure
     # ------------------------------------------------------------------
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out, exist_ok=True)
@@ -167,7 +166,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
-    def _get_connection(self) -> Optional[Any]:
+    def _get_connection(self) -> Any | None:
         if not HAS_PYSCARD:
             print_error("pyscard nao instalado. pip install pyscard")
             return None
@@ -200,7 +199,7 @@ class Exploit(Exploit):
             print_error(f"Falha na conexao: {exc}")
             return None
 
-    def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
+    def _send_apdu(self, conn: Any, apdu: list[int]) -> tuple[list[int], int, int]:
         data, sw1, sw2 = conn.transmit(apdu)
         return data, sw1, sw2
 
@@ -228,7 +227,7 @@ class Exploit(Exploit):
         )
         return -1
 
-    def _verify_adm(self, conn: Any, pin_bytes: List[int]) -> Tuple[bool, int, int]:
+    def _verify_adm(self, conn: Any, pin_bytes: list[int]) -> tuple[bool, int, int]:
         """Send VERIFY ADM1 APDU. Returns (success, sw1, sw2)."""
         if len(pin_bytes) != ADM_PIN_LEN:
             return False, 0x6A, 0x80
@@ -240,7 +239,7 @@ class Exploit(Exploit):
             return False, 0x6F, 0x00
         return (sw1, sw2) == SW_OK, sw1, sw2
 
-    def _safety_gate(self, conn: Any) -> Optional[int]:
+    def _safety_gate(self, conn: Any) -> int | None:
         """Check retry counter and enforce safety limits.
 
         Returns remaining attempts if safe to proceed, or None if operation
@@ -270,7 +269,7 @@ class Exploit(Exploit):
             )
         return remaining
 
-    def _open_log(self, filename: str) -> Optional[Any]:
+    def _open_log(self, filename: str) -> Any | None:
         out_dir = self._ensure_output_dir()
         if not out_dir:
             return None
@@ -466,7 +465,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao ler wordlist: {exc}")
             return
 
-        pins: List[Tuple[str, List[int]]] = []
+        pins: list[tuple[str, list[int]]] = []
         for line_num, raw_line in enumerate(lines, 1):
             line = raw_line.strip()
             if not line or line.startswith("#"):

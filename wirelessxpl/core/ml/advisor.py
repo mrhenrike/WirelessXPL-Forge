@@ -3,15 +3,15 @@
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import math
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Type
+from typing import Any
 
 from wirelessxpl.core.exploit.exploit import Protocol
 
@@ -37,7 +37,7 @@ class AdvisorContext:
     threads: int
 
 
-def _load_default_config() -> Dict[str, Any]:
+def _load_default_config() -> dict[str, Any]:
     """Load bundled JSON config from package resources."""
     ml_pkg = "wirelessxpl.resources.ml"
     if hasattr(resources, "files"):
@@ -52,7 +52,7 @@ def _load_default_config() -> Dict[str, Any]:
         return json.load(handle)
 
 
-def _softmax(logits: Sequence[float]) -> List[float]:
+def _softmax(logits: Sequence[float]) -> list[float]:
     """Numerically stable softmax over a sequence of logits."""
     if not logits:
         return []
@@ -68,7 +68,7 @@ def _dot(a: Sequence[float], b: Sequence[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 
 
-def build_feature_vector(ctx: AdvisorContext) -> List[float]:
+def build_feature_vector(ctx: AdvisorContext) -> list[float]:
     """Build a fixed-length feature vector for the timing head."""
     vendor_spec = 1.0 if str(ctx.vendor).strip().lower() not in ("", "any") else 0.0
     enabled = [
@@ -92,7 +92,7 @@ def logits_for_timing(
     features: Sequence[float],
     timing_cfg: Mapping[str, Any],
     use_gpu: bool,
-) -> List[float]:
+) -> list[float]:
     """Compute class logits (one per timing template)."""
     bias: Sequence[float] = timing_cfg["bias"]
     rows: Sequence[Sequence[float]] = timing_cfg["weights"]
@@ -114,7 +114,7 @@ def logits_for_timing(
         except Exception as exc:  # pylint: disable=broad-except
             logger.debug("GPU timing logits fallback: %s", exc)
 
-    out: List[float] = []
+    out: list[float] = []
     for k, row in enumerate(rows):
         out.append(_dot(f, row[:width]) + float(bias[k]))
     return out
@@ -123,21 +123,21 @@ def logits_for_timing(
 class AttackAdvisor:
     """Ranks exploit/credential modules and suggests a timing template."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         self._config = config or _load_default_config()
 
-    def suggest_timing_template(self, ctx: AdvisorContext, use_gpu: bool) -> Tuple[str, List[Tuple[str, float]]]:
+    def suggest_timing_template(self, ctx: AdvisorContext, use_gpu: bool) -> tuple[str, list[tuple[str, float]]]:
         """Return best timing key (t0..t5) and softmax probabilities for UX."""
         feats = build_feature_vector(ctx)
         timing = self._config["timing"]
-        labels: List[str] = list(timing["labels"])
+        labels: list[str] = list(timing["labels"])
         logits = logits_for_timing(feats, timing, use_gpu=use_gpu)
         probs = _softmax(logits)
         ranked = sorted(zip(labels, probs), key=lambda x: x[1], reverse=True)
         best = ranked[0][0]
         return best, ranked
 
-    def score_exploit_class(self, exploit_class: Type[Any], ctx: AdvisorContext) -> float:
+    def score_exploit_class(self, exploit_class: type[Any], ctx: AdvisorContext) -> float:
         """ Heuristic score: higher = run earlier in AutoPwn. """
         mw = self._config["module_weights"]
         path = (getattr(exploit_class, "__module__", "") or "").lower()
@@ -183,11 +183,11 @@ class AttackAdvisor:
 
     def prioritize_modules(
         self,
-        modules: Sequence[Type[Any]],
+        modules: Sequence[type[Any]],
         ctx: AdvisorContext,
-    ) -> List[Type[Any]]:
+    ) -> list[type[Any]]:
         """Stable sort: higher advisor score first, preserve original order on ties."""
-        indexed: List[Tuple[int, Type[Any]]] = list(enumerate(modules))
+        indexed: list[tuple[int, type[Any]]] = list(enumerate(modules))
         indexed.sort(
             key=lambda t: (-self.score_exploit_class(t[1], ctx), t[0]),
         )

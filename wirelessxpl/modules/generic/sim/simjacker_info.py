@@ -13,7 +13,6 @@ Requires: pyscard (for detect/scan modes), PC/SC reader.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -259,7 +258,7 @@ class Exploit(Exploit):
     output_dir = OptString(".tmp", "Output directory for results")
     i_know_scope = OptBool(False, "Confirm authorized lab and SIM ownership")
 
-    def _get_reader(self) -> Optional[Any]:
+    def _get_reader(self) -> Any | None:
         """Get PC/SC reader connection."""
         if not HAS_PYSCARD:
             print_error("pyscard not installed. Install with: pip install pyscard")
@@ -282,7 +281,7 @@ class Exploit(Exploit):
             print_error(f"Failed to connect to reader: {exc}")
             return None
 
-    def _send_apdu(self, connection: Any, apdu: List[int]) -> Tuple[List[int], int]:
+    def _send_apdu(self, connection: Any, apdu: list[int]) -> tuple[list[int], int]:
         """Send APDU command and return (data, sw)."""
         data, sw1, sw2 = connection.transmit(apdu)
         sw = (sw1 << 8) | sw2
@@ -625,7 +624,7 @@ class Exploit(Exploit):
 
         # GET STATUS for card manager
         data, sw = self._send_apdu(conn, CMD_GET_STATUS)
-        apps_found: List[str] = []
+        apps_found: list[str] = []
 
         if sw == 0x9000 and data:
             hex_data = "".join(f"{b:02X}" for b in data)

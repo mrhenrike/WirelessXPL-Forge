@@ -23,7 +23,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -44,7 +43,7 @@ def _braktooth_root() -> Path:
     return Path(__file__).resolve().parents[5] / "braktooth"
 
 
-_ATTACK_MAP: Dict[str, str] = {
+_ATTACK_MAP: dict[str, str] = {
     "lmp_max_slot_overflow": "LMP max slot overflow — memory corruption",
     "lmp_pdud_invalid_crc": "Invalid CRC in LMP PDUD",
     "l2cap_segfault": "L2CAP segmentation fault",
@@ -127,11 +126,11 @@ class Exploit(Exploit):
             root / "src" / "main.py",
             root / "poc" / "main.py",
         ]
-        runner: Optional[Path] = next((c for c in runner_candidates if c.exists()), None)
+        runner: Path | None = next((c for c in runner_candidates if c.exists()), None)
 
         # Also check for precompiled binary
         bin_candidates = list(root.glob("*.elf")) + list(root.glob("braktooth"))
-        bin_path: Optional[Path] = bin_candidates[0] if bin_candidates else None
+        bin_path: Path | None = bin_candidates[0] if bin_candidates else None
 
         if not runner and not bin_path:
             print_error(
@@ -145,7 +144,7 @@ class Exploit(Exploit):
         for i in range(max(1, int(self.attack_repeat))):
             if runner:
                 python_bin = shutil.which("python3") or "python3"
-                cmd: List[str] = [python_bin, str(runner), attack_name, victim, port]
+                cmd: list[str] = [python_bin, str(runner), attack_name, victim, port]
             else:
                 cmd = [str(bin_path), attack_name, victim, port]
 

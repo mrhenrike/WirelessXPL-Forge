@@ -16,7 +16,6 @@ Attack modes:
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -62,7 +61,7 @@ class Exploit(Exploit):
     capture_pcap = OptBool(True, "Capture traffic to PCAP file")
     dry_run = OptBool(False, "Print commands without executing")
 
-    def _setup_nat(self) -> List[List[str]]:
+    def _setup_nat(self) -> list[list[str]]:
         """Generate iptables NAT commands for AP bridge mode."""
         return [
             ["sudo", "sysctl", "-w", "net.ipv4.ip_forward=1"],
@@ -75,7 +74,7 @@ class Exploit(Exploit):
              "--state", "RELATED,ESTABLISHED", "-j", "ACCEPT"],
         ]
 
-    def _build_bettercap_cmd(self) -> List[str]:
+    def _build_bettercap_cmd(self) -> list[str]:
         """Build bettercap command for the selected mode."""
         cmd = ["sudo", "bettercap"]
 

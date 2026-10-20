@@ -32,7 +32,6 @@ References:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -49,7 +48,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -58,7 +57,7 @@ def _ensure_dir(path: str) -> str:
     return path
 
 
-def _find_sigploit(custom_path: str) -> Optional[Path]:
+def _find_sigploit(custom_path: str) -> Path | None:
     """Locate SiGploit installation."""
     if custom_path:
         p = Path(custom_path)
@@ -141,7 +140,7 @@ class Exploit(Exploit):
         d = str(self.output_dir).strip() or ".tmp"
         return _ensure_dir(d)
 
-    def _require_sigploit(self) -> Optional[Path]:
+    def _require_sigploit(self) -> Path | None:
         sp = _find_sigploit(str(self.sigploit_path).strip())
         if not sp:
             print_error(
@@ -158,7 +157,7 @@ class Exploit(Exploit):
             return False
         return True
 
-    def _run_sigploit_cmd(self, sp_root: Path, args: List[str], label: str) -> None:
+    def _run_sigploit_cmd(self, sp_root: Path, args: list[str], label: str) -> None:
         python_bin = _which("python3") or _which("python") or "python3"
         main_script = sp_root / "sigploit.py"
         if not main_script.exists():
@@ -478,7 +477,7 @@ class Exploit(Exploit):
 
     def _cve_database(self) -> None:
         print_status("SS7/Diameter/GTP - CVE and Research Database (2020-2026)")
-        entries: List[Dict[str, str]] = [
+        entries: list[dict[str, str]] = [
             {
                 "id": "CVE-2020-6098",
                 "title": "freeDiameter DoS via malformed messages",

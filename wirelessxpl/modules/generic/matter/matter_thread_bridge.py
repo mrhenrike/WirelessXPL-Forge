@@ -9,7 +9,6 @@ credenciais de comissionamento.
 Requer: rede local com dispositivos Matter/Thread ou adaptador Thread (dongle).
 """
 
-from __future__ import annotations
 
 import json
 import shutil
@@ -205,7 +204,7 @@ class MatterThreadBridge(Exploit):
             try:
                 resp, _ = sock.recvfrom(512)
                 print(f"[+] Resposta CoAP ({len(resp)} bytes): {resp.hex()}")
-            except socket.timeout:
+            except TimeoutError:
                 print("[-] Sem resposta CoAP (dispositivo pode ter crashado).")
         except Exception as exc:
             print(f"[!] Erro: {exc}")
@@ -264,7 +263,7 @@ class MatterThreadBridge(Exploit):
             found: list[str] = []
 
             class Handler:
-                def add_service(self, zc: "Zeroconf", stype: str, name: str) -> None:
+                def add_service(self, zc: Zeroconf, stype: str, name: str) -> None:
                     found.append(name)
                     print(f"  [+] Matter device: {name}")
                 def remove_service(self, *_: object) -> None: pass

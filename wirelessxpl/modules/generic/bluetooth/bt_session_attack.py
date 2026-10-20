@@ -27,7 +27,6 @@ Requires: pyshark (optional, for PCAP analysis).
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import time
@@ -80,10 +79,10 @@ class LmpSession:
     """Parsed LMP session from PCAP capture."""
 
     def __init__(self) -> None:
-        self.au_rands: List[bytearray] = []
-        self.sres_values: List[bytearray] = []
-        self.en_rand: Optional[bytearray] = None
-        self.key_size: Optional[int] = None
+        self.au_rands: list[bytearray] = []
+        self.sres_values: list[bytearray] = []
+        self.en_rand: bytearray | None = None
+        self.key_size: int | None = None
         self.key_size_accepted: bool = False
         self.encryption_started: bool = False
         self.packet_count: int = 0
@@ -104,9 +103,9 @@ class LmpSession:
         )
 
 
-def _parse_lmp_sessions_pyshark(pcap_path: str) -> List[LmpSession]:
+def _parse_lmp_sessions_pyshark(pcap_path: str) -> list[LmpSession]:
     """Parse LMP sessions from a PCAP file using pyshark."""
-    sessions: List[LmpSession] = []
+    sessions: list[LmpSession] = []
 
     for df_filter in ("btlmp", "btbrlmp"):
         try:
@@ -121,7 +120,7 @@ def _parse_lmp_sessions_pyshark(pcap_path: str) -> List[LmpSession]:
         logger.warning("No LMP packets found in %s", pcap_path)
         return []
 
-    current: Optional[LmpSession] = None
+    current: LmpSession | None = None
     for pkt in cap:
         try:
             opcode = int(pkt.h4bcm.btbrlmp_op)
@@ -169,7 +168,7 @@ def _parse_lmp_sessions_pyshark(pcap_path: str) -> List[LmpSession]:
 
 def _brute_force_session_key(kc_prime: bytearray, entropy: int,
                               known_plaintext: bytes = b"",
-                              ciphertext: bytes = b"") -> Optional[bytearray]:
+                              ciphertext: bytes = b"") -> bytearray | None:
     """Brute-force reduced entropy session key.
 
     With entropy=1 byte, only 256 possible keys exist.

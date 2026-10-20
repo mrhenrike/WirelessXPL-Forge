@@ -25,7 +25,6 @@ Architecture:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import json
@@ -37,7 +36,7 @@ from urllib.parse import parse_qs
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_LOCALES: Tuple[str, ...] = ("en", "pt-br", "pt-pt", "es")
+SUPPORTED_LOCALES: tuple[str, ...] = ("en", "pt-br", "pt-pt", "es")
 DEFAULT_LOCALE: str = "en"
 
 _LOCALE_FAMILY_MAP = {
@@ -61,7 +60,7 @@ _LOCALE_FAMILY_MAP = {
 _PLACEHOLDER_RE = re.compile(r"\{\{(\w+)\}\}")
 
 
-def parse_accept_language(header: str) -> List[Tuple[str, float]]:
+def parse_accept_language(header: str) -> list[tuple[str, float]]:
     """Parse ``Accept-Language`` header into (tag, quality) pairs sorted by q.
 
     Args:
@@ -73,7 +72,7 @@ def parse_accept_language(header: str) -> List[Tuple[str, float]]:
     if not header:
         return []
 
-    items: List[Tuple[str, float]] = []
+    items: list[tuple[str, float]] = []
     for part in header.split(","):
         part = part.strip()
         if not part:
@@ -115,7 +114,7 @@ def detect_locale(accept_language: str) -> str:
     return DEFAULT_LOCALE
 
 
-def load_strings(template_dir: Path, locale: str) -> Dict[str, str]:
+def load_strings(template_dir: Path, locale: str) -> dict[str, str]:
     """Load translation strings from ``strings.json`` inside template dir.
 
     Falls back to ``"en"`` if the requested locale key is absent.
@@ -133,7 +132,7 @@ def load_strings(template_dir: Path, locale: str) -> Dict[str, str]:
         return {}
 
     with open(strings_file, encoding="utf-8") as fh:
-        all_strings: Dict[str, Dict[str, str]] = json.load(fh)
+        all_strings: dict[str, dict[str, str]] = json.load(fh)
 
     if locale in all_strings:
         return all_strings[locale]
@@ -146,7 +145,7 @@ def render_template(
     template_dir: Path,
     filename: str,
     locale: str,
-    extra_vars: Optional[Dict[str, str]] = None,
+    extra_vars: dict[str, str] | None = None,
 ) -> str:
     """Render an HTML template file with locale-specific strings.
 
@@ -193,7 +192,7 @@ class I18nPortalHandler(http.server.BaseHTTPRequestHandler):
     template_dir: Path = Path(".")
     portal_host: str = "10.0.0.1"
     cred_log: Path = Path(".log/portal_creds.json")
-    extra_vars: Dict[str, str] = {}
+    extra_vars: dict[str, str] = {}
     connectivity_detect: bool = True
 
     _CONNECTIVITY_PATHS = {

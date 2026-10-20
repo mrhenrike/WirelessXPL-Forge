@@ -7,12 +7,11 @@ wireless tools (e.g. airgorah components) into WirelessXPL.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import subprocess
 import time
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Dict, Optional, Sequence
 
 from wirelessxpl.core.integrations.lang_bridge import (
     CompileResult,
@@ -31,7 +30,7 @@ class RustRunner(LanguageRunner):
         self,
         source: Path,
         output: Path,
-        flags: Optional[Sequence[str]] = None,
+        flags: Sequence[str] | None = None,
     ) -> CompileResult:
         if (source.parent / "Cargo.toml").exists():
             return self._cargo_build(source.parent, flags)
@@ -41,7 +40,7 @@ class RustRunner(LanguageRunner):
         self,
         source: Path,
         output: Path,
-        flags: Optional[Sequence[str]] = None,
+        flags: Sequence[str] | None = None,
     ) -> CompileResult:
         cmd = ["rustc", str(source), "-o", str(output)]
         if flags:
@@ -75,7 +74,7 @@ class RustRunner(LanguageRunner):
     def _cargo_build(
         self,
         project_dir: Path,
-        flags: Optional[Sequence[str]] = None,
+        flags: Sequence[str] | None = None,
     ) -> CompileResult:
         cmd = ["cargo", "build", "--release"]
         if flags:
@@ -118,9 +117,9 @@ class RustRunner(LanguageRunner):
     def run(
         self,
         binary: Path,
-        args: Optional[Sequence[str]] = None,
+        args: Sequence[str] | None = None,
         timeout: int = 120,
-        env: Optional[Dict[str, str]] = None,
+        env: dict[str, str] | None = None,
     ) -> RunResult:
         cmd = [str(binary)]
         if args:
@@ -166,7 +165,7 @@ class CRunner(LanguageRunner):
         self,
         source: Path,
         output: Path,
-        flags: Optional[Sequence[str]] = None,
+        flags: Sequence[str] | None = None,
     ) -> CompileResult:
         compiler = self.detect_compiler()
         if not compiler:
@@ -198,9 +197,9 @@ class CRunner(LanguageRunner):
     def run(
         self,
         binary: Path,
-        args: Optional[Sequence[str]] = None,
+        args: Sequence[str] | None = None,
         timeout: int = 120,
-        env: Optional[Dict[str, str]] = None,
+        env: dict[str, str] | None = None,
     ) -> RunResult:
         cmd = [str(binary)]
         if args:

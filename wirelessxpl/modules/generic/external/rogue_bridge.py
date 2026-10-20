@@ -10,7 +10,6 @@ Modlishka. Nenhum código GPL é importado no interpretador WirelessXPL.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -70,7 +69,7 @@ class Exploit(Exploit):
 
     _AUTH = frozenset({"open", "wep", "wpa", "wpa-eap"})
 
-    def _find_rogue(self) -> Optional[str]:
+    def _find_rogue(self) -> str | None:
         """Localiza o entrypoint ``rogue`` / ``rogue.py``.
 
         Returns:
@@ -102,7 +101,7 @@ class Exploit(Exploit):
                 return str(p)
         return None
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Monta argv para o launcher evil twin.
 
         Returns:
@@ -133,7 +132,7 @@ class Exploit(Exploit):
             print_info("Aviso: auth_mode=wpa-eap sem eap_method — o launcher pode falhar.")
 
         is_py = entry.endswith(".py")
-        cmd: List[str] = ["sudo", "python3", entry] if is_py else ["sudo", entry]
+        cmd: list[str] = ["sudo", "python3", entry] if is_py else ["sudo", entry]
 
         cmd.extend(
             [

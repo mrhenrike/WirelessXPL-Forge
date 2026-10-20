@@ -1,5 +1,4 @@
 """Tests for wirelessxpl.core.hw_profiler — GPUDevice, HWProfile, HWProfiler."""
-from __future__ import annotations
 
 import sys
 from pathlib import Path

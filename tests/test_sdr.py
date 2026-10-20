@@ -1,6 +1,5 @@
 """Tests for wirelessxpl.core.sdr."""
 
-from __future__ import annotations
 
 from pathlib import Path
 

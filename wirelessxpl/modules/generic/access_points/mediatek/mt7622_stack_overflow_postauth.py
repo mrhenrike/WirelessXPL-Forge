@@ -170,7 +170,7 @@ class Exploit(HTTPClient):
             try:
                 response, _ = sock.recvfrom(4096)
                 return response
-            except socket.timeout:
+            except TimeoutError:
                 return b""
         finally:
             sock.close()

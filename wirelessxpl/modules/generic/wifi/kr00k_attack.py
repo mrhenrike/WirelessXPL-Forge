@@ -13,7 +13,6 @@ Dependencies: scapy, pycryptodome (Cryptodome.Cipher.AES MODE_CCM).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -92,9 +91,9 @@ class Exploit(Exploit):
     def __init__(self) -> None:
         super().__init__()
         self._stop_event = threading.Event()
-        self._encrypted_packets: List = []
-        self._decrypted_packets: List = []
-        self._stats: Dict[str, int] = {
+        self._encrypted_packets: list = []
+        self._decrypted_packets: list = []
+        self._stats: dict[str, int] = {
             "captured": 0,
             "decrypted": 0,
             "failed": 0,
@@ -117,7 +116,7 @@ class Exploit(Exploit):
 
     @classmethod
     def decrypt_frame(cls, encrypted_data: bytes, src_mac: str,
-                      pn: str, qos_priority: int = 0) -> Optional[bytes]:
+                      pn: str, qos_priority: int = 0) -> bytes | None:
         """Attempt KR00K decryption of a CCMP frame with all-zero TK.
 
         Args:

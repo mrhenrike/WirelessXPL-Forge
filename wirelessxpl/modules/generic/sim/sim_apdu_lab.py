@@ -24,7 +24,6 @@ Modes:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -50,7 +49,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # SW (Status Word) interpretation table
 # ---------------------------------------------------------------------------
-SW_TABLE: Dict[int, str] = {
+SW_TABLE: dict[int, str] = {
     0x9000: "OK",
     0x6282: "End of file/record reached before Le bytes",
     0x6981: "Command incompatible with file structure",
@@ -76,12 +75,12 @@ _HEX_PATTERN = re.compile(r"^[0-9a-fA-F]+$")
 MAX_APDU_LEN = 261
 
 
-def _hex(data: List[int]) -> str:
+def _hex(data: list[int]) -> str:
     """Format byte list as hex string."""
     return " ".join(f"{b:02X}" for b in data)
 
 
-def _parse_hex_string(hex_str: str) -> Optional[List[int]]:
+def _parse_hex_string(hex_str: str) -> list[int] | None:
     """Parse hex string (with or without spaces) into byte list.
 
     Returns None if the input is invalid.
@@ -176,7 +175,7 @@ class Exploit(Exploit):
     # Infrastructure
     # ------------------------------------------------------------------
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out, exist_ok=True)
@@ -185,7 +184,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao criar diretorio de saida: {exc}")
             return None
 
-    def _get_connection(self) -> Optional[Any]:
+    def _get_connection(self) -> Any | None:
         if not HAS_PYSCARD:
             print_error("pyscard nao instalado. pip install pyscard")
             return None
@@ -218,12 +217,12 @@ class Exploit(Exploit):
             print_error(f"Falha na conexao: {exc}")
             return None
 
-    def _send_apdu(self, conn: Any, apdu: List[int]) -> Tuple[List[int], int, int]:
+    def _send_apdu(self, conn: Any, apdu: list[int]) -> tuple[list[int], int, int]:
         """Transmit APDU and return (data, sw1, sw2)."""
         data, sw1, sw2 = conn.transmit(apdu)
         return data, sw1, sw2
 
-    def _send_and_display(self, conn: Any, apdu: List[int], label: str = "") -> Tuple[List[int], int, int]:
+    def _send_and_display(self, conn: Any, apdu: list[int], label: str = "") -> tuple[list[int], int, int]:
         """Send APDU, display command/response, and return result."""
         prefix = f"[{label}] " if label else ""
         print_info(f"{prefix}>> {_hex(apdu)}")
@@ -598,7 +597,7 @@ class Exploit(Exploit):
             "com SELECT por FID."
         )
         out_dir = self._ensure_output_dir()
-        found: List[str] = []
+        found: list[str] = []
         total = 0
 
         for fid_hi in range(0x00, 0x100):

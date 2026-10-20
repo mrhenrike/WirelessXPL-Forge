@@ -50,7 +50,6 @@ Author: Andre Henrique (@mrhenrike) | Uniao Geek
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import socket
 import struct
@@ -140,7 +139,7 @@ class Exploit(HTTPClient):
             sock.sendall(_PROBE_NORMAL)
             try:
                 banner = sock.recv(64)
-            except socket.timeout:
+            except TimeoutError:
                 banner = b""
             sock.close()
             if _DJI_SDK_MAGIC in banner or len(banner) > 0:
@@ -160,7 +159,7 @@ class Exploit(HTTPClient):
             sock.sendall(_PROBE_NORMAL)
             try:
                 banner = sock.recv(64)
-            except socket.timeout:
+            except TimeoutError:
                 banner = b""
             sock.close()
             if banner:
@@ -196,7 +195,7 @@ class Exploit(HTTPClient):
                 try:
                     resp = sock.recv(64)
                     print_info(f"[Stage 3] Response after overflow probe: {resp.hex()[:32]}")
-                except socket.timeout:
+                except TimeoutError:
                     print_success("[Stage 3] Timeout after overflow probe — crash/reset likely")
                 sock.close()
             except ConnectionResetError:

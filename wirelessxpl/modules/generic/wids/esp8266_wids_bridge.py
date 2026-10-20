@@ -16,7 +16,6 @@ Simulate mode: generates mock alerts at a configurable interval.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -24,9 +23,10 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from enum import Enum
-from typing import Any, Callable, Optional
+from typing import Any, Optional
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -115,12 +115,12 @@ class WIDSAlert:
     alert_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     alert_type: ESP8266AlertType = ESP8266AlertType.UNKNOWN
     severity: str = "LOW"
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    bssid: Optional[str] = None
-    ssid: Optional[str] = None
-    channel: Optional[int] = None
+    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
+    bssid: str | None = None
+    ssid: str | None = None
+    channel: int | None = None
     details: dict[str, Any] = field(default_factory=dict)
-    source_device: Optional[str] = None
+    source_device: str | None = None
     simulated: bool = False
 
     def to_dict(self) -> dict[str, Any]:
@@ -143,7 +143,7 @@ class WIDSAlert:
 # Payload decoder
 # ---------------------------------------------------------------------------
 
-def decode_payload(raw: str | bytes, source_device: Optional[str] = None) -> WIDSAlert:
+def decode_payload(raw: str | bytes, source_device: str | None = None) -> WIDSAlert:
     """Parse a raw MQTT payload into a WIDSAlert.
 
     Expected payload format (from ESP8266 firmware):
@@ -221,10 +221,10 @@ class ESP8266WIDSBridge:
         broker: str = "127.0.0.1",
         port: int = 1883,
         topic: str = "wids/alerts",
-        client_id: Optional[str] = None,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        on_alert: Optional[Callable[[WIDSAlert], None]] = None,
+        client_id: str | None = None,
+        username: str | None = None,
+        password: str | None = None,
+        on_alert: Callable[[WIDSAlert], None] | None = None,
         simulate: bool = True,
         mock_interval_seconds: float = 5.0,
     ) -> None:
@@ -241,7 +241,7 @@ class ESP8266WIDSBridge:
         self._username = username
         self._password = password
         self._mqtt_client: Any = None
-        self._mock_thread: Optional[threading.Thread] = None
+        self._mock_thread: threading.Thread | None = None
 
         if on_alert:
             self._handlers.append(on_alert)
@@ -457,7 +457,7 @@ class ESP8266WIDSBridge:
 
 class suppress_exc:
     """Minimal exception suppressor (contextlib.suppress inline clone)."""
-    def __enter__(self) -> "suppress_exc":
+    def __enter__(self) -> suppress_exc:
         return self
 
     def __exit__(self, exc_type: Any, *_: Any) -> bool:

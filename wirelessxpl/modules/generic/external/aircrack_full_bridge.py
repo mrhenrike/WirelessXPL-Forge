@@ -26,7 +26,6 @@ Prerequisites (host):
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -58,12 +57,12 @@ _AIREPLAY_ATTACKS = {
 }
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
-def _run(cmd: List[str], *, timeout: int = 0, capture: bool = False,
-         dry_run: bool = False) -> Optional[subprocess.CompletedProcess]:
+def _run(cmd: list[str], *, timeout: int = 0, capture: bool = False,
+         dry_run: bool = False) -> subprocess.CompletedProcess | None:
     """Execute subprocess with safe defaults."""
     cmd_str = " ".join(cmd)
     if dry_run:
@@ -72,7 +71,7 @@ def _run(cmd: List[str], *, timeout: int = 0, capture: bool = False,
 
     print_status(f"exec: {cmd_str}")
     try:
-        kwargs: Dict = {
+        kwargs: dict = {
             "stdout": subprocess.PIPE if capture else None,
             "stderr": subprocess.STDOUT if capture else None,
         }
@@ -92,8 +91,8 @@ def _run(cmd: List[str], *, timeout: int = 0, capture: bool = False,
         return None
 
 
-def _run_bg(cmd: List[str], *, dry_run: bool = False,
-            log_file: Optional[str] = None) -> Optional[subprocess.Popen]:
+def _run_bg(cmd: list[str], *, dry_run: bool = False,
+            log_file: str | None = None) -> subprocess.Popen | None:
     """Start a long-running subprocess in background."""
     cmd_str = " ".join(cmd)
     if dry_run:
@@ -198,7 +197,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print command without executing")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
-    def _require_bin(self, name: str) -> Optional[str]:
+    def _require_bin(self, name: str) -> str | None:
         path = _which(name)
         if not path:
             print_error(
@@ -206,7 +205,7 @@ class Exploit(Exploit):
             )
         return path
 
-    def _extra(self) -> List[str]:
+    def _extra(self) -> list[str]:
         extra = str(self.extra_args).strip()
         return extra.split() if extra else []
 

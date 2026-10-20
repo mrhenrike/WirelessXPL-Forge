@@ -10,7 +10,6 @@ CVE-1999-0111: RIPv1 unauthenticated route injection (design flaw).
 Requires Scapy for raw packet construction.
 PREREQ: Network access to router segment running RIPv1 (UDP 520).
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -62,7 +61,7 @@ _RIP_INF_METRIC = 16
 def _build_rip_v1_response_raw(
     src_ip: str,
     dst_ip: str,
-    entries: List[Tuple[str, str, int]],
+    entries: list[tuple[str, str, int]],
 ) -> bytes:
     """Build a raw RIPv1 Response UDP packet.
 

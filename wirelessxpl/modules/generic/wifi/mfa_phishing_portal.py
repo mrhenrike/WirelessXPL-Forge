@@ -15,7 +15,6 @@ Modes:
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import json
@@ -116,7 +115,7 @@ class Exploit(Exploit):
     connectivity_detection = OptBool(True, "Handle Apple/Google/Microsoft connectivity checks")
     dry_run = OptBool(False, "Print config without executing")
 
-    def _resolve_template(self) -> Optional[Path]:
+    def _resolve_template(self) -> Path | None:
         """Resolve phishing template directory."""
         if self.template == "custom":
             p = Path(self.custom_template_dir)

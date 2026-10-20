@@ -19,7 +19,6 @@ Dependencies: scapy.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -71,7 +70,7 @@ IE_VENDOR = 221
 CSA_MODE_BLOCK_TX = 1
 
 
-def _find_ie(packet, ie_id: int) -> Optional[Dot11Elt]:
+def _find_ie(packet, ie_id: int) -> Dot11Elt | None:
     """Find an Information Element by ID in a Dot11 frame."""
     elt = packet.payload
     while isinstance(elt, Dot11Elt):
@@ -81,7 +80,7 @@ def _find_ie(packet, ie_id: int) -> Optional[Dot11Elt]:
     return None
 
 
-def _get_ssid(packet) -> Optional[str]:
+def _get_ssid(packet) -> str | None:
     """Extract SSID from a Dot11 frame."""
     ssid_ie = _find_ie(packet, IE_SSID)
     if ssid_ie and ssid_ie.info:

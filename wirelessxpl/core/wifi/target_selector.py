@@ -10,13 +10,12 @@ Recode: full Python rewrite, no code copied.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import List, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -68,13 +67,13 @@ class WiFiTarget:
 class FilterCriteria:
     min_power: int = -80
     max_power: int = 0
-    channels: Optional[List[int]] = None
+    channels: list[int] | None = None
     exclude_enterprise: bool = True
     exclude_hidden: bool = False
     exclude_open: bool = False
     exclude_wep: bool = False
-    ssid_pattern: Optional[str] = None
-    bssid_pattern: Optional[str] = None
+    ssid_pattern: str | None = None
+    bssid_pattern: str | None = None
     wps_only: bool = False
     min_clients: int = 0
 
@@ -82,7 +81,7 @@ class FilterCriteria:
 def filter_targets(
     targets: Sequence[WiFiTarget],
     criteria: FilterCriteria,
-) -> List[WiFiTarget]:
+) -> list[WiFiTarget]:
     """Filter WiFi targets by criteria.
 
     Args:
@@ -145,7 +144,7 @@ def rank_targets(
     targets: Sequence[WiFiTarget],
     prefer_wps: bool = True,
     prefer_clients: bool = True,
-) -> List[WiFiTarget]:
+) -> list[WiFiTarget]:
     """Rank targets by attack feasibility score (higher = better).
 
     Score factors:
@@ -195,7 +194,7 @@ def rank_targets(
     return sorted(targets, key=_score, reverse=True)
 
 
-def suggest_attacks(target: WiFiTarget) -> List[str]:
+def suggest_attacks(target: WiFiTarget) -> list[str]:
     """Suggest attack chain order for a target.
 
     Prioritizes faster attacks first (PMKID, WPS PixieDust)
@@ -207,7 +206,7 @@ def suggest_attacks(target: WiFiTarget) -> List[str]:
     Returns:
         Ordered list of attack method names.
     """
-    attacks: List[str] = []
+    attacks: list[str] = []
 
     if target.encryption == EncryptionType.OPEN:
         attacks.append("evil-twin-captive")

@@ -16,7 +16,6 @@ with packet-injection support.
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import binascii
 import logging
@@ -56,7 +55,7 @@ except ImportError:
     pass
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -93,8 +92,8 @@ def _capture_ivs_scapy(
     iface: str,
     bssid: str,
     stop_event: threading.Event,
-    iv_list: List[Tuple[bytes, bytes]],
-    pcap_writer: "PcapWriter",
+    iv_list: list[tuple[bytes, bytes]],
+    pcap_writer: PcapWriter,
     lock: threading.Lock,
 ) -> None:
     """Capture WEP IVs via Scapy monitor-mode sniffing.
@@ -227,7 +226,7 @@ def _arp_replay_loop(
     """
     # REFACTORED: substituido aireplay-ng -3 por implementacao nativa Scapy
     bssid_lower = bssid.lower()
-    captured_frame: Optional[object] = None
+    captured_frame: object | None = None
 
     def _grab_arp(pkt):
         nonlocal captured_frame
@@ -272,7 +271,7 @@ def _chopchop_native(
     bssid: str,
     stop_event: threading.Event,
     timeout_s: int = 300,
-) -> Optional[bytes]:
+) -> bytes | None:
     """WEP chop-chop keystream recovery via iterative frame truncation.
 
     Captures a WEP data frame and truncates it one byte at a time. For each
@@ -296,7 +295,7 @@ def _chopchop_native(
     """
     # REFACTORED: substituido aireplay-ng -4 por implementacao nativa Scapy
     bssid_lower = bssid.lower()
-    target_frame: Optional[object] = None
+    target_frame: object | None = None
 
     def _grab_frame(pkt):
         nonlocal target_frame
@@ -423,7 +422,7 @@ def _frag_attack_loop(
     # REFACTORED: substituido aireplay-ng -5 por implementacao nativa Scapy
     bssid_lower = bssid.lower()
     while not stop_event.is_set():
-        captured: Optional[object] = None
+        captured: object | None = None
 
         def _grab(pkt):
             nonlocal captured
@@ -510,7 +509,7 @@ def _caffe_latte_loop(
     # REFACTORED: substituido aireplay-ng -6 por implementacao nativa Scapy
     from scapy.all import Dot11ProbeReq
 
-    seen_clients: List[str] = []
+    seen_clients: list[str] = []
 
     def _grab_probe(pkt):
         if stop_event.is_set():
@@ -577,7 +576,7 @@ def _hirte_loop(
     # REFACTORED: substituido aireplay-ng -7 por implementacao nativa Scapy
     from scapy.all import Dot11ProbeReq
 
-    seen_clients: List[str] = []
+    seen_clients: list[str] = []
 
     def _grab_probe(pkt):
         if stop_event.is_set():
@@ -648,7 +647,7 @@ def _interactive_replay_loop(
     """
     # REFACTORED: substituido aireplay-ng -2 por implementacao nativa Scapy
     bssid_lower = bssid.lower()
-    replay_queue: List[object] = []
+    replay_queue: list[object] = []
     queue_lock = threading.Lock()
 
     def _grab_data(pkt):
@@ -718,8 +717,8 @@ def _capture_wep_ivs_scapy(
         Dict with: count(int), filename(str), ready_to_crack(bool).
     """
     # REFACTORED: removido airodump-ng - substituido por captura nativa Scapy
-    ivs: List[Tuple[bytes, bytes]] = []
-    all_pkts: List[object] = []
+    ivs: list[tuple[bytes, bytes]] = []
+    all_pkts: list[object] = []
     bssid_lower = bssid.lower()
 
     def _process(pkt) -> None:
@@ -815,7 +814,7 @@ def _arp_replay_scapy(iface: str, bssid: str, count: int = 1000) -> int:
     """
     # REFACTORED: removido aireplay-ng -3 - substituido por implementacao nativa Scapy
     bssid_lower = bssid.lower()
-    arp_frames: List[object] = []
+    arp_frames: list[object] = []
 
     def _find_arp(pkt) -> None:
         if len(arp_frames) >= 1:
@@ -903,7 +902,7 @@ class Exploit(Exploit):
     native_mode = OptBool(True, "Use native Scapy for all IV capture and frame injection")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
-    def _require_aircrack(self) -> Optional[str]:
+    def _require_aircrack(self) -> str | None:
         """Locate the aircrack-ng binary on the system PATH.
 
         Returns:
@@ -1024,7 +1023,7 @@ class Exploit(Exploit):
             )
             return
 
-        iv_list: List[Tuple[bytes, bytes]] = []
+        iv_list: list[tuple[bytes, bytes]] = []
         lock = threading.Lock()
         stop_event = threading.Event()
         cap_path = f"{prefix}-01.cap"
@@ -1035,7 +1034,7 @@ class Exploit(Exploit):
             print_error(f"Cannot open capture file {cap_path}: {exc}")
             return
 
-        threads: List[Tuple[str, threading.Thread]] = []
+        threads: list[tuple[str, threading.Thread]] = []
 
         # REFACTORED: substituido airodump-ng por implementacao nativa Scapy
         capture_thread = threading.Thread(

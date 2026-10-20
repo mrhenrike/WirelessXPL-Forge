@@ -1,5 +1,4 @@
 """Tests for wirelessxpl.core.bt_crypto — SAFER+ Bluetooth crypto primitives."""
-from __future__ import annotations
 
 import sys
 from pathlib import Path

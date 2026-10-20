@@ -116,7 +116,7 @@ class Exploit(BaseExploit):
             try:
                 response, _ = sock.recvfrom(4096)
                 return response
-            except socket.timeout:
+            except TimeoutError:
                 return b""
         finally:
             sock.close()
@@ -143,7 +143,7 @@ class Exploit(BaseExploit):
                 data, _ = sock.recvfrom(4096)
                 sock.close()
                 return len(data) > 0
-            except socket.timeout:
+            except TimeoutError:
                 sock.close()
                 return self._udp_port_open()
         except Exception:

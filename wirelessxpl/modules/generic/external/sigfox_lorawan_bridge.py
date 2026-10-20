@@ -11,7 +11,6 @@ Requires: SDR hardware (HackRF, RTL-SDR), librenard, GNU Radio.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -27,7 +26,7 @@ from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -83,7 +82,7 @@ class Exploit(Exploit):
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _run(self, cmd: List[str], label: str = "") -> None:
+    def _run(self, cmd: list[str], label: str = "") -> None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")

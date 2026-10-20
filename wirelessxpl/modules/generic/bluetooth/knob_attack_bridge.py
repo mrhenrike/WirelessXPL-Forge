@@ -26,7 +26,6 @@ Modes:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -125,7 +124,7 @@ class Exploit(Exploit):
             root / "knob.py",
             root / "e0" / "knob_e0.py",
         ]
-        poc: Optional[Path] = next((c for c in candidates if c.exists()), None)
+        poc: Path | None = next((c for c in candidates if c.exists()), None)
         if not poc:
             # List what's available
             available = list(root.rglob("*.py"))
@@ -135,7 +134,7 @@ class Exploit(Exploit):
             return
 
         python_bin = shutil.which("python3") or "python3"
-        cmd: List[str] = [python_bin, str(poc)]
+        cmd: list[str] = [python_bin, str(poc)]
 
         mac_a = str(self.victim_a_mac).strip()
         mac_b = str(self.victim_b_mac).strip()

@@ -16,7 +16,6 @@ WARNING: Active radar jamming/spoofing is illegal in most jurisdictions
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Optional
@@ -201,8 +200,8 @@ def compute_spoof_delay_ns(
 
 
 def run(
-    target: Optional[FMCWRadarTarget] = None,
-    radar: Optional[FMCWRadarParams] = None,
+    target: FMCWRadarTarget | None = None,
+    radar: FMCWRadarParams | None = None,
 ) -> dict:
     """Generate FMCW radar spoof parameters and return summary.
 

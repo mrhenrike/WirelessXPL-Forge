@@ -1,5 +1,4 @@
 """Tests for wirelessxpl.core.phase_gateway — PhaseGateway, quick_gate."""
-from __future__ import annotations
 
 import sys
 from pathlib import Path

@@ -12,13 +12,12 @@ Requires: pySim (pySim.esim.rsp), pyscard, PC/SC reader with eUICC support.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
 import socket
 import ssl
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from typing import Any, List, Optional, Tuple
 
 from wirelessxpl.core.exploit import *
@@ -67,7 +66,7 @@ GET_DATA_EID = [0x80, 0xCA, 0x00, 0x46]
 GET_STATUS_ISD_R = [0x80, 0xF2, 0x40, 0x00]
 
 
-def _hex_to_bytes(hex_str: str) -> List[int]:
+def _hex_to_bytes(hex_str: str) -> list[int]:
     """Convert hex string to byte list for APDU commands."""
     return [int(hex_str[i:i + 2], 16) for i in range(0, len(hex_str), 2)]
 
@@ -111,7 +110,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print commands without executing")
     i_know_scope = OptBool(False, "Confirm authorized lab and SIM ownership")
 
-    def _get_reader(self) -> Optional[Any]:
+    def _get_reader(self) -> Any | None:
         """Get PC/SC reader connection."""
         if not HAS_PYSCARD:
             print_error("pyscard not installed. Install with: pip install pyscard")
@@ -134,7 +133,7 @@ class Exploit(Exploit):
             print_error(f"Failed to connect to reader: {exc}")
             return None
 
-    def _send_apdu(self, connection: Any, apdu: List[int]) -> Tuple[List[int], int]:
+    def _send_apdu(self, connection: Any, apdu: list[int]) -> tuple[list[int], int]:
         """Send APDU command and return (data, sw)."""
         data, sw1, sw2 = connection.transmit(apdu)
         sw = (sw1 << 8) | sw2
@@ -480,7 +479,7 @@ class Exploit(Exploit):
         sig_algo = cert.signature_algorithm_oid.dotted_string
         print_info(f"  Signature Algorithm OID: {sig_algo}")
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         if cert.not_valid_after_utc < now:
             print_error("  EXPIRED: certificate is past its validity period")
         elif (cert.not_valid_after_utc - now).days < 365:
@@ -539,7 +538,7 @@ class Exploit(Exploit):
                             print_error("  WEAK CIPHER: key length below 128 bits")
         except ssl.SSLCertVerificationError as exc:
             print_error(f"TLS certificate verification failed: {exc}")
-        except socket.timeout:
+        except TimeoutError:
             print_error(f"Connection timed out: {host}:{port}")
         except ConnectionRefusedError:
             print_error(f"Connection refused: {host}:{port}")

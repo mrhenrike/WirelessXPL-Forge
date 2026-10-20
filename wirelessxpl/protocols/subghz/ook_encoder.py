@@ -5,10 +5,8 @@
 Supports: EV1527, Princeton/PT2262, HT6P20/HT12X, SMC5326, CAME, NICE, Holtek, Chamberlain.
 Output: timing sequences and Flipper Zero .sub file format.
 """
-from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
 
 
 @dataclass
@@ -28,13 +26,13 @@ class OOKEncoder:
 
     name: str = "Generic"
     bit_time: int = 500
-    chirp_0: Tuple[int, int] = (1, 3)
-    chirp_1: Tuple[int, int] = (3, 1)
+    chirp_0: tuple[int, int] = (1, 3)
+    chirp_1: tuple[int, int] = (3, 1)
     preamble_periods: int = 1
     sync_low: int = 31
     code_bits: int = 24
 
-    def encode(self, code: int) -> List[Tuple[int, int]]:
+    def encode(self, code: int) -> list[tuple[int, int]]:
         """Encode an integer code to a list of (duration_us, level) pairs.
 
         Args:
@@ -47,7 +45,7 @@ class OOKEncoder:
             raise ValueError(
                 f"Code {code} out of range for {self.code_bits}-bit protocol"
             )
-        result: List[Tuple[int, int]] = []
+        result: list[tuple[int, int]] = []
         # Preamble
         result.append((self.bit_time, 1))
         result.append((self.bit_time * self.sync_low, 0))
@@ -64,7 +62,7 @@ class OOKEncoder:
         code: int,
         frequency: float = 433.92,
         repeats: int = 3,
-        preset: Optional[str] = None,
+        preset: str | None = None,
     ) -> str:
         """Generate Flipper Zero .sub file content for RAW replay.
 

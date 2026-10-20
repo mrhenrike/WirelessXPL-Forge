@@ -5,7 +5,6 @@
 Requests the full parameter list from the drone and displays security-critical
 parameters. Supports basic PARAM_REQUEST_LIST and identifies risky configurations.
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -64,7 +63,7 @@ def _build_param_request_list(target_sys: int = 1, target_comp: int = 1, seq: in
     return header + payload + struct.pack("<H", crc)
 
 
-def _parse_param_value(data: bytes) -> Optional[Dict]:
+def _parse_param_value(data: bytes) -> dict | None:
     """Parse PARAM_VALUE (msg_id=22) response."""
     if len(data) < 6:
         return None
@@ -164,7 +163,7 @@ class Exploit(Exploit):
             print_error(f"Send error: {exc}")
             return
 
-        params: Dict[str, float] = {}
+        params: dict[str, float] = {}
         deadline = time.monotonic() + timeout_s
         expected_count = None
 
@@ -180,7 +179,7 @@ class Exploit(Exploit):
                         print_info(f"Received {len(params)}/{expected_count or '?'} params...")
                     if expected_count and len(params) >= expected_count:
                         break
-            except socket.timeout:
+            except TimeoutError:
                 continue
             except Exception:
                 continue

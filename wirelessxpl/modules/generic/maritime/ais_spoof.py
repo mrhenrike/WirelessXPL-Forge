@@ -13,7 +13,6 @@ References:
 
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
-from __future__ import annotations
 
 import socket
 import time
@@ -276,7 +275,7 @@ class AISSpoofAttack:
 
     def spoof_fleet(
         self,
-        vessels: List[AISVessel],
+        vessels: list[AISVessel],
         interval_s: float = 2.0,
         duration_s: int = 30,
     ) -> dict:

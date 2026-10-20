@@ -22,7 +22,6 @@ Research references:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -63,14 +62,14 @@ _project_tmp = os.path.join(os.path.dirname(__file__), "..", "..", "..", ".tmp")
 os.makedirs(_project_tmp, exist_ok=True)
 
 
-def _mean(values: List[float]) -> float:
+def _mean(values: list[float]) -> float:
     """Arithmetic mean (fallback when numpy is unavailable)."""
     if not values:
         return 0.0
     return sum(values) / len(values)
 
 
-def _stddev(values: List[float]) -> float:
+def _stddev(values: list[float]) -> float:
     """Population standard deviation (fallback when numpy is unavailable)."""
     if len(values) < 2:
         return 0.0
@@ -79,7 +78,7 @@ def _stddev(values: List[float]) -> float:
     return math.sqrt(variance)
 
 
-def _ttest_ind(a: List[float], b: List[float]) -> Tuple[float, float]:
+def _ttest_ind(a: list[float], b: list[float]) -> tuple[float, float]:
     """Welch's t-test (fallback when numpy/scipy unavailable).
 
     Returns (t_statistic, approximate_p_value).
@@ -181,8 +180,8 @@ class Exploit(Exploit):
         return any(a and a.lower() == bssid_lower for a in addrs)
 
     def _extract_timing_pairs(
-        self, packets: List[Any], bssid: str
-    ) -> List[Dict[str, Any]]:
+        self, packets: list[Any], bssid: str
+    ) -> list[dict[str, Any]]:
         """Extract commit-confirm timing pairs from a list of SAE frames.
 
         Groups by source MAC; for each source, pairs consecutive commit
@@ -196,8 +195,8 @@ class Exploit(Exploit):
                 continue
             filtered.append(pkt)
 
-        pending_commits: Dict[str, Tuple[float, Any]] = {}
-        pairs: List[Dict[str, Any]] = []
+        pending_commits: dict[str, tuple[float, Any]] = {}
+        pairs: list[dict[str, Any]] = []
 
         for pkt in filtered:
             auth = pkt.getlayer(Dot11Auth)
@@ -223,7 +222,7 @@ class Exploit(Exploit):
 
         return pairs
 
-    def _capture(self) -> Optional[List[Dict[str, Any]]]:
+    def _capture(self) -> list[dict[str, Any]] | None:
         """Live capture of SAE Authentication frames."""
         if not HAS_SCAPY:
             print_error(
@@ -253,7 +252,7 @@ class Exploit(Exploit):
         )
         print_info("Press Ctrl+C to stop early.")
 
-        collected: List[Any] = []
+        collected: list[Any] = []
         pair_count = 0
         target_pairs = samples
 
@@ -297,7 +296,7 @@ class Exploit(Exploit):
 
         return pairs
 
-    def _load_pcap(self) -> Optional[List[Dict[str, Any]]]:
+    def _load_pcap(self) -> list[dict[str, Any]] | None:
         """Load SAE frames from a PCAP file and extract timing pairs."""
         if not HAS_SCAPY:
             print_error("Scapy not available. Install: pip install scapy")
@@ -320,7 +319,7 @@ class Exploit(Exploit):
         print_info(f"Extracted {len(pairs)} commit-confirm pairs from PCAP.")
         return pairs
 
-    def _analyze(self, pairs: List[Dict[str, Any]]) -> None:
+    def _analyze(self, pairs: list[dict[str, Any]]) -> None:
         """Statistical analysis of SAE timing pairs."""
         if not pairs:
             print_error("No timing data to analyze.")
@@ -346,7 +345,7 @@ class Exploit(Exploit):
             print_info(f"  Max delta     : {max(deltas):.3f} ms")
 
         # Partition analysis: split by source MAC to detect group-dependent timing
-        by_source: Dict[str, List[float]] = {}
+        by_source: dict[str, list[float]] = {}
         for p in pairs:
             src = p.get("src", "unknown")
             by_source.setdefault(src, []).append(p["delta_ms"])

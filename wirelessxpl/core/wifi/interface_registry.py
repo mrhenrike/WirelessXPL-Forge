@@ -10,7 +10,6 @@ Usage:
     reg.assign("wlx44334cbe826b", role="monitor", channel=6)
     reg.release("wlx44334cbe826b")
 """
-from __future__ import annotations
 
 import logging
 import re
@@ -18,7 +17,6 @@ import shutil
 import subprocess
 import threading
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,12 +42,12 @@ class InterfaceInfo:
     current_mode: str       # monitor / managed / ap / etc
     provides_internet: bool # True if this iface has the default route
     nm_managed: bool        # True if NM is managing it
-    bands: List[str]        # ["2.4GHz", "5GHz", "6GHz"]
+    bands: list[str]        # ["2.4GHz", "5GHz", "6GHz"]
     supports_monitor: bool
     supports_ap: bool
     supports_inject: bool
     role: str = ROLE_IDLE   # role assigned by WXF
-    channel: Optional[int] = None
+    channel: int | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -59,16 +57,16 @@ class InterfaceInfo:
 class InterfaceRegistry:
     """Singleton that tracks all wireless interfaces and their WXF assignments."""
 
-    _instance: Optional["InterfaceRegistry"] = None
+    _instance: 'InterfaceRegistry | None' = None
     _lock: threading.Lock = threading.Lock()
 
     def __init__(self) -> None:
-        self._interfaces: Dict[str, InterfaceInfo] = {}
+        self._interfaces: dict[str, InterfaceInfo] = {}
         self._refresh_lock = threading.Lock()
         self.refresh()
 
     @classmethod
-    def get(cls) -> "InterfaceRegistry":
+    def get(cls) -> 'InterfaceRegistry':
         """Return the global singleton instance."""
         with cls._lock:
             if cls._instance is None:
@@ -89,7 +87,7 @@ class InterfaceRegistry:
                 self._interfaces[info.name] = info
             logger.debug("InterfaceRegistry refreshed: %d interfaces", len(self._interfaces))
 
-    def _run(self, cmd: List[str], timeout: int = 5) -> str:
+    def _run(self, cmd: list[str], timeout: int = 5) -> str:
         try:
             return subprocess.check_output(
                 cmd, stderr=subprocess.DEVNULL, timeout=timeout
@@ -103,12 +101,12 @@ class InterfaceRegistry:
         m = re.search(r"dev\s+(\S+)", out)
         return m.group(1) if m else ""
 
-    def _enumerate_interfaces(self) -> List[InterfaceInfo]:
+    def _enumerate_interfaces(self) -> list[InterfaceInfo]:
         iw_out = self._run(["iw", "dev"])
         if not iw_out:
             return []
 
-        results: List[InterfaceInfo] = []
+        results: list[InterfaceInfo] = []
         current_phy = ""
         current_iface = ""
         current_addr = ""
@@ -207,9 +205,9 @@ class InterfaceRegistry:
         self,
         iface: str,
         role: str,
-        channel: Optional[int] = None,
+        channel: int | None = None,
         force: bool = False,
-    ) -> "InterfaceInfo":
+    ) -> InterfaceInfo:
         """Mark an interface for WXF use; configure NM if needed.
 
         Args:
@@ -285,7 +283,7 @@ class InterfaceRegistry:
             )
             logger.debug("NM: set %s managed", iface)
 
-    def persist_nm_config(self, unmanaged_ifaces: Optional[List[str]] = None) -> bool:
+    def persist_nm_config(self, unmanaged_ifaces: list[str] | None = None) -> bool:
         """Write /etc/NetworkManager/conf.d/99-wxf-unmanaged.conf.
 
         Args:
@@ -327,13 +325,13 @@ class InterfaceRegistry:
     # Query helpers
     # ------------------------------------------------------------------
 
-    def all(self) -> List[InterfaceInfo]:
+    def all(self) -> list[InterfaceInfo]:
         return list(self._interfaces.values())
 
-    def get_by_role(self, role: str) -> List[InterfaceInfo]:
+    def get_by_role(self, role: str) -> list[InterfaceInfo]:
         return [i for i in self._interfaces.values() if i.role == role]
 
-    def get_monitor_interfaces(self) -> List[str]:
+    def get_monitor_interfaces(self) -> list[str]:
         return [i.name for i in self.get_by_role(ROLE_MONITOR)]
 
     def __getitem__(self, name: str) -> InterfaceInfo:

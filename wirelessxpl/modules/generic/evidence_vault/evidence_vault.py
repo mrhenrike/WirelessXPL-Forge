@@ -9,7 +9,6 @@ record breaks the chain, which verify_chain() detects.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import csv
 import hashlib
@@ -21,9 +20,10 @@ import tarfile
 import uuid
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from pathlib import Path
-from typing import Any, Generator, Optional
+from typing import Any, Optional
+from collections.abc import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def _sha256_of(obj: dict[str, Any]) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 # ---------------------------------------------------------------------------
@@ -55,8 +55,8 @@ class CaptureRecord:
     bssid: str
     filepath: str
     capture_type: str = "hc22000"
-    channel: Optional[int] = None
-    rssi: Optional[int] = None
+    channel: int | None = None
+    rssi: int | None = None
     timestamp: str = ""
 
     def __post_init__(self) -> None:
@@ -69,7 +69,7 @@ class CredentialRecord:
     """A recovered WiFi credential."""
     ssid: str
     password: str
-    bssid: Optional[str] = None
+    bssid: str | None = None
     method: str = "handshake"
     timestamp: str = ""
 
@@ -86,9 +86,9 @@ class NetworkRecord:
     security: str
     channel: int
     rssi: int
-    vendor: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
+    vendor: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
     timestamp: str = ""
 
     def __post_init__(self) -> None:
@@ -133,7 +133,7 @@ class EvidenceVault:
         self,
         vault_dir: str | Path,
         operator: str = "operator",
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
         simulate: bool = True,
     ) -> None:
         self.vault_dir = Path(vault_dir).resolve()
@@ -238,7 +238,7 @@ class EvidenceVault:
             return _GENESIS
 
     def _append_ledger(self, kind: str, payload: dict[str, Any],
-                       artifact: Optional[bytes] = None) -> dict[str, Any]:
+                       artifact: bytes | None = None) -> dict[str, Any]:
         """Build a chain record. Persists if not in simulate mode."""
         record: dict[str, Any] = {
             "ts": _now_iso(),
@@ -295,9 +295,9 @@ class EvidenceVault:
         bssid: str,
         filepath: str,
         capture_type: str = "hc22000",
-        channel: Optional[int] = None,
-        rssi: Optional[int] = None,
-        artifact: Optional[bytes] = None,
+        channel: int | None = None,
+        rssi: int | None = None,
+        artifact: bytes | None = None,
     ) -> dict[str, Any]:
         """Record a captured handshake or PCAP file.
 
@@ -335,7 +335,7 @@ class EvidenceVault:
         self,
         ssid: str,
         password: str,
-        bssid: Optional[str] = None,
+        bssid: str | None = None,
         method: str = "handshake",
     ) -> dict[str, Any]:
         """Record a recovered credential.
@@ -369,9 +369,9 @@ class EvidenceVault:
         security: str,
         channel: int,
         rssi: int,
-        vendor: Optional[str] = None,
-        latitude: Optional[float] = None,
-        longitude: Optional[float] = None,
+        vendor: str | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
     ) -> dict[str, Any]:
         """Record a discovered WiFi network.
 

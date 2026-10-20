@@ -3,19 +3,17 @@
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import logging
 import os
 import re
 import shutil
 import subprocess
-from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
 
-def find_msfconsole(explicit_path: str) -> Optional[str]:
+def find_msfconsole(explicit_path: str) -> str | None:
     """Resolve ``msfconsole`` binary from explicit path, env, or PATH."""
     if explicit_path and explicit_path.strip():
         if os.path.isfile(explicit_path) and os.access(explicit_path, os.X_OK):
@@ -33,7 +31,7 @@ def build_command_sequence(
     module_ref: str,
     rhosts: str,
     action: str,
-    extra_lines: List[str],
+    extra_lines: list[str],
 ) -> str:
     """Build a single ``-x`` string for msfconsole (semicolon-separated)."""
     parts = [
@@ -61,9 +59,9 @@ def run_msf_batch_commands(
     action: str,
     extra_set_lines: str,
     timeout_s: int,
-) -> Tuple[int, str, str]:
+) -> tuple[int, str, str]:
     """Run msfconsole non-interactively. Returns (returncode, stdout, stderr)."""
-    extras: List[str] = []
+    extras: list[str] = []
     for raw in (extra_set_lines or "").splitlines():
         raw = raw.strip()
         if raw:

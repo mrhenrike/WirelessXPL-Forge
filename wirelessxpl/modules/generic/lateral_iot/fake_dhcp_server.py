@@ -176,7 +176,7 @@ class Exploit(Exploit):
         while time.time() < stop_time:
             try:
                 data, addr = sock.recvfrom(65535)
-            except socket.timeout:
+            except TimeoutError:
                 continue
             except OSError:
                 break

@@ -11,7 +11,6 @@ apenas dispara o processo externo.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -67,7 +66,7 @@ class Exploit(Exploit):
 
     _MODES = frozenset({"pixie", "bruteforce", "pbc"})
 
-    def _find_oneshot(self) -> Optional[str]:
+    def _find_oneshot(self) -> str | None:
         """Localiza ``oneshot.py`` (submódulo ou PATH).
 
         Returns:
@@ -85,7 +84,7 @@ class Exploit(Exploit):
             return which
         return None
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Monta a linha de comando do OneShot.
 
         Returns:
@@ -110,7 +109,7 @@ class Exploit(Exploit):
         if not iface:
             raise ValueError("Defina interface (ex.: wlan0).")
 
-        cmd: List[str] = ["sudo", "python3", script, "-i", iface]
+        cmd: list[str] = ["sudo", "python3", script, "-i", iface]
 
         bssid = str(self.target_bssid).strip()
         if bssid:

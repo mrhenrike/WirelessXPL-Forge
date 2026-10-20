@@ -14,7 +14,6 @@ Requires: kalibrate-rtl (kal) and/or gr-gsm (grgsm_scanner).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import csv
 import json
@@ -31,7 +30,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 # GSM band definitions: (name, downlink_start_MHz, downlink_end_MHz, arfcn_start, arfcn_end)
-_GSM_BANDS: Dict[str, Dict[str, Any]] = {
+_GSM_BANDS: dict[str, dict[str, Any]] = {
     "GSM900": {
         "dl_start": 935.0,
         "dl_end": 960.0,
@@ -75,7 +74,7 @@ _GSM_BANDS: Dict[str, Dict[str, Any]] = {
 }
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -131,13 +130,13 @@ def _freq_to_arfcn(freq_mhz: float, band: str) -> int:
     return -1
 
 
-def _parse_kal_output(raw: str) -> List[Dict[str, Any]]:
+def _parse_kal_output(raw: str) -> list[dict[str, Any]]:
     """Parse kalibrate-rtl (kal) scan output.
 
     Typical kal output line:
         chan: 14 (940.8MHz + 12.517kHz)  power: 338862.72
     """
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     for line in raw.strip().splitlines():
         match = re.match(
             r"\s*chan:\s*(\d+)\s*\(([\d.]+)MHz\s*[+\-]\s*([\d.]+)kHz\)\s*power:\s*([\d.]+)",
@@ -155,14 +154,14 @@ def _parse_kal_output(raw: str) -> List[Dict[str, Any]]:
     return results
 
 
-def _parse_grgsm_output(raw: str) -> List[Dict[str, Any]]:
+def _parse_grgsm_output(raw: str) -> list[dict[str, Any]]:
     """Parse grgsm_scanner output."""
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     for line in raw.strip().splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        record: Dict[str, Any] = {"source": "grgsm_scanner"}
+        record: dict[str, Any] = {"source": "grgsm_scanner"}
         arfcn_match = re.search(r"ARFCN:\s*(\d+)", line)
         freq_match = re.search(r"Freq:\s*([\d.]+)M", line, re.IGNORECASE)
         pwr_match = re.search(r"Pwr:\s*([-\d.]+)", line)
@@ -230,7 +229,7 @@ class Exploit(Exploit):
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _run_cmd(self, cmd: List[str], label: str = "") -> Optional[str]:
+    def _run_cmd(self, cmd: list[str], label: str = "") -> str | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")
@@ -325,7 +324,7 @@ class Exploit(Exploit):
                         f"    ARFCN {arfcn:>4d} -> {freq:.1f} MHz (DL)"
                     )
 
-    def _kal_scan(self) -> List[Dict[str, Any]]:
+    def _kal_scan(self) -> list[dict[str, Any]]:
         if not _which("kal"):
             print_error("kalibrate-rtl (kal) not found in PATH.")
             return []
@@ -339,7 +338,7 @@ class Exploit(Exploit):
             print_error(f"Unknown band: {target}")
             return []
 
-        all_results: List[Dict[str, Any]] = []
+        all_results: list[dict[str, Any]] = []
         for band_name in bands_to_scan:
             print_status(f"Scanning {band_name} with kalibrate-rtl...")
             cmd = [
@@ -383,7 +382,7 @@ class Exploit(Exploit):
 
         return all_results
 
-    def _grgsm_scan(self) -> List[Dict[str, Any]]:
+    def _grgsm_scan(self) -> list[dict[str, Any]]:
         scanner = _which("grgsm_scanner")
         if not scanner:
             print_error("grgsm_scanner not found in PATH.")
@@ -503,7 +502,7 @@ class Exploit(Exploit):
 
     def _export(self) -> None:
         outdir = self._outdir()
-        all_data: List[Dict[str, Any]] = []
+        all_data: list[dict[str, Any]] = []
         for fname in ("grgsm_scan.json", "kal_scan.json"):
             fpath = os.path.join(outdir, fname)
             if os.path.isfile(fpath):

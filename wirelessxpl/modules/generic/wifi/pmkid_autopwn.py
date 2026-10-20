@@ -13,7 +13,6 @@ No hcxdumptool, no airodump-ng, no external binaries.
 OS requirement: Linux + monitor mode interface
 Version: 2.0.0
 """
-from __future__ import annotations
 
 import logging
 import random
@@ -62,7 +61,7 @@ def _mac_to_hex(mac: str) -> str:
     return mac.replace(":", "").upper()
 
 
-def _extract_pmkid(key_data: bytes) -> Optional[str]:
+def _extract_pmkid(key_data: bytes) -> str | None:
     """Extract PMKID from EAPOL-Key M1 Key Data (RSN IE PMKID list)."""
     i = 0
     while i < len(key_data) - 2:
@@ -165,9 +164,9 @@ class Exploit(Exploit):
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # -- State
-        pmkids:  Dict[str, Tuple[str, str, str]] = {}  # pmkid -> (bssid, client, ssid)
-        eapols:  Dict[str, List] = {}   # bssid -> [EAPOL pkts]
-        aps:     Dict[str, Tuple[str, int]] = {}  # bssid -> (ssid, ch)
+        pmkids:  dict[str, tuple[str, str, str]] = {}  # pmkid -> (bssid, client, ssid)
+        eapols:  dict[str, list] = {}   # bssid -> [EAPOL pkts]
+        aps:     dict[str, tuple[str, int]] = {}  # bssid -> (ssid, ch)
         stop_evt = threading.Event()
         lock = threading.Lock()
 
@@ -241,7 +240,7 @@ class Exploit(Exploit):
 
         def assoc_loop():
             from scapy.all import Dot11, Dot11AssoReq, Dot11Auth, Dot11Elt, RadioTap, Raw, sendp
-            probed: Set[str] = set()
+            probed: set[str] = set()
             end = time.time() + int(self.capture_time) - 5
             rounds = 0
             while time.time() < end and rounds < int(self.assoc_rounds) * 20:

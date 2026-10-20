@@ -1,10 +1,7 @@
 """Tests for wirelessxpl.core.shells shim and shell_mixin."""
 
-from __future__ import annotations
 
-import pytest
 
-pytestmark = pytest.mark.skip(reason="xpl_core.shells not yet extracted; see shell-integration plan")
 
 import sys
 from pathlib import Path

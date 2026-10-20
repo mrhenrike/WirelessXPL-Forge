@@ -7,13 +7,12 @@ pairs from PCAP/PCAPNG captures for offline processing.
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import logging
 import struct
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 logger = logging.getLogger("wirelessxpl.pcap.wifi_offline")
 
@@ -58,7 +57,7 @@ class WEPAnalysis:
     iv_count: int
     unique_ivs: int
     weak_ivs: int  # FMS-vulnerable IVs
-    samples: List[WEPIVSample] = field(default_factory=list)
+    samples: list[WEPIVSample] = field(default_factory=list)
 
     @property
     def crackable_fms(self) -> bool:
@@ -103,7 +102,7 @@ class SAECommit:
     group_id: int
     scalar: bytes
     element: bytes
-    anti_clogging_token: Optional[bytes]
+    anti_clogging_token: bytes | None
     timestamp_us: float
     frame_index: int
 
@@ -113,14 +112,14 @@ class DragonbloodAnalysis:
     """Dragonblood timing/cache side-channel analysis result."""
     bssid: str
     ssid: str
-    commits: List[SAECommit]
-    timing_deltas_us: List[float]
+    commits: list[SAECommit]
+    timing_deltas_us: list[float]
     group_downgrade_detected: bool
     transition_mode_detected: bool
     timing_variance_suspicious: bool
 
     @property
-    def vulnerability_indicators(self) -> List[str]:
+    def vulnerability_indicators(self) -> list[str]:
         indicators = []
         if self.group_downgrade_detected:
             indicators.append("CVE-2019-9494: SAE group downgrade")
@@ -141,9 +140,9 @@ class EAPIdentity:
     ssid: str
     eap_type: str  # PEAP, EAP-TTLS, EAP-MD5, MSCHAPv2, LEAP, EAP-FAST
     identity: str
-    challenge: Optional[bytes]
-    response: Optional[bytes]
-    success: Optional[bool]
+    challenge: bytes | None
+    response: bytes | None
+    success: bool | None
     hashcat_line: str  # for offline cracking
 
 
@@ -160,7 +159,7 @@ def _is_weak_iv_fms(iv: bytes) -> bool:
     return b == 255 and a >= 3 and a <= 15
 
 
-def extract_wep_ivs(packets: List[Any]) -> Dict[str, WEPAnalysis]:
+def extract_wep_ivs(packets: list[Any]) -> dict[str, WEPAnalysis]:
     """Extract WEP initialisation vectors from encrypted data frames.
 
     Args:
@@ -169,10 +168,10 @@ def extract_wep_ivs(packets: List[Any]) -> Dict[str, WEPAnalysis]:
     Returns:
         Dict mapping BSSID to WEPAnalysis.
     """
-    results: Dict[str, WEPAnalysis] = {}
+    results: dict[str, WEPAnalysis] = {}
 
     # First pass: get SSIDs from beacons
-    ssid_map: Dict[str, str] = {}
+    ssid_map: dict[str, str] = {}
     for pkt in packets:
         if pkt.haslayer(Dot11Beacon) or pkt.haslayer(Dot11ProbeResp):
             bssid = (pkt[Dot11].addr3 or "").upper()
@@ -237,7 +236,7 @@ def extract_wep_ivs(packets: List[Any]) -> Dict[str, WEPAnalysis]:
 
     # Count unique IVs
     for analysis in results.values():
-        seen: Set[bytes] = set()
+        seen: set[bytes] = set()
         for s in analysis.samples:
             seen.add(s.iv)
         analysis.unique_ivs = len(seen)
@@ -249,7 +248,7 @@ def extract_wep_ivs(packets: List[Any]) -> Dict[str, WEPAnalysis]:
 # PMKID extraction (WPA/WPA2 clientless attack)
 # =====================================================================
 
-def extract_pmkid(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None) -> List[PMKIDEntry]:
+def extract_pmkid(packets: list[Any], ssid_map: dict[str, str] | None = None) -> list[PMKIDEntry]:
     """Extract PMKID from the first EAPOL message (AP → client).
 
     The PMKID is in the RSN Key Data of EAPOL message 1 when the AP
@@ -278,7 +277,7 @@ def extract_pmkid(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None)
                         break
                     elt = elt.payload.getlayer(Dot11Elt)
 
-    results: List[PMKIDEntry] = []
+    results: list[PMKIDEntry] = []
 
     for pkt in packets:
         if not pkt.haslayer(EAPOL):
@@ -345,7 +344,7 @@ def extract_pmkid(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None)
     return results
 
 
-def _find_pmkid_in_key_data(key_data: bytes) -> Optional[bytes]:
+def _find_pmkid_in_key_data(key_data: bytes) -> bytes | None:
     """Search for PMKID RSN KDE tag inside EAPOL key data."""
     offset = 0
     while offset < len(key_data) - 2:
@@ -370,7 +369,7 @@ def _find_pmkid_in_key_data(key_data: bytes) -> Optional[bytes]:
 # TKIP / Michael attack analysis
 # =====================================================================
 
-def analyze_tkip_vulnerabilities(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None) -> List[TKIPMICInfo]:
+def analyze_tkip_vulnerabilities(packets: list[Any], ssid_map: dict[str, str] | None = None) -> list[TKIPMICInfo]:
     """Analyze PCAP for TKIP MIC weaknesses (Beck-Tews / Ohigashi-Morii / ChopChop).
 
     Args:
@@ -383,7 +382,7 @@ def analyze_tkip_vulnerabilities(packets: List[Any], ssid_map: Optional[Dict[str
     if ssid_map is None:
         ssid_map = _build_ssid_map(packets)
 
-    tkip_networks: Dict[str, TKIPMICInfo] = {}
+    tkip_networks: dict[str, TKIPMICInfo] = {}
 
     for pkt in packets:
         if not pkt.haslayer(Dot11):
@@ -475,7 +474,7 @@ def _uses_tkip(pkt: Any) -> bool:
 # WPA3 / SAE / Dragonblood
 # =====================================================================
 
-def extract_sae_commits(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None) -> DragonbloodAnalysis:
+def extract_sae_commits(packets: list[Any], ssid_map: dict[str, str] | None = None) -> DragonbloodAnalysis:
     """Extract SAE (Dragonfly) commit frames for Dragonblood analysis.
 
     Detects CVE-2019-9494 (timing side-channel), CVE-2019-9496 (transition
@@ -491,11 +490,11 @@ def extract_sae_commits(packets: List[Any], ssid_map: Optional[Dict[str, str]] =
     if ssid_map is None:
         ssid_map = _build_ssid_map(packets)
 
-    commits: List[SAECommit] = []
-    timestamps: List[float] = []
+    commits: list[SAECommit] = []
+    timestamps: list[float] = []
     transition_mode = False
     group_downgrade = False
-    seen_groups: Set[int] = set()
+    seen_groups: set[int] = set()
     primary_bssid = ""
     last_ts: float = 0.0
 
@@ -587,7 +586,7 @@ def extract_sae_commits(packets: List[Any], ssid_map: Optional[Dict[str, str]] =
 # WPE — EAP/PEAP/MSCHAPv2 identity + challenge harvest
 # =====================================================================
 
-def extract_eap_identities(packets: List[Any], ssid_map: Optional[Dict[str, str]] = None) -> List[EAPIdentity]:
+def extract_eap_identities(packets: list[Any], ssid_map: dict[str, str] | None = None) -> list[EAPIdentity]:
     """Extract EAP identities and challenge-response pairs for WPE-style offline attacks.
 
     Captures EAP-PEAP, EAP-TTLS, EAP-MD5, LEAP and MSCHAPv2 exchanges
@@ -614,8 +613,8 @@ def extract_eap_identities(packets: List[Any], ssid_map: Optional[Dict[str, str]
         43: "EAP-FAST",
     }
 
-    sessions: Dict[str, Dict[str, Any]] = {}  # keyed by client_mac
-    results: List[EAPIdentity] = []
+    sessions: dict[str, dict[str, Any]] = {}  # keyed by client_mac
+    results: list[EAPIdentity] = []
 
     for pkt in packets:
         if not pkt.haslayer(EAP):
@@ -756,9 +755,9 @@ def extract_eap_identities(packets: List[Any], ssid_map: Optional[Dict[str, str]
 # Shared helpers
 # =====================================================================
 
-def _build_ssid_map(packets: List[Any]) -> Dict[str, str]:
+def _build_ssid_map(packets: list[Any]) -> dict[str, str]:
     """Build BSSID → SSID mapping from beacons/probe-responses."""
-    ssid_map: Dict[str, str] = {}
+    ssid_map: dict[str, str] = {}
     for pkt in packets:
         if not pkt.haslayer(Dot11):
             continue
@@ -783,14 +782,14 @@ class EAPOLFourwaySurveyRow:
     bssid: str
     station_mac: str
     ssid: str
-    message_counts: Dict[str, int]
+    message_counts: dict[str, int]
     distinct_anonce: int
     distinct_snonce: int
-    replay_counters_seen: List[int]
-    hints: List[str]
+    replay_counters_seen: list[int]
+    hints: list[str]
 
 
-def _bssid_sta_from_dot11(dot11: Any) -> Tuple[str, str]:
+def _bssid_sta_from_dot11(dot11: Any) -> tuple[str, str]:
     """Derive BSSID and STA MAC from a Dot11 wrapper around EAPOL."""
 
     to_ds = int(dot11.FCfield) & 0x1
@@ -827,9 +826,9 @@ def _classify_eapol_key_message(key_info: int) -> str:
 
 
 def survey_eapol_fourway_sessions(
-    packets: List[Any],
-    ssid_map: Optional[Dict[str, str]] = None,
-) -> List[EAPOLFourwaySurveyRow]:
+    packets: list[Any],
+    ssid_map: dict[str, str] | None = None,
+) -> list[EAPOLFourwaySurveyRow]:
     """Summarise WPA/WPA2 EAPOL 4-way exchanges: counts, nonces, replay counters, KRACK-style hints.
 
     Does not crack keys; pairs well with ``aircrack-ng``/hashcat after ``pcap_handshake_extractor``.
@@ -849,12 +848,12 @@ def survey_eapol_fourway_sessions(
     if ssid_map is None:
         ssid_map = _build_ssid_map(packets)
 
-    counts: DefaultDict[Tuple[str, str], Dict[str, int]] = defaultdict(
+    counts: defaultdict[tuple[str, str], dict[str, int]] = defaultdict(
         lambda: {"msg1": 0, "msg2": 0, "msg3": 0, "msg4": 0, "unknown": 0}
     )
-    anonces: DefaultDict[Tuple[str, str], List[bytes]] = defaultdict(list)
-    snonces: DefaultDict[Tuple[str, str], List[bytes]] = defaultdict(list)
-    replays: DefaultDict[Tuple[str, str], List[int]] = defaultdict(list)
+    anonces: defaultdict[tuple[str, str], list[bytes]] = defaultdict(list)
+    snonces: defaultdict[tuple[str, str], list[bytes]] = defaultdict(list)
+    replays: defaultdict[tuple[str, str], list[int]] = defaultdict(list)
 
     for pkt in packets:
         if not pkt.haslayer(EAPOL) or not pkt.haslayer(Dot11):
@@ -892,11 +891,11 @@ def survey_eapol_fourway_sessions(
             elif label in ("msg2", "msg4"):
                 snonces[pair].append(nonce)
 
-    rows: List[EAPOLFourwaySurveyRow] = []
+    rows: list[EAPOLFourwaySurveyRow] = []
     for (bssid, sta), msg_counts in counts.items():
         if sum(msg_counts[k] for k in ("msg1", "msg2", "msg3", "msg4", "unknown")) == 0:
             continue
-        hints: List[str] = []
+        hints: list[str] = []
         au = len({x.hex() for x in anonces[(bssid, sta)]})
         su = len({x.hex() for x in snonces[(bssid, sta)]})
         anonce_list = anonces[(bssid, sta)]

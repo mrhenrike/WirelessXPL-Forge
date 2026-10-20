@@ -15,7 +15,6 @@ Requires: srsRAN 4G (srsENB, srsUE), tshark/Scapy, UERANSIM (optional).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -33,7 +32,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -76,7 +75,7 @@ _DEFAULT_ENB_CONF = textwrap.dedent("""\
 """)
 
 
-def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
+def _parse_nas_identities_tshark(pcap_path: str) -> list[dict[str, str]]:
     """Extract IMSI/IMEI from NAS Identity Response messages using tshark.
 
     Args:
@@ -89,7 +88,7 @@ def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
     if not tshark:
         return []
 
-    results: List[Dict[str, str]] = []
+    results: list[dict[str, str]] = []
 
     try:
         cmd = [
@@ -168,9 +167,9 @@ def _parse_nas_identities_tshark(pcap_path: str) -> List[Dict[str, str]]:
     return results
 
 
-def _parse_cell_search_output(raw: str) -> List[Dict[str, Any]]:
+def _parse_cell_search_output(raw: str) -> list[dict[str, Any]]:
     """Parse srsUE cell_search or LTE scanner output for cell info."""
-    cells: List[Dict[str, Any]] = []
+    cells: list[dict[str, Any]] = []
     for line in raw.strip().splitlines():
         line = line.strip()
         pci_match = re.search(r"PCI[:\s]*(\d+)", line, re.IGNORECASE)
@@ -179,7 +178,7 @@ def _parse_cell_search_output(raw: str) -> List[Dict[str, Any]]:
         rsrq_match = re.search(r"RSRQ[:\s]*([-\d.]+)", line, re.IGNORECASE)
 
         if pci_match:
-            cell: Dict[str, Any] = {
+            cell: dict[str, Any] = {
                 "pci": int(pci_match.group(1)),
             }
             if earfcn_match:
@@ -193,7 +192,7 @@ def _parse_cell_search_output(raw: str) -> List[Dict[str, Any]]:
     return cells
 
 
-def _detect_anomalies(cells: List[Dict[str, Any]]) -> List[str]:
+def _detect_anomalies(cells: list[dict[str, Any]]) -> list[str]:
     """Analyze cell list for indicators of a fake base station.
 
     Heuristics:
@@ -201,8 +200,8 @@ def _detect_anomalies(cells: List[Dict[str, Any]]) -> List[str]:
       - Abnormally strong signal compared to neighbors
       - Unusually low EARFCN (out-of-band for region)
     """
-    anomalies: List[str] = []
-    pci_map: Dict[int, List[Dict[str, Any]]] = {}
+    anomalies: list[str] = []
+    pci_map: dict[int, list[dict[str, Any]]] = {}
     for c in cells:
         pci = c.get("pci", -1)
         if pci >= 0:
@@ -292,7 +291,7 @@ class Exploit(Exploit):
         found = _which(name)
         return found if found else name
 
-    def _run_cmd(self, cmd: List[str], label: str = "", timeout: int = 120) -> Optional[str]:
+    def _run_cmd(self, cmd: list[str], label: str = "", timeout: int = 120) -> str | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")
@@ -313,7 +312,7 @@ class Exploit(Exploit):
             print_error(f"Binary not found: {cmd[0]}")
             return None
 
-    def _start_background(self, cmd: List[str], label: str) -> Optional[subprocess.Popen]:
+    def _start_background(self, cmd: list[str], label: str) -> subprocess.Popen | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")
@@ -329,7 +328,7 @@ class Exploit(Exploit):
             print_error(f"Binary not found: {cmd[0]}")
             return None
 
-    def _stop_background(self, proc: Optional[subprocess.Popen], label: str) -> None:
+    def _stop_background(self, proc: subprocess.Popen | None, label: str) -> None:
         if proc is None:
             return
         print_status(f"Stopping {label}...")
@@ -504,7 +503,7 @@ class Exploit(Exploit):
                 json.dump(id_entries, f, indent=2, ensure_ascii=False)
             print_status(f"Saved to {outfile}")
 
-    def _cell_search(self) -> List[Dict[str, Any]]:
+    def _cell_search(self) -> list[dict[str, Any]]:
         srsue = self._resolve_bin("srsue", str(self.srsran_path).strip())
 
         earfcn = int(self.earfcn)

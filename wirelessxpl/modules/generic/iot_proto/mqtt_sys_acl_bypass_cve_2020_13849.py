@@ -188,7 +188,7 @@ class Exploit(Exploit):
                         buffer = b""
                     elif len(buffer) > 8192:
                         buffer = b""
-                except socket.timeout:
+                except TimeoutError:
                     continue
 
             if not messages:
@@ -214,7 +214,7 @@ class Exploit(Exploit):
 
             sock.sendall(struct.pack("!BB", 0xE0, 0x00))
 
-        except (socket.timeout, OSError, ConnectionError) as exc:
+        except (TimeoutError, OSError, ConnectionError) as exc:
             print_error(f"Erro: {exc}")
         finally:
             if sock:

@@ -6,11 +6,10 @@ busybox nc, mkfifo, socat (limited shell targets), MIPS/ARM payloads.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import threading
 import time
-from typing import Any, Optional
+from typing import Any
 
 from xpl_core.shells import (
     ReverseListener,
@@ -62,7 +61,7 @@ def spawn_wireless_shell(
     lhost: str,
     lport: int = 4444,
     shell_type: str = "busybox_nc",
-    execute_fn: Optional[Any] = None,
+    execute_fn: Any | None = None,
     timeout: int = 60,
 ) -> bool:
     """Spawn a reverse shell from a wireless/IoT exploit."""

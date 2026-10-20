@@ -8,7 +8,6 @@ Orquestra ferramentas externas via subprocess e chamada HTTP; grava artefatos em
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -95,7 +94,7 @@ class Exploit(Exploit):
         out.mkdir(parents=True, exist_ok=True)
         return out
 
-    def _parse_profile_json(self) -> Dict[str, Any]:
+    def _parse_profile_json(self) -> dict[str, Any]:
         """Interpreta ``profile_data`` como objeto JSON."""
         raw = str(self.profile_data).strip() or "{}"
         try:
@@ -157,7 +156,7 @@ class Exploit(Exploit):
         dest.write_bytes(body)
         print_success(f"Resposta social salva em {dest}")
 
-    def _find_cewler_argv(self, outfile: Path) -> Optional[List[str]]:
+    def _find_cewler_argv(self, outfile: Path) -> list[str] | None:
         """Monta argv para cewler, ``python -m cewler`` ou ``cewl`` (fallback)."""
         url = str(self.target_url).strip()
         if not url:
@@ -166,7 +165,7 @@ class Exploit(Exploit):
 
         cewler_exe = shutil.which("cewler")
         if cewler_exe:
-            cmd: List[str] = [cewler_exe, url, "-o", str(outfile)]
+            cmd: list[str] = [cewler_exe, url, "-o", str(outfile)]
             cmd.extend(extra)
             return cmd
 
@@ -203,7 +202,7 @@ class Exploit(Exploit):
         except subprocess.TimeoutExpired:
             print_error("cewler excedeu timeout (600s).")
 
-    def _merge_profile_file(self, out: Path, data: Optional[Dict[str, Any]] = None) -> Path:
+    def _merge_profile_file(self, out: Path, data: dict[str, Any] | None = None) -> Path:
         """Grava JSON unificado (target_name + profile_data) para cupp / revisão manual."""
         profile = dict(data) if data is not None else self._parse_profile_json()
         name = str(self.target_name).strip()
@@ -214,7 +213,7 @@ class Exploit(Exploit):
         print_status(f"Perfil unificado: {dest}")
         return dest
 
-    def _find_cupp(self) -> Optional[str]:
+    def _find_cupp(self) -> str | None:
         """Localiza executável ou script cupp."""
         explicit = str(self.cupp_path).strip()
         if explicit and os.path.isfile(explicit):
@@ -225,7 +224,7 @@ class Exploit(Exploit):
                 return w
         return None
 
-    def _build_cupp_stdin(self, profile: Dict[str, Any], target_name: str) -> str:
+    def _build_cupp_stdin(self, profile: dict[str, Any], target_name: str) -> str:
         """Monta respostas para ``cupp -i`` (Mebus/cupp) a partir do JSON de perfil.
 
         Ordem alinhada a ``interactive()`` em cupp.py: nome, sobrenome, nick,
@@ -249,7 +248,7 @@ class Exploit(Exploit):
                 return raw
             return ""
 
-        lines: List[str] = [
+        lines: list[str] = [
             name,
             _s("surname"),
             _s("nick", _s("nickname")),
@@ -303,7 +302,7 @@ class Exploit(Exploit):
             return
 
         if cupp.endswith(".py"):
-            cmd: List[str] = [sys.executable, cupp, "-i"]
+            cmd: list[str] = [sys.executable, cupp, "-i"]
             cwd = str(Path(cupp).resolve().parent)
         else:
             cmd = [cupp, "-i"]

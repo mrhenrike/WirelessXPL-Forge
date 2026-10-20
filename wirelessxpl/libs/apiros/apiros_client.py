@@ -252,7 +252,7 @@ class ApiRosClient:
         try:
             self.talk('/system/identity/print')
 
-        except (socket.timeout, IndexError, BrokenPipeError):
+        except (TimeoutError, IndexError, BrokenPipeError):
             self.close()
             return False
 

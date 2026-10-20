@@ -5,11 +5,9 @@
 Handles reading and writing .sub signal files for sub-GHz replay.
 Compatible with Flipper Zero SubGhz application and Bruce ESP32 firmware.
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
 
 
 @dataclass
@@ -27,7 +25,7 @@ class SubGHzSignal:
     frequency: int
     preset: str
     protocol: str
-    raw_data: List[List[int]] = field(default_factory=list)
+    raw_data: list[list[int]] = field(default_factory=list)
     extra_fields: dict = field(default_factory=dict)
 
     @property
@@ -56,10 +54,10 @@ def parse(filename: str | Path) -> SubGHzSignal:
     text = path.read_text(encoding="utf-8", errors="replace")
     lines = text.splitlines()
 
-    frequency: Optional[int] = None
-    preset: Optional[str] = None
-    protocol: Optional[str] = None
-    raw_data: List[List[int]] = []
+    frequency: int | None = None
+    preset: str | None = None
+    protocol: str | None = None
+    raw_data: list[list[int]] = []
     extra: dict = {}
 
     for line in lines:

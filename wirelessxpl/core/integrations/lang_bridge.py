@@ -7,18 +7,17 @@ runner module; this file provides the shared registry and dispatch.
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
 import subprocess
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
-_RUNNERS: Dict[str, "LanguageRunner"] = {}
+_RUNNERS: dict[str, "LanguageRunner"] = {}
 
 
 @dataclass
@@ -26,13 +25,13 @@ class CompilerInfo:
     language: str
     compiler_path: str
     version: str
-    supports_flags: List[str] = field(default_factory=list)
+    supports_flags: list[str] = field(default_factory=list)
 
 
 @dataclass
 class CompileResult:
     success: bool
-    binary_path: Optional[str] = None
+    binary_path: str | None = None
     stdout: str = ""
     stderr: str = ""
     returncode: int = -1
@@ -54,7 +53,7 @@ class LanguageRunner:
     extensions: tuple[str, ...] = ()
     compiler_names: tuple[str, ...] = ()
 
-    def detect_compiler(self) -> Optional[CompilerInfo]:
+    def detect_compiler(self) -> CompilerInfo | None:
         for name in self.compiler_names:
             path = shutil.which(name)
             if path:
@@ -83,16 +82,16 @@ class LanguageRunner:
         self,
         source: Path,
         output: Path,
-        flags: Optional[Sequence[str]] = None,
+        flags: Sequence[str] | None = None,
     ) -> CompileResult:
         raise NotImplementedError
 
     def run(
         self,
         binary: Path,
-        args: Optional[Sequence[str]] = None,
+        args: Sequence[str] | None = None,
         timeout: int = 120,
-        env: Optional[Dict[str, str]] = None,
+        env: dict[str, str] | None = None,
     ) -> RunResult:
         raise NotImplementedError
 
@@ -103,11 +102,11 @@ def register_runner(runner: LanguageRunner) -> None:
         _RUNNERS[ext] = runner
 
 
-def get_runner(language_or_ext: str) -> Optional[LanguageRunner]:
+def get_runner(language_or_ext: str) -> LanguageRunner | None:
     return _RUNNERS.get(language_or_ext)
 
 
-def list_available_compilers() -> List[CompilerInfo]:
+def list_available_compilers() -> list[CompilerInfo]:
     seen = set()
     result = []
     for runner in _RUNNERS.values():
@@ -122,11 +121,11 @@ def list_available_compilers() -> List[CompilerInfo]:
 
 def compile_and_run(
     source: Path,
-    args: Optional[Sequence[str]] = None,
-    output_dir: Optional[Path] = None,
+    args: Sequence[str] | None = None,
+    output_dir: Path | None = None,
     timeout: int = 120,
-    extra_flags: Optional[Sequence[str]] = None,
-    env: Optional[Dict[str, str]] = None,
+    extra_flags: Sequence[str] | None = None,
+    env: dict[str, str] | None = None,
 ) -> RunResult:
     ext = source.suffix.lstrip(".")
     runner = get_runner(ext)
