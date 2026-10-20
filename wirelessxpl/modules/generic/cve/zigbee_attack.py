@@ -115,7 +115,7 @@ def mmo_hash(data: bytes) -> bytes:
         block = padded[i:i + 16]
         cipher = AES.new(result, AES.MODE_ECB)
         encrypted = cipher.encrypt(block)
-        result = bytes(a ^ b for a, b in zip(encrypted, block))
+        result = bytes(a ^ b for a, b in zip(encrypted, block, strict=False))
 
     return result
 

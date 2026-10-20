@@ -48,7 +48,7 @@ def _ccm_decrypt(key, nonce, ciphertext, auth_data=b"", mic_len=4):
         auth_block = la + auth_data
         auth_block += b"\x00" * (16 - (len(auth_block) % 16))
         for i in range(0, len(auth_block), 16):
-            block = bytes(a ^ b for a, b in zip(x, auth_block[i:i+16]))
+            block = bytes(a ^ b for a, b in zip(x, auth_block[i:i+16], strict=False))
             x = _aes_ecb_block(key, block)
     ct_body = ciphertext[:-mic_len]
     plaintext = bytearray()
@@ -57,7 +57,7 @@ def _ccm_decrypt(key, nonce, ciphertext, auth_data=b"", mic_len=4):
         a_i = struct.pack("B", 0x01) + nonce + struct.pack(">H", counter)
         s_i = _aes_ecb_block(key, a_i)
         chunk = ct_body[i:i+16]
-        plaintext.extend(bytes(c ^ s for c, s in zip(chunk, s_i[:len(chunk)])))
+        plaintext.extend(bytes(c ^ s for c, s in zip(chunk, s_i[:len(chunk)], strict=False)))
         counter += 1
     return bytes(plaintext)
 
@@ -149,7 +149,7 @@ class Exploit(Exploit):
             a_i = struct.pack("B", 0x01) + nonce + struct.pack(">H", counter)
             s_i = _aes_ecb_block(tc_key, a_i)
             chunk = transport_payload[i:i+16]
-            ciphertext.extend(bytes(p ^ s for p, s in zip(chunk, s_i[:len(chunk)])))
+            ciphertext.extend(bytes(p ^ s for p, s in zip(chunk, s_i[:len(chunk)], strict=False)))
             counter += 1
         mic = os.urandom(4)
         return {

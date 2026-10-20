@@ -1120,7 +1120,7 @@ def _luhn_checksum(pin7: str) -> str:
     """
     digits  = [int(d) for d in pin7]
     weights = [3, 1, 3, 1, 3, 1, 3]
-    total = sum(d * w for d, w in zip(digits, weights))
+    total = sum(d * w for d, w in zip(digits, weights, strict=False))
     return str((10 - (total % 10)) % 10)
 
 

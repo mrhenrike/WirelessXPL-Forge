@@ -307,7 +307,7 @@ class WifiAirC2Beacon(Exploit):
         except ImportError:
             # XOR simples como fallback
             key_loop = (key * ((len(plaintext) // 32) + 1))[:len(plaintext)]
-            return bytes(a ^ b for a, b in zip(plaintext, key_loop))
+            return bytes(a ^ b for a, b in zip(plaintext, key_loop, strict=False))
 
     def _c2_decrypt(self, key: bytes, seq: int, ciphertext: bytes) -> bytes:
         return self._c2_encrypt(key, seq, ciphertext)  # CTR é simétrico
