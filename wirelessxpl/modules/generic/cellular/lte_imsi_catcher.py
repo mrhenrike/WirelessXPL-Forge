@@ -628,6 +628,13 @@ class Exploit(Exploit):
             )
             return
         require_authorised_lab()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E LTE IMSI catcher: passive SIB analysis, active rogue
+        eNodeB via srsLTE, pcap parsing for NAS attach, cell search
+        and fake BTS detection."""
+        op = str(self.mode).strip().lower()
 
         if op == "passive_analyze":
             self._passive_analyze()
@@ -649,6 +656,6 @@ class Exploit(Exploit):
 
         else:
             print_error(
-                f"Unknown mode: {op}. Valid: info, passive_analyze, active_enb, "
+                f"Unknown mode: {op}. Valid: passive_analyze, active_enb, "
                 "parse_pcap, cell_search, detect_fake_bts, ueransim_sim"
             )

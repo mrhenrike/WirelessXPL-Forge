@@ -207,3 +207,44 @@ class Exploit(Exploit):
         print_info(f"  gatttool -b {self.target} -i {self.interface} --primary")
         print_info(f"  gatttool -b {self.target} -i {self.interface} --characteristics")
         print_info(f"  gattacker --target {self.target} --iface {self.interface}")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BLE GATT: connect via L2CAP ATT channel and enumerate services/chars."""
+        import socket as _sock
+
+        target = str(self.target).strip()
+        if not target or ":" not in target:
+            return
+
+        print_status(f"BLE GATT E2E enumeration against {target}")
+        try:
+            att_sock = _sock.socket(31, _sock.SOCK_SEQPACKET, 0)
+            att_sock.settimeout(5.0)
+            att_sock.connect((target, 4))
+        except OSError as exc:
+            print_info(f"ATT L2CAP connection failed: {exc}")
+            return
+
+        try:
+            mtu_req = _build_mtu_request(int(self.mtu))
+            att_sock.send(mtu_req)
+            print_status("MTU Exchange Request sent via ATT channel")
+
+            read_by_group = struct.pack("<BHH", 0x10, 0x0001, 0xFFFF) + struct.pack("<H", 0x2800)
+            att_sock.send(read_by_group)
+            print_status("Read By Group Type (primary services) sent")
+
+            try:
+                resp = att_sock.recv(512)
+                if resp and resp[0] == 0x11:
+                    print_success(f"Got {len(resp)} bytes GATT response: services discovered")
+                elif resp and resp[0] == 0x01:
+                    print_info("ATT Error Response (expected for some devices)")
+            except (OSError, TimeoutError):
+                print_info("No ATT response (timeout)")
+        finally:
+            att_sock.close()
+
+        print_success("BLE GATT E2E enumeration completed.")

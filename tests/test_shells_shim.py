@@ -1,10 +1,11 @@
 """Tests for wirelessxpl.core.shells shim and shell_mixin."""
 
-
-
-
 import sys
 from pathlib import Path
+
+import pytest
+
+pytest.importorskip("xpl_core", reason="xpl_core not installed")
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))

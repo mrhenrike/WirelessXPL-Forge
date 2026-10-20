@@ -629,6 +629,13 @@ class Exploit(Exploit):
             )
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E UERANSIM 5G: emulate gNB/UE, test NAS registration,
+        PDU session, SUCI concealment analysis, NAS security audit,
+        and RRC configuration analysis."""
+        mode = str(self.mode).strip().lower()
         dispatch = {
             "start_gnb": self._start_gnb,
             "start_ue": self._start_ue,

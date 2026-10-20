@@ -256,6 +256,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed, launching exploit...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: scan, version check, or overflow probe against EZSP hosts."""
         mode = str(self.mode).strip().lower()
         simulate = bool(self.simulate)
         target = str(self.target).strip()
@@ -321,4 +326,4 @@ class Exploit(Exploit):
             if result.get("error"):
                 print_info(f"Error detail: {result['error']}")
             if not result["sent"]:
-                print_error("Probe not sent -- check connectivity")
+                print_error("Probe not sent: check connectivity")
