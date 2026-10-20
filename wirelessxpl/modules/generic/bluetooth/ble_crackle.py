@@ -92,7 +92,7 @@ def _aes_ecb_encrypt(key: bytes, data: bytes) -> bytes:
 
 def _xor_16(a: bytes, b: bytes) -> bytes:
     """XOR two 16-byte blocks."""
-    return bytes(x ^ y for x, y in zip(a, b))
+    return bytes(x ^ y for x, y in zip(a, b, strict=False))
 
 
 def calc_confirm(preq: bytes, pres: bytes, iat: int, rat: int,
