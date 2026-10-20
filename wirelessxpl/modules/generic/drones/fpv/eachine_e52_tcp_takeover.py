@@ -10,7 +10,6 @@ and access the camera stream.
 Based on Hermann-SW/wireless-control-Eachine-E52-drone research.
 Tries ports: 8888 (primary), 7060, 8060.
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -43,7 +42,7 @@ _E52_COMMANDS = {
 }
 
 
-def _try_connect(host: str, port: int, timeout: int = 5) -> Optional[socket.socket]:
+def _try_connect(host: str, port: int, timeout: int = 5) -> socket.socket | None:
     """Attempt TCP connection and return socket if successful."""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -147,7 +146,7 @@ class Exploit(Exploit):
             try:
                 resp = sock.recv(64)
                 print_info(f"Response: {resp.hex()}")
-            except socket.timeout:
+            except TimeoutError:
                 print_info("No response (normal for some commands)")
         except Exception as exc:
             print_error(f"Send error: {exc}")

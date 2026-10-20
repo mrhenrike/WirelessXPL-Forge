@@ -204,7 +204,7 @@ class Exploit(Exploit):
             while time.monotonic() < deadline:
                 try:
                     pkt = sock.recv(260)
-                except bt_socket.timeout:
+                except TimeoutError:
                     continue
                 if len(pkt) < 14:
                     continue

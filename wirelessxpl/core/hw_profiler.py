@@ -8,7 +8,6 @@ Detects available compute resources on the host and provides a unified
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -16,7 +15,6 @@ import platform
 import shutil
 import subprocess
 from dataclasses import dataclass, field
-from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +49,7 @@ class HWProfile:
     cpu_freq_mhz: int = 0
     ram_total_mb: int = 0
     ram_available_mb: int = 0
-    gpus: List[GPUDevice] = field(default_factory=list)
+    gpus: list[GPUDevice] = field(default_factory=list)
     best_backend: str = "cpu"
     compute_mode: str = "auto"
 

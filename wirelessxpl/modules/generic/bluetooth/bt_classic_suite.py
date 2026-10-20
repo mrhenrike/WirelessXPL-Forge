@@ -14,7 +14,6 @@ Requires: BlueZ stack (hcitool, sdptool, l2ping), Python pybluez/bleak.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -28,7 +27,7 @@ from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -67,7 +66,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print commands without executing")
     i_know_scope = OptBool(False, "Confirm authorized lab environment")
 
-    def _run(self, cmd: List[str], label: str = "") -> Optional[str]:
+    def _run(self, cmd: list[str], label: str = "") -> str | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")

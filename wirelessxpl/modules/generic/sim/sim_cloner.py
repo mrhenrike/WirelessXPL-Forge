@@ -11,7 +11,6 @@ Requires: pySim (pySim-shell.py / pySim-prog.py), pyscard, PC/SC reader.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import csv
 import json
@@ -55,7 +54,7 @@ _EF_MAP = {
 _CSV_HEADER = ("ICCID", "IMSI", "KI", "OPC", "ADM")
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -121,7 +120,7 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Print commands without executing")
     i_know_scope = OptBool(False, "Confirm authorized lab and SIM ownership")
 
-    def _run_cmd(self, cmd: List[str], label: str = "") -> Optional[str]:
+    def _run_cmd(self, cmd: list[str], label: str = "") -> str | None:
         """Execute a subprocess command and return stdout."""
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
@@ -202,7 +201,7 @@ class Exploit(Exploit):
             sl.connect()
             scc = SimCardCommands(sl)
 
-            sim_data: Dict[str, Any] = {}
+            sim_data: dict[str, Any] = {}
 
             for ef_name, ef_path in _EF_MAP.items():
                 try:
@@ -234,7 +233,7 @@ class Exploit(Exploit):
             print_error(f"{_PYSIM_SHELL} not found in PATH")
             return
 
-        sim_data: Dict[str, Any] = {}
+        sim_data: dict[str, Any] = {}
 
         for ef_name, ef_path in _EF_MAP.items():
             cmd = [

@@ -8,7 +8,6 @@ Designed for lab monitoring and rapid triage.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import csv
 import logging
@@ -40,8 +39,8 @@ class Exploit(Exploit):
     dry_run = OptBool(False, "Validate inputs only")
 
     @staticmethod
-    def _load_bssids(csv_path: Path) -> Dict[str, int]:
-        data: Dict[str, int] = {}
+    def _load_bssids(csv_path: Path) -> dict[str, int]:
+        data: dict[str, int] = {}
         with csv_path.open("r", encoding="utf-8", errors="ignore") as fh:
             reader = csv.reader(fh)
             for row in reader:
@@ -108,8 +107,8 @@ class Exploit(Exploit):
         base_bssids = self._load_bssids(base)
         curr_bssids = self._load_bssids(curr)
 
-        base_set: Set[str] = set(base_bssids.keys())
-        curr_set: Set[str] = set(curr_bssids.keys())
+        base_set: set[str] = set(base_bssids.keys())
+        curr_set: set[str] = set(curr_bssids.keys())
         new_bssids = sorted(curr_set - base_set)
 
         print_status("Wireless IDS baseline check:")

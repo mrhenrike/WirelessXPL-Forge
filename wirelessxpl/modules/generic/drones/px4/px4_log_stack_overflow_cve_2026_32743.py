@@ -25,7 +25,6 @@ References:
   - https://feedly.com/cve/vendors/dronecode
   - https://github.com/PX4/PX4-Autopilot/commit/616b25a280e229c24d5cf12a03dbf248df89c474
 """
-from __future__ import annotations
 
 import logging
 import socket
@@ -238,7 +237,7 @@ class Exploit(Exploit):
                     data, _ = sock.recvfrom(1024)
                     if data and data[0] == 0xFE and len(data) > 5 and data[5] == 0:  # HEARTBEAT
                         received_heartbeat = True
-                except socket.timeout:
+                except TimeoutError:
                     break
 
             sock.close()

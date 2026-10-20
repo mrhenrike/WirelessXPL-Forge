@@ -1,13 +1,13 @@
 # Author: André Henrique (@mrhenrique) | União Geek — https://github.com/Uniao-Geek
 """Priorização de PINs WPS com algoritmos determinísticos e camada ML opcional."""
 
-from __future__ import annotations
 
 import hashlib
 import logging
 import re
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -54,7 +54,7 @@ def wps_pin_checksum(pin7: str) -> str:
     return format_wps_pin(pin7)
 
 
-def _mac_ints(bssid: str) -> Tuple[int, int, int, int, int, int]:
+def _mac_ints(bssid: str) -> tuple[int, int, int, int, int, int]:
     m = re.sub(r"[^0-9a-fA-F]", "", bssid)
     if len(m) != 12:
         raise ValueError("BSSID deve ter 6 octetos hex")
@@ -62,7 +62,7 @@ def _mac_ints(bssid: str) -> Tuple[int, int, int, int, int, int]:
     return vals  # type: ignore[return-value]
 
 
-def algo_compute_pin(bssid: str) -> Optional[str]:
+def algo_compute_pin(bssid: str) -> str | None:
     """Heurística estilo ComputePIN (derivada de octetos NIC, chipset comum)."""
     try:
         b = _mac_ints(bssid)
@@ -77,7 +77,7 @@ def algo_compute_pin(bssid: str) -> Optional[str]:
         return None
 
 
-def algo_easybox(bssid: str) -> Optional[str]:
+def algo_easybox(bssid: str) -> str | None:
     """Padrão easybox / Arcor: combinação dos últimos octetos."""
     try:
         b = _mac_ints(bssid)
@@ -89,7 +89,7 @@ def algo_easybox(bssid: str) -> Optional[str]:
     return format_wps_pin(pin7)
 
 
-def algo_arcadyan(bssid: str) -> Optional[str]:
+def algo_arcadyan(bssid: str) -> str | None:
     """Heurística Arcadyan/ISP CPE (rotação XOR sobre OUI+NIC)."""
     try:
         b = _mac_ints(bssid)
@@ -129,16 +129,16 @@ class WPSPINPredictor:
     """
 
     def __init__(self) -> None:
-        self._generators: Dict[str, Callable[[str], Optional[str]]] = {
+        self._generators: dict[str, Callable[[str], str | None]] = {
             "compute_pin": algo_compute_pin,
             "easybox": algo_easybox,
             "arcadyan": algo_arcadyan,
         }
         self._clf: Any = None
-        self._train_X: List[List[float]] = []
-        self._train_y: List[int] = []
+        self._train_X: list[list[float]] = []
+        self._train_y: list[int] = []
 
-    def _bssid_features(self, bssid: str) -> List[float]:
+    def _bssid_features(self, bssid: str) -> list[float]:
         try:
             b = _mac_ints(bssid)
         except ValueError:
@@ -149,7 +149,7 @@ class WPSPINPredictor:
         feats.extend([oui / 0xFFFFFF, nic / 0xFFFFFF])
         return feats
 
-    def _vendor_bonus(self, vendor: Optional[str], source: str) -> float:
+    def _vendor_bonus(self, vendor: str | None, source: str) -> float:
         if not vendor:
             return 0.0
         v = vendor.lower()
@@ -163,17 +163,17 @@ class WPSPINPredictor:
                 return 0.08
         return 0.0
 
-    def _pin_vector(self, pin: str) -> List[float]:
+    def _pin_vector(self, pin: str) -> list[float]:
         digits = [int(c) for c in pin if c.isdigit()]
         if len(digits) != 8:
             return [0.0] * 8
         return [d / 9.0 for d in digits]
 
-    def _build_X(self, bssid: str, pin: str, vendor: Optional[str]) -> List[float]:
+    def _build_X(self, bssid: str, pin: str, vendor: str | None) -> list[float]:
         vhash = float(int(hashlib.md5((vendor or "").encode()).hexdigest()[:4], 16) / 65535.0)
         return [*self._bssid_features(bssid), *self._pin_vector(pin), vhash]
 
-    def fine_tune(self, labeled_samples: Sequence[Tuple[str, str, int]]) -> None:
+    def fine_tune(self, labeled_samples: Sequence[tuple[str, str, int]]) -> None:
         """Atualiza o classificador com tentativas (PIN funcionou ou não).
 
         Args:
@@ -208,9 +208,9 @@ class WPSPINPredictor:
     def predict(
         self,
         bssid: str,
-        vendor: Optional[str] = None,
-        model: Optional[str] = None,
-    ) -> List[PINPrediction]:
+        vendor: str | None = None,
+        model: str | None = None,
+    ) -> list[PINPrediction]:
         """Lista ordenada de PINs a tentar (maior confiança primeiro).
 
         Args:
@@ -222,7 +222,7 @@ class WPSPINPredictor:
             Lista de ``PINPrediction`` sem duplicatas de PIN.
         """
         _ = model
-        candidates: Dict[str, PINPrediction] = {}
+        candidates: dict[str, PINPrediction] = {}
         for name, gen in self._generators.items():
             pin = gen(bssid)
             if pin and pin not in candidates:
@@ -246,7 +246,7 @@ class WPSPINPredictor:
 
         if self._clf is not None and _sklearn_available():
             try:
-                refined: List[PINPrediction] = []
+                refined: list[PINPrediction] = []
                 classes = list(self._clf.classes_)
                 idx_ok = classes.index(1) if 1 in classes else None
                 for cand in ordered:

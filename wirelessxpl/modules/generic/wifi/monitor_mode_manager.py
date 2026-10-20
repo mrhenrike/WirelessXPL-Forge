@@ -23,7 +23,6 @@ OS requirement: Linux only.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import re
@@ -49,16 +48,16 @@ _CONFLICTING_PROCESSES = (
 )
 
 # Channels grouped by regulatory band (2.4 GHz and 5 GHz common set).
-CHANNELS_2GHZ: List[int] = list(range(1, 14))
-CHANNELS_5GHZ: List[int] = [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 149, 153, 157, 161]
-CHANNELS_ALL: List[int] = CHANNELS_2GHZ + CHANNELS_5GHZ
+CHANNELS_2GHZ: list[int] = list(range(1, 14))
+CHANNELS_5GHZ: list[int] = [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 149, 153, 157, 161]
+CHANNELS_ALL: list[int] = CHANNELS_2GHZ + CHANNELS_5GHZ
 
 
 def _run(
-    cmd: List[str],
+    cmd: list[str],
     capture: bool = False,
     timeout: int = 10,
-) -> Optional[str]:
+) -> str | None:
     """Execute a shell command safely without shell=True.
 
     Args:
@@ -116,8 +115,8 @@ class MonitorModeManager:
         """
         self._interface = interface
         self._kill_processes = kill_processes
-        self._monitor_iface: Optional[str] = None
-        self._hop_thread: Optional[threading.Thread] = None
+        self._monitor_iface: str | None = None
+        self._hop_thread: threading.Thread | None = None
         self._hop_stop = threading.Event()
         self._enabled: bool = False
 
@@ -268,7 +267,7 @@ class MonitorModeManager:
 
     def start_hop(
         self,
-        channels: List[int],
+        channels: list[int],
         interval_s: float = 0.5,
     ) -> None:
         """Start cycling through channels in a daemon thread.
@@ -381,7 +380,7 @@ class MonitorModeManager:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def get_interfaces() -> List[Dict[str, str]]:
+    def get_interfaces() -> list[dict[str, str]]:
         """List available wireless interfaces and their current mode.
 
         Parses the output of 'iw dev' to discover phy/interface tuples
@@ -399,9 +398,9 @@ class MonitorModeManager:
         if not raw:
             return []
 
-        results: List[Dict[str, str]] = []
+        results: list[dict[str, str]] = []
         current_phy = ""
-        current: Dict[str, str] = {}
+        current: dict[str, str] = {}
 
         for line in raw.splitlines():
             stripped = line.strip()

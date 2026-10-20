@@ -191,7 +191,7 @@ class Exploit(Exploit):
         while time.time() < deadline:
             try:
                 ptype, body = self._recv_packet(sock)
-            except socket.timeout:
+            except TimeoutError:
                 continue
             except Exception:
                 break

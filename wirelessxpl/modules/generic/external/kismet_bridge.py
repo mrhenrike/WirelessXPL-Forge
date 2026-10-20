@@ -11,7 +11,6 @@ Requires: kismet (>= 2022-01-R1), kismetdb_to_wiglecsv, sqlite3.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -25,7 +24,7 @@ from wirelessxpl.core.exploit import *
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -70,7 +69,7 @@ class Exploit(Exploit):
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _run(self, cmd: List[str], label: str = "") -> Optional[str]:
+    def _run(self, cmd: list[str], label: str = "") -> str | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")

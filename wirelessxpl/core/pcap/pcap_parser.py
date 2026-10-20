@@ -6,14 +6,13 @@ cleartext credentials, and AP/station mapping from capture files.
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import logging
 import re
 import struct
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 logger = logging.getLogger("wirelessxpl.pcap")
 
@@ -76,7 +75,7 @@ class Station:
 
     mac: str
     associated_bssid: str = ""
-    probed_ssids: Set[str] = field(default_factory=set)
+    probed_ssids: set[str] = field(default_factory=set)
     data_frames: int = 0
 
     @property
@@ -91,8 +90,8 @@ class EAPOLHandshake:
     bssid: str
     client_mac: str
     ssid: str = ""
-    messages: List[int] = field(default_factory=list)
-    packets: List[Any] = field(default_factory=list)
+    messages: list[int] = field(default_factory=list)
+    packets: list[Any] = field(default_factory=list)
 
     @property
     def is_complete(self) -> bool:
@@ -128,7 +127,7 @@ class ExtractedCredential:
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-def _detect_encryption(packet: Any) -> Tuple[str, str, str]:
+def _detect_encryption(packet: Any) -> tuple[str, str, str]:
     """Derive encryption, cipher and auth from beacon/probe-response IEs."""
     encryption = "OPEN"
     cipher = ""
@@ -161,7 +160,7 @@ def _detect_encryption(packet: Any) -> Tuple[str, str, str]:
     return encryption, cipher, auth
 
 
-def _parse_rsn_wpa_ie(data: bytes) -> Tuple[str, str]:
+def _parse_rsn_wpa_ie(data: bytes) -> tuple[str, str]:
     """Extract cipher suite and AKM from RSN/WPA IE body."""
     cipher_map = {1: "WEP-40", 2: "TKIP", 4: "CCMP", 5: "WEP-104"}
     akm_map = {1: "MGT", 2: "PSK"}
@@ -271,7 +270,7 @@ def validate_pcap_path(file_path: str) -> Path:
     return path
 
 
-def load_packets(file_path: str, max_packets: int = 0) -> List[Any]:
+def load_packets(file_path: str, max_packets: int = 0) -> list[Any]:
     """Load packets from a PCAP/PCAPNG file.
 
     Args:
@@ -288,7 +287,7 @@ def load_packets(file_path: str, max_packets: int = 0) -> List[Any]:
     return list(packets)
 
 
-def extract_access_points(packets: List[Any]) -> Dict[str, AccessPoint]:
+def extract_access_points(packets: list[Any]) -> dict[str, AccessPoint]:
     """Extract all access points from 802.11 beacon and probe-response frames.
 
     Args:
@@ -297,7 +296,7 @@ def extract_access_points(packets: List[Any]) -> Dict[str, AccessPoint]:
     Returns:
         Dict mapping BSSID to AccessPoint.
     """
-    aps: Dict[str, AccessPoint] = {}
+    aps: dict[str, AccessPoint] = {}
     for pkt in packets:
         if not pkt.haslayer(Dot11):
             continue
@@ -333,7 +332,7 @@ def extract_access_points(packets: List[Any]) -> Dict[str, AccessPoint]:
     return aps
 
 
-def extract_stations(packets: List[Any]) -> Dict[str, Station]:
+def extract_stations(packets: list[Any]) -> dict[str, Station]:
     """Extract client stations from 802.11 frames.
 
     Args:
@@ -343,7 +342,7 @@ def extract_stations(packets: List[Any]) -> Dict[str, Station]:
         Dict mapping station MAC to Station.
     """
     broadcast = {"FF:FF:FF:FF:FF:FF", "00:00:00:00:00:00"}
-    stations: Dict[str, Station] = {}
+    stations: dict[str, Station] = {}
 
     for pkt in packets:
         if not pkt.haslayer(Dot11):
@@ -387,9 +386,9 @@ def extract_stations(packets: List[Any]) -> Dict[str, Station]:
 
 
 def extract_eapol_handshakes(
-    packets: List[Any],
-    ap_map: Optional[Dict[str, AccessPoint]] = None,
-) -> List[EAPOLHandshake]:
+    packets: list[Any],
+    ap_map: dict[str, AccessPoint] | None = None,
+) -> list[EAPOLHandshake]:
     """Extract WPA/WPA2 4-way EAPOL handshakes from capture.
 
     Args:
@@ -399,7 +398,7 @@ def extract_eapol_handshakes(
     Returns:
         List of EAPOLHandshake objects grouped by (BSSID, client_mac).
     """
-    handshakes: Dict[Tuple[str, str], EAPOLHandshake] = {}
+    handshakes: dict[tuple[str, str], EAPOLHandshake] = {}
 
     for pkt in packets:
         if not pkt.haslayer(EAPOL):
@@ -440,7 +439,7 @@ def extract_eapol_handshakes(
     return list(handshakes.values())
 
 
-def extract_cleartext_credentials(packets: List[Any]) -> List[ExtractedCredential]:
+def extract_cleartext_credentials(packets: list[Any]) -> list[ExtractedCredential]:
     """Extract cleartext credentials from TCP streams (HTTP, FTP, Telnet, SNMP).
 
     Args:
@@ -449,8 +448,8 @@ def extract_cleartext_credentials(packets: List[Any]) -> List[ExtractedCredentia
     Returns:
         List of ExtractedCredential objects.
     """
-    creds: List[ExtractedCredential] = []
-    ftp_sessions: Dict[Tuple[str, str], Dict[str, str]] = {}
+    creds: list[ExtractedCredential] = []
+    ftp_sessions: dict[tuple[str, str], dict[str, str]] = {}
 
     for pkt in packets:
         if not pkt.haslayer(IP):
@@ -557,7 +556,7 @@ def extract_cleartext_credentials(packets: List[Any]) -> List[ExtractedCredentia
 def save_handshake_pcap(
     handshake: EAPOLHandshake,
     output_path: str,
-    include_beacons: Optional[List[Any]] = None,
+    include_beacons: list[Any] | None = None,
 ) -> Path:
     """Save EAPOL handshake packets to a standalone PCAP for cracking.
 

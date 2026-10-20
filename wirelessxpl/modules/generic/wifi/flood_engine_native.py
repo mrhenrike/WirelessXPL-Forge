@@ -23,7 +23,6 @@ OS requirement: Linux only (raw sockets, monitor mode, nl80211).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -47,7 +46,7 @@ logger = logging.getLogger(__name__)
 #  Michael MIC (TKIP) implementation                                          #
 # --------------------------------------------------------------------------- #
 
-def _michael_b(l: int, r: int) -> Tuple[int, int]:
+def _michael_b(l: int, r: int) -> tuple[int, int]:
     """Michael block function - single round.
 
     Args:
@@ -240,8 +239,8 @@ def send_deauth(
 
 def _run_beacon_flood(
     interface: str,
-    ssids: List[str],
-    channel: Optional[int],
+    ssids: list[str],
+    channel: int | None,
     count: int,
     delay: float,
     verbose: bool,
@@ -423,7 +422,7 @@ def _run_deauth_flood(
 
 def _run_probe_flood(
     interface: str,
-    ssids: List[str],
+    ssids: list[str],
     count: int,
     delay: float,
     verbose: bool,
@@ -840,7 +839,7 @@ class Exploit(Exploit):
 
     _VALID_MODES: frozenset = frozenset({"b", "a", "d", "p", "m", "g", "e", "w"})
 
-    def _parse_ssids(self) -> List[str]:
+    def _parse_ssids(self) -> list[str]:
         """Parse the comma-separated ssids option into a list.
 
         Returns:

@@ -17,16 +17,16 @@ Built-in templates:
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import threading
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -351,7 +351,7 @@ class _CaptureEntry:
     __slots__ = ("data", "remote_addr", "timestamp")
 
     def __init__(self, remote_addr: str, data: dict[str, str]) -> None:
-        self.timestamp = datetime.now(timezone.utc).isoformat()
+        self.timestamp = datetime.now(UTC).isoformat()
         self.remote_addr = remote_addr
         self.data = data
 
@@ -360,7 +360,7 @@ class _CaptureEntry:
 # HTTP handler
 # ---------------------------------------------------------------------------
 
-def _make_handler(template_html: str, manager: "PortalManager") -> type:
+def _make_handler(template_html: str, manager: PortalManager) -> type:
     """Factory that builds a BaseHTTPRequestHandler bound to a specific template."""
 
     class _Handler(BaseHTTPRequestHandler):
@@ -430,17 +430,17 @@ class PortalManager:
 
     def __init__(
         self,
-        log_dir: Optional[str | Path] = None,
+        log_dir: str | Path | None = None,
         simulate: bool = True,
-        on_capture: Optional[Callable[[dict[str, Any]], None]] = None,
+        on_capture: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
         self.simulate = simulate
         self.on_capture = on_capture
         self._captures: list[_CaptureEntry] = []
         self._lock = threading.Lock()
-        self._server: Optional[HTTPServer] = None
-        self._thread: Optional[threading.Thread] = None
-        self._log_path: Optional[Path] = None
+        self._server: HTTPServer | None = None
+        self._thread: threading.Thread | None = None
+        self._log_path: Path | None = None
 
         if not simulate and log_dir is not None:
             self._log_path = Path(log_dir).resolve()

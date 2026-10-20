@@ -12,7 +12,6 @@ Requires: hcxdumptool, hcxpcapngtool. Optional: hashcat.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -28,7 +27,7 @@ from wirelessxpl.modules.generic.wifi._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 

@@ -22,7 +22,6 @@ References:
   - CVE-2026-77812
   - https://www.cve.org/CVERecord?id=CVE-2026-77812
 """
-from __future__ import annotations
 
 import asyncio
 import logging
@@ -70,7 +69,7 @@ except ImportError:
     HAS_BLEAK = False
 
 
-def _is_dji_device(name: Optional[str], manufacturer_data: dict) -> bool:
+def _is_dji_device(name: str | None, manufacturer_data: dict) -> bool:
     """Heuristic: check if a BLE device is likely a DJI drone."""
     if name:
         for prefix in _DJI_NAME_PREFIXES:

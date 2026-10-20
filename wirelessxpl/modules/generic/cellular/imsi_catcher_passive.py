@@ -13,7 +13,6 @@ Requires: gr-gsm, GNU Radio, simple_IMSI-catcher.py (Oros42).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import csv
 import json
@@ -33,7 +32,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -55,18 +54,18 @@ def _check_sdr_hardware() -> bool:
         return False
 
 
-def _parse_scanner_output(raw: str) -> List[Dict[str, Any]]:
+def _parse_scanner_output(raw: str) -> list[dict[str, Any]]:
     """Parse grgsm_scanner output into a list of frequency records.
 
     Each line from grgsm_scanner typically looks like:
         ARFCN:   14, Freq:  940.8M, CID:  6015, LAC:  1234, MCC: 724, MNC:  10, Pwr: -45.3
     """
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     for line in raw.strip().splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        record: Dict[str, Any] = {}
+        record: dict[str, Any] = {}
         arfcn_match = re.search(r"ARFCN:\s*(\d+)", line)
         freq_match = re.search(r"Freq:\s*([\d.]+)M", line, re.IGNORECASE)
         pwr_match = re.search(r"Pwr:\s*([-\d.]+)", line)
@@ -89,9 +88,9 @@ def _parse_scanner_output(raw: str) -> List[Dict[str, Any]]:
     return results
 
 
-def _parse_imsi_captures(capture_dir: str) -> List[Dict[str, str]]:
+def _parse_imsi_captures(capture_dir: str) -> list[dict[str, str]]:
     """Parse IMSI captures from SQLite or plain-text output files."""
-    records: List[Dict[str, str]] = []
+    records: list[dict[str, str]] = []
 
     for fname in os.listdir(capture_dir):
         fpath = os.path.join(capture_dir, fname)
@@ -122,7 +121,7 @@ def _parse_imsi_captures(capture_dir: str) -> List[Dict[str, str]]:
                             continue
                         imsi_match = re.search(r"\b(\d{15})\b", line)
                         if imsi_match:
-                            entry: Dict[str, str] = {"imsi": imsi_match.group(1)}
+                            entry: dict[str, str] = {"imsi": imsi_match.group(1)}
                             tmsi_match = re.search(
                                 r"TMSI[:\s]*(0x[0-9a-fA-F]+|\d+)", line
                             )
@@ -196,7 +195,7 @@ class Exploit(Exploit):
         found = _which(name)
         return found if found else name
 
-    def _run_cmd(self, cmd: List[str], label: str = "") -> Optional[str]:
+    def _run_cmd(self, cmd: list[str], label: str = "") -> str | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")
@@ -218,7 +217,7 @@ class Exploit(Exploit):
             print_error(f"Binary not found: {cmd[0]}")
             return None
 
-    def _start_background(self, cmd: List[str], label: str) -> Optional[subprocess.Popen]:
+    def _start_background(self, cmd: list[str], label: str) -> subprocess.Popen | None:
         """Start a background process, returning the Popen handle."""
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
@@ -236,7 +235,7 @@ class Exploit(Exploit):
             print_error(f"Binary not found: {cmd[0]}")
             return None
 
-    def _stop_background(self, proc: Optional[subprocess.Popen], label: str) -> None:
+    def _stop_background(self, proc: subprocess.Popen | None, label: str) -> None:
         if proc is None:
             return
         print_status(f"Stopping {label}...")
@@ -277,7 +276,7 @@ class Exploit(Exploit):
             status = f"[+] {tool}" if p else f"[-] {tool}: not found"
             (print_success if p else print_error)(f"  {status}")
 
-    def _start_livemon(self) -> Optional[subprocess.Popen]:
+    def _start_livemon(self) -> subprocess.Popen | None:
         freq = str(self.frequency).strip()
         if not freq:
             print_error("Set frequency (e.g. 925.4M).")
@@ -297,7 +296,7 @@ class Exploit(Exploit):
 
         return self._start_background(cmd, "grgsm_livemon")
 
-    def _start_catcher_process(self) -> Optional[subprocess.Popen]:
+    def _start_catcher_process(self) -> subprocess.Popen | None:
         catcher = str(self.imsi_catcher_path).strip()
         if not catcher:
             print_error(
@@ -316,7 +315,7 @@ class Exploit(Exploit):
 
         return self._start_background(cmd, "simple_IMSI-catcher")
 
-    def _scan_frequencies(self) -> List[Dict[str, Any]]:
+    def _scan_frequencies(self) -> list[dict[str, Any]]:
         cmd = [self._grgsm_bin("grgsm_scanner")]
         cmd.extend(["-g", str(int(self.gain))])
         cmd.extend(["-p", str(int(self.ppm))])

@@ -35,7 +35,6 @@ Usage from any module:
     if cfg.destructive:
         # proceed with full attack
 """
-from __future__ import annotations
 
 import logging
 import os
@@ -44,7 +43,6 @@ import socket
 import subprocess
 import threading
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +50,7 @@ logger = logging.getLogger(__name__)
 # Timing profiles
 # ---------------------------------------------------------------------------
 
-TIMING_PROFILES: Dict[str, Dict] = {
+TIMING_PROFILES: dict[str, dict] = {
     "0": {"name": "paranoid",   "level": 0, "scan_delay_ms": 300_000, "timeout_ms": 60_000, "retries": 0},
     "1": {"name": "sneaky",     "level": 1, "scan_delay_ms": 15_000,  "timeout_ms": 30_000, "retries": 1},
     "2": {"name": "polite",     "level": 2, "scan_delay_ms": 400,     "timeout_ms": 10_000, "retries": 2},
@@ -62,10 +60,10 @@ TIMING_PROFILES: Dict[str, Dict] = {
 }
 
 # Also accept names
-TIMING_BY_NAME: Dict[str, str] = {v["name"]: k for k, v in TIMING_PROFILES.items()}
+TIMING_BY_NAME: dict[str, str] = {v["name"]: k for k, v in TIMING_PROFILES.items()}
 
 
-def parse_timing(value: str) -> Dict:
+def parse_timing(value: str) -> dict:
     """Accept T0-T5, 0-5, or name (paranoid/sneaky/polite/normal/aggressive/insane)."""
     v = str(value).strip().lower().lstrip("t")
     if v in TIMING_BY_NAME:
@@ -179,7 +177,7 @@ def _get_local_ip() -> str:
         return "127.0.0.1"
 
 
-def _detect_external_ifaces() -> List[str]:
+def _detect_external_ifaces() -> list[str]:
     """List external USB WiFi interfaces sorted by suitability."""
     default_iface = _get_default_route_iface()
     try:
@@ -187,7 +185,7 @@ def _detect_external_ifaces() -> List[str]:
     except Exception:
         return []
 
-    found: List[str] = []
+    found: list[str] = []
     for line in out.splitlines():
         m = re.match(r"\s+Interface\s+(\S+)", line)
         if m:
@@ -234,7 +232,7 @@ class WXFConfig:
 
     # ── Timing (nmap-style) ─────────────────────────────────────────────────
     timing:          str   = "3"    # T3 / normal
-    timing_profile:  Dict  = field(default_factory=lambda: TIMING_PROFILES["3"])
+    timing_profile:  dict  = field(default_factory=lambda: TIMING_PROFILES["3"])
 
     # ── Reverse shell defaults ─────────────────────────────────────────────
     reverse_host:    str   = ""     # filled at init
@@ -245,17 +243,17 @@ class WXFConfig:
     # ── Wireless interfaces ────────────────────────────────────────────────
     iface_mon:       str   = ""     # monitor/capture interface
     iface_inj:       str   = ""     # injection/AP interface
-    iface_extra:     List[str] = field(default_factory=list)
-    all_ext_ifaces:  List[IfaceInfo] = field(default_factory=list)
+    iface_extra:     list[str] = field(default_factory=list)
+    all_ext_ifaces:  list[IfaceInfo] = field(default_factory=list)
 
     # ── Internal ───────────────────────────────────────────────────────────
     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     # ── Singleton ─────────────────────────────────────────────────────────
-    _instance: Optional["WXFConfig"] = field(default=None, init=False, repr=False)
+    _instance: 'WXFConfig | None' = field(default=None, init=False, repr=False)
 
     @classmethod
-    def get(cls) -> "WXFConfig":
+    def get(cls) -> 'WXFConfig':
         if not hasattr(cls, "_singleton") or cls._singleton is None:
             cfg = cls()
             cfg._init()
@@ -263,7 +261,7 @@ class WXFConfig:
         return cls._singleton
 
     @classmethod
-    def reset(cls) -> "WXFConfig":
+    def reset(cls) -> 'WXFConfig':
         """Re-detect everything (call after attaching new adapters)."""
         cls._singleton = None
         return cls.get()
@@ -318,7 +316,7 @@ class WXFConfig:
     # Interface selection
     # ------------------------------------------------------------------
 
-    def select_ifaces(self, spec: str) -> List[str]:
+    def select_ifaces(self, spec: str) -> list[str]:
         """Parse interface spec and return list of interface names.
 
         Spec formats:

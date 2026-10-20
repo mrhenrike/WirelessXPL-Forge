@@ -11,7 +11,6 @@ GPS source priority:
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import csv
 import json
@@ -22,9 +21,10 @@ import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Optional
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -39,15 +39,15 @@ class _GpsPosition:
     __slots__ = ("alt", "fix", "lat", "lon", "speed", "track", "ts")
 
     def __init__(self) -> None:
-        self.lat: Optional[float] = None
-        self.lon: Optional[float] = None
-        self.alt: Optional[float] = None
-        self.speed: Optional[float] = None
-        self.track: Optional[float] = None
-        self.ts: Optional[str] = None
+        self.lat: float | None = None
+        self.lon: float | None = None
+        self.alt: float | None = None
+        self.speed: float | None = None
+        self.track: float | None = None
+        self.ts: str | None = None
         self.fix: bool = False
 
-    def copy(self) -> "_GpsPosition":
+    def copy(self) -> _GpsPosition:
         p = _GpsPosition()
         p.lat = self.lat
         p.lon = self.lon
@@ -68,7 +68,7 @@ class _GpsdBackend:
         self._pos = _GpsPosition()
         self._lock = threading.Lock()
         self._running = False
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
 
     def start(self) -> bool:
         """Attempt to start the gpsd reader thread.
@@ -101,7 +101,7 @@ class _GpsdBackend:
                         self._pos.alt = getattr(packet, "alt", None)
                         self._pos.speed = getattr(packet, "hspeed", None)
                         self._pos.track = getattr(packet, "track", None)
-                        self._pos.ts = datetime.now(timezone.utc).isoformat()
+                        self._pos.ts = datetime.now(UTC).isoformat()
                         self._pos.fix = True
             except Exception:
                 pass
@@ -123,7 +123,7 @@ class _NmeaBackend:
         self._pos = _GpsPosition()
         self._lock = threading.Lock()
         self._running = False
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
 
     def start(self) -> bool:
         src = Path(self._source)
@@ -172,7 +172,7 @@ class _NmeaBackend:
                 self._pos.lat = _deg(lat_raw, lat_dir)
                 self._pos.lon = _deg(lon_raw, lon_dir)
                 self._pos.alt = float(parts[9]) if parts[9] else None
-                self._pos.ts = datetime.now(timezone.utc).isoformat()
+                self._pos.ts = datetime.now(UTC).isoformat()
                 self._pos.fix = True
         except (ValueError, IndexError):
             pass
@@ -214,11 +214,11 @@ class WardriveSighting:
     rssi: int
     security: str
     timestamp: str
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    altitude: Optional[float] = None
-    speed: Optional[float] = None
-    vendor: Optional[str] = None
+    latitude: float | None = None
+    longitude: float | None = None
+    altitude: float | None = None
+    speed: float | None = None
+    vendor: str | None = None
     band: str = ""
     hidden: bool = False
 
@@ -241,7 +241,7 @@ _OUI_TABLE: dict[str, str] = {
 }
 
 
-def _resolve_vendor(bssid: str) -> Optional[str]:
+def _resolve_vendor(bssid: str) -> str | None:
     prefix = bssid[:8].upper()
     return _OUI_TABLE.get(prefix)
 
@@ -298,10 +298,10 @@ class WardriveLogger:
     def __init__(
         self,
         output_dir: str | Path,
-        session_id: Optional[str] = None,
-        gps_source: Optional[str] = None,
+        session_id: str | None = None,
+        gps_source: str | None = None,
         simulate: bool = True,
-        on_sighting: Optional[Callable[[WardriveSighting], None]] = None,
+        on_sighting: Callable[[WardriveSighting], None] | None = None,
     ) -> None:
         self.output_dir = Path(output_dir).resolve()
         self.session_id = session_id or str(uuid.uuid4())[:8]
@@ -309,7 +309,7 @@ class WardriveLogger:
         self.on_sighting = on_sighting
         self._sightings: list[WardriveSighting] = []
         self._lock = threading.Lock()
-        self._gps: Optional[_GpsdBackend | _NmeaBackend] = None
+        self._gps: _GpsdBackend | _NmeaBackend | None = None
 
         if not self.simulate:
             self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -320,7 +320,7 @@ class WardriveLogger:
     # GPS init
     # ------------------------------------------------------------------
 
-    def _init_gps(self, source: Optional[str]) -> None:
+    def _init_gps(self, source: str | None) -> None:
         if source is None:
             logger.info("[Wardrive] No GPS source - lat/lon will be None")
             return
@@ -368,7 +368,7 @@ class WardriveLogger:
         rssi: int,
         security: str,
         hidden: bool = False,
-        gps_override: Optional[tuple[float, float]] = None,
+        gps_override: tuple[float, float] | None = None,
     ) -> WardriveSighting:
         """Record a WiFi network sighting.
 
@@ -399,7 +399,7 @@ class WardriveLogger:
             channel=channel,
             rssi=rssi,
             security=security,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             latitude=lat,
             longitude=lon,
             altitude=pos.alt if pos.fix else None,
@@ -443,7 +443,7 @@ class WardriveLogger:
     # Export - CSV
     # ------------------------------------------------------------------
 
-    def export_csv(self, path: Optional[str | Path] = None) -> str:
+    def export_csv(self, path: str | Path | None = None) -> str:
         """Export sightings to a CSV file.
 
         Args:
@@ -474,7 +474,7 @@ class WardriveLogger:
     # Export - JSON
     # ------------------------------------------------------------------
 
-    def export_json(self, path: Optional[str | Path] = None) -> str:
+    def export_json(self, path: str | Path | None = None) -> str:
         """Export sightings to a JSON file.
 
         Args:
@@ -492,7 +492,7 @@ class WardriveLogger:
         with self._lock:
             data = {
                 "session": self.session_id,
-                "exported": datetime.now(timezone.utc).isoformat(),
+                "exported": datetime.now(UTC).isoformat(),
                 "sightings": [asdict(s) for s in self._sightings],
             }
 
@@ -506,7 +506,7 @@ class WardriveLogger:
     # Export - KML
     # ------------------------------------------------------------------
 
-    def export_kml(self, path: Optional[str | Path] = None) -> str:
+    def export_kml(self, path: str | Path | None = None) -> str:
         """Export sightings with GPS coordinates to a KML file.
 
         Networks without GPS coordinates are skipped. The KML file can be
@@ -584,7 +584,7 @@ class WardriveLogger:
     # Export - GeoJSON (bonus, for Leaflet/Folium)
     # ------------------------------------------------------------------
 
-    def export_geojson(self, path: Optional[str | Path] = None) -> str:
+    def export_geojson(self, path: str | Path | None = None) -> str:
         """Export geotagged sightings as GeoJSON for Leaflet/Folium maps.
 
         Args:
@@ -626,7 +626,7 @@ class WardriveLogger:
             "type": "FeatureCollection",
             "metadata": {
                 "session": self.session_id,
-                "exported": datetime.now(timezone.utc).isoformat(),
+                "exported": datetime.now(UTC).isoformat(),
                 "count": len(features),
             },
             "features": features,
@@ -642,7 +642,7 @@ class WardriveLogger:
     # Helpers
     # ------------------------------------------------------------------
 
-    def _default_path(self, path: Optional[str | Path], ext: str) -> Path:
+    def _default_path(self, path: str | Path | None, ext: str) -> Path:
         if path is not None:
             return Path(path).resolve()
         return self.output_dir / f"wardrive_{self.session_id}.{ext}"

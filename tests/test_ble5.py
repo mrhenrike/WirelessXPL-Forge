@@ -1,6 +1,5 @@
 """Tests for wirelessxpl.core.bluetooth.ble5."""
 
-from __future__ import annotations
 
 from wirelessxpl.core.bluetooth.ble5 import (
     AdvType,

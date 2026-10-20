@@ -99,7 +99,7 @@ class Exploit(Exploit):
                     if key not in devices:
                         devices[key] = {"ip": addr[0], "port": addr[1]}
                     devices[key].update(info)
-                except socket.timeout:
+                except TimeoutError:
                     continue
         finally:
             sock.close()

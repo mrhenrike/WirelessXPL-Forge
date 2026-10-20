@@ -154,7 +154,7 @@ class Exploit(Exploit):
                 info = _parse_mdns_packet(data)
                 if info and addr[0] not in discovered:
                     discovered[addr[0]] = info
-            except socket.timeout:
+            except TimeoutError:
                 continue
         sock.close()
         return discovered

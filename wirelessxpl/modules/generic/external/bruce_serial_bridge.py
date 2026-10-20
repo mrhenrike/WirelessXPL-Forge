@@ -9,7 +9,6 @@ It focuses on command classes that are stable in upstream CLI help:
 Version: 1.2.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -28,7 +27,7 @@ except ImportError:
     HAS_PYSERIAL = False
 
 
-BRUCE_COMMAND_PROFILES: Dict[str, List[str]] = {
+BRUCE_COMMAND_PROFILES: dict[str, list[str]] = {
     "status": ["help", "wifi", "webui"],
     "wifi_scan": ["wifi scan"],
     "arp_scan": ["arp scan"],
@@ -49,7 +48,7 @@ BRUCE_COMMAND_PROFILES: Dict[str, List[str]] = {
     "rf_jam_stop": ["rf jam stop"],
 }
 
-BRUCE_FLOW_PROFILES: Dict[str, List[Dict[str, Any]]] = {
+BRUCE_FLOW_PROFILES: dict[str, list[dict[str, Any]]] = {
     # Observability and baseline status checks.
     "baseline_status_flow": [
         {"command": "help", "expect": "#"},
@@ -241,7 +240,7 @@ class Exploit(Exploit):
     output_log = OptString(".log/bruce_serial_bridge.log", "Append-only command/output log")
     dry_run = OptBool(False, "Print commands without serial execution")
 
-    def _commands(self, flow_selected: bool) -> List[str]:
+    def _commands(self, flow_selected: bool) -> list[str]:
         raw = str(self.command).strip()
         if raw:
             return [raw]
@@ -258,14 +257,14 @@ class Exploit(Exploit):
             )
         return commands
 
-    def _append_log(self, lines: List[str]) -> None:
+    def _append_log(self, lines: list[str]) -> None:
         path = Path(str(self.output_log))
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
             for line in lines:
                 fh.write(line.rstrip("\n") + "\n")
 
-    def _parse_custom_flow(self) -> List[Dict[str, Any]]:
+    def _parse_custom_flow(self) -> list[dict[str, Any]]:
         raw = str(self.flow_json).strip()
         if not raw:
             return []
@@ -275,7 +274,7 @@ class Exploit(Exploit):
             raise ValueError(f"Invalid flow_json (JSON decode): {err}") from err
         if not isinstance(parsed, list):
             raise ValueError("flow_json must be a JSON list.")
-        steps: List[Dict[str, Any]] = []
+        steps: list[dict[str, Any]] = []
         for idx, item in enumerate(parsed):
             if not isinstance(item, dict):
                 raise ValueError(f"flow_json step {idx} must be object.")
@@ -292,7 +291,7 @@ class Exploit(Exploit):
             )
         return steps
 
-    def _resolve_flow(self) -> List[Dict[str, Any]]:
+    def _resolve_flow(self) -> list[dict[str, Any]]:
         custom = self._parse_custom_flow()
         if custom:
             return custom
@@ -313,9 +312,9 @@ class Exploit(Exploit):
     def _decode_line(raw: bytes) -> str:
         return raw.decode("utf-8", errors="replace").rstrip()
 
-    def _serial_read_window(self, ser: Any, window_ms: int, log_lines: List[str]) -> str:
+    def _serial_read_window(self, ser: Any, window_ms: int, log_lines: list[str]) -> str:
         deadline = time.time() + (float(max(1, window_ms)) / 1000.0)
-        chunks: List[str] = []
+        chunks: list[str] = []
         while time.time() < deadline:
             chunk = ser.readline()
             if not chunk:
@@ -327,7 +326,7 @@ class Exploit(Exploit):
                 chunks.append(text)
         return "\n".join(chunks)
 
-    def _execute_flow(self, ser: Any, flow_steps: List[Dict[str, Any]], log_lines: List[str]) -> bool:
+    def _execute_flow(self, ser: Any, flow_steps: list[dict[str, Any]], log_lines: list[str]) -> bool:
         default_expect = str(self.expected_prompt).strip()
         base_delay = float(max(0, int(self.step_delay_ms))) / 1000.0
         read_window = max(100, int(self.read_window_ms))
@@ -427,7 +426,7 @@ class Exploit(Exploit):
             print_error("serial_port is required.")
             return
 
-        log_lines: List[str] = []
+        log_lines: list[str] = []
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         log_lines.append(f"=== [{timestamp}] Bruce Serial Session ===")
         log_lines.append(f"PORT={port} BAUD={int(self.baudrate)}")

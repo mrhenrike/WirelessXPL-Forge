@@ -23,7 +23,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -43,7 +42,7 @@ _HEX_KEY_RE = re.compile(r"^[0-9a-fA-F]{2}(?:[:\-]?[0-9a-fA-F]{2}){15}$")
 _HEX_SHORT_RE = re.compile(r"^(?:0x)?[0-9a-fA-F]{1,4}$")
 
 
-def _resolve_zigator(custom_path: str) -> Optional[str]:
+def _resolve_zigator(custom_path: str) -> str | None:
     """Resolve zigator binary: custom path, PATH lookup, or pip-installed."""
     if custom_path:
         expanded = os.path.expanduser(custom_path)
@@ -116,7 +115,7 @@ class Exploit(Exploit):
         """Validate short hex address or PAN ID."""
         return bool(_HEX_SHORT_RE.match(value.strip()))
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out_dir = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out_dir, exist_ok=True)
@@ -125,7 +124,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao criar diretorio de saida {out_dir}: {exc}")
             return None
 
-    def _exec(self, cmd: List[str], label: str = "") -> None:
+    def _exec(self, cmd: list[str], label: str = "") -> None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")

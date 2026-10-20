@@ -123,7 +123,7 @@ class Exploit(Exploit):
                 if loc and loc not in seen:
                     seen.add(loc)
                     results.append((loc, srv, st_v))
-            except (socket.timeout, OSError):
+            except (TimeoutError, OSError):
                 break
         sock.close()
         return results
@@ -143,7 +143,7 @@ class Exploit(Exploit):
             s.close()
             raw = b"".join(chunks).decode("utf-8", errors="replace")
             return raw.split("\r\n\r\n", 1)[1] if "\r\n\r\n" in raw else raw
-        except (OSError, socket.timeout):
+        except (TimeoutError, OSError):
             return None
 
     def _http_get(self, url):

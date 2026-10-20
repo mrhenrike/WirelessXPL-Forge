@@ -16,7 +16,6 @@ CWE: N/A (tool/framework)
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import socket
@@ -94,7 +93,7 @@ class GsmtapNrRrcSubtype(IntEnum):
     SBCCH_SL_BCH = 0x09
 
 
-LOG_CODE_MAP: Dict[int, tuple] = {
+LOG_CODE_MAP: dict[int, tuple] = {
     0xB0C0: (GsmtapType.LTE_RRC, GsmtapLteRrcSubtype.BCCH_BCH),
     0xB0C1: (GsmtapType.LTE_RRC, GsmtapLteRrcSubtype.BCCH_DL_SCH),
     0xB0C2: (GsmtapType.LTE_RRC, GsmtapLteRrcSubtype.DL_CCCH),
@@ -115,7 +114,7 @@ class DiagFrame:
     log_code: int
     timestamp: float
     payload: bytes
-    gsmtap_type: Optional[GsmtapType] = None
+    gsmtap_type: GsmtapType | None = None
     gsmtap_subtype: int = 0
 
 
@@ -167,7 +166,7 @@ def write_pcap_packet(fh: BinaryIO, data: bytes, ts_sec: int, ts_usec: int) -> N
     fh.write(data)
 
 
-def parse_diag_log(raw: bytes) -> Optional[DiagFrame]:
+def parse_diag_log(raw: bytes) -> DiagFrame | None:
     """Parse a Qualcomm Diag log packet.
 
     Args:
@@ -204,7 +203,7 @@ def parse_diag_log(raw: bytes) -> Optional[DiagFrame]:
     )
 
 
-def frames_to_pcap(frames: List[DiagFrame], output_path: str) -> int:
+def frames_to_pcap(frames: list[DiagFrame], output_path: str) -> int:
     """Write DiagFrames to a PCAP file with GSMTAP encapsulation.
 
     Args:

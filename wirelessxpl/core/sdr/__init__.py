@@ -5,7 +5,6 @@ for signal capture, replay, analysis and protocol decoding in security
 research contexts.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto

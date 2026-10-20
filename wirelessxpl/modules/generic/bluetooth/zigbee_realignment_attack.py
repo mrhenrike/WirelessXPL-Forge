@@ -24,7 +24,6 @@ Scapy with 802.15.4 layers is used for frame crafting.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -60,7 +59,7 @@ MAC_CMD_ORPHAN_NOTIFICATION = 0x06
 APS_CMD_TRANSPORT_KEY = 0x05
 
 
-def _which_kb(tool: str) -> Optional[str]:
+def _which_kb(tool: str) -> str | None:
     """Resolve KillerBee CLI tool from PATH."""
     return shutil.which(tool)
 
@@ -124,7 +123,7 @@ class Exploit(Exploit):
         "info", "realignment_inject", "orphan_notify", "rejoin_monitor",
     })
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out_dir = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out_dir, exist_ok=True)
@@ -139,7 +138,7 @@ class Exploit(Exploit):
             return False
         return True
 
-    def _exec(self, cmd: List[str], label: str = "") -> Optional[int]:
+    def _exec(self, cmd: list[str], label: str = "") -> int | None:
         cmd_str = " ".join(cmd)
         if bool(self.dry_run):
             print_info(f"[dry-run] {label}: {cmd_str}")
@@ -204,7 +203,7 @@ class Exploit(Exploit):
             return False
         return True
 
-    def _craft_realignment_frame(self) -> Optional[bytes]:
+    def _craft_realignment_frame(self) -> bytes | None:
         """Craft IEEE 802.15.4 Coordinator Realignment command frame.
 
         Frame structure (Coordinator Realignment, MAC command 0x08):
@@ -267,7 +266,7 @@ class Exploit(Exploit):
 
         return frame
 
-    def _craft_orphan_frame(self) -> Optional[bytes]:
+    def _craft_orphan_frame(self) -> bytes | None:
         """Craft IEEE 802.15.4 Orphan Notification command frame.
 
         Orphan Notification (MAC command 0x06) triggers the coordinator

@@ -27,7 +27,6 @@ Dependencies: scapy, pycryptodome (for CCMP encryption).
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -116,7 +115,7 @@ def _build_data_header(src: str, dst: str, bssid: str,
 
 def build_fragment_pair(src: str, dst: str, bssid: str,
                         payload: bytes, split_at: int = 0,
-                        seq: int = 1, tid: int = 0) -> Tuple:
+                        seq: int = 1, tid: int = 0) -> tuple:
     """Build a pair of 802.11 data fragments.
 
     Args:
@@ -385,7 +384,7 @@ class Exploit(Exploit):
         would allow replay attacks.
         """
         print_status("Monitoring for PN/IV reuse patterns...")
-        seen_pns: Dict[str, List[int]] = {}
+        seen_pns: dict[str, list[int]] = {}
 
         def _monitor(pkt):
             if pkt.haslayer(Dot11CCMP) and pkt.addr2:

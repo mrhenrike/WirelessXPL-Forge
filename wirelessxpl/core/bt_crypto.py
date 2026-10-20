@@ -19,10 +19,8 @@ Reference: BT Core Spec v5.3, Vol 2 Part H (Security Specification).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
-from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +32,10 @@ COF_LEN = 12
 BTADD_LEN = 6
 
 # SAFER+ S-box: EXP_45[i] = (45^i mod 257) mod 256
-EXP_45: List[int] = [int(((45 ** i) % 257) % 256) for i in range(256)]
+EXP_45: list[int] = [int(((45 ** i) % 257) % 256) for i in range(256)]
 
 # LOG_45 is the inverse: LOG_45[EXP_45[i]] = i
-LOG_45: List[int] = [0] * 256
+LOG_45: list[int] = [0] * 256
 for _i in range(256):
     LOG_45[EXP_45[_i]] = _i
 
@@ -128,7 +126,7 @@ def _nonlin_subs(inp: bytearray) -> bytearray:
     return result
 
 
-def _pht(x: int, y: int) -> Tuple[int, int]:
+def _pht(x: int, y: int) -> tuple[int, int]:
     """Pseudo-Hadamard Transform."""
     return (2 * x + y) % 256, (x + y) % 256
 
@@ -155,9 +153,9 @@ def _rotate_key(key: bytearray) -> bytearray:
     return result
 
 
-def _biases() -> List[Optional[bytearray]]:
+def _biases() -> list[bytearray | None]:
     """Compute SAFER+ key schedule biases B[2..17]."""
-    b_list: List[Optional[bytearray]] = [None, None]
+    b_list: list[bytearray | None] = [None, None]
     for n in range(2, 18):
         bias = bytearray(AR_KEY_LEN)
         for i in range(AR_KEY_LEN):
@@ -166,7 +164,7 @@ def _biases() -> List[Optional[bytearray]]:
     return b_list
 
 
-def _key_schedule(key: bytearray) -> List[Optional[bytearray]]:
+def _key_schedule(key: bytearray) -> list[bytearray | None]:
     """SAFER+ key schedule: generate 17 subkeys from 128-bit master key."""
     biases = _biases()
     byte_16 = 0
@@ -175,7 +173,7 @@ def _key_schedule(key: bytearray) -> List[Optional[bytearray]]:
 
     expanded = bytearray(key) + bytearray([byte_16])
 
-    keys: List[Optional[bytearray]] = [None] * 18
+    keys: list[bytearray | None] = [None] * 18
     keys[1] = bytearray(expanded[:AR_KEY_LEN])
 
     prev = bytearray(expanded)
@@ -199,10 +197,10 @@ def _xor_bytes(left: bytearray, right: bytearray) -> bytearray:
     return bytearray(left[i] ^ right[i] for i in range(AR_KEY_LEN))
 
 
-def _ar_rounds(keys: List[Optional[bytearray]], inp: bytearray,
-               is_prime: bool) -> List[Optional[bytearray]]:
+def _ar_rounds(keys: list[bytearray | None], inp: bytearray,
+               is_prime: bool) -> list[bytearray | None]:
     """Execute SAFER+ Ar rounds (8 rounds)."""
-    ar: List[Optional[bytearray]] = [None] * 11
+    ar: list[bytearray | None] = [None] * 11
     ar[1] = bytearray(inp)
     temp = bytearray(inp)
 
@@ -245,7 +243,7 @@ def _k_to_k_tilda(k: bytearray) -> bytearray:
 
 
 def H(k: bytearray, i_one: bytearray, i_two: bytearray,
-      length: int) -> Tuple[List, List, List, List, bytearray]:
+      length: int) -> tuple[list, list, list, list, bytearray]:
     """SAFER+ hash function H used in e1 and e3.
 
     Args:
@@ -272,7 +270,7 @@ def H(k: bytearray, i_one: bytearray, i_two: bytearray,
     return keys, ar, keys_prime, ar_prime, ar_prime[10]
 
 
-def e1(k: bytearray, rand: bytearray, btadd_s: bytearray) -> Tuple[bytearray, bytearray]:
+def e1(k: bytearray, rand: bytearray, btadd_s: bytearray) -> tuple[bytearray, bytearray]:
     """Compute SRES and ACO for BT authentication (EQ 12, BT Spec p.1675).
 
     Args:

@@ -9,7 +9,6 @@ that will be reassembled by the receiver without MIC verification.
 Reference: Mathy Vanhoef, "Fragment and Forge: Breaking Wi-Fi Through Frame
 Aggregation and Fragmentation", USENIX Security 2021.
 """
-from __future__ import annotations
 
 import logging
 from typing import Optional
@@ -53,7 +52,7 @@ def _build_tkip_fragment(
     seq_num: int = 0,
     more_frags: bool = False,
     pn: int = 0,
-) -> Optional[bytes]:
+) -> bytes | None:
     """Build a TKIP-encrypted-looking fragment with arbitrary payload (CVE-2020-26141).
 
     The MIC check is not performed on fragments, so we can inject any payload.

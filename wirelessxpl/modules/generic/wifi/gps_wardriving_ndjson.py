@@ -6,7 +6,6 @@ lat/lon/quality. Does not access GPS hardware — feed NMEA from gpsd, USB, or a
 Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 """
 
-from __future__ import annotations
 
 import json
 import re
@@ -16,7 +15,7 @@ from typing import Optional
 from wirelessxpl.core.exploit import *
 
 
-def _nmea_to_decimal(coord: str, hemi: str) -> Optional[float]:
+def _nmea_to_decimal(coord: str, hemi: str) -> float | None:
     """Convert NMEA latitude/longitude field to decimal degrees."""
 
     if not coord or len(coord) < 4:

@@ -16,7 +16,6 @@ wifipumpkin3 is a powerful framework with capabilities beyond basic evil twin:
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import logging
 import re
@@ -77,7 +76,7 @@ class Exploit(Exploit):
             url = "https://" + url
         return url.replace(" ", "%20")
 
-    def _find_wp3(self) -> Optional[str]:
+    def _find_wp3(self) -> str | None:
         """Locate wifipumpkin3 binary."""
         binary = shutil.which("wifipumpkin3")
         if binary:
@@ -94,7 +93,7 @@ class Exploit(Exploit):
 
         return None
 
-    def _build_command(self) -> List[str]:
+    def _build_command(self) -> list[str]:
         """Build wifipumpkin3 command line."""
         wp3 = self._find_wp3()
         if not wp3:

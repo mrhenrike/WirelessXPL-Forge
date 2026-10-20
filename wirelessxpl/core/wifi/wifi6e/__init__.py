@@ -4,7 +4,6 @@ Covers 6 GHz band scanning, OFDMA analysis, BSS coloring detection,
 Target Wake Time (TWT) probing, and Multi-Link Operation (MLO) for WiFi 7.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto

@@ -8,7 +8,6 @@ behavior, without requiring RL runtime dependencies.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import random
@@ -87,7 +86,7 @@ class Exploit(Exploit):
         for i in range(1, int(self.rounds) + 1):
             channel = random.choice(chan_pool)
             prefix = str(out / f"adaptive_round_{i:02d}")
-            cmd: List[str] = [
+            cmd: list[str] = [
                 "sudo",
                 "airodump-ng",
                 self.interface,

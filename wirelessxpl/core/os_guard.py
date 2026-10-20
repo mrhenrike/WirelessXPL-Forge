@@ -17,12 +17,12 @@ Usage:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import functools
 import platform
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable, Type, TypeVar, Union
+from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -141,7 +141,7 @@ def _check_os(requirement: OSRequirement, module_name: str) -> None:
 
 def requires_os(
     *requirements: OSRequirement,
-) -> Callable[[Union[Type[T], Callable]], Union[Type[T], Callable]]:
+) -> Callable[[type[T] | Callable], type[T] | Callable]:
     """Decorator that enforces OS compatibility before module execution.
 
     Can be applied to a class (checked when the class is instantiated via __init__)
@@ -177,7 +177,7 @@ def requires_os(
     elif OSRequirement.LINUX_ONLY in requirements:
         effective = OSRequirement.LINUX_ONLY
 
-    def decorator(target: Union[Type[T], Callable]) -> Union[Type[T], Callable]:
+    def decorator(target: type[T] | Callable) -> type[T] | Callable:
         name = getattr(target, "__name__", str(target))
 
         if isinstance(target, type):
@@ -205,7 +205,7 @@ def requires_os(
     return decorator
 
 
-def get_module_os_label(target: Union[type, Callable]) -> str:
+def get_module_os_label(target: type | Callable) -> str:
     """Return a short OS compatibility label for display in the WXF CLI module list.
 
     Args:

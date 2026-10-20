@@ -7,7 +7,6 @@ Works on garage doors, alarms, and remote controls using fixed 12/24-bit OOK pro
 
 HW_REQ: HackRF One (TX) OR CC1101 + ESP32/Arduino.
 """
-from __future__ import annotations
 
 import logging
 import os
@@ -50,7 +49,7 @@ def _build_hackrf_sub_bytes(signal: SubGHzSignal) -> bytes:
     Generates a simple OOK signal: on=amplitude, off=0 at 2 MHz sample rate.
     """
     sample_rate = 2_000_000
-    samples: List[int] = []
+    samples: list[int] = []
 
     for raw_line in signal.raw_data:
         for value in raw_line:

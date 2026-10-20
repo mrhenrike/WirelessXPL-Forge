@@ -24,7 +24,6 @@ References:
   - WiSec-2025 paper: Fragile Frames (Vanhoef et al.)
   - https://github.com/vanhoefm/fragattacks
 """
-from __future__ import annotations
 
 import logging
 import struct
@@ -71,7 +70,7 @@ def _build_mesh_amsdu_bypass_frame(
     target_ip: str,
     attacker_ip: str,
     seq_num: int = 1,
-) -> Optional[bytes]:
+) -> bytes | None:
     """Build a crafted 802.11s data frame that bypasses the A-MSDU mesh mitigation.
 
     The frame encodes a Mesh Control header such that the 6 bytes immediately

@@ -35,7 +35,6 @@ References:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -52,7 +51,7 @@ from wirelessxpl.modules.generic.sim._disclaimer import require_authorised_lab
 logger = logging.getLogger(__name__)
 
 
-def _which(binary: str) -> Optional[str]:
+def _which(binary: str) -> str | None:
     return shutil.which(binary)
 
 
@@ -61,7 +60,7 @@ def _ensure_dir(path: str) -> str:
     return path
 
 
-def _find_ueransim(custom_path: str) -> Optional[Path]:
+def _find_ueransim(custom_path: str) -> Path | None:
     """Locate UERANSIM installation directory."""
     if custom_path:
         p = Path(custom_path)
@@ -201,7 +200,7 @@ class Exploit(Exploit):
         d = str(self.output_dir).strip() or ".tmp"
         return _ensure_dir(d)
 
-    def _find_binary(self, name: str) -> Optional[str]:
+    def _find_binary(self, name: str) -> str | None:
         ueransim_root = _find_ueransim(str(self.ueransim_path).strip())
         if ueransim_root:
             candidate = ueransim_root / name
@@ -213,8 +212,8 @@ class Exploit(Exploit):
         return _which(name)
 
     def _run_ueransim_cmd(
-        self, binary: str, args: List[str], label: str, background: bool = False,
-    ) -> Optional[subprocess.Popen]:
+        self, binary: str, args: list[str], label: str, background: bool = False,
+    ) -> subprocess.Popen | None:
         cmd = [binary] + args
         cmd_str = " ".join(cmd)
 
@@ -491,7 +490,7 @@ class Exploit(Exploit):
 
     def _cve_check(self) -> None:
         print_status("5G Core / RAN - CVE and Research Database")
-        entries: List[Dict[str, str]] = [
+        entries: list[dict[str, str]] = [
             {
                 "id": "CVE-2021-41794",
                 "title": "Open5GS NAS security mode bypass",

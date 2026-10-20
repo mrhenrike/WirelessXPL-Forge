@@ -18,7 +18,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -110,7 +109,7 @@ class Exploit(Exploit):
         poc = candidates[0]
 
         python_bin = shutil.which("python3") or "python3"
-        cmd: List[str] = [python_bin, str(poc)]
+        cmd: list[str] = [python_bin, str(poc)]
 
         victim = str(self.victim_mac).strip()
         if victim:

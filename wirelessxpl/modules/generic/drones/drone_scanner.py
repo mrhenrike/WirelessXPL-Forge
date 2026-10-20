@@ -5,7 +5,6 @@
 Passively scans visible WiFi networks and identifies drone SSIDs
 from DJI, Parrot, Holy Stone, and generic FPV patterns.
 """
-from __future__ import annotations
 
 import logging
 import re
@@ -26,7 +25,7 @@ from wirelessxpl.core.exploit import (
 
 logger = logging.getLogger(__name__)
 
-_DRONE_PATTERNS: List[Dict] = [
+_DRONE_PATTERNS: list[dict] = [
     {"brand": "DJI", "pattern": r"^(DJI[-_]|MAVIC[-_]|SPARK[-_]|MINI[-_]|FPV[-_]|AGRAS[-_]|INSPIRE[-_])"},
     {"brand": "DJI Avata/FPV", "pattern": r"^DJI-FPV"},
     {"brand": "Parrot Bebop", "pattern": r"^(Bebop2[-_]|BebopDrone)"},
@@ -57,7 +56,7 @@ def _check_netsh() -> bool:
     return shutil.which("netsh") is not None
 
 
-def _scan_linux_nmcli(interface: str) -> List[Dict]:
+def _scan_linux_nmcli(interface: str) -> list[dict]:
     """Scan using nmcli on Linux."""
     try:
         result = subprocess.run(
@@ -79,7 +78,7 @@ def _scan_linux_nmcli(interface: str) -> List[Dict]:
         return []
 
 
-def _scan_windows_netsh() -> List[Dict]:
+def _scan_windows_netsh() -> list[dict]:
     """Scan using netsh on Windows."""
     try:
         result = subprocess.run(
@@ -87,7 +86,7 @@ def _scan_windows_netsh() -> List[Dict]:
             capture_output=True, text=True, timeout=15
         )
         networks = []
-        current: Dict = {}
+        current: dict = {}
         for line in result.stdout.splitlines():
             line = line.strip()
             if line.startswith("SSID") and ":" in line and "BSSID" not in line:
@@ -106,7 +105,7 @@ def _scan_windows_netsh() -> List[Dict]:
         return []
 
 
-def _identify_drone(ssid: str) -> Optional[str]:
+def _identify_drone(ssid: str) -> str | None:
     """Return brand name if SSID matches a known drone pattern."""
     ssid_upper = ssid.upper()
     for entry in _DRONE_PATTERNS:

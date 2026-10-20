@@ -27,7 +27,6 @@ Requires: scapy (with 802.15.4 / Zigbee layers), pycryptodome (AES-CCM*).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -52,7 +51,7 @@ except ImportError:
     HAS_PYCRYPTODOME = False
 
 
-_DEFAULT_KEYS: Dict[str, bytes] = {
+_DEFAULT_KEYS: dict[str, bytes] = {
     "ZigBee HA / 3.0 (ZigBeeAlliance09)": bytes([
         0x5A, 0x69, 0x67, 0x42, 0x65, 0x65, 0x41, 0x6C,
         0x6C, 0x69, 0x61, 0x6E, 0x63, 0x65, 0x30, 0x39,
@@ -81,7 +80,7 @@ def _bytes_to_hex(data: bytes) -> str:
 
 def _try_aes_ccm_decrypt(
     key: bytes, nonce: bytes, ciphertext: bytes, mic: bytes, auth_data: bytes,
-) -> Optional[bytes]:
+) -> bytes | None:
     """Attempt AES-CCM* decryption (Zigbee uses 4-byte MIC by default)."""
     if not HAS_PYCRYPTODOME:
         return None
@@ -124,7 +123,7 @@ class Exploit(Exploit):
 
     _VALID_MODES = frozenset({"info", "extract", "scan_default_keys"})
 
-    def _ensure_output_dir(self) -> Optional[str]:
+    def _ensure_output_dir(self) -> str | None:
         out_dir = str(self.output_dir).strip() or ".tmp"
         try:
             os.makedirs(out_dir, exist_ok=True)
@@ -147,7 +146,7 @@ class Exploit(Exploit):
             ok = False
         return ok
 
-    def _load_pcap(self) -> Optional[Any]:
+    def _load_pcap(self) -> Any | None:
         pcap = str(self.pcap_file).strip()
         if not pcap or not os.path.isfile(pcap):
             print_error("Defina pcap_file com caminho valido para arquivo PCAP.")
@@ -199,7 +198,7 @@ class Exploit(Exploit):
         if packets is None:
             return
 
-        keys_found: List[Tuple[int, bytes]] = []
+        keys_found: list[tuple[int, bytes]] = []
         print_status("Buscando APS Transport Key frames...")
 
         for idx, pkt in enumerate(packets):
@@ -228,7 +227,7 @@ class Exploit(Exploit):
                         fh.write(f"packet={pkt_idx} key={_bytes_to_hex(key)}\n")
                 print_info(f"Chaves salvas em: {out_file}")
 
-    def _search_transport_key_in_raw(self, raw_data: bytes) -> Optional[bytes]:
+    def _search_transport_key_in_raw(self, raw_data: bytes) -> bytes | None:
         """Search raw frame bytes for APS Transport Key command payload.
 
         APS Transport Key structure (simplified):

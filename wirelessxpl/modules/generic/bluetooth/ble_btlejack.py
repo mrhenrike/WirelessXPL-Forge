@@ -9,7 +9,6 @@ with firmware-dependent hardware workflows (micro:bit / nRF setups).
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import shutil
@@ -52,7 +51,7 @@ class Exploit(Exploit):
     extra_args = OptString("", "Extra raw args passed to btlejack")
     dry_run = OptBool(False, "Print command without executing")
 
-    def _find_btlejack(self) -> Optional[str]:
+    def _find_btlejack(self) -> str | None:
         """Locate btlejack executable."""
         binary = shutil.which("btlejack")
         if binary:
@@ -69,13 +68,13 @@ class Exploit(Exploit):
             return str(candidate)
         return None
 
-    def _build_command(self, btlejack_bin: str) -> List[str]:
+    def _build_command(self, btlejack_bin: str) -> list[str]:
         """Build btlejack command according to selected action."""
         action = str(self.action).strip().lower()
         if action not in ("sniff", "jam", "hijack"):
             raise ValueError("action must be one of: sniff | jam | hijack")
 
-        cmd: List[str] = ["sudo", btlejack_bin]
+        cmd: list[str] = ["sudo", btlejack_bin]
 
         if action == "sniff":
             cmd.append("-c")

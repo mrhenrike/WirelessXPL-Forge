@@ -11,7 +11,6 @@ sugerido para execução manual.
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import hashlib
 import json
@@ -21,7 +20,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
+from collections.abc import Iterable
 
 from wirelessxpl.core.exploit import *
 
@@ -136,7 +136,7 @@ class Exploit(Exploit):
 
         return self._wxf_root().parents[2]
 
-    def _wordlists_root(self) -> Optional[Path]:
+    def _wordlists_root(self) -> Path | None:
         """Caminho ``submodules/Wordlists`` se existir."""
 
         cand = self._submodules_root() / "Wordlists"
@@ -164,7 +164,7 @@ class Exploit(Exploit):
                 return w
         return sys.executable
 
-    def _parse_profile(self) -> Dict[str, object]:
+    def _parse_profile(self) -> dict[str, object]:
         """Converte ``target_profile_json`` em dicionário."""
 
         raw = str(self.target_profile_json).strip()
@@ -177,10 +177,10 @@ class Exploit(Exploit):
             return {}
         return data if isinstance(data, dict) else {}
 
-    def _profile_seed_lines(self, profile: Dict[str, object], ssid: str) -> List[str]:
+    def _profile_seed_lines(self, profile: dict[str, object], ssid: str) -> list[str]:
         """Extrai linhas de semente a partir do perfil e do SSID."""
 
-        out: List[str] = []
+        out: list[str] = []
 
         def _add(val: object) -> None:
             if val is None:
@@ -209,15 +209,15 @@ class Exploit(Exploit):
                 ]
             )
 
-        seen: Set[str] = set()
-        uniq: List[str] = []
+        seen: set[str] = set()
+        uniq: list[str] = []
         for line in out:
             if line not in seen:
                 seen.add(line)
                 uniq.append(line)
         return uniq
 
-    def _write_seed_file(self, tmp: Path, profile: Dict[str, object], ssid: str) -> Path:
+    def _write_seed_file(self, tmp: Path, profile: dict[str, object], ssid: str) -> Path:
         """Grava arquivo de sementes para merge e referência manual (cupp/elpscrk)."""
 
         path = tmp / "profile_seed.txt"
@@ -228,10 +228,10 @@ class Exploit(Exploit):
         path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8", errors="replace")
         return path
 
-    def _collect_text_files(self, root: Path, recursive: bool) -> List[Path]:
+    def _collect_text_files(self, root: Path, recursive: bool) -> list[Path]:
         """Lista arquivos de texto comuns sob ``root``."""
 
-        found: List[Path] = []
+        found: list[Path] = []
         if not root.is_dir():
             return found
         it: Iterable[Path]
@@ -251,7 +251,7 @@ class Exploit(Exploit):
             and p.stat().st_size < 200 * 1024 * 1024
         )
 
-    def _find_static_wordlists(self) -> List[Path]:
+    def _find_static_wordlists(self) -> list[Path]:
         """Localiza wordlists estáticas disponíveis no superprojeto.
 
         Returns:
@@ -263,7 +263,7 @@ class Exploit(Exploit):
             print_error("submodules/Wordlists não encontrado.")
             return []
 
-        paths: List[Path] = []
+        paths: list[Path] = []
 
         wifi_wpa = wl / "SecLists" / "Passwords" / "WiFi-WPA"
         if wifi_wpa.is_dir():
@@ -288,9 +288,9 @@ class Exploit(Exploit):
 
     def _run_cmd(
         self,
-        argv: List[str],
-        cwd: Optional[Path] = None,
-        env: Optional[dict] = None,
+        argv: list[str],
+        cwd: Path | None = None,
+        env: dict | None = None,
     ) -> int:
         """Executa subprocesso ou registra comando em dry_run.
 
@@ -322,7 +322,7 @@ class Exploit(Exploit):
             print_error(f"Falha ao iniciar processo: {exc}")
             return 127
 
-    def _generate_osint_wordlist(self, tmp: Path) -> List[Path]:
+    def _generate_osint_wordlist(self, tmp: Path) -> list[Path]:
         """Dispara cewler/CeWL e materializa sementes de perfil.
 
         cupp (``-i`` / ``-w``) e elpscrk são predominantemente interativos; este
@@ -337,7 +337,7 @@ class Exploit(Exploit):
         """
 
         wl = self._wordlists_root()
-        generated: List[Path] = []
+        generated: list[Path] = []
         profile = self._parse_profile()
         ssid = str(self.target_ssid).strip()
         seed = self._write_seed_file(tmp, profile, ssid)
@@ -410,7 +410,7 @@ class Exploit(Exploit):
 
         return generated
 
-    def _generate_pattern_wordlist(self, tmp: Path) -> List[Path]:
+    def _generate_pattern_wordlist(self, tmp: Path) -> list[Path]:
         """Executa wfh, pnwgen, crunch e BruteForge quando configurados.
 
         Args:
@@ -421,7 +421,7 @@ class Exploit(Exploit):
         """
 
         wl = self._wordlists_root()
-        out_paths: List[Path] = []
+        out_paths: list[Path] = []
         if not wl:
             return out_paths
 
@@ -429,7 +429,7 @@ class Exploit(Exploit):
         mn = max(1, int(self.min_length))
         mx = max(mn, int(self.max_length))
         cap = int(self.max_words)
-        wfh_prefix: List[str] = []
+        wfh_prefix: list[str] = []
         if cap > 0:
             wfh_prefix = ["--limit", str(cap)]
 
@@ -534,7 +534,7 @@ class Exploit(Exploit):
 
         return out_paths
 
-    def _generate_isp_wordlist(self, tmp: Path) -> List[Path]:
+    def _generate_isp_wordlist(self, tmp: Path) -> list[Path]:
         """Comcast/Xfinity: listas estáticas leves ou gerador completo opcional.
 
         Args:
@@ -545,7 +545,7 @@ class Exploit(Exploit):
         """
 
         wl = self._wordlists_root()
-        paths: List[Path] = []
+        paths: list[Path] = []
         if not wl:
             return paths
 
@@ -570,7 +570,7 @@ class Exploit(Exploit):
 
         return paths
 
-    def _merge_wordlists(self, sources: List[Path], output: Path) -> Tuple[int, int]:
+    def _merge_wordlists(self, sources: list[Path], output: Path) -> tuple[int, int]:
         """Combina fontes, filtra comprimento e deduplica opcionalmente.
 
         Args:
@@ -587,7 +587,7 @@ class Exploit(Exploit):
         mx = int(self.max_length)
         dedup = bool(self.merge_dedup)
 
-        seen: Set[str] = set()
+        seen: set[str] = set()
         written = 0
         read_lines = 0
 
@@ -671,7 +671,7 @@ class Exploit(Exploit):
             return
 
         tmp = self._ensure_tmp()
-        sources: List[Path] = []
+        sources: list[Path] = []
 
         def _want_static() -> bool:
             return mode in {"static", "combined", "auto"}
@@ -710,8 +710,8 @@ class Exploit(Exploit):
             sources.extend(self._generate_isp_wordlist(tmp))
 
         # Ordem estável e sem duplicar path
-        uniq_sources: List[Path] = []
-        seen_p: Set[str] = set()
+        uniq_sources: list[Path] = []
+        seen_p: set[str] = set()
         for p in sources:
             key = str(p.resolve())
             if key not in seen_p:

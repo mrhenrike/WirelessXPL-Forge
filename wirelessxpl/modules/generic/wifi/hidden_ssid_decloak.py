@@ -11,12 +11,12 @@ MITRE ATT&CK: T1040 (Network Sniffing)
 Author: Andre Henrique (@mrhenrike) | Uniao Geek
 """
 
-from __future__ import annotations
 
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set
+from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -33,17 +33,17 @@ class HiddenNetwork:
     channel: int = 0
     power: int = -100
     first_seen: float = 0.0
-    decloaked_ssid: Optional[str] = None
+    decloaked_ssid: str | None = None
     decloaked_via: str = ""
-    associated_stations: Set[str] = field(default_factory=set)
+    associated_stations: set[str] = field(default_factory=set)
 
 
 def decloak_passive(
     interface: str,
     duration: int = 60,
-    target_bssid: Optional[str] = None,
-    on_decloak: Optional[Callable[[HiddenNetwork], None]] = None,
-) -> List[HiddenNetwork]:
+    target_bssid: str | None = None,
+    on_decloak: Callable[[HiddenNetwork], None] | None = None,
+) -> list[HiddenNetwork]:
     """Passively monitor for hidden SSIDs.
 
     Listens for probe responses that reveal the SSID of hidden
@@ -61,7 +61,7 @@ def decloak_passive(
     if not _SCAPY_OK:
         raise ImportError("scapy is required: pip install scapy")
 
-    hidden: Dict[str, HiddenNetwork] = {}
+    hidden: dict[str, HiddenNetwork] = {}
     start_time = time.time()
 
     def _process_packet(pkt):

@@ -19,7 +19,6 @@ Requires: Scapy, Python 3.8+, Linux monitor-mode interface.
 Version: 2.0.0
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -94,7 +93,7 @@ def _random_mac() -> str:
     return ":".join(f"{b:02x}" for b in octets)
 
 
-def _mean(values: List[float]) -> float:
+def _mean(values: list[float]) -> float:
     """Compute arithmetic mean without numpy.
 
     Args:
@@ -108,7 +107,7 @@ def _mean(values: List[float]) -> float:
     return sum(values) / len(values)
 
 
-def _stddev(values: List[float]) -> float:
+def _stddev(values: list[float]) -> float:
     """Compute population standard deviation without numpy.
 
     Args:
@@ -124,7 +123,7 @@ def _stddev(values: List[float]) -> float:
     return math.sqrt(variance)
 
 
-def _ttest_welch(a: List[float], b: List[float]) -> Tuple[float, float]:
+def _ttest_welch(a: list[float], b: list[float]) -> tuple[float, float]:
     """Welch's t-test for two independent samples (no scipy required).
 
     Args:
@@ -230,7 +229,7 @@ class DragonTimingAttack:
         ]
         return self._bssid in addrs
 
-    def _extract_pairs(self, packets: List[Any]) -> List[Dict[str, Any]]:
+    def _extract_pairs(self, packets: list[Any]) -> list[dict[str, Any]]:
         """Extract commit-confirm timing pairs from a list of SAE frames.
 
         Groups frames by source MAC; for each source, pairs consecutive
@@ -242,8 +241,8 @@ class DragonTimingAttack:
         Returns:
             List of dicts with keys: src, commit_ts, confirm_ts, delta_ms.
         """
-        pending: Dict[str, Tuple[float, Any]] = {}
-        pairs: List[Dict[str, Any]] = []
+        pending: dict[str, tuple[float, Any]] = {}
+        pairs: list[dict[str, Any]] = []
 
         for pkt in packets:
             if not self._is_sae_frame(pkt):
@@ -274,7 +273,7 @@ class DragonTimingAttack:
 
         return pairs
 
-    def capture(self) -> List[Dict[str, Any]]:
+    def capture(self) -> list[dict[str, Any]]:
         """Capture live SAE Authentication frames and extract timing pairs.
 
         Returns:
@@ -300,7 +299,7 @@ class DragonTimingAttack:
         )
         print_info("Press Ctrl+C to stop early.")
 
-        collected: List[Any] = []
+        collected: list[Any] = []
         pair_count = 0
 
         def _packet_handler(pkt: Any) -> None:
@@ -345,7 +344,7 @@ class DragonTimingAttack:
 
         return pairs
 
-    def analyze(self, pairs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def analyze(self, pairs: list[dict[str, Any]]) -> dict[str, Any]:
         """Perform statistical timing analysis on captured SAE pairs.
 
         Checks for statistically significant differences in commit-confirm
@@ -381,11 +380,11 @@ class DragonTimingAttack:
         print_info(f"  Min delta     : {min(deltas):.3f} ms")
         print_info(f"  Max delta     : {max(deltas):.3f} ms")
 
-        by_src: Dict[str, List[float]] = {}
+        by_src: dict[str, list[float]] = {}
         for p in pairs:
             by_src.setdefault(p.get("src", "unknown"), []).append(p["delta_ms"])
 
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "samples": len(deltas),
             "mean_ms": round(avg, 4),
             "stddev_ms": round(std, 4),
@@ -456,7 +455,7 @@ class DragonTimingAttack:
 
         return result
 
-    def run(self) -> Dict[str, Any]:
+    def run(self) -> dict[str, Any]:
         """Execute full timing capture and analysis pipeline.
 
         Returns:
@@ -492,7 +491,7 @@ class DragonForce:
         self,
         interface: str,
         bssid: str,
-        groups: Optional[List[int]] = None,
+        groups: list[int] | None = None,
         count: int = 10,
         interval: float = 0.1,
         dry_run: bool = False,
@@ -528,7 +527,7 @@ class DragonForce:
             / group_bytes
         )
 
-    def run(self) -> Dict[str, Any]:
+    def run(self) -> dict[str, Any]:
         """Probe the AP with unsupported SAE groups to assess downgrade risk.
 
         Returns:
@@ -586,7 +585,7 @@ class DragonForce:
             print_error("Permission denied. Run as root.")
             return {}
 
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "groups_probed": self._groups,
             "frames_sent": frames_sent,
             "recommendation": (
@@ -831,7 +830,7 @@ class DragonSlayer:
             )
         return detected[0]
 
-    def timing_analysis(self) -> Dict[str, Any]:
+    def timing_analysis(self) -> dict[str, Any]:
         """Collect EAP-pwd exchange timings for side-channel analysis.
 
         Sniffs EAP frames of type 52 (EAP-pwd) and measures
@@ -863,8 +862,8 @@ class DragonSlayer:
             "against the target AP during this capture window."
         )
 
-        eap_timings: List[float] = []
-        pending_eap: Dict[str, float] = {}
+        eap_timings: list[float] = []
+        pending_eap: dict[str, float] = {}
 
         def _handler(pkt: Any) -> None:
             if not pkt.haslayer(Dot11):
@@ -950,7 +949,7 @@ class DragonSlayer:
                 "No significant EAP-pwd side-channel detected at this sample size."
             )
 
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "samples": len(eap_timings),
             "mean_ms": round(avg, 4),
             "stddev_ms": round(std, 4),
@@ -968,7 +967,7 @@ class DragonSlayer:
         print_success(f"Report saved: {report_path}")
         return result
 
-    def run(self) -> Dict[str, Any]:
+    def run(self) -> dict[str, Any]:
         """Execute EAP-pwd detection and timing side-channel analysis.
 
         Returns:

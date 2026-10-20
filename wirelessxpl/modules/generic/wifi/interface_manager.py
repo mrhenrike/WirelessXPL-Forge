@@ -28,7 +28,6 @@ Modes:
 OS requirement: Linux only (iw, NetworkManager).
 Version: 1.0.0
 """
-from __future__ import annotations
 
 import shutil
 import subprocess
@@ -483,7 +482,7 @@ class Exploit(Exploit):
     # OS operations
     # ------------------------------------------------------------------
 
-    def _switch_mode(self, iface: str, role: str, channel: Optional[int] = None) -> None:
+    def _switch_mode(self, iface: str, role: str, channel: int | None = None) -> None:
         """Switch the OS interface mode to match the assigned role."""
         if role in (ROLE_MONITOR, ROLE_INJECT):
             subprocess.run(["ip", "link", "set", iface, "down"],

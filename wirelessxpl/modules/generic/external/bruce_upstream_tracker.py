@@ -8,7 +8,6 @@ provides triage views directly inside WirelessXPL-Forge.
 Version: 1.1.0
 """
 
-from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -42,7 +41,7 @@ class Exploit(Exploit):
     category = OptString("", "Filter category for by_category view")
     limit = OptInteger(30, "Max entries to show")
 
-    def _load_json(self, filename: str) -> Dict[str, Any]:
+    def _load_json(self, filename: str) -> dict[str, Any]:
         path = _catalog_dir() / filename
         if not path.exists():
             return {}
@@ -78,7 +77,7 @@ class Exploit(Exploit):
             return
 
         meta = full.get("_meta", {})
-        useful_items: List[Dict[str, Any]] = list(useful.get("items") or [])
+        useful_items: list[dict[str, Any]] = list(useful.get("items") or [])
 
         view = str(self.view).strip().lower()
         if view == "summary":

@@ -21,7 +21,6 @@ Incorporated from:
 Version: 1.0.0
 """
 
-from __future__ import annotations
 
 import logging
 import os
@@ -103,7 +102,7 @@ class Exploit(Exploit):
 
     _VALID_MODES = frozenset({"start", "config", "crack-hint"})
 
-    def _generate_config(self) -> Optional[str]:
+    def _generate_config(self) -> str | None:
         """Write a temporary hostapd-WPE config and return its path."""
         iface = str(self.interface).strip()
         ssid = str(self.ssid).strip()
@@ -206,7 +205,7 @@ class Exploit(Exploit):
             print_error(f"Config não encontrada: {cfg}")
             return
 
-        cmd: List[str] = [hostapd_wpe]
+        cmd: list[str] = [hostapd_wpe]
         if self.verbose:
             cmd.append("-ddd")
         cmd.append(cfg)
