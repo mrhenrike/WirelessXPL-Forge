@@ -244,6 +244,12 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E LLFuzz baseband CVE scan: fingerprint modem chipset via
+        AT commands, assess against known LLFuzz CVE catalog, and
+        optionally launch fuzzing session with USRP hardware."""
         mode = str(self.mode).strip().lower()
         simulate = bool(self.simulate)
 

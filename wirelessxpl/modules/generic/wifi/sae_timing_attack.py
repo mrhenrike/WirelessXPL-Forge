@@ -493,6 +493,13 @@ class Exploit(Exploit):
             return
         require_authorised_lab()
 
+        print_success("Pre-conditions satisfied; launching exploit")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: SAE timing side-channel password recovery."""
+        op = str(self.mode).strip().lower()
+
         if op == "capture":
             self._capture()
 
@@ -501,7 +508,6 @@ class Exploit(Exploit):
             if pcap and os.path.isfile(pcap):
                 pairs = self._load_pcap()
             else:
-                # Try loading most recent raw JSON from output dir
                 out_dir = self._get_output_dir()
                 json_files = sorted(
                     [

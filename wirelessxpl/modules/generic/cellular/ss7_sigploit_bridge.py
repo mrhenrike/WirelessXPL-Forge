@@ -607,6 +607,13 @@ class Exploit(Exploit):
             )
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E SS7/Diameter/GTP attack: dispatch the selected signaling
+        attack (location tracking, SMS intercept, call redirect, DoS,
+        IMSI enum, GTP tunnel hijack) via SigPloit toolset."""
+        mode = str(self.mode).strip().lower()
         dispatch = {
             "ss7_location": self._ss7_location,
             "ss7_intercept_sms": self._ss7_intercept_sms,

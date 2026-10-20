@@ -15,6 +15,7 @@ import time
 from wirelessxpl.core.exploit import (
     Exploit,
     OptBool,
+    OptFloat,
     OptInteger,
     OptString,
     multi,

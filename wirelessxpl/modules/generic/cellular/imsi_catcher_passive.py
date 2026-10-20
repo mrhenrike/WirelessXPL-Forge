@@ -469,6 +469,13 @@ class Exploit(Exploit):
             return
         require_authorised_lab()
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E passive IMSI catcher: capture GSM BCCH via SDR, decode
+        IMSI/TMSI from paging requests and location updates, and export
+        collected identities."""
+        op = str(self.mode).strip().lower()
         if not _check_sdr_hardware() and op not in ("parse_results", "export"):
             print_status(
                 "Warning: RTL-SDR hardware not detected (rtl_test). "

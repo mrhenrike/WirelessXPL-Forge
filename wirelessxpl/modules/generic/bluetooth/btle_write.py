@@ -53,3 +53,47 @@ class Exploit(BTLEClient):
         if res:
             device = res[0]
             device.write(self.char, data)
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: write to BLE characteristic via raw L2CAP ATT."""
+        import socket
+        import struct as _struct
+
+        target_mac = str(self.target).strip()
+        char_handle = str(self.char).strip()
+        if not target_mac or not char_handle:
+            print_warning("Sem MAC ou handle: skip write raw")
+            return
+
+        try:
+            data = bytes.fromhex(str(self.data))
+        except ValueError:
+            return
+
+        try:
+            handle = int(char_handle, 16) if char_handle.startswith("0x") else int(char_handle)
+        except ValueError:
+            return
+
+        try:
+            sock = socket.socket(31, socket.SOCK_SEQPACKET, 0)
+            sock.settimeout(5.0)
+            addr_bytes = bytes(int(b, 16) for b in target_mac.split(":"))
+            sock.connect((addr_bytes, 0, 4))
+        except OSError as exc:
+            print_error(f"Conexão L2CAP falhou: {exc}")
+            return
+
+        att_write = _struct.pack("<BH", 0x12, handle) + data
+        try:
+            sock.send(att_write)
+            resp = sock.recv(256)
+            if resp and resp[0] == 0x13:
+                print_success(f"Write confirmado no handle 0x{handle:04X}")
+            else:
+                print_warning(f"Resposta inesperada: {resp.hex() if resp else 'vazia'}")
+        except OSError:
+            print_warning("Timeout na resposta ATT Write")
+        finally:
+            sock.close()
