@@ -22,7 +22,7 @@ class TestModuleImports:
             "wirelessxpl.modules.generic.access_points.ubiquiti.unifi_access_cmdi_cve_2026_50748",
             "wirelessxpl.modules.generic.access_points.mikrotik.routeros_preauth_rce_cve_2026_84411",
             "wirelessxpl.modules.generic.access_points.dlink.dsl_dns_cmdi_cve_2026_0625",
-            "wirelessxpl.modules.generic.cellular.adb_wireless_rce_cve_2026_0073",
+            "wirelessxpl.modules.generic.wifi.adb_wireless_rce_cve_2026_0073",
         ],
     )
     def test_module_imports(self, module_path: str) -> None:
@@ -36,7 +36,7 @@ class TestModuleImports:
             "wirelessxpl.modules.generic.access_points.ubiquiti.unifi_access_cmdi_cve_2026_50748",
             "wirelessxpl.modules.generic.access_points.mikrotik.routeros_preauth_rce_cve_2026_84411",
             "wirelessxpl.modules.generic.access_points.dlink.dsl_dns_cmdi_cve_2026_0625",
-            "wirelessxpl.modules.generic.cellular.adb_wireless_rce_cve_2026_0073",
+            "wirelessxpl.modules.generic.wifi.adb_wireless_rce_cve_2026_0073",
         ],
     )
     def test_exploit_has_required_methods(self, module_path: str) -> None:
@@ -54,7 +54,7 @@ class TestModuleImports:
             "wirelessxpl.modules.generic.access_points.ubiquiti.unifi_access_cmdi_cve_2026_50748",
             "wirelessxpl.modules.generic.access_points.mikrotik.routeros_preauth_rce_cve_2026_84411",
             "wirelessxpl.modules.generic.access_points.dlink.dsl_dns_cmdi_cve_2026_0625",
-            "wirelessxpl.modules.generic.cellular.adb_wireless_rce_cve_2026_0073",
+            "wirelessxpl.modules.generic.wifi.adb_wireless_rce_cve_2026_0073",
         ],
     )
     def test_exploit_has_target_option(self, module_path: str) -> None:
