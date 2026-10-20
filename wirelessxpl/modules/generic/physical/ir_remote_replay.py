@@ -294,7 +294,7 @@ class Exploit(BaseExploit):
 
         xid_frame = self._build_irda_sniffer_frame()
         print_info(f"IrDA XID discovery frame: {len(xid_frame)} bytes")
-        print_info(f"  Source: 0xDEADBEEF, Hints: Computer+IrCOMM")
+        print_info("  Source: 0xDEADBEEF, Hints: Computer+IrCOMM")
 
         print_success(
             "IrDA sniffer ready. In production, this would passively "
