@@ -220,6 +220,10 @@ class Exploit(Exploit):
                 print_info(f"  PCAP input: {self.pcap_input}")
             return
 
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: deauth target, capture CCMP frames, decrypt with zero TK."""
         if self.pcap_input:
             print_status(f"Analisando PCAP offline: {self.pcap_input}")
             packets = rdpcap(self.pcap_input)

