@@ -1,5 +1,15 @@
 """Evil Twin Portal Manager - captive portal server with built-in templates.
 
+
+__info__ = {
+    "name": "Evil Twin Portal Manager - captive portal server with built-in templates",
+    "description": (
+        "Manages HTML portal templates for Evil Twin / captive portal engagements. Serves portals via Python's built-in http.server (no Flask/FastAPI dependency). Captured credentials are written to a timestamped local log file. Built-in templates: - generic_wifi: Generic ISP/hotspot login (neutral branding) - router_admin: Generic router admin panel - isp_tim: TIM Brasil login portal - isp_claro: Claro Brasil login portal - isp_vivo: Vivo Brasil login portal - isp_oi: Oi Brasil login portal - starbucks: Starbucks WiFi portal (from wifi-arsenal_6) - google: Google account login (from wifi-arsenal_6)"
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+}
+
 Manages HTML portal templates for Evil Twin / captive portal engagements.
 Serves portals via Python's built-in http.server (no Flask/FastAPI dependency).
 Captured credentials are written to a timestamped local log file.
@@ -637,3 +647,9 @@ class PortalManager:
             "simulate": self.simulate,
             "log_path": str(self._log_path) if self._log_path else None,
         }
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

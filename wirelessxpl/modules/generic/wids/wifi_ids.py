@@ -511,3 +511,9 @@ class WirelessIDS:
             "by_type": dict(by_type),
             "simulate": self.simulate,
         }
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

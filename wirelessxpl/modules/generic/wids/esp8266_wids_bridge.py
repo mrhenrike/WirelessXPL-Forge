@@ -1,5 +1,15 @@
 """ESP8266 WIDS Bridge - Python receiver for ESP8266 hardware WIDS alerts.
 
+
+__info__ = {
+    "name": "ESP8266 WIDS Bridge - Python receiver for ESP8266 hardware WIDS alerts",
+    "description": (
+        "Subscribes to MQTT topics published by an ESP8266 running the WIDS firmware (based on wifi-arsenal_7 WIDS.ino). Decodes incoming alert JSON payloads into typed WIDSAlert dataclasses and dispatches them to registered handlers. Alert types from ESP8266 firmware: DEAUTH_DETECTED  - 802.11 deauthentication frame flood observed BEACON_FLOOD     - excessive beacon frames from multiple SSIDs PROBE_FLOOD      - high-rate probe request/response activity RSSI_ANOMALY     - signal-strength spike suggesting rogue AP proximity Requires: paho-mqtt (graceful fallback with ImportError message if missing) Simulate mode: generates mock alerts at a configurable interval."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+}
+
 Subscribes to MQTT topics published by an ESP8266 running the WIDS firmware
 (based on wifi-arsenal_7 WIDS.ino). Decodes incoming alert JSON payloads into
 typed WIDSAlert dataclasses and dispatches them to registered handlers.
@@ -462,3 +472,9 @@ class suppress_exc:
 
     def __exit__(self, exc_type: Any, *_: Any) -> bool:
         return exc_type is not None
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

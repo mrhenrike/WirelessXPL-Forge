@@ -680,3 +680,9 @@ class EvidenceVault:
                 "ledger_entries": conn.execute("SELECT COUNT(*) FROM ledger").fetchone()[0],
                 "head_hash": self._last_hash,
             }
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

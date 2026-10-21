@@ -549,3 +549,9 @@ class SessionManager:
     def active_session_id(self) -> str | None:
         """Currently active session ID, or None if no session is loaded."""
         return self._active_session_id
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

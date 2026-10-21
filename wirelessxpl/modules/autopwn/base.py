@@ -8,6 +8,16 @@ import time
 from dataclasses import dataclass, field
 
 
+
+__info__ = {
+    "name": "AutoPwn base engine for WirelessXPL-Forge",
+    "description": (
+        "# authorized use only"
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+}
+
 @dataclass
 class AutoPwnReport:
     segment: str; targets: list

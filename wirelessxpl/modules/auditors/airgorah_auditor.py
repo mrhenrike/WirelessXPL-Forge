@@ -1,5 +1,16 @@
 """Wrapper stub for Airgorah WiFi security auditor (Rust + GTK4).
 
+
+__info__ = {
+    "name": "Wrapper stub for Airgorah WiFi security auditor (Rust + GTK4)",
+    "description": (
+        "Wrapper stub for Airgorah WiFi security auditor (Rust + GTK4)"
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "references": ("https://github.com/martin-olivier/airgorah",),
+    "devices": ("WiFi audit", "deauth", "handshake/PMKID capture", "WPA cracking",),
+}
+
 Source: https://github.com/martin-olivier/airgorah (4502 stars)
 Crate: https://crates.io/crates/airgorah
 License: MIT
@@ -29,3 +40,9 @@ def check_dependencies() -> dict[str, bool]:
 
     tools = ["airgorah", "airmon-ng", "hashcat"]
     return {tool: shutil.which(tool) is not None for tool in tools}
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")
