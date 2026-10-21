@@ -109,7 +109,7 @@ def main() -> int:
             alt_sources.append(alt_source)
             alt_vendors.append(alt_vendor)
 
-        oui_lines.append("{} {}".format(prefix, vendor))
+        oui_lines.append(f"{prefix} {vendor}")
         enriched_rows.append(
             (
                 prefix,
@@ -129,9 +129,7 @@ def main() -> int:
         writer.writerows(enriched_rows)
 
     print(
-        "Merged OUI entries: ieee={} wireshark={} nmap={} total={}".format(
-            len(ieee), len(wireshark), len(nmap), len(all_prefixes)
-        )
+        f"Merged OUI entries: ieee={len(ieee)} wireshark={len(wireshark)} nmap={len(nmap)} total={len(all_prefixes)}"
     )
     return 0
 

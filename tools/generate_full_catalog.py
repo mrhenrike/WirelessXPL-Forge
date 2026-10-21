@@ -40,8 +40,8 @@ def _human_bytes(n: int) -> str:
         n = 0
     for suf, div in (("TiB", 1 << 40), ("GiB", 1 << 30), ("MiB", 1 << 20), ("KiB", 1 << 10)):
         if n >= div:
-            return "{:.2f} {}".format(n / div, suf)
-    return "{} B".format(n)
+            return f"{n / div:.2f} {suf}"
+    return f"{n} B"
 
 
 def _count_py_files(root: Path) -> int:
@@ -257,7 +257,7 @@ def _first_party_py_counts(repo_root: Path) -> Dict[str, int]:
     counts: Dict[str, int] = {}
     for name in ("core", "modules", "libs"):
         p = rx / name
-        counts["wirelessxpl/{}".format(name)] = _count_py_files(p)
+        counts[f"wirelessxpl/{name}"] = _count_py_files(p)
     counts["tools"] = _count_py_files(repo_root / "tools")
     root_py = repo_root / "wxf.py"
     counts["wxf.py"] = 1 if root_py.is_file() else 0
@@ -373,7 +373,7 @@ def _build_md(
     lines: List[str] = [
         "# wirelessxpl-Forge — Full Module Catalog",
         "",
-        "> Modules tree id: `{}` (git object)".format(stamp),
+        f"> Modules tree id: `{stamp}` (git object)",
         "> Author: Andre Henrique (@mrhenrike) | Uniao Geek",
         "",
         "## Summary",
@@ -384,8 +384,8 @@ def _build_md(
     for key, label in cat_rows:
         st = cat_stats.get(key) or {"modules": 0, "vendor_groups": 0}
         lines.append("| {} | {} | {} |".format(label, st["modules"], st["vendor_groups"]))
-    lines.append("| **Total Modules** | **{}** | — |".format(len(records)))
-    lines.append("| Distinct CVEs | {} | — |".format(len(all_cves)))
+    lines.append(f"| **Total Modules** | **{len(records)}** | — |")
+    lines.append(f"| Distinct CVEs | {len(all_cves)} | — |")
 
     gt = int(disk.get("grand_total_bytes", 0) or 0)
     lines.extend([
@@ -398,8 +398,8 @@ def _build_md(
         "",
         "| Metric | Value |",
         "|---|---|",
-        "| Repository root | `{}` |".format(repo_label(repo_root)),
-        "| Total file bytes | {} |".format(_human_bytes(gt)),
+        f"| Repository root | `{repo_label(repo_root)}` |",
+        f"| Total file bytes | {_human_bytes(gt)} |",
         "| Files (repo walk) | {} |".format(disk.get("repo_files_count", 0)),
         "| Files under ``wirelessxpl/`` | {} |".format(disk.get("wirelessxpl_files_count", 0)),
         "",
@@ -410,7 +410,7 @@ def _build_md(
     ])
     for name, sz in _sorted_sizes(disk.get("repo_by_top") or {}, limit=15):
         pct = (100.0 * sz / gt) if gt else 0.0
-        lines.append("| `{}` | {} | {:.1f}% |".format(name, _human_bytes(sz), pct))
+        lines.append(f"| `{name}` | {_human_bytes(sz)} | {pct:.1f}% |")
 
     lines.extend([
         "",
@@ -421,7 +421,7 @@ def _build_md(
     ])
     for name, sz in _sorted_sizes(disk.get("wirelessxpl_by_top") or {}, limit=25):
         pct = (100.0 * sz / gt) if gt else 0.0
-        lines.append("| `{}` | {} | {:.1f}% |".format(name, _human_bytes(sz), pct))
+        lines.append(f"| `{name}` | {_human_bytes(sz)} | {pct:.1f}% |")
 
     res_ch = disk.get("resources_children") or {}
     if res_ch:
@@ -434,7 +434,7 @@ def _build_md(
         ])
         for name, sz in _sorted_sizes(res_ch, limit=25):
             pct = (100.0 * sz / gt) if gt else 0.0
-            lines.append("| `{}` | {} | {:.1f}% |".format(name, _human_bytes(sz), pct))
+            lines.append(f"| `{name}` | {_human_bytes(sz)} | {pct:.1f}% |")
 
     lines.extend([
         "",
@@ -445,19 +445,19 @@ def _build_md(
     ])
     for key in ("wirelessxpl/core", "wirelessxpl/modules", "wirelessxpl/libs", "tools", "wxf.py"):
         if key in py_counts:
-            lines.append("| `{}` | {} |".format(key, py_counts[key]))
+            lines.append(f"| `{key}` | {py_counts[key]} |")
 
     lines.extend(["", "---", ""])
 
     def _section(title: str, items: List[Dict[str, Any]], show_cves: bool = True) -> List[str]:
-        section_lines = ["## {} ({})".format(title, len(items)), ""]
+        section_lines = [f"## {title} ({len(items)})", ""]
         vendors: Dict[str, List[Dict[str, Any]]] = {}
         for item in items:
             vendors.setdefault(item["vendor"], []).append(item)
 
         idx = 0
         for vendor in sorted(vendors.keys()):
-            section_lines.append("### {} ({})".format(vendor, len(vendors[vendor])))
+            section_lines.append(f"### {vendor} ({len(vendors[vendor])})")
             section_lines.append("")
             for item in sorted(vendors[vendor], key=lambda x: x["name"]):
                 idx += 1
@@ -483,16 +483,16 @@ def _build_md(
     lines.extend([
         "---",
         "",
-        "## CVE Master List ({})".format(len(all_cves)),
+        f"## CVE Master List ({len(all_cves)})",
         "",
         "| # | CVE ID | Modules |",
         "|---:|---|---|",
     ])
     for idx, (cve_id, paths) in enumerate(sorted(all_cves.items()), 1):
-        modules_str = ", ".join("`{}`".format(p) for p in paths[:5])
+        modules_str = ", ".join(f"`{p}`" for p in paths[:5])
         if len(paths) > 5:
-            modules_str += " (+{})".format(len(paths) - 5)
-        lines.append("| {} | {} | {} |".format(idx, cve_id, modules_str))
+            modules_str += f" (+{len(paths) - 5})"
+        lines.append(f"| {idx} | {cve_id} | {modules_str} |")
 
     # CVE by vendor
     cve_by_vendor: Dict[str, Set[str]] = {}
@@ -529,11 +529,11 @@ def _build_md(
                 lines.append("| {} | {:.1f} | {} | {} | {} |".format(
                     e.cve_id, e.cvss_score, e.access_vector,
                     "YES" if e.is_exploitable_by_rxf else "no",
-                    "`{}`".format(e.rxf_module) if e.rxf_module else "-",
+                    f"`{e.rxf_module}`" if e.rxf_module else "-",
                 ))
             else:
-                mod_paths = ", ".join("`{}`".format(p) for p in all_cves[cve_id][:3])
-                lines.append("| {} | - | - | mapped | {} |".format(cve_id, mod_paths))
+                mod_paths = ", ".join(f"`{p}`" for p in all_cves[cve_id][:3])
+                lines.append(f"| {cve_id} | - | - | mapped | {mod_paths} |")
     except Exception:
         pass
 
@@ -553,7 +553,7 @@ def _build_txt(
     lines: List[str] = [
         "wirelessxpl-Forge - Full Module Catalog",
         "=" * 40,
-        "Modules tree id: {} (git object)".format(stamp),
+        f"Modules tree id: {stamp} (git object)",
         "Author: Andre Henrique (@mrhenrike) | Uniao Geek",
         "",
     ]
@@ -581,16 +581,16 @@ def _build_txt(
                 label, st["modules"], st["vendor_groups"],
             )
         )
-    lines.append("  TOTAL MODULES: {}".format(len(records)))
-    lines.append("  DISTINCT CVEs: {}".format(len(all_cves)))
+    lines.append(f"  TOTAL MODULES: {len(records)}")
+    lines.append(f"  DISTINCT CVEs: {len(all_cves)}")
 
     gt = int(disk.get("grand_total_bytes", 0) or 0)
     lines.extend([
         "",
         "PROGRAM FOOTPRINT",
         "-" * 20,
-        "Repository root: {}".format(repo_label(repo_root)),
-        "Total file bytes: {}".format(_human_bytes(gt)),
+        f"Repository root: {repo_label(repo_root)}",
+        f"Total file bytes: {_human_bytes(gt)}",
         "Files (repo walk, excl. skipped dirs): {}".format(disk.get("repo_files_count", 0)),
         "Files under wirelessxpl/: {}".format(disk.get("wirelessxpl_files_count", 0)),
         "",
@@ -598,28 +598,28 @@ def _build_txt(
     ])
     for name, sz in _sorted_sizes(disk.get("repo_by_top") or {}, limit=15):
         pct = (100.0 * sz / gt) if gt else 0.0
-        lines.append("  {:<36} {:>12}  ({:.1f}%)".format(name, _human_bytes(sz), pct))
+        lines.append(f"  {name:<36} {_human_bytes(sz):>12}  ({pct:.1f}%)")
     lines.extend(["", "wirelessxpl/ first-level folders:",])
     for name, sz in _sorted_sizes(disk.get("wirelessxpl_by_top") or {}, limit=25):
         pct = (100.0 * sz / gt) if gt else 0.0
-        lines.append("  {:<36} {:>12}  ({:.1f}%)".format(name, _human_bytes(sz), pct))
+        lines.append(f"  {name:<36} {_human_bytes(sz):>12}  ({pct:.1f}%)")
     res_ch = disk.get("resources_children") or {}
     if res_ch:
         lines.extend(["", "wirelessxpl/resources/* direct children (largest):",])
         for name, sz in _sorted_sizes(res_ch, limit=25):
             pct = (100.0 * sz / gt) if gt else 0.0
-            lines.append("  {:<36} {:>12}  ({:.1f}%)".format(name, _human_bytes(sz), pct))
+            lines.append(f"  {name:<36} {_human_bytes(sz):>12}  ({pct:.1f}%)")
     lines.extend(["", "First-party .py file counts (excl. __pycache__):",])
     for key in ("wirelessxpl/core", "wirelessxpl/modules", "wirelessxpl/libs", "tools", "wxf.py"):
         if key in py_counts:
-            lines.append("  {:<22} {}".format(key, py_counts[key]))
+            lines.append(f"  {key:<22} {py_counts[key]}")
     lines.append("")
 
     for mod_type, label in type_labels.items():
         items = [r for r in records if r["type"] == mod_type]
         if not items:
             continue
-        lines.append("{} ({})".format(label, len(items)))
+        lines.append(f"{label} ({len(items)})")
         lines.append("=" * 40)
 
         vendors: Dict[str, List[Dict[str, Any]]] = {}
@@ -629,7 +629,7 @@ def _build_txt(
         idx = 0
         for vendor in sorted(vendors.keys()):
             lines.append("")
-            lines.append("[{}] ({})".format(vendor.upper(), len(vendors[vendor])))
+            lines.append(f"[{vendor.upper()}] ({len(vendors[vendor])})")
             lines.append("-" * 30)
             for item in sorted(vendors[vendor], key=lambda x: x["name"]):
                 idx += 1
@@ -643,7 +643,7 @@ def _build_txt(
                     lines.append("     Devices: {}".format(", ".join(str(d) for d in item["devices"][:8])))
         lines.append("")
 
-    lines.append("CVE MASTER LIST ({})".format(len(all_cves)))
+    lines.append(f"CVE MASTER LIST ({len(all_cves)})")
     lines.append("=" * 40)
     for idx, (cve_id, paths) in enumerate(sorted(all_cves.items()), 1):
         lines.append("  {}. {} -> {}".format(idx, cve_id, ", ".join(paths[:5])))

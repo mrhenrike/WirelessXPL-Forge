@@ -10,7 +10,7 @@ import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -29,10 +29,10 @@ def _run_gh_api(endpoint: str, paginate: bool = False) -> List[dict]:
         check=False,
     )
     if completed.returncode != 0:
-        raise RuntimeError("gh api failed for {}: {}".format(endpoint, completed.stderr.strip()))
+        raise RuntimeError(f"gh api failed for {endpoint}: {completed.stderr.strip()}")
     stdout = completed.stdout or ""
     if not stdout.strip():
-        raise RuntimeError("gh api returned empty payload for {}".format(endpoint))
+        raise RuntimeError(f"gh api returned empty payload for {endpoint}")
     payload = json.loads(stdout)
     if paginate:
         # --slurp returns list of pages; flatten if each page is a list.
@@ -112,7 +112,7 @@ def main() -> int:
     source_catalog = json.loads((catalogs_root / "external_tool_intel_sources.json").read_text(encoding="utf-8"))
     sources = source_catalog.get("sources", [])
     snapshot_rows: List[Dict[str, object]] = []
-    now_utc = datetime.now(timezone.utc).isoformat()
+    now_utc = datetime.now(UTC).isoformat()
     for source in sources:
         src_url = str(source.get("url", ""))
         owner, repo = _extract_github_ref(src_url)
@@ -135,7 +135,7 @@ def main() -> int:
         }
         if owner and repo:
             try:
-                repo_meta = _run_gh_api("repos/{}/{}".format(owner, repo), paginate=False)[0]
+                repo_meta = _run_gh_api(f"repos/{owner}/{repo}", paginate=False)[0]
                 row["github_stars"] = repo_meta.get("stargazers_count", "")
                 row["github_forks"] = repo_meta.get("forks_count", "")
                 row["github_open_issues"] = repo_meta.get("open_issues_count", "")
@@ -209,15 +209,7 @@ def main() -> int:
     _write_json(arsenal_root / "binaries" / "external_binary_catalog.json", {"total": len(binaries), "items": binaries})
 
     print(
-        "sync_external_intel issues={} prs={} forks={} external_sources={} pocs={} firmware={} binaries={}".format(
-            len(issues),
-            len(pulls),
-            len(forks),
-            len(snapshot_rows),
-            len(pocs),
-            len(firmware),
-            len(binaries),
-        )
+        f"sync_external_intel issues={len(issues)} prs={len(pulls)} forks={len(forks)} external_sources={len(snapshot_rows)} pocs={len(pocs)} firmware={len(firmware)} binaries={len(binaries)}"
     )
     return 0
 

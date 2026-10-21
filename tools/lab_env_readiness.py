@@ -7,7 +7,7 @@ from __future__ import annotations
 import csv
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List
 
@@ -32,7 +32,7 @@ def main() -> int:
     log_dir.mkdir(parents=True, exist_ok=True)
 
     rows: List[Dict[str, object]] = []
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     for provider in PROVIDERS:
         required = [str(item) for item in provider["required_env"]]
         ready = _is_ready(required)

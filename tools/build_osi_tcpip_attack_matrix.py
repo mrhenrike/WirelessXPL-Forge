@@ -56,7 +56,7 @@ def main() -> int:
                     }
                 )
 
-    print("osi_tcpip_matrix_rows_written file={}".format(out_path.name))
+    print(f"osi_tcpip_matrix_rows_written file={out_path.name}")
     return 0
 
 

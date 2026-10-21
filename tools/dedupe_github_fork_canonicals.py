@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Group GitHub catalog entries by upstream (parent) repository and suggest canonical URLs.
 
 Uses ``gh api repos/{owner}/{repo}`` to read ``fork`` and ``parent.full_name``. Repos that share

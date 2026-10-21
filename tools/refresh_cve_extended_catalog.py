@@ -293,7 +293,7 @@ def _entries_from_external_intel(repo_root: Path, seen: Set[str]) -> List[Dict[s
                 "Referenciado em external_tool_intel_sources (id={}); domínio catalogado: {}. "
                 "PoC/repo local listado — validar com NVD/PSIRT."
             ).format(sid, dom or "n/d")
-            ver = "Ver fonte: {} / NVD".format(name[:120])
+            ver = f"Ver fonte: {name[:120]} / NVD"
             out.append(
                 row(
                     cve,
@@ -329,15 +329,15 @@ def _entries_from_modules(repo_root: Path, seen: Set[str]) -> List[Dict[str, Any
             seen.add(cve)
             vendor, prod = _vendor_product_from_module_path(rel)
             desc = (
-                "CVE citado no módulo WirelessXPL ``{}``. "
-                "Confirmar produto/versões no fabricante (NVD).".format(rel)
+                f"CVE citado no módulo WirelessXPL ``{rel}``. "
+                "Confirmar produto/versões no fabricante (NVD)."
             )
             out.append(
                 row(
                     cve,
                     vendor,
                     prod,
-                    "Ver módulo: {}".format(rel),
+                    f"Ver módulo: {rel}",
                     desc,
                     0.0,
                 ),
@@ -396,7 +396,7 @@ def _normalize_poc_repo_ref(url: str) -> Optional[str]:
     if ml:
         op = ml.group(1).strip("/")
         repo = ml.group(2).rstrip("/")
-        return "https://gitlab.com/{}/{}".format(op, repo)
+        return f"https://gitlab.com/{op}/{repo}"
     return None
 
 
@@ -562,16 +562,8 @@ def main() -> int:
     out = root / "wirelessxpl" / "resources" / "catalogs" / "cve_extended_catalog.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     print(
-        "wrote {} entries (+{} intel, +{} modules) tg12: +{} ref appends, +{} from embedded, "
-        "+{} stubs -> {}".format(
-            len(entries),
-            len(auto_intel),
-            len(auto_mod),
-            tg_merged[0],
-            tg_merged[1],
-            tg_merged[2],
-            out,
-        ),
+        f"wrote {len(entries)} entries (+{len(auto_intel)} intel, +{len(auto_mod)} modules) tg12: +{tg_merged[0]} ref appends, +{tg_merged[1]} from embedded, "
+        f"+{tg_merged[2]} stubs -> {out}",
     )
     return 0
 

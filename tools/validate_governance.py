@@ -22,16 +22,16 @@ def _configure_logging() -> None:
 def _must_contain(path: Path, required_tokens: List[str], errors: List[str]) -> None:
     """Validate a file exists and contains required tokens."""
     if not path.exists():
-        errors.append("missing required governance file: {}".format(path.as_posix()))
+        errors.append(f"missing required governance file: {path.as_posix()}")
         return
     content = path.read_text(encoding="utf-8", errors="ignore")
     if not content.strip():
-        errors.append("governance file is empty: {}".format(path.as_posix()))
+        errors.append(f"governance file is empty: {path.as_posix()}")
         return
     lower = content.lower()
     for token in required_tokens:
         if token.lower() not in lower:
-            errors.append("missing token '{}' in {}".format(token, path.as_posix()))
+            errors.append(f"missing token '{token}' in {path.as_posix()}")
 
 
 def main() -> int:

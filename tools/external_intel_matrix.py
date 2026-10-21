@@ -47,7 +47,7 @@ def main() -> int:
                 }
             )
 
-    print("external_sources={} output={}".format(len(sources), out_file.name))
+    print(f"external_sources={len(sources)} output={out_file.name}")
     return 0
 
 

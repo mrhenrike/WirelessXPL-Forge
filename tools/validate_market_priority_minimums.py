@@ -55,19 +55,11 @@ def main() -> int:
 
         if len(domestic_resolved) < required_domestic:
             errors.append(
-                "year {} domestic has {} resolved entries (required {})".format(
-                    year,
-                    len(domestic_resolved),
-                    required_domestic,
-                )
+                f"year {year} domestic has {len(domestic_resolved)} resolved entries (required {required_domestic})"
             )
         if len(corporate_resolved) < required_corporate:
             errors.append(
-                "year {} corporate has {} resolved entries (required {})".format(
-                    year,
-                    len(corporate_resolved),
-                    required_corporate,
-                )
+                f"year {year} corporate has {len(corporate_resolved)} resolved entries (required {required_corporate})"
             )
         if domestic_missing:
             errors.append("year {} domestic unresolved ids: {}".format(year, ", ".join(domestic_missing)))
@@ -82,11 +74,7 @@ def main() -> int:
 
         if len(top_resolved) < required_global:
             errors.append(
-                "year {} global has {} resolved entries (required {})".format(
-                    year,
-                    len(top_resolved),
-                    required_global,
-                )
+                f"year {year} global has {len(top_resolved)} resolved entries (required {required_global})"
             )
         if top_missing:
             errors.append("year {} global unresolved ids: {}".format(year, ", ".join(top_missing)))

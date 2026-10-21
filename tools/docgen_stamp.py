@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import os
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -57,10 +57,10 @@ def generation_iso_timestamp(repo_root: Path) -> str:
         out = (completed.stdout or "").strip()
         if completed.returncode == 0 and out.isdigit():
             ts = int(out)
-            return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+            return datetime.fromtimestamp(ts, tz=UTC).isoformat()
     except OSError:
         pass
     epoch = os.environ.get("SOURCE_DATE_EPOCH", "").strip()
     if epoch and epoch.isdigit():
-        return datetime.fromtimestamp(int(epoch), tz=timezone.utc).isoformat()
-    return datetime.now(timezone.utc).isoformat()
+        return datetime.fromtimestamp(int(epoch), tz=UTC).isoformat()
+    return datetime.now(UTC).isoformat()
