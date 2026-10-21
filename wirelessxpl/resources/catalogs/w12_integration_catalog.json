@@ -1,0 +1,212 @@
+{
+  "version": "12.0",
+  "generated": "2026-10-21",
+  "description": "Wave 12 integration catalog for WirelessXPL",
+  "clusters": {
+    "wifi_audit": {
+      "description": "WiFi auditing and cracking tools",
+      "entries": [
+        {
+          "src_id": "SRC-149",
+          "name": "wifit3",
+          "url": "https://github.com/derv82/wifit3",
+          "stars": 2509,
+          "priority": "Alta",
+          "action": "A",
+          "module": "auditors/wifit3_wrapper.py",
+          "notes": "USB-only cross-platform wireless auditor"
+        },
+        {
+          "src_id": "SRC-150",
+          "name": "wifite2",
+          "url": "https://github.com/derv82/wifite2",
+          "stars": 8198,
+          "priority": "Alta",
+          "action": "A",
+          "module": "auditors/wifite2_wrapper.py",
+          "notes": "Reference wireless auditor"
+        },
+        {
+          "src_id": "SRC-679",
+          "name": "wifisting",
+          "url": "https://github.com/yslxotwod/wifisting",
+          "stars": 58,
+          "priority": "Alta",
+          "action": "A",
+          "module": "auditors/wifisting_toolkit.py",
+          "notes": "GTK4 toolkit with 58 WiFi/BT/RF/MITM modules"
+        },
+        {
+          "src_id": "SRC-1005",
+          "name": "airgorah",
+          "url": "https://github.com/martin-olivier/airgorah",
+          "stars": 4502,
+          "priority": "Alta",
+          "action": "A",
+          "module": "auditors/airgorah_auditor.py",
+          "notes": "Rust+GTK4 WiFi auditor: deauth, handshake/PMKID, WPA cracking"
+        },
+        {
+          "src_id": "SRC-1006",
+          "name": "airgorah-crate",
+          "url": "https://crates.io/crates/airgorah",
+          "priority": "Alta",
+          "action": "A",
+          "notes": "Rust crate distribution for airgorah"
+        }
+      ]
+    },
+    "wifi_wps": {
+      "description": "WPS-specific exploits and research",
+      "entries": [
+        {
+          "src_id": "SRC-1058",
+          "name": "broadcom-wps-zeroday",
+          "url": "https://datawater.com/broadcom-wps-zero-day-wifi-routers/",
+          "priority": "Alta",
+          "action": "A",
+          "module": "exploits/wifi_wps/broadcom_wps_zeroday.py",
+          "notes": "Broadcom WPS zero-day affecting multiple router vendors"
+        }
+      ]
+    },
+    "cellular": {
+      "description": "2G/3G/4G/5G cellular protocol tools",
+      "entries": [
+        {
+          "src_id": "SRC-144",
+          "name": "QCSuper",
+          "url": "https://github.com/BigNerd95/QCSuper",
+          "priority": "Alta",
+          "action": "A",
+          "module": "exploits/cellular/qcsuper_capture.py",
+          "notes": "Raw 2G/3G/4G frame capture via Qualcomm diag interface"
+        }
+      ]
+    },
+    "rf_sdr": {
+      "description": "RF and SDR security research tools",
+      "entries": [
+        {
+          "src_id": "SRC-680",
+          "name": "RFSec-ToolKit",
+          "url": "https://github.com/cn0xroot/RFSec-ToolKit",
+          "priority": "Alta",
+          "action": "Q",
+          "notes": "Curated collection of RF/SDR security tools"
+        },
+        {
+          "src_id": "SRC-681",
+          "name": "FISSURE",
+          "url": "https://github.com/ainfosec/FISSURE",
+          "priority": "Alta",
+          "action": "A",
+          "module": "exploits/rf_sdr/fissure_framework.py",
+          "notes": "RF reverse engineering framework with signal ID, protocol analysis, attack generation"
+        }
+      ]
+    },
+    "zigbee": {
+      "description": "Zigbee ecosystem reference (Koenkk consolidated)",
+      "entries": [
+        {
+          "src_id": "SRC-834",
+          "name": "test-zigbee-OTA",
+          "url": "https://github.com/Koenkk/test-zigbee-OTA",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Zigbee OTA test infrastructure"
+        },
+        {
+          "src_id": "SRC-839",
+          "name": "zigbee2mqtt",
+          "url": "https://github.com/Koenkk/zigbee2mqtt",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Zigbee to MQTT bridge; attack surface for protocol research"
+        },
+        {
+          "src_id": "SRC-844",
+          "name": "zigbee-herdsman",
+          "url": "https://github.com/Koenkk/zigbee-herdsman",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Zigbee protocol library; useful for custom packet crafting"
+        },
+        {
+          "src_id": "SRC-845",
+          "name": "zigbee-herdsman-converters",
+          "url": "https://github.com/Koenkk/zigbee-herdsman-converters",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Device converters with Zigbee cluster definitions"
+        },
+        {
+          "src_id": "SRC-847",
+          "name": "zigbee-specification",
+          "url": "https://github.com/Koenkk/zigbee-specification",
+          "priority": "Media",
+          "action": "A",
+          "notes": "Zigbee specification docs; reference for protocol analysis"
+        }
+      ],
+      "consolidated_note": "14 Koenkk Zigbee repos consolidated as reference. Key repos: zigbee-herdsman (protocol lib), zigbee-specification (protocol docs), zigbee2mqtt (bridge). Remaining repos (OTA, converters, addons, etc.) serve as supplementary reference for Zigbee attack surface mapping."
+    },
+    "wifi_hardware": {
+      "description": "WiFi hardware research and driver modifications",
+      "entries": [
+        {
+          "src_id": "SRC-146",
+          "name": "AtherosFreedom",
+          "url": "https://github.com/BigNerd95/AtherosFreedom",
+          "priority": "Media",
+          "action": "B",
+          "notes": "Atheros driver patches for ART limit bypass; hardware research"
+        }
+      ]
+    },
+    "wordlists": {
+      "description": "Wireless-specific wordlists (cross-ref WordlistXPL)",
+      "entries": [
+        {
+          "src_id": "SRC-245",
+          "name": "Probable-Wordlists",
+          "url": "https://github.com/berzerk0/Probable-Wordlists",
+          "stars": 9374,
+          "priority": "Alta",
+          "action": "Q",
+          "notes": "Probability-sorted wordlists for password cracking; cross-ref with WordlistXPL"
+        },
+        {
+          "src_id": "SRC-381",
+          "name": "commonspeak2",
+          "url": "https://github.com/assetnote/commonspeak2",
+          "stars": 782,
+          "priority": "Alta",
+          "action": "Q",
+          "notes": "BigQuery-based content discovery wordlists"
+        }
+      ]
+    },
+    "ble_thermal": {
+      "description": "BLE devices and thermal printer bridge",
+      "entries": [
+        {
+          "src_id": "SRC-618",
+          "name": "GGLyn",
+          "url": "https://github.com/Lakr233/GGLyn",
+          "stars": 61,
+          "priority": "Media",
+          "action": "Q",
+          "notes": "HTTP to BLE bridge for thermal printer; BLE protocol reference"
+        }
+      ]
+    }
+  },
+  "stats": {
+    "total_entries": 22,
+    "stubs_created": 7,
+    "references_cataloged": 15,
+    "clusters": 8
+  }
+}
