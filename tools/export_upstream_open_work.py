@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Export open issues and open pull requests for GitHub repos listed in a JSON catalog.
 
 Issue comments are fetched for open issues only, capped per repository to stay within

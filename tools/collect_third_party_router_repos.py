@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Collect GitHub repository URLs from search queries and merge with a static seed list.
 
 The GitHub Search API returns at most 1000 results per query. This script paginates until

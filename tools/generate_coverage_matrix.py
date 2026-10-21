@@ -10,7 +10,7 @@ import logging
 import re
 import subprocess
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -35,7 +35,7 @@ def _matrix_source_revision(repo_root: Path) -> str:
             return rev
     except (OSError, subprocess.TimeoutExpired):
         pass
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 RE_CVE = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
@@ -256,7 +256,7 @@ def _protocol_coverage(records: List[ModuleRecord]) -> str:
 
     text_pool = []
     for item in records:
-        text_pool.append("{} {} {}".format(item.module_path.lower(), item.module_name.lower(), item.description.lower()))
+        text_pool.append(f"{item.module_path.lower()} {item.module_name.lower()} {item.description.lower()}")
     whole = "\n".join(text_pool)
 
     lines = [
@@ -278,7 +278,7 @@ def _token_hits(records: List[ModuleRecord], tokens: List[str]) -> int:
     lowered_tokens = [token.lower() for token in tokens]
     hits = 0
     for rec in records:
-        blob = "{} {} {}".format(rec.module_path.lower(), rec.module_name.lower(), rec.description.lower())
+        blob = f"{rec.module_path.lower()} {rec.module_name.lower()} {rec.description.lower()}"
         if any(token in blob for token in lowered_tokens):
             hits += 1
     return hits
@@ -302,7 +302,7 @@ def _osi_tcpip_coverage_section(records: List[ModuleRecord], repo_root: Path) ->
         "",
     ]
     for key in sorted(priorities.keys()):
-        lines.append("- {}: {}".format(key, priorities[key]))
+        lines.append(f"- {key}: {priorities[key]}")
 
     lines.extend(
         [
@@ -387,7 +387,7 @@ def _osi_tcpip_coverage_section(records: List[ModuleRecord], repo_root: Path) ->
                     priority.get("OT_IIoT", "-"),
                 )
             )
-        layer_hit_totals["{} {}".format(osi_layer, layer_name)] = layer_hits
+        layer_hit_totals[f"{osi_layer} {layer_name}"] = layer_hits
 
     lines.extend(
         [
@@ -399,7 +399,7 @@ def _osi_tcpip_coverage_section(records: List[ModuleRecord], repo_root: Path) ->
         ]
     )
     for layer_name, total in sorted(layer_hit_totals.items()):
-        lines.append("| {} | {} |".format(layer_name, total))
+        lines.append(f"| {layer_name} | {total} |")
 
     return "\n".join(lines)
 
@@ -455,7 +455,7 @@ def _market_priority_section(records: List[ModuleRecord], repo_root: Path) -> st
         yearly_brazil = []
         yearly_global = []
         for idx, item in enumerate(payload.get("targets", [])):
-            dev_id = "legacy_{}".format(idx)
+            dev_id = f"legacy_{idx}"
             legacy_pool.append(
                 {
                     "id": dev_id,
@@ -501,7 +501,7 @@ def _market_priority_section(records: List[ModuleRecord], repo_root: Path) -> st
 
         keyword_hits = 0
         for rec in vendor_records:
-            blob = "{} {} {}".format(rec.module_path.lower(), rec.module_name.lower(), rec.description.lower())
+            blob = f"{rec.module_path.lower()} {rec.module_name.lower()} {rec.description.lower()}"
             if any(_keyword_matches(blob, keyword) for keyword in keywords):
                 keyword_hits += 1
 
@@ -540,7 +540,7 @@ def _market_priority_section(records: List[ModuleRecord], repo_root: Path) -> st
         return rows
 
     def _render_detail_rows(year_data: List[Dict[str, object]], field_name: str, title: str) -> List[str]:
-        rows: List[str] = ["### {}".format(title), "", "| Year | Vendor | Product | Segment | Vendor Covered | Keyword Hits |", "|---:|---|---|---|---|---:|"]
+        rows: List[str] = [f"### {title}", "", "| Year | Vendor | Product | Segment | Vendor Covered | Keyword Hits |", "|---:|---|---|---|---|---:|"]
         for entry in sorted(year_data, key=lambda x: int(x.get("year", 0))):
             year = int(entry.get("year", 0))
             ids = [str(device_id) for device_id in entry.get(field_name, [])]
@@ -681,7 +681,7 @@ def _discord_requested_section(records: List[ModuleRecord], repo_root: Path) -> 
 
         keyword_hits = 0
         for rec in vendor_records:
-            blob = "{} {} {}".format(rec.module_path.lower(), rec.module_name.lower(), rec.description.lower())
+            blob = f"{rec.module_path.lower()} {rec.module_name.lower()} {rec.description.lower()}"
             if any(_keyword_matches(blob, keyword) for keyword in keywords):
                 keyword_hits += 1
 
@@ -743,7 +743,7 @@ def _architecture_inventory_section(repo_root: Path) -> str:
     if curated:
         lines.extend(["", "| curated_arsenal domain | Count |", "|---|---:|"])
         for domain in sorted(curated.keys()):
-            lines.append("| {} | {} |".format(domain, len(curated.get(domain, []))))
+            lines.append(f"| {domain} | {len(curated.get(domain, []))} |")
     return "\n".join(lines)
 
 
@@ -764,7 +764,7 @@ def _workspace_reuse_inventory_section(repo_root: Path) -> str:
         "|---|---:|",
     ]
     for key in sorted(summary.keys()):
-        lines.append("| {} | {} |".format(key, summary[key]))
+        lines.append(f"| {key} | {summary[key]} |")
     return "\n".join(lines)
 
 
@@ -787,13 +787,13 @@ def _deep_intel_backlog_section(repo_root: Path) -> str:
         "## Deep Intel Backlog Snapshot",
         "",
         "- Total backlog items: {}".format(payload.get("total", len(items))),
-        "- Total keyword hits across backlog: {}".format(total_kw_hits),
+        f"- Total keyword hits across backlog: {total_kw_hits}",
         "",
         "| Priority | Count |",
         "|---|---:|",
     ]
     for key in sorted(counts.keys()):
-        lines.append("| {} | {} |".format(key, counts[key]))
+        lines.append(f"| {key} | {counts[key]} |")
     return "\n".join(lines)
 
 

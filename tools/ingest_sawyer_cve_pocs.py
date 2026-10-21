@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Ingest PoC links from James Sawyer CVE Search API (JSON) into NDJSON or JSON.
 
 OpenAPI: ``https://labs.jamessawyer.co.uk/cves/api/openapi.json``

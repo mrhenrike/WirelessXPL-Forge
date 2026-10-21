@@ -46,9 +46,9 @@ def main() -> int:
     errors: List[str] = []
 
     if not layout_path.exists():
-        errors.append("missing catalog: {}".format(layout_path.as_posix()))
+        errors.append(f"missing catalog: {layout_path.as_posix()}")
     if not index_path.exists():
-        errors.append("missing catalog: {}".format(index_path.as_posix()))
+        errors.append(f"missing catalog: {index_path.as_posix()}")
 
     if not errors:
         layout: Dict[str, object] = json.loads(layout_path.read_text(encoding="utf-8"))
@@ -58,7 +58,7 @@ def main() -> int:
         for folder in layout.get("curated_subfolders", []):
             folder_path = repo_root / str(folder.get("path", ""))
             if not folder_path.exists():
-                errors.append("missing curated subfolder: {}".format(folder_path.as_posix()))
+                errors.append(f"missing curated subfolder: {folder_path.as_posix()}")
 
         # Validate index dependency snapshot against requirements files.
         runtime = _read_requirements(repo_root / "requirements.txt")
@@ -74,7 +74,7 @@ def main() -> int:
         curated = index.get("curated_arsenal", {})
         expected_root = "wirelessxpl/resources/arsenal"
         if curated.get("root") != expected_root:
-            errors.append("arsenal_index curated root mismatch: expected {}".format(expected_root))
+            errors.append(f"arsenal_index curated root mismatch: expected {expected_root}")
 
         # Validate at least one domain exists in the curated map.
         domains = curated.get("domains", {})
@@ -83,7 +83,7 @@ def main() -> int:
 
         # Validate materialized root path.
         if not arsenal_root.exists():
-            errors.append("missing arsenal root folder: {}".format(arsenal_root.as_posix()))
+            errors.append(f"missing arsenal root folder: {arsenal_root.as_posix()}")
 
     if errors:
         for error in errors:

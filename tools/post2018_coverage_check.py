@@ -153,8 +153,7 @@ def main() -> int:
     totals = len(out_rows)
     covered = sum(1 for row in out_rows if row["covered_by_vendor_modules"] == "yes")
     kw_total = sum(int(row["keyword_hits"]) for row in out_rows)
-    print("catalog_entries={} covered={} uncovered={} keyword_hits_total={} output={}".format(
-        totals, covered, totals - covered, kw_total, output_csv.name))
+    print(f"catalog_entries={totals} covered={covered} uncovered={totals - covered} keyword_hits_total={kw_total} output={output_csv.name}")
     return 0
 
 

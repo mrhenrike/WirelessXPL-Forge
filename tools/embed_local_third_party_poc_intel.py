@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Scan ``third-party-router-poc`` mirrors and embed structured intel into WirelessXPL-Forge.
 
 Walks each sibling submodule under the superproject (excluding full ExploitDB tree walks),

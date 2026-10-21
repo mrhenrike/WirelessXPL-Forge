@@ -14,7 +14,7 @@ from tools.venv_bootstrap import ensure_runtime
 ensure_runtime(__file__)
 
 if sys.version_info < (3, 8):
-    print("WirelessXPL requires Python 3.8+ (detected: {}).".format(platform.python_version()))
+    print(f"WirelessXPL requires Python 3.8+ (detected: {platform.python_version()}).")
     exit(1)
 
 import os
@@ -48,7 +48,7 @@ def _launcher(argv):
     try:
         from wirelessxpl.interpreter import WirelessXPLInterpreter
     except ModuleNotFoundError as err:
-        print("WirelessXPL bootstrap error: missing Python dependency: {}".format(err))
+        print(f"WirelessXPL bootstrap error: missing Python dependency: {err}")
         print("Run: pip install -r requirements.txt")
         print("Check: wxf --doctor")
         raise SystemExit(1)

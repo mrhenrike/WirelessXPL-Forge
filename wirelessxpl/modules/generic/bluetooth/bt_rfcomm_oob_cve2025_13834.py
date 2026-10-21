@@ -122,7 +122,7 @@ class BtRfcommOobCve202513834(Exploit):
             print("[!] Defina RHOST com o MAC do dispositivo alvo.")
             return
 
-        print(f"[+] Target vulnerable, exploiting CVE-2025-13834...")
+        print("[+] Target vulnerable, exploiting CVE-2025-13834...")
         self._exploit()
 
     def _exploit(self) -> None:

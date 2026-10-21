@@ -63,6 +63,8 @@ class AccessPoint:
     auth: str = ""
     beacon_count: int = 0
     vendor_oui: str = ""
+    pmf_capable: bool = False
+    pmf_required: bool = False
 
     @property
     def key(self) -> str:
@@ -127,11 +129,16 @@ class ExtractedCredential:
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-def _detect_encryption(packet: Any) -> tuple[str, str, str]:
-    """Derive encryption, cipher and auth from beacon/probe-response IEs."""
+def _detect_encryption(packet: Any) -> tuple[str, str, str, bool, bool]:
+    """Derive encryption, cipher, auth and PMF from beacon/probe-response IEs.
+
+    Returns (encryption, cipher, auth, pmf_capable, pmf_required).
+    """
     encryption = "OPEN"
     cipher = ""
     auth = ""
+    pmf_capable = False
+    pmf_required = False
 
     cap = packet.sprintf("{Dot11Beacon:%Dot11Beacon.cap%}"
                          "{Dot11ProbeResp:%Dot11ProbeResp.cap%}").strip()
@@ -139,11 +146,15 @@ def _detect_encryption(packet: Any) -> tuple[str, str, str]:
 
     rsn_found = False
     wpa_found = False
+    rsn_info = RSNInfo()
     elt = packet.getlayer(Dot11Elt)
     while elt:
-        if elt.ID == 48:  # RSN (WPA2)
+        if elt.ID == 48:  # RSN (WPA2/WPA3)
             rsn_found = True
-            cipher, auth = _parse_rsn_wpa_ie(bytes(elt.info))
+            rsn_info = _parse_rsn_wpa_ie_full(bytes(elt.info))
+            cipher, auth = rsn_info.cipher, rsn_info.auth
+            pmf_capable = rsn_info.pmf_capable
+            pmf_required = rsn_info.pmf_required
         elif elt.ID == 221 and elt.info and elt.info[:4] == b"\x00\x50\xf2\x01":
             wpa_found = True
             if not rsn_found:
@@ -151,41 +162,86 @@ def _detect_encryption(packet: Any) -> tuple[str, str, str]:
         elt = elt.payload.getlayer(Dot11Elt)
 
     if rsn_found:
-        encryption = "WPA2"
+        akm_type = _akm_type_from_auth(auth)
+        if akm_type in _WPA3_AKMS:
+            encryption = "WPA3"
+        else:
+            encryption = "WPA2"
     elif wpa_found:
         encryption = "WPA"
     elif has_privacy:
         encryption = "WEP"
 
-    return encryption, cipher, auth
+    return encryption, cipher, auth, pmf_capable, pmf_required
+
+
+def _akm_type_from_auth(auth: str) -> int | None:
+    """Reverse lookup AKM type number from auth string."""
+    for k, v in _AKM_MAP.items():
+        if v == auth:
+            return k
+    return None
+
+
+@dataclass
+class RSNInfo:
+    """Parsed RSN/WPA IE fields."""
+
+    cipher: str = ""
+    auth: str = ""
+    pmf_capable: bool = False
+    pmf_required: bool = False
+
+
+_CIPHER_MAP = {1: "WEP-40", 2: "TKIP", 4: "CCMP", 5: "WEP-104", 6: "BIP-CMAC-128", 8: "GCMP-256"}
+_AKM_MAP = {
+    1: "MGT",
+    2: "PSK",
+    3: "FT-MGT",
+    4: "FT-PSK",
+    6: "MGT-SHA256",
+    8: "SAE",
+    9: "FT-SAE",
+    11: "SAE-EXT-KEY",
+    12: "FT-SAE-EXT-KEY",
+    18: "OWE",
+}
+_WPA3_AKMS = {8, 9, 11, 12, 18}
 
 
 def _parse_rsn_wpa_ie(data: bytes) -> tuple[str, str]:
     """Extract cipher suite and AKM from RSN/WPA IE body."""
-    cipher_map = {1: "WEP-40", 2: "TKIP", 4: "CCMP", 5: "WEP-104"}
-    akm_map = {1: "MGT", 2: "PSK"}
-    cipher = ""
-    auth = ""
+    info = _parse_rsn_wpa_ie_full(data)
+    return info.cipher, info.auth
+
+
+def _parse_rsn_wpa_ie_full(data: bytes) -> RSNInfo:
+    """Extract cipher, AKM and PMF capabilities from RSN/WPA IE body."""
+    info = RSNInfo()
     try:
         if len(data) < 10:
-            return cipher, auth
+            return info
         offset = 2  # version
         offset += 4  # group cipher suite
         pw_count = struct.unpack("<H", data[offset:offset + 2])[0]
         offset += 2
         for _ in range(pw_count):
             suite_type = data[offset + 3]
-            cipher = cipher_map.get(suite_type, f"CIPHER-{suite_type}")
+            info.cipher = _CIPHER_MAP.get(suite_type, f"CIPHER-{suite_type}")
             offset += 4
         akm_count = struct.unpack("<H", data[offset:offset + 2])[0]
         offset += 2
         for _ in range(akm_count):
             akm_type = data[offset + 3]
-            auth = akm_map.get(akm_type, f"AKM-{akm_type}")
+            info.auth = _AKM_MAP.get(akm_type, f"AKM-{akm_type}")
             offset += 4
+        if offset + 2 <= len(data):
+            rsn_caps = struct.unpack("<H", data[offset:offset + 2])[0]
+            info.pmf_capable = bool(rsn_caps & 0x0080)
+            info.pmf_required = bool(rsn_caps & 0x0040)
     except (struct.error, IndexError):
         pass
-    return cipher, auth
+    return info
 
 
 def _extract_ssid(packet: Any) -> str:
@@ -310,7 +366,7 @@ def extract_access_points(packets: list[Any]) -> dict[str, AccessPoint]:
 
         ssid = _extract_ssid(pkt)
         channel = _extract_channel(pkt)
-        encryption, cipher, auth = _detect_encryption(pkt)
+        encryption, cipher, auth, pmf_capable, pmf_required = _detect_encryption(pkt)
 
         if bssid in aps:
             ap = aps[bssid]
@@ -328,6 +384,8 @@ def extract_access_points(packets: list[Any]) -> dict[str, AccessPoint]:
                 cipher=cipher,
                 auth=auth,
                 beacon_count=1,
+                pmf_capable=pmf_capable,
+                pmf_required=pmf_required,
             )
     return aps
 

@@ -122,7 +122,7 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     triage_csv = repo_root / ".log" / "triage_2018plus.csv"
     if not triage_csv.exists():
-        raise FileNotFoundError("Missing source triage CSV: {}".format(triage_csv))
+        raise FileNotFoundError(f"Missing source triage CSV: {triage_csv}")
 
     with triage_csv.open("r", encoding="utf-8", newline="") as source_handle:
         reader = csv.DictReader(source_handle)
@@ -148,7 +148,7 @@ def main() -> int:
         key = row["classification"]
         summary[key] = summary.get(key, 0) + 1
 
-    print("reconciled_rows={} summary={} pending={}".format(len(rows), summary, len(pending)))
+    print(f"reconciled_rows={len(rows)} summary={summary} pending={len(pending)}")
     return 0
 
 

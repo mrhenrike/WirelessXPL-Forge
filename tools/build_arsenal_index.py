@@ -103,7 +103,7 @@ def main() -> int:
         "encoders": len(index["modules"]["encoders"]),
         "payloads": len(index["modules"]["payloads"]),
     }
-    print("arsenal_index={} counts={}".format(output_path.name, counts))
+    print(f"arsenal_index={output_path.name} counts={counts}")
     return 0
 
 

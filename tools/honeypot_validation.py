@@ -7,7 +7,7 @@ from __future__ import annotations
 import csv
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List
 
@@ -75,7 +75,7 @@ def main() -> int:
     log_dir.mkdir(parents=True, exist_ok=True)
 
     rows: List[Dict[str, object]] = []
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     for platform in PLATFORMS:
         required_env = [str(item) for item in platform["required_env"]]
         ready = _env_ready(required_env)
@@ -139,12 +139,7 @@ def main() -> int:
 
     ready_count = sum(1 for row in rows if row["live_ready"])
     print(
-        "honeypot_validation entries={} live_ready_entries={} json={} csv={}".format(
-            len(rows),
-            ready_count,
-            json_path.name,
-            csv_path.name,
-        )
+        f"honeypot_validation entries={len(rows)} live_ready_entries={ready_count} json={json_path.name} csv={csv_path.name}"
     )
     return 0
 

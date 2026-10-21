@@ -30,10 +30,10 @@ def main() -> int:
     ]
     paths = sorted(index_modules())
     for mod in paths:
-        lines.append("- `{}`".format(humanize_path(mod)))
+        lines.append(f"- `{humanize_path(mod)}`")
     lines.append("")
     out.write_text("\n".join(lines), encoding="utf-8")
-    print("wrote {} modules -> {}".format(len(paths), out.as_posix()))
+    print(f"wrote {len(paths)} modules -> {out.as_posix()}")
     return 0
 
 

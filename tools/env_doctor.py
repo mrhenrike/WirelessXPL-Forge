@@ -105,7 +105,7 @@ def _check_binary(name: str) -> Tuple[str, bool, str]:
             )
             version = result.stdout.strip().split("\n")[0][:80] if result.stdout else "found"
         except Exception:
-            version = "found at {}".format(path)
+            version = f"found at {path}"
         return name, True, version
     return name, False, "not found"
 
@@ -113,15 +113,15 @@ def _check_binary(name: str) -> Tuple[str, bool, str]:
 def main() -> int:
     """Run WirelessXPL-Forge environment diagnostics."""
     print("WirelessXPL-Forge Environment Doctor")
-    print("python_version={}".format(platform.python_version()))
-    print("platform={}".format(platform.platform()))
-    print("executable={}".format(sys.executable))
+    print(f"python_version={platform.python_version()}")
+    print(f"platform={platform.platform()}")
+    print(f"executable={sys.executable}")
 
     results: List[Tuple[str, bool, str]] = [_check_import(name) for name in REQUIRED_IMPORTS]
     print("\nPython dependency checks:")
     for name, ok, info in results:
         state = "OK" if ok else "FAIL"
-        print("  - {}: {} ({})".format(name, state, info))
+        print(f"  - {name}: {state} ({info})")
 
     failures = [item for item in results if not item[1]]
     if failures:
@@ -132,7 +132,7 @@ def main() -> int:
     print("\nOptional tool checks:")
     for (name, desc), (_, ok, info) in zip(OPTIONAL_BINARIES, bin_results):
         state = "OK" if ok else "MISSING"
-        print("  - {} ({}): {} ({})".format(name, desc, state, info))
+        print(f"  - {name} ({desc}): {state} ({info})")
 
     missing_bins = [name for name, ok, _ in bin_results if not ok]
     if missing_bins:

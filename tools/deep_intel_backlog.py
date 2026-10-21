@@ -104,7 +104,7 @@ def main() -> int:
         source_id = str(item.get("id", ""))
         snap_row = snapshot_map.get(source_id, {})
         reachable = snap_row.get("reachable", "")
-        status_note = "reachable={}".format(reachable) if reachable != "" else "reachable=unknown"
+        status_note = f"reachable={reachable}" if reachable != "" else "reachable=unknown"
 
         # Keyword coverage check for the source name / domain
         name_keywords = [t.lower() for t in re.split(r"[\s/()]+", str(item.get("name", ""))) if len(t) >= 3]
@@ -131,7 +131,7 @@ def main() -> int:
 
         backlog.append(
             {
-                "id": "discord-{:03d}".format(index + 1),
+                "id": f"discord-{index + 1:03d}",
                 "origin": "discord_feedback",
                 "name": "{} {}".format(entry.get("vendor", ""), entry.get("model", "")).strip(),
                 "domain": str(entry.get("segment", "")),
@@ -160,7 +160,7 @@ def main() -> int:
         for row in backlog:
             writer.writerow(row)
 
-    print("deep_intel_backlog_items={} json={} csv={}".format(len(backlog), json_path.name, csv_path.name))
+    print(f"deep_intel_backlog_items={len(backlog)} json={json_path.name} csv={csv_path.name}")
     return 0
 
 

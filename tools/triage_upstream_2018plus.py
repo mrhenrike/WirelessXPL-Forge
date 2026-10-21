@@ -71,7 +71,7 @@ def _normalize_issue_rows(items: Iterable[dict]) -> List[Dict[str, str]]:
             continue
         title = item.get("title") or ""
         body = item.get("body") or ""
-        if not _has_keyword("{} {}".format(title, body)):
+        if not _has_keyword(f"{title} {body}"):
             continue
         rows.append(
             {
@@ -92,7 +92,7 @@ def _normalize_pr_rows(items: Iterable[dict]) -> List[Dict[str, str]]:
     for item in items:
         title = item.get("title") or ""
         body = item.get("body") or ""
-        if not _has_keyword("{} {}".format(title, body)):
+        if not _has_keyword(f"{title} {body}"):
             continue
         rows.append(
             {
@@ -113,7 +113,7 @@ def _normalize_fork_rows(items: Iterable[dict]) -> List[Dict[str, str]]:
     for item in items:
         full_name = str(item.get("full_name", ""))
         description = str(item.get("description", ""))
-        if not _has_keyword("{} {}".format(full_name, description)):
+        if not _has_keyword(f"{full_name} {description}"):
             continue
         rows.append(
             {
@@ -159,7 +159,7 @@ def main() -> int:
     for row in rows:
         summary[row["classification"]] = summary.get(row["classification"], 0) + 1
 
-    print("triage_rows={} summary={}".format(len(rows), summary))
+    print(f"triage_rows={len(rows)} summary={summary}")
     return 0
 
 

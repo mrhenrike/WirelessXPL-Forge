@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Mirror every checkout under ``third-party-router-poc`` into the Forge arsenal tree.
 
 Copies each top-level directory to::

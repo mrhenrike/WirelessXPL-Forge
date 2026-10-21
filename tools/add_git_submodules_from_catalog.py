@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Register Git submodules in the superproject from third_party_router_exploit_repos.json.
 
 By default only entries whose `sources` include ``user_seed`` are added (explicit curator list).

@@ -112,9 +112,7 @@ def main() -> int:
     _write_lines(wordlists_dir / "router_scope_snmp.txt", scope_snmp)
 
     print(
-        "Synced scoped wordlists: defaults={}, usernames={}, passwords={}, snmp={}".format(
-            len(scope_defaults), len(scope_usernames), len(scope_passwords), len(scope_snmp)
-        )
+        f"Synced scoped wordlists: defaults={len(scope_defaults)}, usernames={len(scope_usernames)}, passwords={len(scope_passwords)}, snmp={len(scope_snmp)}"
     )
     return 0
 

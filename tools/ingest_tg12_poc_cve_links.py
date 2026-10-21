@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Extract Git repository URLs from tg12/PoC_CVEs link dumps (cve_links.txt / .csv).
 
 Parses **CVE-anchored blocks** from ``cve_links.txt`` so each URL can be scored against
