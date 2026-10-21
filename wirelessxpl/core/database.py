@@ -22,7 +22,7 @@ from pathlib import Path
 
 # XplDatabase base from EmbedXPL (shared infrastructure)
 try:
-    from embedxpl.core.database import XplDatabase
+    from embedxpl.core.database import XplDatabase  # type: ignore[import-not-found]
 except ImportError:
     # Fallback: re-implement minimal base if EmbedXPL not installed
     import sys
@@ -32,7 +32,7 @@ except ImportError:
     from embedxpl.core.database import XplDatabase
 
 
-class WxfDatabase(XplDatabase):
+class WxfDatabase(XplDatabase):  # type: ignore[misc]
     """WirelessXPL operational database stored at ~/.wirelessxpl/wxf.db.
 
     Domain: WiFi, BLE, LoRaWAN, drones, Sub-GHz, UWB

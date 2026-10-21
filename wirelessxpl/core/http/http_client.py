@@ -21,7 +21,7 @@ class HTTPClient(Exploit):
     verbosity = OptBool(True, "Verbosity enabled: true/false")
     ssl = OptBool(False, "SSL enabled: true/false")
 
-    def http_request(self, method: str, path: str, session: requests = requests, **kwargs) -> requests.Response:
+    def http_request(self, method: str, path: str, session: requests = requests, **kwargs) -> requests.Response:  # type: ignore[valid-type]
         """ Requests HTTP resource
 
         :param str method: method that should be issued e.g. GET, POST
@@ -36,7 +36,7 @@ class HTTPClient(Exploit):
         else:
             url = "http://"
 
-        url += f"{self.target}:{self.port}{path}"
+        url += f"{self.target}:{self.port}{path}"  # type: ignore[attr-defined]
 
         kwargs.setdefault("timeout", HTTP_TIMEOUT)
         kwargs.setdefault("verify", False)
@@ -44,7 +44,7 @@ class HTTPClient(Exploit):
 
         for attempt in range(HTTP_RETRIES + 1):
             try:
-                return getattr(session, method.lower())(url, **kwargs)
+                return getattr(session, method.lower())(url, **kwargs)  # type: ignore[no-any-return]
             except (requests.exceptions.MissingSchema, requests.exceptions.InvalidSchema):
                 print_error(f"Invalid URL format: {url}", verbose=self.verbosity)
                 break
@@ -58,7 +58,7 @@ class HTTPClient(Exploit):
                 print_error("Module has been stopped", verbose=self.verbosity)
                 break
 
-        return None
+        return None  # type: ignore[return-value]
 
     def get_target_url(self, path: str = "") -> str:
         """ Get target URL
@@ -72,7 +72,7 @@ class HTTPClient(Exploit):
         else:
             url = "http://"
 
-        url += f"{self.target}:{self.port}{path}"
+        url += f"{self.target}:{self.port}{path}"  # type: ignore[attr-defined]
 
         return url
 

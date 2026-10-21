@@ -27,7 +27,7 @@ class Device:
             if len(self.addr) == 17 and self.addr[1] in "26AEae"
             else lookup_vendor(self.addr)
         )
-        self._services: list = []
+        self._services: list = []  # type: ignore[type-arg]
 
     # ------------------------------------------------------------------
     # Display helpers
@@ -36,7 +36,7 @@ class Device:
     def print_info(self) -> None:
         headers = (color_blue("{} ({} dBm)").format(self.addr, self.rssi), "")
         conn_str = color_green(str(self.connectable)) if self.connectable else color_red(str(self.connectable))
-        rows: list = [
+        rows: list = [  # type: ignore[type-arg]
             ("Name", self.name or "<unknown>"),
             ("Vendor", self.vendor or "<unknown>"),
             ("Allow Connections", conn_str),
@@ -60,7 +60,7 @@ class Device:
     # GATT enumeration (async, called via asyncio.run)
     # ------------------------------------------------------------------
 
-    async def _async_enumerate_services(self) -> list:
+    async def _async_enumerate_services(self) -> list:  # type: ignore[type-arg]
         try:
             from bleak import BleakClient  # type: ignore[import-untyped]
         except ImportError:

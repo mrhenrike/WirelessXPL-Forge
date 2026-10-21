@@ -78,7 +78,7 @@ class TCPCli:
         except Exception as err:
             print_error(self.peer, "TCP Error while receiving data", err, verbose=self.verbosity)
 
-        return None
+        return None  # type: ignore[return-value]
 
     def recv_all(self, num: int) -> bytes:
         """ Receive all data sent by the server
@@ -103,7 +103,7 @@ class TCPCli:
         except Exception as err:
             print_error(self.peer, "TCP Error while receiving all data", err, verbose=self.verbosity)
 
-        return None
+        return None  # type: ignore[return-value]
 
     def close(self) -> bool:
         """ Close connection to TCP server
@@ -128,7 +128,7 @@ class TCPClient(Exploit):
 
     verbosity = OptBool(True, "Enable verbose output: true/false")
 
-    def tcp_create(self, target: str = None, port: int = None) -> TCPCli:
+    def tcp_create(self, target: str = None, port: int = None) -> TCPCli:  # type: ignore[assignment]
         """ Creates TCP client
 
         :param str target: target TCP server ip address
@@ -136,8 +136,8 @@ class TCPClient(Exploit):
         :return TCPCli: TCP client object
         """
 
-        tcp_target = target if target else self.target
-        tcp_port = port if port else self.port
+        tcp_target = target if target else self.target  # type: ignore[attr-defined]
+        tcp_port = port if port else self.port  # type: ignore[attr-defined]
 
         tcp_client = TCPCli(tcp_target, tcp_port, verbosity=self.verbosity)
         return tcp_client

@@ -27,7 +27,7 @@ def _get_torch_cuda():
     """
     global _torch
     if _torch is not None:
-        return _torch
+        return _torch  # type: ignore[unreachable]
     try:
         import torch
 
@@ -57,7 +57,7 @@ class CUDABackend(ComputeBackend):
         dev = torch.cuda.get_device_name(0)
         props = torch.cuda.get_device_properties(0)
         raw_mem = getattr(props, "total_memory", None) or getattr(props, "total_mem", 0)
-        vram = raw_mem // (1024 * 1024)
+        vram = raw_mem // (1024 * 1024)  # type: ignore[operator]
         return f"CUDA [PyTorch] {dev} ({vram}MB)"
 
     def array_from_numpy(self, arr: np.ndarray):
@@ -69,7 +69,7 @@ class CUDABackend(ComputeBackend):
     def to_numpy(self, arr) -> np.ndarray:
         torch = _get_torch_cuda()
         if torch and hasattr(arr, "detach"):
-            return arr.detach().cpu().numpy()
+            return arr.detach().cpu().numpy()  # type: ignore[no-any-return]
         return np.asarray(arr)
 
     def matmul(self, a, b):
@@ -85,7 +85,7 @@ class CUDABackend(ComputeBackend):
             c = np.asarray(corpus, dtype=np.float32)
             q_norm = q / (np.linalg.norm(q, axis=1, keepdims=True) + 1e-10)
             c_norm = c / (np.linalg.norm(c, axis=1, keepdims=True) + 1e-10)
-            return q_norm @ c_norm.T
+            return q_norm @ c_norm.T  # type: ignore[no-any-return]
 
         q = self.array_from_numpy(np.asarray(queries, dtype=np.float32))
         c = self.array_from_numpy(np.asarray(corpus, dtype=np.float32))

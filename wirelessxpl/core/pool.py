@@ -82,15 +82,15 @@ class SmartPool:
     def _create_executor(self) -> None:
         """Lazily create the executor."""
         if self._executor is not None:
-            return
+            return  # type: ignore[unreachable]
 
         if self._resolved_strategy == PoolStrategy.PROCESSES:
-            self._executor = ProcessPoolExecutor(
+            self._executor = ProcessPoolExecutor(  # type: ignore[assignment]
                 max_workers=min(self._max_workers, self._cpus),
             )
             logger.debug("SmartPool: ProcessPool %d workers", min(self._max_workers, self._cpus))
         else:
-            self._executor = ThreadPoolExecutor(
+            self._executor = ThreadPoolExecutor(  # type: ignore[assignment]
                 max_workers=self._max_workers,
                 thread_name_prefix=self._thread_prefix,
             )
@@ -106,18 +106,18 @@ class SmartPool:
         """Configured worker count."""
         return self._max_workers
 
-    def submit(self, fn: Callable, *args, **kwargs) -> Future:
+    def submit(self, fn: Callable, *args, **kwargs) -> Future:  # type: ignore[type-arg]
         """Submit a callable to the pool."""
         self._create_executor()
-        return self._executor.submit(fn, *args, **kwargs)
+        return self._executor.submit(fn, *args, **kwargs)  # type: ignore[attr-defined, no-any-return]
 
     def map_unordered(
         self,
-        fn: Callable,
-        items: Iterable,
+        fn: Callable,  # type: ignore[type-arg]
+        items: Iterable,  # type: ignore[type-arg]
         timeout_per_item: float = 0,
-        on_result: Callable | None = None,
-        on_error: Callable | None = None,
+        on_result: Callable | None = None,  # type: ignore[type-arg]
+        on_error: Callable | None = None,  # type: ignore[type-arg]
     ) -> list[Any]:
         """Execute fn for each item, collecting results as they complete."""
         self._create_executor()
@@ -125,7 +125,7 @@ class SmartPool:
         future_to_item = {}
 
         for item in items_list:
-            future = self._executor.submit(fn, item)
+            future = self._executor.submit(fn, item)  # type: ignore[attr-defined]
             future_to_item[future] = item
 
         results = []
@@ -147,7 +147,7 @@ class SmartPool:
     def run_threaded_workers(
         self,
         threads_number: int,
-        target_function: Callable,
+        target_function: Callable,  # type: ignore[type-arg]
         stop_event: threading.Event,
         *args,
         **kwargs,
@@ -186,7 +186,7 @@ class SmartPool:
         """Shutdown the pool executor."""
         if self._executor is None:
             return
-        try:
+        try:  # type: ignore[unreachable]
             self._executor.shutdown(wait=wait, cancel_futures=True)
         except TypeError:
             self._executor.shutdown(wait=wait)

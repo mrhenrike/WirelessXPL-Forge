@@ -181,7 +181,7 @@ def _key_schedule(key: bytearray) -> list[bytearray | None]:
         rotated = _rotate_key(prev)
         offset = (n - 1) % 17
         selected = bytearray(rotated[offset:] + rotated[:offset])[:AR_KEY_LEN]
-        keys[n] = bytearray((selected[i] + biases[n][i]) % 256 for i in range(AR_KEY_LEN))
+        keys[n] = bytearray((selected[i] + biases[n][i]) % 256 for i in range(AR_KEY_LEN))  # type: ignore[index]
         prev = rotated
 
     return keys
@@ -206,11 +206,11 @@ def _ar_rounds(keys: list[bytearray | None], inp: bytearray,
 
     for r in range(1, 9):
         if is_prime and r == 3:
-            temp = _add_one(temp, ar[1])
+            temp = _add_one(temp, ar[1])  # type: ignore[arg-type]
 
-        rv = _add_one(temp, keys[2 * r - 1])
+        rv = _add_one(temp, keys[2 * r - 1])  # type: ignore[arg-type]
         rv = _nonlin_subs(rv)
-        rv = _add_two(rv, keys[2 * r])
+        rv = _add_two(rv, keys[2 * r])  # type: ignore[arg-type]
         rv = _phts(rv)
         rv = _permute(rv)
         rv = _phts(rv)
@@ -222,7 +222,7 @@ def _ar_rounds(keys: list[bytearray | None], inp: bytearray,
         temp = rv
         ar[r + 1] = rv
 
-    ar[10] = _add_one(ar[9], keys[17])
+    ar[10] = _add_one(ar[9], keys[17])  # type: ignore[arg-type]
     return ar
 
 
@@ -236,14 +236,14 @@ def _k_to_k_tilda(k: bytearray) -> bytearray:
     result = bytearray(AR_KEY_LEN)
     for i in range(AR_KEY_LEN):
         if _KT_ADD[i] is not None:
-            result[i] = (k[i] + _KT_ADD[i]) % 256
+            result[i] = (k[i] + _KT_ADD[i]) % 256  # type: ignore[operator]
         else:
-            result[i] = k[i] ^ _KT_XOR[i]
+            result[i] = k[i] ^ _KT_XOR[i]  # type: ignore[operator]
     return result
 
 
 def H(k: bytearray, i_one: bytearray, i_two: bytearray,
-      length: int) -> tuple[list, list, list, list, bytearray]:
+      length: int) -> tuple[list, list, list, list, bytearray]:  # type: ignore[type-arg]
     """SAFER+ hash function H used in e1 and e3.
 
     Args:
@@ -263,11 +263,11 @@ def H(k: bytearray, i_one: bytearray, i_two: bytearray,
 
     ar = _ar_rounds(keys, i_one, is_prime=False)
 
-    pre_ar_prime_inp = _xor_bytes(ar[10], i_one)
+    pre_ar_prime_inp = _xor_bytes(ar[10], i_one)  # type: ignore[arg-type]
     ar_prime_inp = _add_bytes_mod256(i_two_ext, pre_ar_prime_inp)
     ar_prime = _ar_rounds(keys_prime, ar_prime_inp, is_prime=True)
 
-    return keys, ar, keys_prime, ar_prime, ar_prime[10]
+    return keys, ar, keys_prime, ar_prime, ar_prime[10]  # type: ignore[return-value]
 
 
 def e1(k: bytearray, rand: bytearray, btadd_s: bytearray) -> tuple[bytearray, bytearray]:

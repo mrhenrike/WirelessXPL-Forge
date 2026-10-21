@@ -48,7 +48,7 @@ class OpenCLBackend(ComputeBackend):
 
     def device_info(self) -> str:
         if self._ctx:
-            dev = self._ctx.devices[0]
+            dev = self._ctx.devices[0]  # type: ignore[unreachable]
             vram = dev.global_mem_size // (1024 * 1024)
             return f"OpenCL [{dev.name.strip()}] {vram}MB"
         return "OpenCL (indisponível)"
@@ -67,4 +67,4 @@ class OpenCLBackend(ComputeBackend):
         c = np.asarray(corpus, dtype=np.float32)
         q_norm = q / (np.linalg.norm(q, axis=1, keepdims=True) + 1e-10)
         c_norm = c / (np.linalg.norm(c, axis=1, keepdims=True) + 1e-10)
-        return q_norm @ c_norm.T
+        return q_norm @ c_norm.T  # type: ignore[no-any-return]

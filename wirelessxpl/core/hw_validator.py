@@ -407,7 +407,7 @@ def _make_checkers() -> dict[Requirement, Callable[[], CheckResult]]:
         if platform.system() == "Windows":
             try:
                 import ctypes
-                is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+                is_admin = ctypes.windll.shell32.IsUserAnAdmin()  # type: ignore[attr-defined]
                 if is_admin:
                     return CheckResult(req, True, "Executando como Administrador.")
                 return CheckResult(req, False, "Requer privilégios de Administrador.",

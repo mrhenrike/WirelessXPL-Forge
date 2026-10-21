@@ -64,7 +64,7 @@ class UDPCli:
         except Exception as err:
             print_error(self.peer, "Error while receiving data", err, verbose=self.verbosity)
 
-        return None
+        return None  # type: ignore[return-value]
 
     def close(self) -> bool:
         """ Close UDP connection
@@ -89,7 +89,7 @@ class UDPClient(Exploit):
 
     verbosity = OptBool(True, "Enable verbose output: true/false")
 
-    def udp_create(self, target: str = None, port: int = None) -> UDPCli:
+    def udp_create(self, target: str = None, port: int = None) -> UDPCli:  # type: ignore[assignment]
         """ Create UDP client
 
         :param str target: target UDP server ip address
@@ -97,8 +97,8 @@ class UDPClient(Exploit):
         :return UDPCli: UDP client object
         """
 
-        udp_target = target if target else self.target
-        udp_port = port if port else self.port
+        udp_target = target if target else self.target  # type: ignore[attr-defined]
+        udp_port = port if port else self.port  # type: ignore[attr-defined]
 
         udp_client = UDPCli(udp_target, udp_port, verbosity=self.verbosity)
         return udp_client

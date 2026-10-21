@@ -475,7 +475,7 @@ class PolyglotOrchestrator:
                 cmd = [str(binary_path)]
         else:
             run_flags = cfg.run_flags or []
-            cmd = [compiler] + run_flags + [str(binary_path)]
+            cmd = [compiler] + run_flags + [str(binary_path)]  # type: ignore[assignment]
 
         cmd += args
 

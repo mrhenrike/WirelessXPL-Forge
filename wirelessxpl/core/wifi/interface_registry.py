@@ -167,7 +167,7 @@ class InterfaceRegistry:
         m = re.search(r"^driver:\s+(\S+)", out, re.MULTILINE)
         return m.group(1) if m else "unknown"
 
-    def _phy_capabilities(self, phy: str) -> dict:
+    def _phy_capabilities(self, phy: str) -> dict:  # type: ignore[type-arg]
         # iw dev reports "phy#4" but "iw phy" expects "phy4"
         phy_name = phy.replace("#", "")
         out = self._run(["iw", "phy", phy_name, "info"])
@@ -180,11 +180,11 @@ class InterfaceRegistry:
         }
         # Frequency-based band detection (MHz values in the output)
         if re.search(r"24\d\d\.?\d* MHz", out):
-            caps["bands"].append("2.4GHz")
+            caps["bands"].append("2.4GHz")  # type: ignore[attr-defined]
         if re.search(r"5[12]\d\d\.?\d* MHz", out):
-            caps["bands"].append("5GHz")
+            caps["bands"].append("5GHz")  # type: ignore[attr-defined]
         if re.search(r"59[5-9]\d\.?\d* MHz|60[0-9]\d\.?\d* MHz", out):
-            caps["bands"].append("6GHz")
+            caps["bands"].append("6GHz")  # type: ignore[attr-defined]
         return caps
 
     def _is_nm_managed(self, iface: str) -> bool:

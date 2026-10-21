@@ -141,7 +141,7 @@ def _check_os(requirement: OSRequirement, module_name: str) -> None:
 
 def requires_os(
     *requirements: OSRequirement,
-) -> Callable[[type[T] | Callable], type[T] | Callable]:
+) -> Callable[[type[T] | Callable], type[T] | Callable]:  # type: ignore[type-arg]
     """Decorator that enforces OS compatibility before module execution.
 
     Can be applied to a class (checked when the class is instantiated via __init__)
@@ -177,20 +177,20 @@ def requires_os(
     elif OSRequirement.LINUX_ONLY in requirements:
         effective = OSRequirement.LINUX_ONLY
 
-    def decorator(target: type[T] | Callable) -> type[T] | Callable:
+    def decorator(target: type[T] | Callable) -> type[T] | Callable:  # type: ignore[type-arg]
         name = getattr(target, "__name__", str(target))
 
         if isinstance(target, type):
             # Wrap class: inject check into __init__.
-            original_init = target.__init__
+            original_init = target.__init__  # type: ignore[misc]
 
             @functools.wraps(original_init)
             def patched_init(self, *args, **kwargs):
                 _check_os(effective, name)
                 original_init(self, *args, **kwargs)
 
-            target.__init__ = patched_init
-            target._os_requirement = effective
+            target.__init__ = patched_init  # type: ignore[misc]
+            target._os_requirement = effective  # type: ignore[attr-defined]
             return target
 
         # Wrap function or method.
@@ -205,7 +205,7 @@ def requires_os(
     return decorator
 
 
-def get_module_os_label(target: type | Callable) -> str:
+def get_module_os_label(target: type | Callable) -> str:  # type: ignore[type-arg]
     """Return a short OS compatibility label for display in the WXF CLI module list.
 
     Args:
