@@ -35,7 +35,7 @@ def _nvidia_smi_query() -> str | None:
 def torch_cuda_available() -> bool:
     """Return True if PyTorch reports a CUDA device."""
     try:
-        import torch  # type: ignore
+        import torch
 
         return bool(torch.cuda.is_available())
     except ImportError:

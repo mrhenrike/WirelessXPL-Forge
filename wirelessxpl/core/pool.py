@@ -106,18 +106,18 @@ class SmartPool:
         """Configured worker count."""
         return self._max_workers
 
-    def submit(self, fn: Callable, *args, **kwargs) -> Future:  # type: ignore[type-arg]
+    def submit(self, fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Future[Any]:
         """Submit a callable to the pool."""
         self._create_executor()
         return self._executor.submit(fn, *args, **kwargs)  # type: ignore[attr-defined, no-any-return]
 
     def map_unordered(
         self,
-        fn: Callable,  # type: ignore[type-arg]
-        items: Iterable,  # type: ignore[type-arg]
+        fn: Callable[..., Any],
+        items: Iterable[Any],
         timeout_per_item: float = 0,
-        on_result: Callable | None = None,  # type: ignore[type-arg]
-        on_error: Callable | None = None,  # type: ignore[type-arg]
+        on_result: Callable[..., Any] | None = None,
+        on_error: Callable[..., Any] | None = None,
     ) -> list[Any]:
         """Execute fn for each item, collecting results as they complete."""
         self._create_executor()
@@ -147,10 +147,10 @@ class SmartPool:
     def run_threaded_workers(
         self,
         threads_number: int,
-        target_function: Callable,  # type: ignore[type-arg]
+        target_function: Callable[..., Any],
         stop_event: threading.Event,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> float:
         """Legacy-compatible threaded execution for Exploit.run_threads() semantics."""
         threads = []
@@ -192,10 +192,10 @@ class SmartPool:
             self._executor.shutdown(wait=wait)
         self._executor = None
 
-    def __enter__(self):
+    def __enter__(self) -> "SmartPool":
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, *exc: Any) -> None:
         self.shutdown(wait=False)
 
     def __repr__(self) -> str:

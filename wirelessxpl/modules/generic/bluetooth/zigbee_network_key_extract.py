@@ -106,7 +106,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (sniffing de rádio)")
-    port = OptPort(0, "N/A")
     timeout = OptInteger(30, "Timeout de captura em segundos")
     channel = OptInteger(15, "Canal Zigbee para monitorar (11-26)")
     interface = OptString("", "Interface IEEE 802.15.4 (ex: /dev/ttyACM0)")

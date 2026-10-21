@@ -152,7 +152,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target AP BSSID (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "Not applicable (Wi-Fi)")
     timeout = OptInteger(15, "Attack timeout in seconds")
     interface = OptString("wlan0mon", "Wi-Fi monitor mode interface")
     ssid = OptString("", "Target SSID")

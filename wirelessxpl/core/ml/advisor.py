@@ -103,7 +103,7 @@ def logits_for_timing(
 
     if use_gpu:
         try:
-            import torch  # type: ignore
+            import torch
 
             if torch.cuda.is_available():
                 t_feat = torch.tensor(f, dtype=torch.float32, device="cuda")

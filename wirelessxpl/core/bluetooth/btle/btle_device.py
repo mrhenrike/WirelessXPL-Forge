@@ -1,5 +1,6 @@
 """BLE device wrapper around bleak BLEDevice + AdvertisementData."""
 
+from typing import Any
 
 from wirelessxpl.core.exploit.printer import (
     color_blue,
@@ -15,14 +16,14 @@ from wirelessxpl.core.exploit.utils import lookup_vendor
 class Device:
     """Single discovered BLE device (bleak-backed, replaces bluepy ScanEntry)."""
 
-    def __init__(self, ble_device, adv_data=None) -> None:
+    def __init__(self, ble_device: Any, adv_data: Any = None) -> None:
         self._dev = ble_device
         self._adv = adv_data
         self.addr: str = ble_device.address
         self.name: str | None = ble_device.name or (adv_data.local_name if adv_data else None)
         self.rssi: int = adv_data.rssi if adv_data else -100
         self.connectable: bool = bool(adv_data and adv_data.tx_power is not None) or True
-        self.vendor: str = (
+        self.vendor: str | None = (
             "None (Random MAC address)"
             if len(self.addr) == 17 and self.addr[1] in "26AEae"
             else lookup_vendor(self.addr)
@@ -62,7 +63,7 @@ class Device:
 
     async def _async_enumerate_services(self) -> list:  # type: ignore[type-arg]
         try:
-            from bleak import BleakClient  # type: ignore[import-untyped]
+            from bleak import BleakClient
         except ImportError:
             print_error("bleak not installed: pip install bleak")
             return []

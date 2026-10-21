@@ -14,11 +14,11 @@ logger = logging.getLogger(__name__)
 
 _SKLEARN: Any = None
 try:
-    from sklearn.ensemble import GradientBoostingRegressor  # type: ignore
+    from sklearn.ensemble import GradientBoostingRegressor
 
     _SKLEARN = True
 except ImportError:
-    GradientBoostingRegressor = None  # type: ignore
+    GradientBoostingRegressor = None
 
 
 def _sklearn_available() -> bool:

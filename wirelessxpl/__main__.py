@@ -7,7 +7,7 @@ import sys
 
 def main() -> None:
     """Launch the WXF interactive shell."""
-    from wirelessxpl.interpreter import WirelessXPLInterpreter  # type: ignore[import]
+    from wirelessxpl.interpreter import WirelessXPLInterpreter
 
     interpreter = WirelessXPLInterpreter()
     interpreter.start()

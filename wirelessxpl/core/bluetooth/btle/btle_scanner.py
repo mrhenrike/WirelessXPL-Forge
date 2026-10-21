@@ -1,6 +1,7 @@
 """BLE scanner backed by bleak (replaces bluepy Scanner)."""
 
 import asyncio
+from typing import Any
 
 from .btle_device import Device
 
@@ -29,7 +30,7 @@ class BTLEScanner:
                     if p not in sys.path:
                         sys.path.insert(0, p)
         try:
-            from bleak import BleakScanner  # type: ignore[import-untyped]
+            from bleak import BleakScanner
         except ImportError:
             return []
 
@@ -46,7 +47,7 @@ class BTLEScanner:
 class ScanDelegate:
     """Compatibility shim — no-op in the bleak-based implementation."""
 
-    def __init__(self, options=None) -> None:
+    def __init__(self, options: Any = None) -> None:
         self.options = options
 
     def handleDiscovery(self, dev: Device, is_new: bool, is_new_data: bool) -> None:

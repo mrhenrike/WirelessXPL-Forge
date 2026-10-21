@@ -59,7 +59,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Endereço BLE do Mi Band alvo (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "N/A (BLE)")
     adapter = OptString("hci0", "Adaptador BLE local")
     auth_key = OptString("", "Auth key de 16 bytes em hex (do banco MiFit)")
     scan_duration = OptInteger(10, "Duração do scan BLE em segundos")

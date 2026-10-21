@@ -125,7 +125,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "Not applicable (radio sniffing)")
-    port = OptPort(0, "Not applicable")
     timeout = OptInteger(120, "Pairing capture timeout in seconds")
     interface = OptString("", "SDR/Z-Wave sniffer interface")
     frequency = OptInteger(_ZWAVE_FREQ_US, "Z-Wave frequency in Hz")

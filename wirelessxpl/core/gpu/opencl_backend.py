@@ -10,6 +10,7 @@ Version: 1.0.0
 
 
 import logging
+from typing import Any
 
 import numpy as np
 
@@ -24,9 +25,9 @@ class OpenCLBackend(ComputeBackend):
     name = "opencl"
 
     def __init__(self) -> None:
-        self._cl = None
-        self._ctx = None
-        self._queue = None
+        self._cl: Any = None
+        self._ctx: Any = None
+        self._queue: Any = None
 
     def is_available(self) -> bool:
         try:
@@ -48,21 +49,21 @@ class OpenCLBackend(ComputeBackend):
 
     def device_info(self) -> str:
         if self._ctx:
-            dev = self._ctx.devices[0]  # type: ignore[unreachable]
+            dev = self._ctx.devices[0]
             vram = dev.global_mem_size // (1024 * 1024)
             return f"OpenCL [{dev.name.strip()}] {vram}MB"
         return "OpenCL (indisponível)"
 
-    def array_from_numpy(self, arr: np.ndarray):
+    def array_from_numpy(self, arr: np.ndarray) -> Any:
         return np.asarray(arr, dtype=np.float32)
 
-    def to_numpy(self, arr) -> np.ndarray:
+    def to_numpy(self, arr: Any) -> np.ndarray:
         return np.asarray(arr)
 
-    def matmul(self, a, b):
+    def matmul(self, a: Any, b: Any) -> Any:
         return np.matmul(np.asarray(a), np.asarray(b))
 
-    def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
+    def cosine_similarity_batch(self, queries: Any, corpus: Any) -> np.ndarray:
         q = np.asarray(queries, dtype=np.float32)
         c = np.asarray(corpus, dtype=np.float32)
         q_norm = q / (np.linalg.norm(q, axis=1, keepdims=True) + 1e-10)

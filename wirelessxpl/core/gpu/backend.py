@@ -11,8 +11,9 @@ Version: 1.0.0
 
 import hashlib
 import logging
+import types
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -40,19 +41,19 @@ class ComputeBackend(ABC):
         """Retorna descrição legível do dispositivo."""
 
     @abstractmethod
-    def array_from_numpy(self, arr: np.ndarray):
+    def array_from_numpy(self, arr: np.ndarray) -> Any:
         """Converte ``np.ndarray`` para o tipo nativo do backend."""
 
     @abstractmethod
-    def to_numpy(self, arr) -> np.ndarray:
+    def to_numpy(self, arr: Any) -> np.ndarray:
         """Converte array do backend de volta para NumPy."""
 
     @abstractmethod
-    def matmul(self, a, b):
+    def matmul(self, a: Any, b: Any) -> Any:
         """Multiplicação de matrizes no backend."""
 
     @abstractmethod
-    def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
+    def cosine_similarity_batch(self, queries: Any, corpus: Any) -> np.ndarray:
         """Similaridade de cosseno entre vetores de consulta e corpus.
 
         Args:
@@ -88,7 +89,7 @@ class ROCmBackend(ComputeBackend):
     name = "rocm"
 
     def __init__(self) -> None:
-        self._torch = None
+        self._torch: types.ModuleType | None = None
 
     def is_available(self) -> bool:
         try:
@@ -104,30 +105,31 @@ class ROCmBackend(ComputeBackend):
 
     def device_info(self) -> str:
         if self._torch:
-            dev = self._torch.cuda.get_device_name(0)  # type: ignore[unreachable]
+            dev = self._torch.cuda.get_device_name(0)
             return f"ROCm [PyTorch-HIP] {dev}"
         return "ROCm (indisponível)"
 
-    def array_from_numpy(self, arr: np.ndarray):
+    def array_from_numpy(self, arr: np.ndarray) -> Any:
         if self._torch:
-            return self._torch.tensor(arr, device="cuda", dtype=self._torch.float32)  # type: ignore[unreachable]
+            return self._torch.tensor(arr, device="cuda", dtype=self._torch.float32)
         return arr
 
-    def to_numpy(self, arr) -> np.ndarray:
+    def to_numpy(self, arr: Any) -> np.ndarray:
         if self._torch:
-            return arr.detach().cpu().numpy()  # type: ignore[unreachable]
+            result: np.ndarray = arr.detach().cpu().numpy()
+            return result
         return np.asarray(arr)
 
-    def matmul(self, a, b):
+    def matmul(self, a: Any, b: Any) -> Any:
         if self._torch:
-            return self._torch.matmul(a, b)  # type: ignore[unreachable]
+            return self._torch.matmul(a, b)
         return np.matmul(np.asarray(a), np.asarray(b))
 
-    def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
+    def cosine_similarity_batch(self, queries: Any, corpus: Any) -> np.ndarray:
         q = self.array_from_numpy(np.asarray(queries, dtype=np.float32))
         c = self.array_from_numpy(np.asarray(corpus, dtype=np.float32))
         if self._torch:
-            q_n = q / (q.norm(dim=1, keepdim=True) + 1e-10)  # type: ignore[unreachable]
+            q_n = q / (q.norm(dim=1, keepdim=True) + 1e-10)
             c_n = c / (c.norm(dim=1, keepdim=True) + 1e-10)
             sim = self._torch.mm(q_n, c_n.t())
             return self.to_numpy(sim)
