@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Author: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
+# Author: André Henrique (@mrhenrike) | União Geek - https://github.com/Uniao-Geek
 """Matter / Thread Attack Bridge — TLV overflow, commission scan, fabric impersonation.
 
 Cobre: enumeração de dispositivos Matter via CoAP/mDNS, TLV overflow (jan-2025),
@@ -32,7 +32,7 @@ __info__ = {
     "author":      "André Henrique (@mrhenrike)",
     "version":     "1.0.0",
     "protocol":    "Matter (IP) + Thread (802.15.4 / 6LoWPAN)",
-    "cves":        ["CVE-2025-0001"],  # TLVWriter OOB — placeholder CVE
+    "cves":        [],  # TLVWriter OOB: CVE pendente de atribuicao pelo CHIP project
     "cvss":        "8.1",
     "references": [
         "https://github.com/project-chip/connectedhomeip/security",
