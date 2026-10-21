@@ -1,5 +1,15 @@
 """WirelessXPL Auditor — wifit3 Multiplataform Wi-Fi Audit Integration.
 
+
+__info__ = {
+    "name": "WirelessXPL Auditor — wifit3 Multiplataform Wi-Fi Audit Integration",
+    "description": (
+        "Native integration of wifit3 (https://github.com/derv82/wifit3) capabilities into the WirelessXPL-Forge framework. wifit3 is a cross-platform Wi-Fi auditing tool supporting WPA/WPA2, PMKID, WPS, and WEP attacks via a TUI interface on Linux, Windows, and macOS. This module provides a programmatic interface to wifit3's capabilities and extends them with WirelessXPL's session management and reporting."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+}
+
 Native integration of wifit3 (https://github.com/derv82/wifit3) capabilities
 into the WirelessXPL-Forge framework. wifit3 is a cross-platform Wi-Fi
 auditing tool supporting WPA/WPA2, PMKID, WPS, and WEP attacks via a TUI
@@ -200,3 +210,9 @@ __module_info__ = {
     "platforms": ["linux", "windows", "macos"],
     "attacks": list(WiiFt3Auditor.WIFIT3_ATTACKS.keys()),
 }
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

@@ -69,7 +69,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (ataque de rádio)")
-    port = OptPort(0, "N/A")
     interface = OptString("", "Interface SDR (hackrf, usrp, limesdr)")
     app_eui = OptString("0000000000000000", "AppEUI/JoinEUI (16 hex chars)")
     dev_eui = OptString("0000000000000000", "DevEUI do dispositivo alvo (16 hex chars)")

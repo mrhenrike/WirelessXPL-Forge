@@ -22,7 +22,7 @@ import functools
 import platform
 from collections.abc import Callable
 from enum import Enum
-from typing import TypeVar
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -185,7 +185,7 @@ def requires_os(
             original_init = target.__init__  # type: ignore[misc]
 
             @functools.wraps(original_init)
-            def patched_init(self, *args, **kwargs):
+            def patched_init(self: Any, *args: Any, **kwargs: Any) -> None:
                 _check_os(effective, name)
                 original_init(self, *args, **kwargs)
 
@@ -195,7 +195,7 @@ def requires_os(
 
         # Wrap function or method.
         @functools.wraps(target)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             _check_os(effective, name)
             return target(*args, **kwargs)
 

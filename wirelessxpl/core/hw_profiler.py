@@ -260,7 +260,7 @@ class HWProfiler:
                     profile.gpus.append(GPUDevice(
                         name=props.name,
                         vendor=vendor,
-                        vram_mb=props.total_mem // (1024 * 1024),
+                        vram_mb=props.total_memory // (1024 * 1024),
                         backend="rocm" if vendor == "amd" else "cuda",
                         index=i,
                     ))

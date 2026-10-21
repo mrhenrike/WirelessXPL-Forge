@@ -1,5 +1,15 @@
 """UWB RTLS Protocol Anomaly Monitor.
 
+
+__info__ = {
+    "name": "UWB RTLS Protocol Anomaly Monitor",
+    "description": (
+        "Monitors Ultra-Wideband Real-Time Location System (RTLS) traffic for anomalies using Nozomi Networks Wireshark dissectors. Vendors covered: Sewio Networks, Avalue Technology, Ubisense Dissectors: avalue_uwb.lua, sewio_uwb.lua, ubisense_uwb.lua # Original: https://github.com/NozomiNetworks/blackhat22-uwb-rtls (MIT) # Research: Nozomi Networks -- BlackHat USA 2022 # AUTHORIZED USE ONLY -- deploy only on networks you own or control."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+}
+
 Monitors Ultra-Wideband Real-Time Location System (RTLS) traffic for
 anomalies using Nozomi Networks Wireshark dissectors.
 
@@ -278,3 +288,9 @@ if __name__ == "__main__":
     print(f"    Anomalies: {len(result.anomalies)}")
     for a in result.anomalies:
         print(f"    [{a.anomaly_type}] pkt#{a.packet_num}: {a.description}")
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

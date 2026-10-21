@@ -76,7 +76,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (ataque de rádio)")
-    port = OptPort(0, "N/A")
     timeout = OptInteger(30, "Janela de captura em segundos")
     interface = OptString("", "Interface SDR (ex: hackrf, rtl-sdr, hackrf_one)")
     dev_addr = OptString("260B1234", "Endereço do dispositivo alvo (hex, 4 bytes)")

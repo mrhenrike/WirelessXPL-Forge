@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 _SKLEARN: Any = None
 try:
-    from sklearn.ensemble import RandomForestClassifier  # type: ignore
+    from sklearn.ensemble import RandomForestClassifier
 
     _SKLEARN = True
 except ImportError:
-    RandomForestClassifier = None  # type: ignore
+    RandomForestClassifier = None
 
 
 def _sklearn_available() -> bool:

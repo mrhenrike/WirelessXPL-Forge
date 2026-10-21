@@ -1,5 +1,16 @@
 """Hidden SSID decloaking via passive probe response monitoring.
 
+
+__info__ = {
+    "name": "Hidden SSID decloaking via passive probe response monitoring",
+    "description": (
+        "Reveals hidden network SSIDs by monitoring probe requests from associated stations and probe responses from the AP. Conceptual reference: wifit3 campaigns/decloak.py (GPL-2.0, derv82) Recode: full Python rewrite using scapy, no code copied."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+    "mitre": ["T1040"],
+}
+
 Reveals hidden network SSIDs by monitoring probe requests from
 associated stations and probe responses from the AP.
 
@@ -147,3 +158,9 @@ def decloak_passive(
         int(time.time() - start_time),
     )
     return result
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

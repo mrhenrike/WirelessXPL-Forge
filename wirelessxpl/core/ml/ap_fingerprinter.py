@@ -18,13 +18,13 @@ logger = logging.getLogger(__name__)
 
 _SKLEARN: Any = None
 try:
-    from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore
-    from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
 
     _SKLEARN = True
 except ImportError:
-    TfidfVectorizer = None  # type: ignore
-    cosine_similarity = None  # type: ignore
+    TfidfVectorizer = None
+    cosine_similarity = None
 
 
 def _sklearn_available() -> bool:
@@ -282,12 +282,12 @@ class APFingerprinter:
             return {"pcap_files": 0, "beacons_indexed": 0, "error": "not_a_dir"}
 
         try:
-            from scapy.compat import raw  # type: ignore
+            from scapy.compat import raw
             from scapy.layers.dot11 import (
-                Dot11,  # type: ignore
-                Dot11Beacon,  # type: ignore
+                Dot11,
+                Dot11Beacon,
             )
-            from scapy.utils import PcapReader  # type: ignore
+            from scapy.utils import PcapReader
         except ImportError:
             logger.info("scapy indisponível; train_from_captures não executado.")
             return {"pcap_files": 0, "beacons_indexed": 0, "error": "no_scapy"}

@@ -87,7 +87,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (ataque de rádio Zigbee)")
-    port = OptPort(0, "N/A")
     interface = OptString("", "Dongle Zigbee (ex: /dev/ttyACM0, CC2531)")
     channel = OptInteger(11, "Canal Zigbee inicial (11-26, Touchlink usa 11,15,20,25)")
     scan_all_channels = OptBool(True, "Escanear todos os canais Touchlink (11,15,20,25)")

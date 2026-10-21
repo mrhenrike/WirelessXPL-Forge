@@ -1,4 +1,6 @@
 
+from typing import Any
+
 import requests
 import urllib3
 
@@ -21,7 +23,7 @@ class HTTPClient(Exploit):
     verbosity = OptBool(True, "Verbosity enabled: true/false")
     ssl = OptBool(False, "SSL enabled: true/false")
 
-    def http_request(self, method: str, path: str, session: requests = requests, **kwargs) -> requests.Response:  # type: ignore[valid-type]
+    def http_request(self, method: str, path: str, session: Any = None, **kwargs: Any) -> requests.Response | None:
         """ Requests HTTP resource
 
         :param str method: method that should be issued e.g. GET, POST
@@ -30,6 +32,8 @@ class HTTPClient(Exploit):
         :param kwargs: kwargs passed to request method
         :return Response: Response object
         """
+        if session is None:
+            session = requests
 
         if self.ssl:
             url = "https://"
@@ -58,7 +62,7 @@ class HTTPClient(Exploit):
                 print_error("Module has been stopped", verbose=self.verbosity)
                 break
 
-        return None  # type: ignore[return-value]
+        return None
 
     def get_target_url(self, path: str = "") -> str:
         """ Get target URL

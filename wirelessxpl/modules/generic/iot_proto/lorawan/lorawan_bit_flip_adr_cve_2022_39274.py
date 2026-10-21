@@ -126,7 +126,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "Not applicable (radio attack)")
-    port = OptPort(0, "Not applicable")
     timeout = OptInteger(30, "Capture window in seconds")
     interface = OptString("", "SDR interface (e.g., hackrf, rtl-sdr)")
     dev_addr = OptString("260B1234", "Target device address (hex, 4 bytes)")

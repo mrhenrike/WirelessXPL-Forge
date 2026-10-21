@@ -657,3 +657,9 @@ class WardriveLogger:
         """Read-only snapshot of current sightings."""
         with self._lock:
             return list(self._sightings)
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

@@ -18,8 +18,8 @@ _SKLEARN: Any = None
 _JOBLIB: Any = None
 
 try:
-    import joblib as _joblib_mod  # type: ignore
-    from sklearn.ensemble import (  # type: ignore
+    import joblib as _joblib_mod
+    from sklearn.ensemble import (
         IsolationForest,
         RandomForestClassifier,
     )
@@ -27,8 +27,8 @@ try:
     _SKLEARN = True
     _JOBLIB = _joblib_mod
 except ImportError:
-    IsolationForest = None  # type: ignore
-    RandomForestClassifier = None  # type: ignore
+    IsolationForest = None
+    RandomForestClassifier = None
 
 
 def _sklearn_available() -> bool:

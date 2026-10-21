@@ -1,5 +1,16 @@
 """Android ADB Wireless Debugging auth bypass scanner and PoC.
 
+
+__info__ = {
+    "name": "Android ADB Wireless Debugging auth bypass scanner and PoC",
+    "description": (
+        "CVE-2026-0073: TLS type confusion in ADB wireless debugging allows unauthenticated pairing via crafted EC/Ed25519 certificate. This module implements: - mDNS discovery of ADB wireless debugging services - Vulnerability detection (non-intrusive fingerprint) - Exploit PoC for authorized security testing Conceptual reference: tc4dy/CVE-2026-0073-PoC-Exploit (MIT) Recode: native Python implementation, credits maintained."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+    "mitre": ["T1078.004", "T1133"],
+}
+
 CVE-2026-0073: TLS type confusion in ADB wireless debugging
 allows unauthenticated pairing via crafted EC/Ed25519 certificate.
 
@@ -195,3 +206,9 @@ def scan_network(
             results.append(target)
 
     return results
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

@@ -130,7 +130,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target Bluetooth device address (AA:BB:CC:DD:EE:FF)")
-    port = OptPort(0, "Not applicable (Bluetooth)")
     timeout = OptInteger(10, "Connection timeout in seconds")
     interface = OptString("hci0", "Bluetooth adapter interface")
     target_key_size = OptInteger(1, "Target encryption key size in bytes (1-16)")

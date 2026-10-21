@@ -93,7 +93,6 @@ class Exploit(Exploit):
     }
 
     target = OptIP("", "N/A (barramento CAN é físico/local)")
-    port = OptPort(0, "N/A")
     interface = OptString("vcan0", "Interface CAN (vcan0, can0, slcan0)")
     mode = OptString("enum", "Modo: enum | fuzz | replay | uds_reset | obd2_scan")
     can_id_start = OptInteger(0x000, "ID CAN inicial para fuzzing (hex)")

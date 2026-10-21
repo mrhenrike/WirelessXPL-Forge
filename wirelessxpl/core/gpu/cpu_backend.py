@@ -9,6 +9,7 @@ Version: 1.0.0
 
 
 import os
+from typing import Any
 
 import numpy as np
 
@@ -26,16 +27,16 @@ class CPUBackend(ComputeBackend):
     def device_info(self) -> str:
         return f"CPU ({os.cpu_count() or 1} threads, NumPy)"
 
-    def array_from_numpy(self, arr: np.ndarray):
+    def array_from_numpy(self, arr: np.ndarray) -> Any:
         return arr
 
-    def to_numpy(self, arr) -> np.ndarray:
+    def to_numpy(self, arr: Any) -> np.ndarray:
         return np.asarray(arr)
 
-    def matmul(self, a, b):
+    def matmul(self, a: Any, b: Any) -> Any:
         return np.matmul(np.asarray(a), np.asarray(b))
 
-    def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
+    def cosine_similarity_batch(self, queries: Any, corpus: Any) -> np.ndarray:
         q = np.asarray(queries, dtype=np.float32)
         c = np.asarray(corpus, dtype=np.float32)
         q_norm = q / (np.linalg.norm(q, axis=1, keepdims=True) + 1e-10)

@@ -1,4 +1,5 @@
 from wirelessxpl.core.bluetooth.btle import BTLEScanner, ScanDelegate
+from wirelessxpl.core.bluetooth.btle.btle_device import Device
 from wirelessxpl.core.exploit.exploit import Exploit
 from wirelessxpl.core.exploit.option import OptInteger
 from wirelessxpl.core.exploit.printer import (
@@ -14,7 +15,7 @@ class BTLEClient(Exploit):
     buffering = False
     enum_services = False
 
-    def btle_scan(self, mac=None):
+    def btle_scan(self, mac: str | None = None) -> list[Device]:
         """Scan for BLE devices and return a list of Device objects."""
         scanner = BTLEScanner(mac)
         delegate = ScanDelegate()

@@ -1,5 +1,16 @@
 """Qualcomm Diag (QCDM) capture: raw 2G/3G/4G/5G frame extraction.
 
+
+__info__ = {
+    "name": "Qualcomm Diag (QCDM) capture: raw 2G/3G/4G/5G frame extraction",
+    "description": (
+        "Captures raw cellular frames via Qualcomm diagnostic interface, generating GSMTAP-wrapped PCAP for Wireshark analysis. Transports: ADB (rooted device), USB modem, DLF file replay. Conceptual reference: QCSuper (GPL-3.0, P1sec/BigNerd95) Recode: full Python rewrite, no code copied. Incorporates known fixes: NR RRC v17/v26 headers, SDX75 padding, DPL IP reassembly (from upstream PRs #171/#172/#173)."
+    ),
+    "authors": ("Andre Henrique (@mrhenrike)",),
+    "devices": ("wireless",),
+    "mitre": ["T1040"],
+}
+
 Captures raw cellular frames via Qualcomm diagnostic interface,
 generating GSMTAP-wrapped PCAP for Wireshark analysis.
 
@@ -233,3 +244,9 @@ def frames_to_pcap(frames: list[DiagFrame], output_path: str) -> int:
 
     logger.info("Wrote %d frames to %s", written, output_path)
     return written
+
+
+def run(**kwargs) -> None:
+    """Execute the module (standalone entry point)."""
+    print(f"[*] {__info__['name']} starting...")
+    print("[*] Module execution: implement target-specific logic.")

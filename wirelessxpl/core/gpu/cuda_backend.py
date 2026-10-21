@@ -9,6 +9,8 @@ Version: 1.0.0
 
 
 import logging
+import types
+from typing import Any
 
 import numpy as np
 
@@ -16,10 +18,10 @@ from wirelessxpl.core.gpu.backend import ComputeBackend
 
 logger = logging.getLogger(__name__)
 
-_torch = None
+_torch: types.ModuleType | None = None
 
 
-def _get_torch_cuda():
+def _get_torch_cuda() -> types.ModuleType | None:
     """Carrega PyTorch com CUDA NVIDIA disponível (não HIP/ROCm).
 
     Returns:
@@ -27,7 +29,7 @@ def _get_torch_cuda():
     """
     global _torch
     if _torch is not None:
-        return _torch  # type: ignore[unreachable]
+        return _torch
     try:
         import torch
 
@@ -60,25 +62,25 @@ class CUDABackend(ComputeBackend):
         vram = raw_mem // (1024 * 1024)  # type: ignore[operator]
         return f"CUDA [PyTorch] {dev} ({vram}MB)"
 
-    def array_from_numpy(self, arr: np.ndarray):
+    def array_from_numpy(self, arr: np.ndarray) -> Any:
         torch = _get_torch_cuda()
         if torch:
             return torch.tensor(arr, device="cuda", dtype=torch.float32)
         return np.asarray(arr, dtype=np.float32)
 
-    def to_numpy(self, arr) -> np.ndarray:
+    def to_numpy(self, arr: Any) -> np.ndarray:
         torch = _get_torch_cuda()
         if torch and hasattr(arr, "detach"):
             return arr.detach().cpu().numpy()  # type: ignore[no-any-return]
         return np.asarray(arr)
 
-    def matmul(self, a, b):
+    def matmul(self, a: Any, b: Any) -> Any:
         torch = _get_torch_cuda()
         if torch:
             return torch.matmul(a, b)
         return np.matmul(np.asarray(a), np.asarray(b))
 
-    def cosine_similarity_batch(self, queries, corpus) -> np.ndarray:
+    def cosine_similarity_batch(self, queries: Any, corpus: Any) -> np.ndarray:
         torch = _get_torch_cuda()
         if not torch:
             q = np.asarray(queries, dtype=np.float32)

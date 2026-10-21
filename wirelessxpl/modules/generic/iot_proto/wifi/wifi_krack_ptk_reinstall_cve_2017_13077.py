@@ -141,7 +141,6 @@ class Exploit(Exploit):
     }
 
     target = OptString("", "Target client MAC address")
-    port = OptPort(0, "Not applicable (Wi-Fi)")
     timeout = OptInteger(15, "Attack timeout in seconds")
     interface = OptString("wlan0mon", "Wi-Fi monitor mode interface")
     bssid = OptString("", "Target AP BSSID")
