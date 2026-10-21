@@ -280,7 +280,7 @@ class TETRADecrypt(Exploit):
         threads = int(self.bruteforce_threads.value)
 
         print_status(f"[*] TEA1 brute-force: {keyspace:,} keys, {threads} threads")
-        print_info(f"[*] Effective keyspace: 2^32 = ~4.3 billion keys")
+        print_info("[*] Effective keyspace: 2^32 = ~4.3 billion keys")
         print_info("[*] Estimated time: minutes to hours depending on hardware")
 
         if self.dry_run.value:

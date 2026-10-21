@@ -203,7 +203,7 @@ class NFCRelayNative(Exploit):
             self._stats.end_time = time.time()
             conn.close()
 
-        except socket.timeout:
+        except TimeoutError:
             print_warning("[!] Timeout waiting for ghost connection")
         finally:
             srv.close()
@@ -247,13 +247,13 @@ class NFCRelayNative(Exploit):
             self._stats.end_time = time.time()
             sock.close()
 
-        except (ConnectionRefusedError, socket.timeout, OSError) as exc:
+        except (TimeoutError, ConnectionRefusedError, OSError) as exc:
             print_error(f"[-] Ghost connection failed: {exc}")
 
     def _nfc_transceive(self, apdu: bytes) -> bytes:
         """Send APDU to card via libnfc nfc-relay-picc or raw."""
         dev_arg = f"-d {self.leech_device.value}" if str(self.leech_device.value) else ""
-        cmd = f"nfc-mfclassic r a /dev/null"
+        cmd = "nfc-mfclassic r a /dev/null"
         try:
             result = subprocess.run(
                 ["nfc-list"], capture_output=True, text=True, timeout=5,
@@ -302,7 +302,7 @@ class NFCRelayNative(Exploit):
             print_error(f"[-] Unknown role: {role_str}. Use leech, ghost, or standalone.")
             return
 
-        print_status(f"\n[*] Relay stats:")
+        print_status("\n[*] Relay stats:")
         print_info(f"    APDUs relayed: {self._stats.apdus_relayed}")
         print_info(f"    Bytes relayed: {self._stats.bytes_relayed}")
         print_info(f"    Duration: {self._stats.duration_sec:.1f}s")

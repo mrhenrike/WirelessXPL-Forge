@@ -121,7 +121,7 @@ class WiFi7MLOAttack(Exploit):
                 timeout=10,
             )
             if "EHT" in result.stdout or "320 MHz" in result.stdout:
-                return f"WiFi 7 (EHT) support detected on hardware"
+                return "WiFi 7 (EHT) support detected on hardware"
             return "Warning: no EHT capability detected; attacks may be limited to 802.11ax"
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return "Could not query wireless capabilities"
@@ -187,7 +187,7 @@ class WiFi7MLOAttack(Exploit):
 
         print_status("[*] Link downgrade: deauthenticating target link")
         print_info(f"    Target link BSSID: {target}")
-        print_info(f"    Clients will fall back to remaining MLO links")
+        print_info("    Clients will fall back to remaining MLO links")
 
         cmd = [
             "aireplay-ng",
@@ -215,7 +215,7 @@ class WiFi7MLOAttack(Exploit):
             return
 
         print_status("[*] MLD address confusion attack")
-        print_info(f"    Spoofing Multi-Link element with conflicting link mappings")
+        print_info("    Spoofing Multi-Link element with conflicting link mappings")
         print_info(f"    Target MLD: {target}")
 
         ml_ie = self._craft_ml_element(target)

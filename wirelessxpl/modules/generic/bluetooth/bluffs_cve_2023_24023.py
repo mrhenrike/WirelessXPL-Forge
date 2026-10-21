@@ -92,7 +92,7 @@ def _derive_session_key(
 
     if forced_entropy < 16:
         mask = b"\xff" * forced_entropy + b"\x00" * (16 - forced_entropy)
-        raw_key = bytes(a & b for a, b in zip(raw_key, mask))
+        raw_key = bytes(a & b for a, b in zip(raw_key, mask, strict=True))
 
     return SessionKeyInfo(
         link_key=link_key,
