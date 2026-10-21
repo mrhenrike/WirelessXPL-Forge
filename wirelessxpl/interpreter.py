@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 import getopt
 import itertools
@@ -8,6 +10,8 @@ import sys
 import traceback
 from collections import Counter
 from pathlib import Path
+from types import FrameType
+from typing import Any, Callable, Iterator, Sequence
 
 # Adaptation credits: André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
 from wirelessxpl.core.exploit.exceptions import WirelessXPLException
@@ -42,58 +46,58 @@ except ImportError:
         __doc__ = ""
 
         @staticmethod
-        def read_history_file(*args, **kwargs):
+        def read_history_file(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def set_history_length(*args, **kwargs):
+        def set_history_length(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def write_history_file(*args, **kwargs):
+        def write_history_file(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def parse_and_bind(*args, **kwargs):
+        def parse_and_bind(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def set_completer(*args, **kwargs):
+        def set_completer(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def set_completer_delims(*args, **kwargs):
+        def set_completer_delims(*args: Any, **kwargs: Any) -> None:
             return None
 
         @staticmethod
-        def get_line_buffer():
+        def get_line_buffer() -> str:
             return ""
 
         @staticmethod
-        def get_begidx():
+        def get_begidx() -> int:
             return 0
 
         @staticmethod
-        def get_endidx():
+        def get_endidx() -> int:
             return 0
 
     readline = _ReadlineShim()  # type: ignore[assignment]
 
 
-def is_libedit():
+def is_libedit() -> bool:
     return isinstance(readline.__doc__, str) and "libedit" in readline.__doc__
 
 
 class BaseInterpreter:
-    history_file = os.path.expanduser("~/.history")
-    history_length = 100
-    global_help = ""
+    history_file: str = os.path.expanduser("~/.history")
+    history_length: int = 100
+    global_help: str = ""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.setup()
-        self.banner = ""
+        self.banner: str = ""
 
-    def setup(self):
+    def setup(self) -> None:
         """ Initialization of third-party libraries
 
         Setting interpreter history.
@@ -119,13 +123,13 @@ class BaseInterpreter:
         else:
             readline.parse_and_bind("tab: complete")
 
-    def parse_line(self, line):
+    def parse_line(self, line: str) -> tuple[str, str, dict[str, str]]:
         """ Split line into command and argument.
 
         :param line: line to parse
         :return: (command, argument, named_arguments)
         """
-        kwargs = dict()
+        kwargs: dict[str, str] = dict()
         command, _, arg = line.strip().partition(" ")
         args = arg.strip().split()
         for word in args:
@@ -136,24 +140,24 @@ class BaseInterpreter:
         return command, ' '.join(arg.split()), kwargs
 
     @property
-    def prompt(self):
+    def prompt(self) -> str:
         """ Returns prompt string """
         return ">>>"
 
-    def get_command_handler(self, command):
+    def get_command_handler(self, command: str) -> Callable[..., Any]:
         """ Parsing command and returning appropriate handler.
 
         :param command: command
         :return: command_handler
         """
         try:
-            command_handler = getattr(self, f"command_{command}")
+            command_handler: Callable[..., Any] = getattr(self, f"command_{command}")
         except AttributeError:
             raise WirelessXPLException(f"Unknown command: '{command}'")
 
         return command_handler
 
-    def start(self):
+    def start(self) -> None:
         """ WirelessXPL main entry point. Starting interpreter loop. """
 
         if not sys.stdin.isatty():
@@ -190,7 +194,7 @@ class BaseInterpreter:
             finally:
                 printer_queue.join()
 
-    def complete(self, text, state):
+    def complete(self, text: str, state: int) -> str | None:
         """Return the next possible completion for 'text'.
 
         If a command has not been entered, then complete against command list.
@@ -215,14 +219,14 @@ class BaseInterpreter:
             else:
                 complete_function = self.raw_command_completer
 
-            self.completion_matches = complete_function(text, line, start_index, end_index)
+            self.completion_matches: list[str] = complete_function(text, line, start_index, end_index)
 
         try:
             return self.completion_matches[state]
         except IndexError:
             return None
 
-    def commands(self, *ignored):
+    def commands(self, *ignored: Any) -> list[str]:
         """ Returns full list of interpreter commands.
 
         :param ignored:
@@ -230,14 +234,14 @@ class BaseInterpreter:
         """
         return [command.rsplit("_").pop() for command in dir(self) if command.startswith("command_")]
 
-    def raw_command_completer(self, text, line, start_index, end_index):
+    def raw_command_completer(self, text: str, line: str, start_index: int, end_index: int) -> list[str]:
         """ Complete command w/o any argument """
         return [command for command in self.suggested_commands() if command.startswith(text)]
 
-    def default_completer(self, *ignored):
+    def default_completer(self, *ignored: Any) -> list[str]:
         return []
 
-    def suggested_commands(self):
+    def suggested_commands(self) -> list[str]:
         """ Entry point for intelligent tab completion.
 
         Overwrite this method to suggest suitable commands.
@@ -248,15 +252,15 @@ class BaseInterpreter:
 
 
 class WirelessXPLInterpreter(BaseInterpreter):
-    history_file = os.path.expanduser("~/.wxf_history")
-    global_help = """Global commands:
+    history_file: str = os.path.expanduser("~/.wxf_history")
+    global_help: str = """Global commands:
     help                        Print this help menu
     use <module>                Select a module for usage
     exec <shell command> <args> Execute a command in a shell
     search <search term>        Search for appropriate module
     exit                        Exit WirelessXPL"""
 
-    module_help = """Module commands:
+    module_help: str = """Module commands:
     run                                 Run the selected module with the given options
     back                                De-select the current module
     set <option name> <option value>    Set an option for the selected module
@@ -265,28 +269,28 @@ class WirelessXPLInterpreter(BaseInterpreter):
     show [info|options|devices]         Print information, options, or target devices for a module
     check                               Check if a given target is vulnerable to a selected module's exploit"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         PrinterThread().start()
 
-        self.current_module = None
-        self.raw_prompt_template = None
-        self.module_prompt_template = None
-        self.prompt_hostname = "wxf"
-        self.show_sub_commands = ("info", "options", "advanced", "devices", "all", "creds", "exploits", "scanners", "wordlists")
-        self.search_sub_commands = ("type", "device", "vendor")
+        self.current_module: Any = None
+        self.raw_prompt_template: str | None = None
+        self.module_prompt_template: str | None = None
+        self.prompt_hostname: str = "wxf"
+        self.show_sub_commands: tuple[str, ...] = ("info", "options", "advanced", "devices", "all", "creds", "exploits", "scanners", "wordlists")
+        self.search_sub_commands: tuple[str, ...] = ("type", "device", "vendor")
 
-        self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search ", "glossary "])
-        self.module_commands = ["run", "back", "set ", "setg ", "check"]
+        self.global_commands: list[str] = sorted(["use ", "exec ", "help", "exit", "show ", "search ", "glossary "])
+        self.module_commands: list[str] = ["run", "back", "set ", "setg ", "check"]
         self.module_commands.extend(self.global_commands)
         self.module_commands.sort()
 
-        self.modules = index_modules()
-        self.modules_count = Counter()  # type: ignore[var-annotated]
+        self.modules: list[str] = index_modules()
+        self.modules_count: Counter[str] = Counter()
         self.modules_count.update([module.split('.')[0] for module in self.modules])
-        self.main_modules_dirs = [module for module in os.listdir(MODULES_DIR) if not module.startswith("__")]
-        self._module_device_index = {}
-        self._search_devices_cache = set()
+        self.main_modules_dirs: list[str] = [module for module in os.listdir(MODULES_DIR) if not module.startswith("__")]
+        self._module_device_index: dict[str, set[str]] = {}
+        self._search_devices_cache: set[str] = set()
 
         self.__parse_prompt()
 
@@ -303,13 +307,13 @@ class WirelessXPLInterpreter(BaseInterpreter):
  Codename   : I Knew You Were Trouble
  Version    : 3.5.2
  Maintained : André Henrique (@mrhenrike) | União Geek — https://github.com/Uniao-Geek
- Lineage    : RouterXPL-Forge → wireless split; upstream threat9/routersploit
+ Lineage    : RouterXPL-Forge -> wireless split; upstream threat9/routersploit
 
  Modules: {generic_count}  (wireless-only scope)
 """.format(
            generic_count=self.modules_count.get("generic", 0))
 
-    def __parse_prompt(self):
+    def __parse_prompt(self) -> None:
         raw_prompt_default_template = "\001\033[4m\002{host}\001\033[0m\002 > "
         raw_prompt_template = os.getenv("WXF_RAW_PROMPT", raw_prompt_default_template).replace('\\033', '\033')
         self.raw_prompt_template = raw_prompt_template if '{host}' in raw_prompt_template else raw_prompt_default_template
@@ -318,18 +322,18 @@ class WirelessXPLInterpreter(BaseInterpreter):
         module_prompt_template = os.getenv("WXF_MODULE_PROMPT", module_prompt_default_template).replace('\\033', '\033')
         self.module_prompt_template = module_prompt_template if all(map(lambda x: x in module_prompt_template, ['{host}', "{module}"])) else module_prompt_default_template
 
-    def __handle_if_noninteractive(self, argv):
+    def __handle_if_noninteractive(self, argv: list[str]) -> None:
         """ Keep old method for backward compat only """
         self.nonInteractive(argv)
 
-    def nonInteractive(self, argv):
+    def nonInteractive(self, argv: list[str]) -> None:
         """ Execute specific command and return result without launching the interactive CLI
 
         :return:
 
         """
         module = ""
-        set_opts = []
+        set_opts: list[str] = []
 
         try:
             opts, args = getopt.getopt(argv[1:], "hm:s:", ["help=", "module=", "set="])
@@ -353,7 +357,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
             printer_queue.join()
             return
 
-        # Special case: glossary command
         if module.startswith("glossary"):
             parts = module.split()
             terms = parts[1:] if len(parts) > 1 else []
@@ -363,22 +366,24 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
         self.command_use(module)
 
-        for opt in set_opts:
-            self.command_set(opt)
+        for opt_str in set_opts:
+            self.command_set(opt_str)
 
         self.command_exploit()
 
-        # Wait for results if needed
         printer_queue.join()
 
         return
 
     @property
-    def module_metadata(self):
-        return getattr(self.current_module, f"_{self.current_module.__class__.__name__}__info__")
+    def module_metadata(self) -> dict[str, Any]:
+        metadata: dict[str, Any] = getattr(
+            self.current_module, f"_{self.current_module.__class__.__name__}__info__"
+        )
+        return metadata
 
     @property
-    def prompt(self):
+    def prompt(self) -> str:
         """ Returns prompt string based on current_module attribute.
 
         Adding module prefix (module.name) if current_module attribute is set.
@@ -387,13 +392,16 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         if self.current_module:
             try:
-                return self.module_prompt_template.format(host=self.prompt_hostname, module=self.module_metadata['name'])  # type: ignore[union-attr]
+                assert self.module_prompt_template is not None
+                return self.module_prompt_template.format(host=self.prompt_hostname, module=self.module_metadata['name'])
             except (AttributeError, KeyError):
-                return self.module_prompt_template.format(host=self.prompt_hostname, module="UnnamedModule")  # type: ignore[union-attr]
+                assert self.module_prompt_template is not None
+                return self.module_prompt_template.format(host=self.prompt_hostname, module="UnnamedModule")
         else:
-            return self.raw_prompt_template.format(host=self.prompt_hostname)  # type: ignore[union-attr]
+            assert self.raw_prompt_template is not None
+            return self.raw_prompt_template.format(host=self.prompt_hostname)
 
-    def available_modules_completion(self, text):
+    def available_modules_completion(self, text: str) -> list[str]:
         """ Looking for tab completion hints using setup.py entry_points.
 
         May need optimization in the future!
@@ -403,24 +411,24 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         text = pythonize_path(text)
         all_possible_matches = filter(lambda x: x.startswith(text), self.modules)
-        matches = set()
+        matches: set[str] = set()
         for match in all_possible_matches:
             head, sep, tail = match[len(text):].partition('.')
             if not tail:
                 sep = ""
             matches.add("".join((text, head, sep)))
-        return list(map(humanize_path, matches))  # humanize output, replace dots to forward slashes
+        return list(map(humanize_path, matches))
 
     @staticmethod
-    def _normalize_device_name(value):
+    def _normalize_device_name(value: Any) -> str:
         if not isinstance(value, str):
             return ""
         return value.strip().lower().replace("-", "").replace("_", "").replace(" ", "")
 
     @staticmethod
-    def _expand_device_aliases(device_name):
-        aliases = {device_name}
-        alias_map = {
+    def _expand_device_aliases(device_name: str) -> set[str]:
+        aliases: set[str] = {device_name}
+        alias_map: dict[str, set[str]] = {
             "wifi": {"wlan", "wireless", "80211", "wpa", "wpa2", "wpa3"},
             "bluetooth": {"bt", "ble", "bluetoothclassic"},
             "ble": {"bluetooth", "bt"},
@@ -431,14 +439,13 @@ class WirelessXPLInterpreter(BaseInterpreter):
         aliases.update(alias_map.get(device_name, set()))
         return aliases
 
-    def _build_module_device_index(self):
+    def _build_module_device_index(self) -> None:
         if self._module_device_index:
             return
 
         for module in self.modules:
-            module_devices = set()
+            module_devices: set[str] = set()
 
-            # Path-based hints provide a robust fallback even when module metadata is missing.
             path_tokens = module.split(".")
             if "wifi_lab" in path_tokens or "wifi" in path_tokens or "external" in path_tokens:
                 module_devices.add("wifi")
@@ -463,10 +470,8 @@ class WirelessXPLInterpreter(BaseInterpreter):
                     if normalized:
                         module_devices.update(self._expand_device_aliases(normalized))
             except WirelessXPLException:
-                # Keep fallback path-based classification when a module fails metadata import.
                 pass
             except Exception:
-                # Guard against third-party import side effects during index build.
                 pass
 
             self._module_device_index[module] = module_devices
@@ -474,7 +479,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         for devs in self._module_device_index.values():
             self._search_devices_cache.update(devs)
 
-    def suggested_commands(self):
+    def suggested_commands(self) -> list[str]:
         """ Entry point for intelligent tab completion.
 
         Based on state of interpreter this method will return intelligent suggestions.
@@ -488,35 +493,34 @@ class WirelessXPLInterpreter(BaseInterpreter):
         else:
             return self.global_commands
 
-    def command_back(self, *args, **kwargs):
+    def command_back(self, *args: Any, **kwargs: Any) -> None:
         self.current_module = None
 
-    def command_use(self, module_path, *args, **kwargs):
+    def command_use(self, module_path: str, *args: Any, **kwargs: Any) -> None:
         module_path = pythonize_path(module_path)
         module_path = ".".join(("wirelessxpl", "modules", module_path))
-        # module_path, _, exploit_name = module_path.rpartition('.')
         try:
             self.current_module = import_exploit(module_path)()
         except WirelessXPLException as err:
             print_error(str(err))
 
     @stop_after(2)
-    def complete_use(self, text, *args, **kwargs):
+    def complete_use(self, text: str, *args: Any, **kwargs: Any) -> list[str]:
         if text:
             return self.available_modules_completion(text)
         else:
             return self.main_modules_dirs
 
-    def __command_sigint_handler(self, signum, frame):
+    def __command_sigint_handler(self, signum: int, frame: FrameType | None) -> None:
         raise KeyboardInterrupt
 
     @module_required
-    def command_run(self, *args, **kwargs):
+    def command_run(self, *args: Any, **kwargs: Any) -> None:
         print_status(f"Running module {self.current_module}...")
         previous_sigint_handler = signal.getsignal(signal.SIGINT)
         try:
             signal.signal(signal.SIGINT, self.__command_sigint_handler)
-            self.current_module.run()  # type: ignore[union-attr]
+            self.current_module.run()
         except KeyboardInterrupt:
             print_info()
             print_error("Operation cancelled by user")
@@ -525,42 +529,41 @@ class WirelessXPLInterpreter(BaseInterpreter):
         finally:
             signal.signal(signal.SIGINT, previous_sigint_handler)
 
-
-    def command_exploit(self, *args, **kwargs):
+    def command_exploit(self, *args: Any, **kwargs: Any) -> None:
         self.command_run()
 
     @module_required
-    def command_set(self, *args, **kwargs):
+    def command_set(self, *args: Any, **kwargs: Any) -> None:
         key, _, value = args[0].partition(" ")
-        if key in self.current_module.options:  # type: ignore[union-attr]
+        if key in self.current_module.options:
             setattr(self.current_module, key, value)
-            self.current_module.exploit_attributes[key][0] = value  # type: ignore[union-attr]
+            self.current_module.exploit_attributes[key][0] = value
 
             if kwargs.get("glob", False):
                 GLOBAL_OPTS[key] = value
             print_success(f"{key} => {value}")
         else:
             print_error(f"You can't set option '{key}'.\n"
-                        f"Available options: {self.current_module.options}")  # type: ignore[union-attr]
+                        f"Available options: {self.current_module.options}")
 
     @stop_after(2)
-    def complete_set(self, text, *args, **kwargs):
+    def complete_set(self, text: str, *args: Any, **kwargs: Any) -> list[str]:
         if text:
-            return [" ".join((attr, "")) for attr in self.current_module.options if attr.startswith(text)]  # type: ignore[union-attr]
+            return [" ".join((attr, "")) for attr in self.current_module.options if attr.startswith(text)]
         else:
-            return self.current_module.options  # type: ignore[union-attr]
+            return list(self.current_module.options)
 
     @module_required
-    def command_setg(self, *args, **kwargs):
+    def command_setg(self, *args: Any, **kwargs: Any) -> None:
         kwargs['glob'] = True
         self.command_set(*args, **kwargs)
 
     @stop_after(2)
-    def complete_setg(self, text, *args, **kwargs):
+    def complete_setg(self, text: str, *args: Any, **kwargs: Any) -> list[str]:
         return self.complete_set(text, *args, **kwargs)
 
     @module_required
-    def command_unsetg(self, *args, **kwargs):
+    def command_unsetg(self, *args: Any, **kwargs: Any) -> None:
         key, _, value = args[0].partition(' ')
         try:
             del GLOBAL_OPTS[key]
@@ -571,7 +574,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_success({key: value})
 
     @stop_after(2)
-    def complete_unsetg(self, text, *args, **kwargs):
+    def complete_unsetg(self, text: str, *args: Any, **kwargs: Any) -> list[str]:
         global_opt_keys = list(GLOBAL_OPTS.keys())
         if text:
             return [' '.join((attr, "")) for attr in global_opt_keys if attr.startswith(text)]
@@ -579,7 +582,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
             return global_opt_keys
 
     @module_required
-    def get_opts(self, *args):
+    def get_opts(self, *args: str) -> Iterator[tuple[str, Any, str]]:
         """ Generator returning module's Option attributes (option_name, option_value, option_description)
 
         :param args: Option names
@@ -587,9 +590,9 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         for opt_key in args:
             try:
-                opt_description = self.current_module.exploit_attributes[opt_key][1]  # type: ignore[union-attr]
-                opt_display_value = self.current_module.exploit_attributes[opt_key][0]  # type: ignore[union-attr]
-                if self.current_module.exploit_attributes[opt_key][2]:  # type: ignore[union-attr]
+                opt_description: str = self.current_module.exploit_attributes[opt_key][1]
+                opt_display_value: Any = self.current_module.exploit_attributes[opt_key][0]
+                if self.current_module.exploit_attributes[opt_key][2]:
                     continue
             except (KeyError, IndexError, AttributeError):
                 pass
@@ -597,7 +600,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 yield opt_key, opt_display_value, opt_description
 
     @module_required
-    def get_opts_adv(self, *args):
+    def get_opts_adv(self, *args: str) -> Iterator[tuple[str, Any, str]]:
         """ Generator returning module's advanced Option attributes (option_name, option_value, option_description)
 
         :param args: Option names
@@ -605,15 +608,15 @@ class WirelessXPLInterpreter(BaseInterpreter):
         """
         for opt_key in args:
             try:
-                opt_description = self.current_module.exploit_attributes[opt_key][1]  # type: ignore[union-attr]
-                opt_display_value = self.current_module.exploit_attributes[opt_key][0]  # type: ignore[union-attr]
+                opt_description: str = self.current_module.exploit_attributes[opt_key][1]
+                opt_display_value: Any = self.current_module.exploit_attributes[opt_key][0]
             except (KeyError, AttributeError):
                 pass
             else:
                 yield opt_key, opt_display_value, opt_description
 
     @module_required
-    def _show_info(self, *args, **kwargs):
+    def _show_info(self, *args: Any, **kwargs: Any) -> None:
         pprint_dict_in_order(
             self.module_metadata,
             ("name", "description", "devices", "authors", "references"),
@@ -621,10 +624,10 @@ class WirelessXPLInterpreter(BaseInterpreter):
         print_info()
 
     @module_required
-    def _show_options(self, *args, **kwargs):
+    def _show_options(self, *args: Any, **kwargs: Any) -> None:
         target_names = ["target", "port", "ssl", "rhost", "rport", "lhost", "lport"]
-        target_opts = [opt for opt in self.current_module.options if opt in target_names]  # type: ignore[union-attr]
-        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]  # type: ignore[union-attr]
+        target_opts: list[str] = [opt for opt in self.current_module.options if opt in target_names]
+        module_opts: list[str] = [opt for opt in self.current_module.options if opt not in target_opts]
         headers = ("Name", "Current settings", "Description")
 
         print_info("\nTarget options:")
@@ -637,10 +640,10 @@ class WirelessXPLInterpreter(BaseInterpreter):
         print_info()
 
     @module_required
-    def _show_advanced(self, *args, **kwargs):
+    def _show_advanced(self, *args: Any, **kwargs: Any) -> None:
         target_names = ["target", "port", "ssl", "rhost", "rport", "lhost", "lport"]
-        target_opts = [opt for opt in self.current_module.options if opt in target_names]  # type: ignore[union-attr]
-        module_opts = [opt for opt in self.current_module.options if opt not in target_opts]  # type: ignore[union-attr]
+        target_opts: list[str] = [opt for opt in self.current_module.options if opt in target_names]
+        module_opts: list[str] = [opt for opt in self.current_module.options if opt not in target_opts]
         headers = ("Name", "Current settings", "Description")
 
         print_info("\nTarget options:")
@@ -653,9 +656,9 @@ class WirelessXPLInterpreter(BaseInterpreter):
         print_info()
 
     @module_required
-    def _show_devices(self, *args, **kwargs):
+    def _show_devices(self, *args: Any, **kwargs: Any) -> None:
         try:
-            devices = self.current_module._Exploit__info__['devices']  # type: ignore[union-attr]
+            devices: Any = self.current_module._Exploit__info__['devices']
 
             print_info("\nTarget devices:")
             i = 0
@@ -670,7 +673,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_info("\nTarget devices are not defined")
 
     @module_required
-    def _show_wordlists(self, *args, **kwargs):
+    def _show_wordlists(self, *args: Any, **kwargs: Any) -> None:
         headers = ("Wordlist", "Path")
         wordlists = [
             (f, Path(os.path.join(WORDLISTS_DIR, f)).resolve().as_uri())
@@ -680,23 +683,23 @@ class WirelessXPLInterpreter(BaseInterpreter):
 
         print_table(headers, *wordlists, max_column_length=100)
 
-    def __show_modules(self, root=''):
+    def __show_modules(self, root: str = '') -> None:
         for module in [module for module in self.modules if module.startswith(root)]:
             print_info(module.replace('.', os.sep))
 
-    def _show_all(self, *args, **kwargs):
+    def _show_all(self, *args: Any, **kwargs: Any) -> None:
         self.__show_modules()
 
-    def _show_scanners(self, *args, **kwargs):
+    def _show_scanners(self, *args: Any, **kwargs: Any) -> None:
         self.__show_modules('scanners')
 
-    def _show_exploits(self, *args, **kwargs):
+    def _show_exploits(self, *args: Any, **kwargs: Any) -> None:
         self.__show_modules('exploits')
 
-    def _show_creds(self, *args, **kwargs):
+    def _show_creds(self, *args: Any, **kwargs: Any) -> None:
         self.__show_modules('creds')
 
-    def command_show(self, *args, **kwargs):
+    def command_show(self, *args: Any, **kwargs: Any) -> None:
         sub_command = args[0]
         try:
             getattr(self, f"_show_{sub_command}")(*args, **kwargs)
@@ -706,16 +709,16 @@ class WirelessXPLInterpreter(BaseInterpreter):
                         f"Possible choices are: {self.show_sub_commands}")
 
     @stop_after(2)
-    def complete_show(self, text, *args, **kwargs):
+    def complete_show(self, text: str, *args: Any, **kwargs: Any) -> Sequence[str]:
         if text:
             return [command for command in self.show_sub_commands if command.startswith(text)]
         else:
             return self.show_sub_commands
 
     @module_required
-    def command_check(self, *args, **kwargs):
+    def command_check(self, *args: Any, **kwargs: Any) -> None:
         try:
-            result = self.current_module.check()  # type: ignore[union-attr]
+            result = self.current_module.check()
         except Exception as error:
             print_error(error)
         else:
@@ -726,20 +729,20 @@ class WirelessXPLInterpreter(BaseInterpreter):
             else:
                 print_status("Target could not be verified")
 
-    def command_help(self, *args, **kwargs):
+    def command_help(self, *args: Any, **kwargs: Any) -> None:
         print_info(self.global_help)
         if self.current_module:
             print_info("\n", self.module_help)
 
-    def command_glossary(self, *args, **kwargs):
-        """WXF Glossary — wireless security terms, acronyms and attack techniques.
+    def command_glossary(self, *args: Any, **kwargs: Any) -> None:
+        """WXF Glossary: wireless security terms, acronyms and attack techniques.
 
         Usage:
-            glossary                     → list all terms
-            glossary wpa                 → search for 'wpa'
-            glossary bssid ssid pmf      → multiple terms
-            glossary --list              → compact table
-            glossary --category wifi     → filter by category
+            glossary                     -> list all terms
+            glossary wpa                 -> search for 'wpa'
+            glossary bssid ssid pmf      -> multiple terms
+            glossary --list              -> compact table
+            glossary --category wifi     -> filter by category
         """
         from wirelessxpl.core.glossary import format_compact_list, format_entry, glossary_help, search_term
         args_list = list(args)
@@ -747,7 +750,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_info(format_compact_list())
             return
 
-        # Handle flags
         if "--list" in args_list:
             print_info(format_compact_list())
             return
@@ -762,7 +764,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_info(glossary_help())
             return
 
-        # Search for each provided term
         for query in args_list:
             if query.startswith("--"):
                 continue
@@ -771,13 +772,13 @@ class WirelessXPLInterpreter(BaseInterpreter):
                 print_info(f"  Term '\033[93m{query}\033[0m' not found. "
                            f"Try: glossary --list")
             else:
-                for key, entry in results[:3]:  # max 3 results per query
+                for key, entry in results[:3]:
                     print_info(format_entry(key, entry))
 
-    def command_exec(self, *args, **kwargs):
+    def command_exec(self, *args: Any, **kwargs: Any) -> None:
         os.system(args[0])
 
-    def command_search(self, *args, **kwargs):
+    def command_search(self, *args: Any, **kwargs: Any) -> None:
         mod_type = ''
         mod_device = ''
         mod_vendor = ''
@@ -786,7 +787,7 @@ class WirelessXPLInterpreter(BaseInterpreter):
         devices = sorted(self._search_devices_cache)
 
         try:
-            keyword = args[0].strip("'\"").lower()
+            keyword: str = args[0].strip("'\"").lower()
         except IndexError:
             keyword = ''
 
@@ -808,7 +809,6 @@ class WirelessXPLInterpreter(BaseInterpreter):
                     return
                 mod_device = normalized_device
             elif key == 'vendor':
-                # print_info(' - Vendor:\t{}'.format(value))
                 mod_vendor = f".{value}."
 
         for module in self.modules:
@@ -832,12 +832,11 @@ class WirelessXPLInterpreter(BaseInterpreter):
             print_info(found)
 
     @stop_after(2)
-    def complete_search(self, text, *args, **kwargs):
+    def complete_search(self, text: str, *args: Any, **kwargs: Any) -> Sequence[str]:
         if text:
             return [command for command in self.search_sub_commands if command.startswith(text)]
         else:
             return self.search_sub_commands
 
-    def command_exit(self, *args, **kwargs):
+    def command_exit(self, *args: Any, **kwargs: Any) -> None:
         raise EOFError
-
