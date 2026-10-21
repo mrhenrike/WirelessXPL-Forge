@@ -130,7 +130,7 @@ def main() -> int:
 
     bin_results: List[Tuple[str, bool, str]] = [_check_binary(name) for name, _ in OPTIONAL_BINARIES]
     print("\nOptional tool checks:")
-    for (name, desc), (_, ok, info) in zip(OPTIONAL_BINARIES, bin_results):
+    for (name, desc), (_, ok, info) in zip(OPTIONAL_BINARIES, bin_results, strict=False):
         state = "OK" if ok else "MISSING"
         print(f"  - {name} ({desc}): {state} ({info})")
 

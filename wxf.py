@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging.handlers
-import platform
 import sys
 from pathlib import Path
 
@@ -13,9 +12,6 @@ from tools.venv_bootstrap import ensure_runtime
 
 ensure_runtime(__file__)
 
-if sys.version_info < (3, 8):
-    print(f"WirelessXPL requires Python 3.8+ (detected: {platform.python_version()}).")
-    exit(1)
 
 import os
 
